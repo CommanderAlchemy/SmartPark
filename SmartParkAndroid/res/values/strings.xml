@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SmartPark</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_section1">Smart Park</string>
+    <string name="title_section2">GPS</string>
+    <string name="title_section3">Bluetooth</string>
+    <string name="title_section4">debug</string><string name="title_section5">dummy</string><string name="welcome_text">Page Under Construction</string>
+    <string name="debug_connect_btn">connect</string>
+    <string name="debug_disconnect_btn">disconnect</string>
+    
+    
+
+</resources>

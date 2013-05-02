@@ -13,14 +13,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.LayoutInflater;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+
 import android.widget.Toast;
 
+import com.smartpark.fragments.*;
 import com.smartpark.tcp.TCPClient;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
@@ -50,7 +50,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	// Debugging and stuff
 	private static final String TAG = "MainActivityDebug";
 	private static final boolean D = true;
-	// ============================================================================
 	
 	
 	@Override
@@ -92,7 +91,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
-	}// ============================================================================
+	}
 
 	/**
 	 * Create ActionMenu with settings and add our own menu itmes.
@@ -103,7 +102,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		getMenuInflater().inflate(R.menu.main, menu);
 		CreateMenu(menu);
 		return true;
-	}// ============================================================================
+	}
 
 	/**
 	 * On ActionMenu Select
@@ -145,7 +144,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			startActivity(new Intent(this, SettingsActivity.class));
 		}
 		return false;
-	}// ============================================================================
+	}
 
 	/**
 	 * Create Menu Create Action Menu that the application will have to start
@@ -165,12 +164,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		aMenu3.setAlphabeticShortcut('c');
 		
 		MenuItem aMenu4 = menu.add(0, 3, 3, "Item 4");
-		aMenu4.setAlphabeticShortcut('d');
+		aMenu4.setAlphabeticShortcut('d');	
 		
-		MenuItem setings_item = (MenuItem) findViewById(R.id.action_settings);
-		
-		
-	}// ============================================================================
+	}
 
 	@Override
 	public void onTabSelected(ActionBar.Tab tab,
@@ -178,21 +174,18 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		// When the given tab is selected, switch to the corresponding page in
 		// the ViewPager.
 		mViewPager.setCurrentItem(tab.getPosition());
-	}// ============================================================================
+	}
 
 	@Override
 	public void onTabUnselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
-	}// ============================================================================
+	}
 
 	@Override
 	public void onTabReselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
-	}// ============================================================================
+	}
 	
-	
-
-
 	
 	/*
 	 * debugFragment Button Events
@@ -200,18 +193,15 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	public void connect(View view) {
 		Toast.makeText(this, "connecting...", Toast.LENGTH_LONG).show();
 		new ConnectTask().execute("");
-	}// ============================================================================
+	}
 
 	public void disconnect(View view) {
 		if (mTcpClient != null) {
 			Toast.makeText(this, "disconnecting...", Toast.LENGTH_LONG).show();
 			mTcpClient.stopClient();
-		}// ============================================================================
-	}// ============================================================================
+		}
+	}
 
-	
-	
-	
 	public class ConnectTask extends AsyncTask<String, String, TCPClient> {
 
 		@Override
@@ -230,7 +220,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			mTcpClient.run();
 
 			return null;
-		}// ============================================================================
+		}
 
 		@Override
 		protected void onProgressUpdate(String... values) {
@@ -242,163 +232,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			// new message received
 			// from server was added to the list
 			// mAdapter.notifyDataSetChanged();
-		}// ============================================================================
-	}// ============================================================================
+		}
+	}
 
-	
-	
-	
-	
-	/**
-	 * {@link DummySectionFragment} Each fragment contains a view in the
-	 * mainactivity that you can slide to. Dummy fragment just for developer
-	 * lulz
-	 * 
-	 * @author commander
-	 * 
-	 */
-	public static class DummySectionFragment extends Fragment {
-		public static final String ARG_SECTION_NUMBER = "section_number";
-
-		public DummySectionFragment() {
-			if (D)
-				Log.e(TAG, "DummySectionFragment Loaded");
-		}// ============================================================================
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main_dummy,
-					container, false);
-			TextView dummyTextView = (TextView) rootView
-					.findViewById(R.id.section_label);
-			dummyTextView.setText(Integer.toString(getArguments().getInt(
-					ARG_SECTION_NUMBER)));
-			return rootView;
-		}// ============================================================================
-	}// ============================================================================
-
-	/**
-	 * {@link spFragment} This will contain general SmartPark overal view
-	 * 
-	 * @author commander
-	 */
-	public static class spFragment extends Fragment {
-
-		public static final String ARG_SECTION_NUMBER = "section_number";
-
-		public spFragment() {
-			if (D)
-				Log.e(TAG, "spFragment Loaded");
-		}// ============================================================================
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_sp_view,
-					container, false);
-			TextView dummyTextView = (TextView) rootView
-					.findViewById(R.id.section_label);
-			dummyTextView.setText(Integer.toString(getArguments().getInt(
-					ARG_SECTION_NUMBER)));
-			return rootView;
-		}// ============================================================================
-	}// ============================================================================
-
-	
-	
-	/**
-	 * {@link DebugFragment} This will contain debug fragment where the debug
-	 * information will show on the phone if needed.
-	 * 
-	 * @author commander
-	 * 
-	 */
-	public static class DebugFragment extends Fragment {
-
-		public static final String ARG_SECTION_NUMBER = "section_number";
-
-		public DebugFragment() {
-			if (D)
-				Log.e(TAG, "debugFragment Loaded");
-		}// ============================================================================
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_debug_view,
-					container, false);
-			TextView dummyTextView = (TextView) rootView
-					.findViewById(R.id.section_label);
-			dummyTextView.setText(Integer.toString(getArguments().getInt(
-					ARG_SECTION_NUMBER)));
-			return rootView;
-		}// ============================================================================
-	}// ============================================================================
-
-	
-	/**
-	 * {@link GPSFragment} This will contain the GPS information and if we get
-	 * to it a google map on the current location
-	 * 
-	 * @author commander
-	 * 
-	 */
-	public static class GPSFragment extends Fragment {
-
-		public static final String ARG_SECTION_NUMBER = "section_number";
-
-		public GPSFragment() {
-			if (D)
-				Log.e(TAG, "gpsFragment Loaded");
-		}// ============================================================================
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_gps_view,
-					container, false);
-			TextView dummyTextView = (TextView) rootView
-					.findViewById(R.id.section_label);
-			dummyTextView.setText(Integer.toString(getArguments().getInt(
-					ARG_SECTION_NUMBER)));
-			return rootView;
-		}// ============================================================================
-	}// ============================================================================
-
-	/**
-	 * {@link BluetoothFragment} This will contin bluetooth information, like
-	 * arduino state etc.
-	 * 
-	 * @author commander
-	 * 
-	 */
-	public static class BluetoothFragment extends Fragment {
-		public static final String ARG_SECTION_NUMBER = "section_number";
-
-		public BluetoothFragment() {
-			if (D)
-				Log.e(TAG, "bluetoothFragment Loaded");
-		}// ============================================================================
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_bluetooth_view,
-					container, false);
-			TextView dummyTextView = (TextView) rootView
-					.findViewById(R.id.section_label);
-			dummyTextView.setText(Integer.toString(getArguments().getInt(
-					ARG_SECTION_NUMBER)));
-			return rootView;
-		}// ============================================================================
-	}// ============================================================================
-	
-	
-
-	
-	
-	
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
 	 * one of the sections/tabs/pages.
@@ -407,7 +243,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
 		public SectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
-		}// ============================================================================
+		}
 
 		/**
 		 * {@link Fragment} This sets the different fragment views.
@@ -422,7 +258,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			switch (position) {
 
 			case 0:
-				fragment = new spFragment();
+				fragment = new SmartParkFragment();
 				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
 				fragment.setArguments(args);
 				break;
@@ -453,7 +289,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
 			}
 			return fragment;
-		}// ============================================================================
+		}
 
 		/**
 		 * Getcount This sets how many swipe pages you want to have in the
@@ -463,7 +299,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		public int getCount() {
 			// Show 5 total pages.
 			return 5;
-		}// ============================================================================
+		}
 
 		/**
 		 * {@link Character} This sets the name on the different sections of the
@@ -485,6 +321,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 				return getString(R.string.title_section5).toUpperCase(l);
 			}
 			return null;
-		}// ============================================================================
-	}// ============================================================================
+		}
+	}
 }

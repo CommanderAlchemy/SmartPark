@@ -47,7 +47,9 @@ public class LoginActivity extends Activity {
 	private View mLoginFormView;
 	private View mLoginStatusView;
 	private TextView mLoginStatusMessageView;
-
+	// ============================================================================
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -84,14 +86,14 @@ public class LoginActivity extends Activity {
 						attemptLogin();
 					}
 				});
-	}
+	}// ============================================================================
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.login, menu);
 		return true;
-	}
+	}// ============================================================================
 
 	/**
 	 * Attempts to sign in or register the account specified by the login form.
@@ -148,7 +150,7 @@ public class LoginActivity extends Activity {
 			mAuthTask = new UserLoginTask();
 			mAuthTask.execute((Void) null);
 		}
-	}
+	}// ============================================================================
 
 	/**
 	 * Shows the progress UI and hides the login form.
@@ -189,7 +191,7 @@ public class LoginActivity extends Activity {
 			mLoginStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
 			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
 		}
-	}
+	}// ============================================================================
 
 	/**
 	 * Represents an asynchronous login/registration task used to authenticate
@@ -217,7 +219,7 @@ public class LoginActivity extends Activity {
 
 			// TODO: register the new account here.
 			return true;
-		}
+		}// ============================================================================
 
 		@Override
 		protected void onPostExecute(final Boolean success) {
@@ -231,12 +233,12 @@ public class LoginActivity extends Activity {
 						.setError(getString(R.string.error_incorrect_password));
 				mPasswordView.requestFocus();
 			}
-		}
+		}// ============================================================================
 
 		@Override
 		protected void onCancelled() {
 			mAuthTask = null;
 			showProgress(false);
-		}
-	}
+		}// ============================================================================
+	}// ============================================================================
 }

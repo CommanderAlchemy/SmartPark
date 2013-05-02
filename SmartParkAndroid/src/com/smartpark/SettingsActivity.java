@@ -38,13 +38,15 @@ public class SettingsActivity extends PreferenceActivity {
 	 * shown on tablets.
 	 */
 	private static final boolean ALWAYS_SIMPLE_PREFS = false;
-
+	// ============================================================================
+	
+	
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 
 		setupSimplePreferencesScreen();
-	}
+	}// ============================================================================
 
 	/**
 	 * Shows the simplified settings UI if the device configuration if the
@@ -55,7 +57,7 @@ public class SettingsActivity extends PreferenceActivity {
 		if (!isSimplePreferences(this)) {
 			return;
 		}
-
+		
 		// In the simplified UI, fragments are not used at all and we instead
 		// use the older PreferenceActivity APIs.
 
@@ -81,13 +83,13 @@ public class SettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(findPreference("example_list"));
 		bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
 		bindPreferenceSummaryToValue(findPreference("sync_frequency"));
-	}
+	}// ============================================================================
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean onIsMultiPane() {
 		return isXLargeTablet(this) && !isSimplePreferences(this);
-	}
+	}// ============================================================================
 
 	/**
 	 * Helper method to determine if the device has an extra-large screen. For
@@ -95,7 +97,7 @@ public class SettingsActivity extends PreferenceActivity {
 	 */
 	private static boolean isXLargeTablet(Context context) {
 		return (context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
-	}
+	}// ============================================================================
 
 	/**
 	 * Determines whether the simplified settings UI should be shown. This is
@@ -108,7 +110,7 @@ public class SettingsActivity extends PreferenceActivity {
 		return ALWAYS_SIMPLE_PREFS
 				|| Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
 				|| !isXLargeTablet(context);
-	}
+	}// ============================================================================
 
 	/** {@inheritDoc} */
 	@Override
@@ -117,7 +119,7 @@ public class SettingsActivity extends PreferenceActivity {
 		if (!isSimplePreferences(this)) {
 			loadHeadersFromResource(R.xml.pref_headers, target);
 		}
-	}
+	}// ============================================================================
 
 	/**
 	 * A preference value change listener that updates the preference's summary
@@ -168,7 +170,7 @@ public class SettingsActivity extends PreferenceActivity {
 				preference.setSummary(stringValue);
 			}
 			return true;
-		}
+		}// ============================================================================
 	};
 
 	/**
@@ -192,7 +194,7 @@ public class SettingsActivity extends PreferenceActivity {
 				PreferenceManager.getDefaultSharedPreferences(
 						preference.getContext()).getString(preference.getKey(),
 						""));
-	}
+	}// ============================================================================
 
 	/**
 	 * This fragment shows general preferences only. It is used when the
@@ -211,8 +213,8 @@ public class SettingsActivity extends PreferenceActivity {
 			// guidelines.
 			bindPreferenceSummaryToValue(findPreference("example_text"));
 			bindPreferenceSummaryToValue(findPreference("example_list"));
-		}
-	}
+		}// ============================================================================
+	}// ============================================================================
 
 	/**
 	 * This fragment shows notification preferences only. It is used when the
@@ -231,8 +233,8 @@ public class SettingsActivity extends PreferenceActivity {
 			// updated to reflect the new value, per the Android Design
 			// guidelines.
 			bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
-		}
-	}
+		}// ============================================================================
+	}// ============================================================================
 
 	/**
 	 * This fragment shows data and sync preferences only. It is used when the
@@ -250,6 +252,6 @@ public class SettingsActivity extends PreferenceActivity {
 			// updated to reflect the new value, per the Android Design
 			// guidelines.
 			bindPreferenceSummaryToValue(findPreference("sync_frequency"));
-		}
-	}
+		}// ============================================================================
+	}// ============================================================================
 }

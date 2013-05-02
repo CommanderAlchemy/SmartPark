@@ -23,8 +23,7 @@ import android.widget.Toast;
 
 import com.smartpark.tcp.TCPClient;
 
-public class MainActivity extends FragmentActivity implements
-		ActionBar.TabListener {
+public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -51,7 +50,9 @@ public class MainActivity extends FragmentActivity implements
 	// Debugging and stuff
 	private static final String TAG = "MainActivityDebug";
 	private static final boolean D = true;
-
+	// ============================================================================
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -91,7 +92,7 @@ public class MainActivity extends FragmentActivity implements
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
-	}
+	}// ============================================================================
 
 	/**
 	 * Create ActionMenu with settings and add our own menu itmes.
@@ -102,7 +103,7 @@ public class MainActivity extends FragmentActivity implements
 		getMenuInflater().inflate(R.menu.main, menu);
 		CreateMenu(menu);
 		return true;
-	}
+	}// ============================================================================
 
 	/**
 	 * On ActionMenu Select
@@ -115,7 +116,6 @@ public class MainActivity extends FragmentActivity implements
 			Log.d(TAG, "Item: " + item.toString() + "\nID: " + item.getItemId()
 					+ "\nIntent: " + item.getIntent());
 		}
-
 		// On select
 		switch (item.getItemId()) {
 		case 0:
@@ -139,13 +139,13 @@ public class MainActivity extends FragmentActivity implements
 					.show();
 			return true;
 
-		default:
+		default:	
 			Toast.makeText(this, "You clicked on Settings", Toast.LENGTH_SHORT)
 					.show();
 			startActivity(new Intent(this, SettingsActivity.class));
 		}
 		return false;
-	}
+	}// ============================================================================
 
 	/**
 	 * Create Menu Create Action Menu that the application will have to start
@@ -156,22 +156,21 @@ public class MainActivity extends FragmentActivity implements
 	private void CreateMenu(Menu menu) {
 		menu.setQwertyMode(true);
 		MenuItem aMenu1 = menu.add(0, 0, 0, "Login");
-		{
-			aMenu1.setAlphabeticShortcut('a');
-		}
+		aMenu1.setAlphabeticShortcut('a');
+		
 		MenuItem aMenu2 = menu.add(0, 1, 1, "Item 2");
-		{
-			aMenu2.setAlphabeticShortcut('b');
-		}
+		aMenu2.setAlphabeticShortcut('b');
+		
 		MenuItem aMenu3 = menu.add(0, 2, 2, "Item 3");
-		{
-			aMenu3.setAlphabeticShortcut('c');
-		}
+		aMenu3.setAlphabeticShortcut('c');
+		
 		MenuItem aMenu4 = menu.add(0, 3, 3, "Item 4");
-		{
-			aMenu4.setAlphabeticShortcut('d');
-		}
-	}
+		aMenu4.setAlphabeticShortcut('d');
+		
+		MenuItem setings_item = (MenuItem) findViewById(R.id.action_settings);
+		
+		
+	}// ============================================================================
 
 	@Override
 	public void onTabSelected(ActionBar.Tab tab,
@@ -179,18 +178,227 @@ public class MainActivity extends FragmentActivity implements
 		// When the given tab is selected, switch to the corresponding page in
 		// the ViewPager.
 		mViewPager.setCurrentItem(tab.getPosition());
-	}
+	}// ============================================================================
 
 	@Override
 	public void onTabUnselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
-	}
+	}// ============================================================================
 
 	@Override
 	public void onTabReselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
-	}
+	}// ============================================================================
+	
+	
 
+
+	
+	/*
+	 * debugFragment Button Events
+	 */
+	public void connect(View view) {
+		Toast.makeText(this, "connecting...", Toast.LENGTH_LONG).show();
+		new ConnectTask().execute("");
+	}// ============================================================================
+
+	public void disconnect(View view) {
+		if (mTcpClient != null) {
+			Toast.makeText(this, "disconnecting...", Toast.LENGTH_LONG).show();
+			mTcpClient.stopClient();
+		}// ============================================================================
+	}// ============================================================================
+
+	
+	
+	
+	public class ConnectTask extends AsyncTask<String, String, TCPClient> {
+
+		@Override
+		protected TCPClient doInBackground(String... message) {
+
+			// we create a TCPClient object and
+			mTcpClient = new TCPClient(new TCPClient.OnMessageReceived() {
+				@Override
+				// here the messageReceived method is implemented
+				public void messageReceived(String message) {
+					Log.e(TAG, message);
+					// this method calls the onProgressUpdate
+					publishProgress(message);
+				}
+			});
+			mTcpClient.run();
+
+			return null;
+		}// ============================================================================
+
+		@Override
+		protected void onProgressUpdate(String... values) {
+			super.onProgressUpdate(values);
+
+			// in the arrayList we add the messaged received from server
+			// arrayList.add(values[0]);
+			// notify the adapter that the data set has changed. This means that
+			// new message received
+			// from server was added to the list
+			// mAdapter.notifyDataSetChanged();
+		}// ============================================================================
+	}// ============================================================================
+
+	
+	
+	
+	
+	/**
+	 * {@link DummySectionFragment} Each fragment contains a view in the
+	 * mainactivity that you can slide to. Dummy fragment just for developer
+	 * lulz
+	 * 
+	 * @author commander
+	 * 
+	 */
+	public static class DummySectionFragment extends Fragment {
+		public static final String ARG_SECTION_NUMBER = "section_number";
+
+		public DummySectionFragment() {
+			if (D)
+				Log.e(TAG, "DummySectionFragment Loaded");
+		}// ============================================================================
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_main_dummy,
+					container, false);
+			TextView dummyTextView = (TextView) rootView
+					.findViewById(R.id.section_label);
+			dummyTextView.setText(Integer.toString(getArguments().getInt(
+					ARG_SECTION_NUMBER)));
+			return rootView;
+		}// ============================================================================
+	}// ============================================================================
+
+	/**
+	 * {@link spFragment} This will contain general SmartPark overal view
+	 * 
+	 * @author commander
+	 */
+	public static class spFragment extends Fragment {
+
+		public static final String ARG_SECTION_NUMBER = "section_number";
+
+		public spFragment() {
+			if (D)
+				Log.e(TAG, "spFragment Loaded");
+		}// ============================================================================
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_sp_view,
+					container, false);
+			TextView dummyTextView = (TextView) rootView
+					.findViewById(R.id.section_label);
+			dummyTextView.setText(Integer.toString(getArguments().getInt(
+					ARG_SECTION_NUMBER)));
+			return rootView;
+		}// ============================================================================
+	}// ============================================================================
+
+	
+	
+	/**
+	 * {@link DebugFragment} This will contain debug fragment where the debug
+	 * information will show on the phone if needed.
+	 * 
+	 * @author commander
+	 * 
+	 */
+	public static class DebugFragment extends Fragment {
+
+		public static final String ARG_SECTION_NUMBER = "section_number";
+
+		public DebugFragment() {
+			if (D)
+				Log.e(TAG, "debugFragment Loaded");
+		}// ============================================================================
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_debug_view,
+					container, false);
+			TextView dummyTextView = (TextView) rootView
+					.findViewById(R.id.section_label);
+			dummyTextView.setText(Integer.toString(getArguments().getInt(
+					ARG_SECTION_NUMBER)));
+			return rootView;
+		}// ============================================================================
+	}// ============================================================================
+
+	
+	/**
+	 * {@link GPSFragment} This will contain the GPS information and if we get
+	 * to it a google map on the current location
+	 * 
+	 * @author commander
+	 * 
+	 */
+	public static class GPSFragment extends Fragment {
+
+		public static final String ARG_SECTION_NUMBER = "section_number";
+
+		public GPSFragment() {
+			if (D)
+				Log.e(TAG, "gpsFragment Loaded");
+		}// ============================================================================
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_gps_view,
+					container, false);
+			TextView dummyTextView = (TextView) rootView
+					.findViewById(R.id.section_label);
+			dummyTextView.setText(Integer.toString(getArguments().getInt(
+					ARG_SECTION_NUMBER)));
+			return rootView;
+		}// ============================================================================
+	}// ============================================================================
+
+	/**
+	 * {@link BluetoothFragment} This will contin bluetooth information, like
+	 * arduino state etc.
+	 * 
+	 * @author commander
+	 * 
+	 */
+	public static class BluetoothFragment extends Fragment {
+		public static final String ARG_SECTION_NUMBER = "section_number";
+
+		public BluetoothFragment() {
+			if (D)
+				Log.e(TAG, "bluetoothFragment Loaded");
+		}// ============================================================================
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_bluetooth_view,
+					container, false);
+			TextView dummyTextView = (TextView) rootView
+					.findViewById(R.id.section_label);
+			dummyTextView.setText(Integer.toString(getArguments().getInt(
+					ARG_SECTION_NUMBER)));
+			return rootView;
+		}// ============================================================================
+	}// ============================================================================
+	
+	
+
+	
+	
+	
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
 	 * one of the sections/tabs/pages.
@@ -199,7 +407,7 @@ public class MainActivity extends FragmentActivity implements
 
 		public SectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
-		}
+		}// ============================================================================
 
 		/**
 		 * {@link Fragment} This sets the different fragment views.
@@ -215,38 +423,37 @@ public class MainActivity extends FragmentActivity implements
 
 			case 0:
 				fragment = new spFragment();
-				args.putInt(debugFragment.ARG_SECTION_NUMBER, position + 1);
+				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
 				fragment.setArguments(args);
 				break;
 
 			case 1:
-				fragment = new gpsFragment();
-				args.putInt(debugFragment.ARG_SECTION_NUMBER, position + 1);
+				fragment = new GPSFragment();
+				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
 				fragment.setArguments(args);
 				break;
 
 			case 2:
-				fragment = new bluetoothFragment();
-				args.putInt(debugFragment.ARG_SECTION_NUMBER, position + 1);
+				fragment = new BluetoothFragment();
+				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
 				fragment.setArguments(args);
 				break;
 
 			case 3:
-				fragment = new debugFragment();
-				args.putInt(debugFragment.ARG_SECTION_NUMBER, position + 1);
+				fragment = new DebugFragment();
+				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
 				fragment.setArguments(args);
 				break;
 
 			case 4:
 				fragment = new DummySectionFragment();
-				args.putInt(DummySectionFragment.ARG_SECTION_NUMBER,
-						position + 1);
+				args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
 				fragment.setArguments(args);
 				break;
 
 			}
 			return fragment;
-		}
+		}// ============================================================================
 
 		/**
 		 * Getcount This sets how many swipe pages you want to have in the
@@ -256,7 +463,7 @@ public class MainActivity extends FragmentActivity implements
 		public int getCount() {
 			// Show 5 total pages.
 			return 5;
-		}
+		}// ============================================================================
 
 		/**
 		 * {@link Character} This sets the name on the different sections of the
@@ -278,196 +485,6 @@ public class MainActivity extends FragmentActivity implements
 				return getString(R.string.title_section5).toUpperCase(l);
 			}
 			return null;
-		}
-	}
-
-	/**
-	 * {@link DummySectionFragment} Each fragment contains a view in the
-	 * mainactivity that you can slide to. Dummy fragment just for developer
-	 * lulz
-	 * 
-	 * @author commander
-	 * 
-	 */
-	public static class DummySectionFragment extends Fragment {
-		public static final String ARG_SECTION_NUMBER = "section_number";
-
-		public DummySectionFragment() {
-			if (D)
-				Log.e(TAG, "DummySectionFragment Loaded");
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main_dummy,
-					container, false);
-			TextView dummyTextView = (TextView) rootView
-					.findViewById(R.id.section_label);
-			dummyTextView.setText(Integer.toString(getArguments().getInt(
-					ARG_SECTION_NUMBER)));
-			return rootView;
-		}
-	}
-
-	/**
-	 * {@link spFragment} This will contain general SmartPark overal view
-	 * 
-	 * @author commander
-	 */
-	public static class spFragment extends Fragment {
-
-		public static final String ARG_SECTION_NUMBER = "section_number";
-
-		public spFragment() {
-			if (D)
-				Log.e(TAG, "spFragment Loaded");
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_sp_view,
-					container, false);
-			TextView dummyTextView = (TextView) rootView
-					.findViewById(R.id.section_label);
-			dummyTextView.setText(Integer.toString(getArguments().getInt(
-					ARG_SECTION_NUMBER)));
-			return rootView;
-		}
-	}
-
-	/**
-	 * {@link debugFragment} This will contain debug fragment where the debug
-	 * information will show on the phone if needed.
-	 * 
-	 * @author commander
-	 * 
-	 */
-	public static class debugFragment extends Fragment {
-
-		public static final String ARG_SECTION_NUMBER = "section_number";
-
-		public debugFragment() {
-			if (D)
-				Log.e(TAG, "debugFragment Loaded");
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_debug_view,
-					container, false);
-			TextView dummyTextView = (TextView) rootView
-					.findViewById(R.id.section_label);
-			dummyTextView.setText(Integer.toString(getArguments().getInt(
-					ARG_SECTION_NUMBER)));
-			return rootView;
-		}
-	}
-
-	/*
-	 * debugFragment Button Events
-	 */
-	public void connect(View view) {
-		Toast.makeText(this, "connecting...", Toast.LENGTH_LONG).show();
-		new connectTask().execute("");
-	}
-
-	public void disconnect(View view) {
-		if (mTcpClient != null) {
-			Toast.makeText(this, "disconnecting...", Toast.LENGTH_LONG).show();
-			mTcpClient.stopClient();
-		}
-	}
-
-	public class connectTask extends AsyncTask<String, String, TCPClient> {
-
-		@Override
-		protected TCPClient doInBackground(String... message) {
-
-			// we create a TCPClient object and
-			mTcpClient = new TCPClient(new TCPClient.OnMessageReceived() {
-				@Override
-				// here the messageReceived method is implemented
-				public void messageReceived(String message) {
-					Log.e(TAG, message);
-					// this method calls the onProgressUpdate
-					publishProgress(message);
-				}
-			});
-			mTcpClient.run();
-
-			return null;
-		}
-
-		@Override
-		protected void onProgressUpdate(String... values) {
-			super.onProgressUpdate(values);
-
-			// in the arrayList we add the messaged received from server
-			// arrayList.add(values[0]);
-			// notify the adapter that the data set has changed. This means that
-			// new message received
-			// from server was added to the list
-			// mAdapter.notifyDataSetChanged();
-		}
-	}
-
-	/**
-	 * {@link gpsFragment} This will contain the GPS information and if we get
-	 * to it a google map on the current location
-	 * 
-	 * @author commander
-	 * 
-	 */
-	public static class gpsFragment extends Fragment {
-
-		public static final String ARG_SECTION_NUMBER = "section_number";
-
-		public gpsFragment() {
-			if (D)
-				Log.e(TAG, "gpsFragment Loaded");
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_gps_view,
-					container, false);
-			TextView dummyTextView = (TextView) rootView
-					.findViewById(R.id.section_label);
-			dummyTextView.setText(Integer.toString(getArguments().getInt(
-					ARG_SECTION_NUMBER)));
-			return rootView;
-		}
-	}
-
-	/**
-	 * {@link bluetoothFragment} This will contin bluetooth information, like
-	 * arduino state etc.
-	 * 
-	 * @author commander
-	 * 
-	 */
-	public static class bluetoothFragment extends Fragment {
-		public static final String ARG_SECTION_NUMBER = "section_number";
-
-		public bluetoothFragment() {
-			if (D)
-				Log.e(TAG, "bluetoothFragment Loaded");
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_bluetooth_view,
-					container, false);
-			TextView dummyTextView = (TextView) rootView
-					.findViewById(R.id.section_label);
-			dummyTextView.setText(Integer.toString(getArguments().getInt(
-					ARG_SECTION_NUMBER)));
-			return rootView;
-		}
-	}
+		}// ============================================================================
+	}// ============================================================================
 }

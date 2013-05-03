@@ -24,6 +24,7 @@ import com.smartpark.fragments.*;
 import com.smartpark.interfaces.OnMessageReceived;
 import com.smartpark.tcp.TCPClient;
 
+
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
 	/**
@@ -51,6 +52,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	// Debugging and stuff
 	private static final String TAG = "MainActivityDebug";
 	private static final boolean D = true;
+	// ===========================================================================
 	
 	
 	@Override
@@ -92,7 +94,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
-	}
+	}// ===========================================================================
 
 	/**
 	 * Create ActionMenu with settings and add our own menu itmes.
@@ -103,7 +105,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		getMenuInflater().inflate(R.menu.main, menu);
 		CreateMenu(menu);
 		return true;
-	}
+	}// ===========================================================================
 
 	/**
 	 * On ActionMenu Select
@@ -145,7 +147,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			startActivity(new Intent(this, SettingsActivity.class));
 		}
 		return false;
-	}
+	}// ===========================================================================
 
 	/**
 	 * Create Menu Create Action Menu that the application will have to start
@@ -167,7 +169,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		MenuItem aMenu4 = menu.add(0, 3, 3, "Item 4");
 		aMenu4.setAlphabeticShortcut('d');	
 		
-	}
+	}// ===========================================================================
 
 	@Override
 	public void onTabSelected(ActionBar.Tab tab,
@@ -175,17 +177,17 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		// When the given tab is selected, switch to the corresponding page in
 		// the ViewPager.
 		mViewPager.setCurrentItem(tab.getPosition());
-	}
+	}// ===========================================================================
 
 	@Override
 	public void onTabUnselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
-	}
+	}// ===========================================================================
 
 	@Override
 	public void onTabReselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
-	}
+	}// ===========================================================================
 	
 	
 	/*
@@ -194,14 +196,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	public void connect(View view) {
 		Toast.makeText(this, "connecting...", Toast.LENGTH_LONG).show();
 		new ConnectTask().execute("");
-	}
+	}// ===========================================================================
 
 	public void disconnect(View view) {
 		if (mTcpClient != null) {
 			Toast.makeText(this, "disconnecting...", Toast.LENGTH_LONG).show();
 			mTcpClient.stopClient();
 		}
-	}
+	}// ===========================================================================
 
 	public class ConnectTask extends AsyncTask<String, String, TCPClient> {
 
@@ -221,7 +223,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			mTcpClient.run();
 
 			return null;
-		}
+		}// ===========================================================================
 
 		@Override
 		protected void onProgressUpdate(String... values) {
@@ -233,95 +235,97 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			// new message received
 			// from server was added to the list
 			// mAdapter.notifyDataSetChanged();
-		}
-	}
+		}// ===========================================================================
+	}// ===========================================================================
+
+
+/**
+ * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one
+ * of the sections/tabs/pages.
+ */
+public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+	public SectionsPagerAdapter(FragmentManager fm) {
+		super(fm);
+	}// ===========================================================================
 
 	/**
-	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-	 * one of the sections/tabs/pages.
+	 * {@link Fragment} This sets the different fragment views.
 	 */
-	public class SectionsPagerAdapter extends FragmentPagerAdapter {
+	@Override
+	public Fragment getItem(int position) {
+		// getItem is called to instantiate the fragment for the given page.
+		// Return a DummySectionFragment (defined as a static inner class
+		// below) with the page number as its lone argument.
+		Bundle args = new Bundle();
 
-		public SectionsPagerAdapter(FragmentManager fm) {
-			super(fm);
+		switch (position) {
+
+		case 0:
+			fragment = new SmartParkFragment();
+			args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
+			fragment.setArguments(args);
+			break;
+
+		case 1:
+			fragment = new GPSFragment();
+			args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
+			fragment.setArguments(args);
+			break;
+
+		case 2:
+			fragment = new BluetoothFragment();
+			args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
+			fragment.setArguments(args);
+			break;
+
+		case 3:
+			fragment = new DebugFragment();
+			args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
+			fragment.setArguments(args);
+			break;
+
+		case 4:
+			fragment = new DummySectionFragment();
+			args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
+			fragment.setArguments(args);
+			break;
+
 		}
+		return fragment;
+	}// ===========================================================================
 
-		/**
-		 * {@link Fragment} This sets the different fragment views.
-		 */
-		@Override
-		public Fragment getItem(int position) {
-			// getItem is called to instantiate the fragment for the given page.
-			// Return a DummySectionFragment (defined as a static inner class
-			// below) with the page number as its lone argument.
-			Bundle args = new Bundle();
+	/**
+	 * Getcount This sets how many swipe pages you want to have in the
+	 * application.
+	 */
+	@Override
+	public int getCount() {
+		// Show 5 total pages.
+		return 5;
+	}// ===========================================================================
 
-			switch (position) {
-
-			case 0:
-				fragment = new SmartParkFragment();
-				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
-				fragment.setArguments(args);
-				break;
-
-			case 1:
-				fragment = new GPSFragment();
-				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
-				fragment.setArguments(args);
-				break;
-
-			case 2:
-				fragment = new BluetoothFragment();
-				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
-				fragment.setArguments(args);
-				break;
-
-			case 3:
-				fragment = new DebugFragment();
-				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
-				fragment.setArguments(args);
-				break;
-
-			case 4:
-				fragment = new DummySectionFragment();
-				args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
-				fragment.setArguments(args);
-				break;
-
-			}
-			return fragment;
+	/**
+	 * {@link Character} This sets the name on the different sections of the
+	 * fragments.
+	 */
+	@Override
+	public CharSequence getPageTitle(int position) {
+		Locale l = Locale.getDefault();
+		switch (position) {
+		case 0:
+			return getString(R.string.title_section1).toUpperCase(l);
+		case 1:
+			return getString(R.string.title_section2).toUpperCase(l);
+		case 2:
+			return getString(R.string.title_section3).toUpperCase(l);
+		case 3:
+			return getString(R.string.title_section4).toUpperCase(l);
+		case 4:
+			return getString(R.string.title_section5).toUpperCase(l);
 		}
+		return null;
+	}// ===========================================================================
+}
 
-		/**
-		 * Getcount This sets how many swipe pages you want to have in the
-		 * application.
-		 */
-		@Override
-		public int getCount() {
-			// Show 5 total pages.
-			return 5;
-		}
-
-		/**
-		 * {@link Character} This sets the name on the different sections of the
-		 * fragments.
-		 */
-		@Override
-		public CharSequence getPageTitle(int position) {
-			Locale l = Locale.getDefault();
-			switch (position) {
-			case 0:
-				return getString(R.string.title_section1).toUpperCase(l);
-			case 1:
-				return getString(R.string.title_section2).toUpperCase(l);
-			case 2:
-				return getString(R.string.title_section3).toUpperCase(l);
-			case 3:
-				return getString(R.string.title_section4).toUpperCase(l);
-			case 4:
-				return getString(R.string.title_section5).toUpperCase(l);
-			}
-			return null;
-		}
-	}
 }

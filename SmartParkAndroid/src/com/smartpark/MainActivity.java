@@ -1,5 +1,5 @@
 package com.smartpark;
-// just testing
+
 import java.util.Locale;
 
 import android.app.ActionBar;

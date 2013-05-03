@@ -24,8 +24,8 @@ import com.smartpark.fragments.*;
 import com.smartpark.interfaces.OnMessageReceived;
 import com.smartpark.tcp.TCPClient;
 
-
-public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
+public class MainActivity extends FragmentActivity implements
+		ActionBar.TabListener {
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -36,7 +36,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
 	SectionsPagerAdapter mSectionsPagerAdapter;
-	
+
 	/**
 	 * The {@link ViewPager} that will host the section contents.
 	 */
@@ -48,43 +48,42 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	 */
 	Fragment fragment;
 
-	private TCPClient mTcpClient;
 
-	private Thread clientThread;
-	private Thread backgroundThread;
-	
-	
-	
 	// Debugging and stuff
 	private static final String TAG = "MainActivityDebug";
 	private static final boolean D = true;
+
 	// ===========================================================================
-	
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
-		
-		
-		backgroundThread = new Thread(new BackgoundOperationThread());
-		backgroundThread.start();
-		
+
+		if (References.backgroundThread == null) {
+			References.backgroundThread = new Thread(
+					new BackgoundOperationThread());
+		}
+		References.backgroundThread.start();
+		if (References.backgroundThread.isAlive() == false) {
+			References.backgroundThread = new Thread(
+					new BackgoundOperationThread());
+			References.backgroundThread.start();
+		}
 		
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
+		
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
 				getSupportFragmentManager());
-
+		
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-
+		
 		// When swiping between different sections, select the corresponding
 		// tab. We can also use ActionBar.Tab#select() to do this if we have
 		// a reference to the Tab.
@@ -120,8 +119,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	}// ===========================================================================
 
 	/**
-	 * On ActionMenu Select
-	 * Do something when that get selected in the ActionMenu
+	 * On ActionMenu Select Do something when that get selected in the
+	 * ActionMenu
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -153,7 +152,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 					.show();
 			return true;
 
-		default:	
+		default:
 			Toast.makeText(this, "You clicked on Settings", Toast.LENGTH_SHORT)
 					.show();
 			startActivity(new Intent(this, SettingsActivity.class));
@@ -171,16 +170,16 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		menu.setQwertyMode(true);
 		MenuItem aMenu1 = menu.add(0, 0, 0, "Login");
 		aMenu1.setAlphabeticShortcut('a');
-		
+
 		MenuItem aMenu2 = menu.add(0, 1, 1, "Item 2");
 		aMenu2.setAlphabeticShortcut('b');
-		
+
 		MenuItem aMenu3 = menu.add(0, 2, 2, "Item 3");
 		aMenu3.setAlphabeticShortcut('c');
-		
+
 		MenuItem aMenu4 = menu.add(0, 3, 3, "Item 4");
-		aMenu4.setAlphabeticShortcut('d');	
-		
+		aMenu4.setAlphabeticShortcut('d');
+
 	}// ===========================================================================
 
 	@Override
@@ -199,47 +198,47 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	@Override
 	public void onTabReselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
-		
+
 	}// ===========================================================================
-	
+
+	@SuppressWarnings("deprecation")
 	@Override
-	protected void onDestroy(){
+	protected void onDestroy() {
 		super.onDestroy();
-		
-		this.backgroundThread.stop();
+
+		References.backgroundThread.stop();
+		References.client.stopClient();
+		References.clientThread.stop();
 	}// ===========================================================================
-	
-	
-	
+
 	/*
 	 * debugFragment Button Events
 	 */
 	public void connect(View view) {
 		Toast.makeText(this, "connecting...", Toast.LENGTH_LONG).show();
-		
-//		new ConnectTask().execute("");
-		
-		mTcpClient = new TCPClient(new OnMessageReceived() {
+
+		// new ConnectTask().execute("");
+
+		References.client = new TCPClient(new OnMessageReceived() {
 			@Override
 			// here the messageReceived method is implemented
 			public void messageReceived(String message) {
 				Log.e(TAG, message);
 				// this method calls the onProgressUpdate
-//				publishProgress(message);
-				
-				
-			}});
+				// publishProgress(message);
+
+			}
+		});
 		
-		clientThread = new Thread(mTcpClient);
-		clientThread.start();
-		
-		
+		References.clientThread = new Thread(References.client);
+		References.clientThread.start();
+
 	}// ===========================================================================
 
 	public void disconnect(View view) {
-		if (mTcpClient != null) {
-			Toast.makeText(this, "disconnecting...", Toast.LENGTH_LONG).show();
-			mTcpClient.stopClient();
+		if (References.client != null) {
+			Toast.makeText(this, "dissconnecting...", Toast.LENGTH_LONG).show();
+			References.client.stopClient();
 		}
 	}// ===========================================================================
 
@@ -249,7 +248,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		protected TCPClient doInBackground(String... message) {
 
 			// we create a TCPClient object and
-			mTcpClient = new TCPClient(new OnMessageReceived() {
+			References.client = new TCPClient(new OnMessageReceived() {
 				@Override
 				// here the messageReceived method is implemented
 				public void messageReceived(String message) {
@@ -258,7 +257,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 					publishProgress(message);
 				}
 			});
-			mTcpClient.run();
+			References.client.run();
 
 			return null;
 		}// ===========================================================================
@@ -276,94 +275,94 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		}// ===========================================================================
 	}// ===========================================================================
 
-
-/**
- * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one
- * of the sections/tabs/pages.
- */
-public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-	public SectionsPagerAdapter(FragmentManager fm) {
-		super(fm);
-	}// ===========================================================================
-
 	/**
-	 * {@link Fragment} This sets the different fragment views.
+	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+	 * one of the sections/tabs/pages.
 	 */
-	@Override
-	public Fragment getItem(int position) {
-		// getItem is called to instantiate the fragment for the given page.
-		// Return a DummySectionFragment (defined as a static inner class
-		// below) with the page number as its lone argument.
-		Bundle args = new Bundle();
+	public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-		switch (position) {
+		public SectionsPagerAdapter(FragmentManager fm) {
+			super(fm);
+		}// ===========================================================================
 
-		case 0:
-			fragment = new SmartParkFragment();
-			args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
-			fragment.setArguments(args);
-			break;
+		/**
+		 * {@link Fragment} This sets the different fragment views.
+		 */
+		@Override
+		public Fragment getItem(int position) {
+			// getItem is called to instantiate the fragment for the given page.
+			// Return a DummySectionFragment (defined as a static inner class
+			// below) with the page number as its lone argument.
+			Bundle args = new Bundle();
 
-		case 1:
-			fragment = new GPSFragment();
-			args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
-			fragment.setArguments(args);
-			break;
+			switch (position) {
 
-		case 2:
-			fragment = new BluetoothFragment();
-			args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
-			fragment.setArguments(args);
-			break;
+			case 0:
+				fragment = new SmartParkFragment();
+				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
+				fragment.setArguments(args);
+				break;
 
-		case 3:
-			fragment = new DebugFragment();
-			args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
-			fragment.setArguments(args);
-			break;
+			case 1:
+				fragment = new GPSFragment();
+				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
+				fragment.setArguments(args);
+				break;
 
-		case 4:
-			fragment = new DummySectionFragment();
-			args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
-			fragment.setArguments(args);
-			break;
+			case 2:
+				fragment = new BluetoothFragment();
+				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
+				fragment.setArguments(args);
+				break;
 
-		}
-		return fragment;
-	}// ===========================================================================
+			case 3:
+				fragment = new DebugFragment();
+				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
+				fragment.setArguments(args);
+				break;
 
-	/**
-	 * Getcount This sets how many swipe pages you want to have in the
-	 * application.
-	 */
-	@Override
-	public int getCount() {
-		// Show 5 total pages.
-		return 5;
-	}// ===========================================================================
+			case 4:
+				fragment = new DummySectionFragment();
+				args.putInt(DummySectionFragment.ARG_SECTION_NUMBER,
+						position + 1);
+				fragment.setArguments(args);
+				break;
 
-	/**
-	 * {@link Character} This sets the name on the different sections of the
-	 * fragments.
-	 */
-	@Override
-	public CharSequence getPageTitle(int position) {
-		Locale l = Locale.getDefault();
-		switch (position) {
-		case 0:
-			return getString(R.string.title_section1).toUpperCase(l);
-		case 1:
-			return getString(R.string.title_section2).toUpperCase(l);
-		case 2:
-			return getString(R.string.title_section3).toUpperCase(l);
-		case 3:
-			return getString(R.string.title_section4).toUpperCase(l);
-		case 4:
-			return getString(R.string.title_section5).toUpperCase(l);
-		}
-		return null;
-	}// ===========================================================================
-}
+			}
+			return fragment;
+		}// ===========================================================================
+
+		/**
+		 * Getcount This sets how many swipe pages you want to have in the
+		 * application.
+		 */
+		@Override
+		public int getCount() {
+			// Show 5 total pages.
+			return 5;
+		}// ===========================================================================
+
+		/**
+		 * {@link Character} This sets the name on the different sections of the
+		 * fragments.
+		 */
+		@Override
+		public CharSequence getPageTitle(int position) {
+			Locale l = Locale.getDefault();
+			switch (position) {
+			case 0:
+				return getString(R.string.title_section1).toUpperCase(l);
+			case 1:
+				return getString(R.string.title_section2).toUpperCase(l);
+			case 2:
+				return getString(R.string.title_section3).toUpperCase(l);
+			case 3:
+				return getString(R.string.title_section4).toUpperCase(l);
+			case 4:
+				return getString(R.string.title_section5).toUpperCase(l);
+			}
+			return null;
+		}// ===========================================================================
+	}
 
 }

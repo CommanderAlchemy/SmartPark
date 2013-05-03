@@ -1,5 +1,5 @@
 package com.smartpark;
-
+// just testing
 import java.util.Locale;
 
 import android.app.ActionBar;
@@ -34,7 +34,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
 	SectionsPagerAdapter mSectionsPagerAdapter;
-
+	
 	/**
 	 * The {@link ViewPager} that will host the section contents.
 	 */

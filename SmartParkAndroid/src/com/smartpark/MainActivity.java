@@ -49,6 +49,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	Fragment fragment;
 
 	private TCPClient mTcpClient;
+
+	private Thread clientThread;
+	private Thread backgroundThread;
+	
+	
+	
 	// Debugging and stuff
 	private static final String TAG = "MainActivityDebug";
 	private static final boolean D = true;
@@ -59,7 +65,13 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		
+		
+		
+		backgroundThread = new Thread(new BackgoundOperationThread());
+		backgroundThread.start();
+		
+		
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -187,7 +199,16 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	@Override
 	public void onTabReselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
+		
 	}// ===========================================================================
+	
+	@Override
+	protected void onDestroy(){
+		super.onDestroy();
+		
+		this.backgroundThread.stop();
+	}// ===========================================================================
+	
 	
 	
 	/*
@@ -195,7 +216,24 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	 */
 	public void connect(View view) {
 		Toast.makeText(this, "connecting...", Toast.LENGTH_LONG).show();
-		new ConnectTask().execute("");
+		
+//		new ConnectTask().execute("");
+		
+		mTcpClient = new TCPClient(new OnMessageReceived() {
+			@Override
+			// here the messageReceived method is implemented
+			public void messageReceived(String message) {
+				Log.e(TAG, message);
+				// this method calls the onProgressUpdate
+//				publishProgress(message);
+				
+				
+			}});
+		
+		clientThread = new Thread(mTcpClient);
+		clientThread.start();
+		
+		
 	}// ===========================================================================
 
 	public void disconnect(View view) {

@@ -8,6 +8,8 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import com.smartpark.interfaces.OnMessageReceived;
+
 import android.util.Log;
  /**
   * TCP Client, this class holds the implementation of kommunication protocol for the smartpark application.
@@ -122,10 +124,5 @@ public class TCPClient {
             Log.e(TAG + " TCP", "C: Error", e);
         }
     }
- 
-    //Declare the interface. The method messageReceived(String message) will must be implemented in the MyActivity
-    //class at on asynckTask doInBackground
-    public interface OnMessageReceived {
-        public void messageReceived(String message);
-    }
+    
 }

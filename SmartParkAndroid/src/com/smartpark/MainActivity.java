@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.smartpark.fragments.*;
+import com.smartpark.interfaces.OnMessageReceived;
 import com.smartpark.tcp.TCPClient;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
@@ -208,7 +209,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		protected TCPClient doInBackground(String... message) {
 
 			// we create a TCPClient object and
-			mTcpClient = new TCPClient(new TCPClient.OnMessageReceived() {
+			mTcpClient = new TCPClient(new OnMessageReceived() {
 				@Override
 				// here the messageReceived method is implemented
 				public void messageReceived(String message) {

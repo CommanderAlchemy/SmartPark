@@ -26,22 +26,20 @@ public class TCPClient implements Runnable {
 
 	// message to send to the server
 	private String mServerMessage;
-
+	
 	// sends message received notifications
 	private OnMessageReceived mMessageListener = null;
-
+	
 	// while this is true, the server will continue running
 	private boolean mRun = false;
-
+	
 	// used to send messages
 	private PrintWriter mBufferOut;
-
+	
 	// used to read messages from the server
 	private BufferedReader mBufferIn;
 	
-	Thread thread;
 	
-
 	/**
 	 * Constructor of the class. OnMessagedReceived listens for the messages
 	 * received from server

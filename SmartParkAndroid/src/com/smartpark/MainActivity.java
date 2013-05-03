@@ -24,9 +24,8 @@ import com.smartpark.fragments.*;
 import com.smartpark.interfaces.OnMessageReceived;
 import com.smartpark.tcp.TCPClient;
 
-public class MainActivity extends FragmentActivity implements
-		ActionBar.TabListener {
-
+public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
+	
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
 	 * fragments for each of the sections. We use a
@@ -36,25 +35,24 @@ public class MainActivity extends FragmentActivity implements
 	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
 	SectionsPagerAdapter mSectionsPagerAdapter;
-
+	
 	/**
 	 * The {@link ViewPager} that will host the section contents.
 	 */
 	ViewPager mViewPager;
-
+	
 	/**
 	 * Fragments, different views in application that you swype, instead of
 	 * activities.
 	 */
 	Fragment fragment;
-
-
+	
+	
 	// Debugging and stuff
 	private static final String TAG = "MainActivityDebug";
 	private static final boolean D = true;
-
 	// ===========================================================================
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -106,7 +104,8 @@ public class MainActivity extends FragmentActivity implements
 					.setTabListener(this));
 		}
 	}// ===========================================================================
-
+	
+	
 	/**
 	 * Create ActionMenu with settings and add our own menu itmes.
 	 */
@@ -117,7 +116,31 @@ public class MainActivity extends FragmentActivity implements
 		CreateMenu(menu);
 		return true;
 	}// ===========================================================================
+	
+	
+	/**
+	 * Create Menu Create Action Menu that the application will have to start
+	 * other activities.
+	 * 
+	 * @param menu
+	 */
+	private void CreateMenu(Menu menu) {
+		menu.setQwertyMode(true);
+		MenuItem aMenu1 = menu.add(0, 0, 0, "Login");
+		aMenu1.setAlphabeticShortcut('a');
 
+		MenuItem aMenu2 = menu.add(0, 1, 1, "Item 2");
+		aMenu2.setAlphabeticShortcut('b');
+
+		MenuItem aMenu3 = menu.add(0, 2, 2, "Item 3");
+		aMenu3.setAlphabeticShortcut('c');
+
+		MenuItem aMenu4 = menu.add(0, 3, 3, "Item 4");
+		aMenu4.setAlphabeticShortcut('d');
+
+	}// ===========================================================================
+	
+	
 	/**
 	 * On ActionMenu Select Do something when that get selected in the
 	 * ActionMenu
@@ -159,29 +182,9 @@ public class MainActivity extends FragmentActivity implements
 		}
 		return false;
 	}// ===========================================================================
-
-	/**
-	 * Create Menu Create Action Menu that the application will have to start
-	 * other activities.
-	 * 
-	 * @param menu
-	 */
-	private void CreateMenu(Menu menu) {
-		menu.setQwertyMode(true);
-		MenuItem aMenu1 = menu.add(0, 0, 0, "Login");
-		aMenu1.setAlphabeticShortcut('a');
-
-		MenuItem aMenu2 = menu.add(0, 1, 1, "Item 2");
-		aMenu2.setAlphabeticShortcut('b');
-
-		MenuItem aMenu3 = menu.add(0, 2, 2, "Item 3");
-		aMenu3.setAlphabeticShortcut('c');
-
-		MenuItem aMenu4 = menu.add(0, 3, 3, "Item 4");
-		aMenu4.setAlphabeticShortcut('d');
-
-	}// ===========================================================================
-
+	
+	
+	// TAB SELECTION-METHODS =================================================
 	@Override
 	public void onTabSelected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
@@ -189,36 +192,40 @@ public class MainActivity extends FragmentActivity implements
 		// the ViewPager.
 		mViewPager.setCurrentItem(tab.getPosition());
 	}// ===========================================================================
-
+	
 	@Override
 	public void onTabUnselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
 	}// ===========================================================================
-
+	
 	@Override
 	public void onTabReselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
 
 	}// ===========================================================================
-
+	// =======================================================================
+	
 	@SuppressWarnings("deprecation")
 	@Override
-	protected void onDestroy() {
+	protected void onDestroy(){
 		super.onDestroy();
 
 		References.backgroundThread.stop();
 		References.client.stopClient();
 		References.clientThread.stop();
 	}// ===========================================================================
-
+	
+	
+	
+	// After initial testing, this method must be moved over to the TCPClient-class
 	/*
 	 * debugFragment Button Events
 	 */
 	public void connect(View view) {
 		Toast.makeText(this, "connecting...", Toast.LENGTH_LONG).show();
-
+		
 		// new ConnectTask().execute("");
-
+		
 		References.client = new TCPClient(new OnMessageReceived() {
 			@Override
 			// here the messageReceived method is implemented
@@ -226,22 +233,27 @@ public class MainActivity extends FragmentActivity implements
 				Log.e(TAG, message);
 				// this method calls the onProgressUpdate
 				// publishProgress(message);
-
+				
 			}
 		});
 		
 		References.clientThread = new Thread(References.client);
 		References.clientThread.start();
-
+		
 	}// ===========================================================================
-
+	
 	public void disconnect(View view) {
 		if (References.client != null) {
 			Toast.makeText(this, "dissconnecting...", Toast.LENGTH_LONG).show();
 			References.client.stopClient();
 		}
 	}// ===========================================================================
-
+	
+	
+	
+	
+	// THIS CLASS IS NO LONGER NESSESARY AND NO LONGER USED
+	// WE WILL REMOVE IT WHEN THE INITIAL TESTS ARE DONE
 	public class ConnectTask extends AsyncTask<String, String, TCPClient> {
 
 		@Override
@@ -274,7 +286,11 @@ public class MainActivity extends FragmentActivity implements
 			// mAdapter.notifyDataSetChanged();
 		}// ===========================================================================
 	}// ===========================================================================
-
+	
+	
+	
+	
+	
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
 	 * one of the sections/tabs/pages.
@@ -364,5 +380,4 @@ public class MainActivity extends FragmentActivity implements
 			return null;
 		}// ===========================================================================
 	}
-
 }

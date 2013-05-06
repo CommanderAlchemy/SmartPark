@@ -1,5 +1,9 @@
 package com.smartpark.fragments;
 
+import javax.swing.GroupLayout;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -16,7 +20,7 @@ import com.smartpark.R;
  *
  */
 public class SmartParkFragment extends Fragment {
-
+	
 	// Debug Information, the boolean should be stored in a common settings file in the future!
 	private static boolean D = true;
 	private static final String TAG = "SmartParkFragment";
@@ -35,7 +39,27 @@ public class SmartParkFragment extends Fragment {
 				container, false);
 		TextView dummyTextView = (TextView) rootView
 				.findViewById(R.id.section_label);
-		TextView upperRow = new TextView(getActivity());
+		
+		
+		// --------------------------------------------------------
+		JTextArea upperRow = new JTextArea();
+		JTextArea midText = new JTextArea();
+		midText;
+		JTextArea lowerRow = new JTextArea();
+		
+		JPanel spPanel = new JPanel();
+		
+		
+		
+		
+		GroupLayout lcdLayout = new GroupLayout(spPanel);
+		spPanel.setLayout(lcdLayout);
+		
+		lcdLayout.setAutoCreateGaps(true);
+		lcdLayout.setAutoCreateContainerGaps(true);
+		
+		
+		
 		
 		
 		dummyTextView.setText(Integer.toString(getArguments().getInt(

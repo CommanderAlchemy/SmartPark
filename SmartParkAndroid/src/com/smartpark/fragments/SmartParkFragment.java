@@ -1,9 +1,5 @@
 package com.smartpark.fragments;
 
-import javax.swing.GroupLayout;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -39,28 +35,6 @@ public class SmartParkFragment extends Fragment {
 				container, false);
 		TextView dummyTextView = (TextView) rootView
 				.findViewById(R.id.section_label);
-		
-		
-		// --------------------------------------------------------
-		JTextArea upperRow = new JTextArea();
-		JTextArea midText = new JTextArea();
-		midText;
-		JTextArea lowerRow = new JTextArea();
-		
-		JPanel spPanel = new JPanel();
-		
-		
-		
-		
-		GroupLayout lcdLayout = new GroupLayout(spPanel);
-		spPanel.setLayout(lcdLayout);
-		
-		lcdLayout.setAutoCreateGaps(true);
-		lcdLayout.setAutoCreateContainerGaps(true);
-		
-		
-		
-		
 		
 		dummyTextView.setText(Integer.toString(getArguments().getInt(
 				ARG_SECTION_NUMBER)));

@@ -43,4 +43,20 @@ public class BluetoothFragment extends Fragment {
 				ARG_SECTION_NUMBER)));
 		return rootView;
 	}// ============================================================================
+	
+	public void pairedDevicesCount(){
+		
+	}
+	public void isBTavailable(){
+		
+	}
+	public void isBTEnable(){
+		
+	}
+	
+	
+	
+	
+	
+	
 }// ============================================================================

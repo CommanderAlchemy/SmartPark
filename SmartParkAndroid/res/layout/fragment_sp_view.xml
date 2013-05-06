@@ -1,62 +1,84 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-     	xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity$DummySectionFragment" >
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
         android:orientation="vertical" >
-        
-        <EditText
-            android:id="@+id/editText2"
+
+        <TextView
+            android:id="@+id/upperText"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:ems="10" >
-            android:
-        </EditText>
-        <EditText
-            android:id="@+id/editText1"
-            android:layout_width="fill_parent"
-            android:layout_height="120dp"
             android:ems="10"
-            android:inputType="textMultiLine" />
+            android:hint="11:54   GPS(on)   BT(on)      PARKED"
+            android:textIsSelectable="false"
+            android:textSize="18sp" >
+        </TextView>
 
-        <EditText
-            android:id="@+id/EditText01"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:ems="10" />
-
-    </LinearLayout>
-    
         <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-        
-        <EditText
-            android:id="@+id/editText3"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/midLeftText"
+                android:layout_width="0dp"
+                android:layout_height="130dp"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_weight="2"
+                android:ems="10"
+                android:hint="Parked since:
+Duration:
+Price:
+Ticket required between:
+Free time:
+
+Price till now:"
+                android:maxLines="@integer/maxlines"
+                android:minLines="@integer/maxlines"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/midRightText"
+                android:layout_width="0dp"
+                android:layout_height="130dp"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="10:34
+02:31
+20 kr / h
+9-18
+first 2 hours
+
+10,-"
+                android:maxLines="@integer/maxlines"
+                android:minLines="@integer/maxlines"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/lowerText"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:ems="10" >
-
-            <requestFocus android:layout_width="wrap_content" />
-
-        </EditText>
-        <EditText
-            android:id="@+id/editText1"
-            android:layout_width="fill_parent"
-            android:layout_height="120dp"
+            android:clickable="false"
             android:ems="10"
-            android:inputType="textMultiLine" />
-
-        <EditText
-            android:id="@+id/EditText01"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:ems="10" />
+            android:hint="Total price this month:                    121,-"
+            android:singleLine="true"
+            android:textIsSelectable="false"
+            android:textSize="18sp"
+            android:visibility="visible" />
 
     </LinearLayout>
-</LinearLayout>
+
+</RelativeLayout>

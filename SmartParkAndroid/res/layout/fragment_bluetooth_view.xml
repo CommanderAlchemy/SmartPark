@@ -13,4 +13,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <Button
+        android:id="@+id/isBTEnable"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/section_label"
+        android:layout_alignTop="@+id/section_label"
+        android:onClick="isBTEnable"
+        android:text="is BT enable" />
+
+    <Button
+        android:id="@+id/isBTavailable"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/isBTEnable"
+        android:layout_alignBottom="@+id/isBTEnable"
+        android:layout_toRightOf="@+id/isBTEnable"
+        android:onClick="isBTavailable"
+        android:text="isBTavailable" />
+
+    <Button
+        android:id="@+id/queryPairedDevices"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/isBTEnable"
+        android:layout_below="@+id/isBTEnable"
+        android:text="how many paired" 
+        android:onClick="pairedDevicesCount"/>
+
 </RelativeLayout>

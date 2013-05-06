@@ -22,15 +22,12 @@ public class BlueController extends Activity {
 	private static BluetoothAdapter btAdapter;
 	private static MyBroadcastReceiver mReceiver;
 	
-	private static IntentFilter foundFilter;
+	private static IntentFilter findFilter;
 
 	private static ArrayList<BluetoothDevice> foundDevices;
 	private static ArrayList<BluetoothDevice> pairedDevices;
 	// -------------------------------------------------------------------------------
 	
-	public static void main(String[] args){
-		
-	}
 	
 	public BlueController() {
 		// Get the adapter and store it in a static variable
@@ -41,53 +38,13 @@ public class BlueController extends Activity {
 		mReceiver = new MyBroadcastReceiver();
 		/* Create a filter so that we only receive intent created by newly found
 		 *  devices */
-		foundFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+		findFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 	}// -------------------------------------------------------------------------------
 	
 	
 	
-	public void enableAdapter() {
-		if (!btAdapter.isEnabled()) {
-		    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-		    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-		}
-	}// -------------------------------------------------------------------------------
-	
-	public void onActivityResult(int requestCode, int resultCode, Intent data){
-		
-	}
-	
-	public void makeDiscoverable(){
-		if (!btAdapter.isEnabled()) {
-		    Intent enableBtIntent = new Intent(
-		    		BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-		    startActivityForResult(enableBtIntent, REQUEST_DISCOVERABLE_BT);
-		}
-	}// -------------------------------------------------------------------------------
-	
-	
-	
-	public boolean isBluetoothAdapterAvailable() {
-		return btAdapter != null;
-	}// -------------------------------------------------------------------------------
-	
-	
-	
-	public void cancelDiscovery() {
-		// cancel any prior BT device discovery
-		if (btAdapter.isDiscovering()) {
-			btAdapter.cancelDiscovery();
-		}
-	}// -------------------------------------------------------------------------------
-	
-	
-	
-	public boolean isDiscovering() {
-		return btAdapter.isDiscovering();
-	}// -------------------------------------------------------------------------------
-	
-	
-	
+
+
 	/**
 	 * This method will first register a BroadcastReceiver for intents carrying new
 	 * devices found by the bluetooth adapter, and then start the device discovery of
@@ -99,7 +56,7 @@ public class BlueController extends Activity {
 		// but only if not already registred.
 		if(!BroacastReceiverIsRegistered){
 			// Register the BroadcastReceiver
-			registerReceiver(mReceiver, foundFilter);
+			registerReceiver(mReceiver, findFilter);
 			/* We do not want dublicated registrations and use variable
 			 * to store the state of the registration. */
 			BroacastReceiverIsRegistered = true;
@@ -109,17 +66,7 @@ public class BlueController extends Activity {
 	}// -------------------------------------------------------------------------------
 	
 	
-	
-	/**
-	 * This method will unregister the BroadcastReceiver for ACTION_FOUND of the
-	 * Bluetooth device. The registration happen in StartDiscovery().
-	 */
-	public void unRegisterBroadcastReceiver(){
-		this.unregisterReceiver(mReceiver);
-		BroacastReceiverIsRegistered = false;
-	}// -------------------------------------------------------------------------------
-	
-	
+
 	
 	public ArrayList<BluetoothDevice> getPairedDevicesList() {
 		Set<BluetoothDevice> paired = btAdapter.getBondedDevices();
@@ -150,13 +97,16 @@ public class BlueController extends Activity {
 	
 	
 	public void connectTo(){
-		
+		// TODO 
 	}
 	
 	public void sendString(ArrayList<String> data) {
-		
+		// TODO
 	}// -------------------------------------------------------------------------------
-		
+	
+	public void onActivityResult(int requestCode, int resultCode, Intent data){
+		// TODO
+	}
 	
 	
 	private class MyBroadcastReceiver extends BroadcastReceiver {
@@ -174,4 +124,61 @@ public class BlueController extends Activity {
 		}
 	}// -------------------------------------------------------------------------------
 
+	
+
+	
+	public boolean isDiscovering() {
+		return btAdapter.isDiscovering();
+	}// -------------------------------------------------------------------------------
+	
+	
+	/**
+	 * This method will unregister the BroadcastReceiver for ACTION_FOUND of the
+	 * Bluetooth device. The registration happen in StartDiscovery().
+	 */
+	public void unRegisterBroadcastReceiver(){
+		unregisterReceiver(mReceiver);
+		BroacastReceiverIsRegistered = false;
+	}// -------------------------------------------------------------------------------
+	
+	
+	
+	public boolean isBluetoothAdapterAvailable() {
+		return btAdapter != null;
+	}// -------------------------------------------------------------------------------
+	
+	
+	
+	public void cancelDiscovery() {
+		// cancel any prior BT device discovery
+		if (btAdapter.isDiscovering()) {
+			btAdapter.cancelDiscovery();
+		}
+	}// -------------------------------------------------------------------------------
+	
+
+	
+	public void enableAdapter() {
+		if (!btAdapter.isEnabled()) {
+		    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+		    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+		}
+	}// -------------------------------------------------------------------------------
+	
+	
+	public void makeDiscoverable(){
+		if (!btAdapter.isEnabled()) {
+		    Intent enableBtIntent = new Intent(
+		    		BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+		    startActivityForResult(enableBtIntent, REQUEST_DISCOVERABLE_BT);
+		}
+	}// -------------------------------------------------------------------------------
+	
+	
+	
+	
+	
+	
+	
+	
 }

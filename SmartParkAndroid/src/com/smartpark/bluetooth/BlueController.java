@@ -19,7 +19,7 @@ public class BlueController extends Activity {
 	private static final int REQUEST_DISCOVERABLE_BT = 2;
 	private static boolean BroacastReceiverIsRegistered = false;
 	
-	private static BluetoothAdapter btAdapter;
+	public static BluetoothAdapter btAdapter;
 	private static MyBroadcastReceiver mReceiver;
 	
 	private static IntentFilter findFilter;

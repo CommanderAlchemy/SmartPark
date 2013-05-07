@@ -18,7 +18,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="11:54   GPS(on)   BT(on)      PARKED"
+            android:hint="11:54 - GPS(on) - BT(on) - PARKED"
             android:textIsSelectable="false"
             android:textSize="18sp" >
         </TextView>
@@ -73,7 +73,7 @@ first 2 hours
             android:layout_height="wrap_content"
             android:clickable="false"
             android:ems="10"
-            android:hint="Total price this month:                    121,-"
+            android:hint="Total price this month:           121,-"
             android:singleLine="true"
             android:textIsSelectable="false"
             android:textSize="18sp"

@@ -20,6 +20,7 @@ import android.view.View;
 
 import android.widget.Toast;
 
+import com.smartpark.bluetooth.BlueController;
 import com.smartpark.fragments.*;
 import com.smartpark.interfaces.OnMessageReceived;
 import com.smartpark.tcp.TCPClient;
@@ -46,6 +47,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	 * activities.
 	 */
 	Fragment fragment;
+	
+	BlueController bluetooth;
 	
 	
 	// Debugging and stuff
@@ -103,6 +106,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
+		
+		bluetooth = new BlueController();
 	}// ===========================================================================
 	
 	
@@ -215,6 +220,27 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		References.clientThread.stop();
 	}// ===========================================================================
 	
+	// onClick METHODS --------------------------------------------------------
+	public void pairedDevicesCount(){
+		Toast.makeText(this, "pairedDevicesCount() invoked", Toast.LENGTH_SHORT).show();
+		
+		if(!BlueController.btAdapter.isEnabled()){
+			Toast.makeText(this, "enabling adapter", Toast.LENGTH_SHORT).show();
+			bluetooth.enableAdapter();
+		}
+		Toast.makeText(this, "getting pairedlist", Toast.LENGTH_SHORT).show();
+		String str = "" + bluetooth.getPairedDevicesList().size();
+		Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
+	}
+	
+	public void isBTavailable(){
+		if(BlueController.btAdapter != null){
+			Toast.makeText(this, "availabe", Toast.LENGTH_SHORT).show();
+		}else{
+			Toast.makeText(this, "not availabe", Toast.LENGTH_SHORT).show();
+		}
+	}
+	
 	
 	
 	// After initial testing, this method must be moved over to the TCPClient-class
@@ -248,7 +274,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			References.client.stopClient();
 		}
 	}// ===========================================================================
-	
+	// onClick METHODS END ========================================================
 	
 	
 	
@@ -380,4 +406,5 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			return null;
 		}// ===========================================================================
 	}
+
 }

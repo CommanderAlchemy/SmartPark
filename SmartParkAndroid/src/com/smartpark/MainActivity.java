@@ -1,5 +1,7 @@
 package com.smartpark;
 
+import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Locale;
 
 import android.app.ActionBar;
@@ -60,6 +62,11 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		if (savedInstanceState != null) {
+            bluetooth = (BlueController) savedInstanceState
+            		.getSerializable("someExpensiveObject");
+        }
 
 		if (References.backgroundThread == null) {
 			References.backgroundThread = new Thread(
@@ -110,6 +117,17 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		bluetooth = new BlueController();
 	}// ===========================================================================
 	
+	@Override
+	public void onSaveInstanceState(final Bundle outState){
+		Calendar cal = Calendar.getInstance();
+		cal.getTimeInMillis()
+		this.bluetooth.setTime(cal.getTimeInMillis());
+		Bundle b = new Bundle();
+		b.putSerializable("bluetooth", this.bluetooth);
+		
+//		This save the bluetooth instance for 
+		outState.putBundle("bundle", b);
+	}
 	
 	/**
 	 * Create ActionMenu with settings and add our own menu itmes.

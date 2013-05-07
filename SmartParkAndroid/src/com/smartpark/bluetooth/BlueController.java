@@ -1,5 +1,6 @@
 package com.smartpark.bluetooth;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -11,7 +12,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-public class BlueController extends Activity {
+public class BlueController extends Activity implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/* Since there is only one bluetooth adapter in every handheld device,
 	 * the variables are defined using the static modifier, because they only
 	 * represent settings and findings of the same adapter.  */
@@ -26,7 +31,10 @@ public class BlueController extends Activity {
 
 	private static ArrayList<BluetoothDevice> foundDevices;
 	private static ArrayList<BluetoothDevice> pairedDevices;
+	
+	private long serializedAt;
 	// -------------------------------------------------------------------------------
+
 	
 	
 	public BlueController() {
@@ -173,8 +181,19 @@ public class BlueController extends Activity {
 		    startActivityForResult(enableBtIntent, REQUEST_DISCOVERABLE_BT);
 		}
 	}// -------------------------------------------------------------------------------
+
+
+
+
+
+	public void setTime(long timeInMillis) {
+		// TODO Auto-generated method stub
+		serializedAt = timeInMillis;
+	}
 	
-	
+	public long getTime(long timeInMillis) {
+		return this.serializedAt;
+	}
 	
 	
 	

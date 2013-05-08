@@ -120,7 +120,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	@Override
 	public void onSaveInstanceState(final Bundle outState){
 		Calendar cal = Calendar.getInstance();
-		cal.getTimeInMillis()
 		this.bluetooth.setTime(cal.getTimeInMillis());
 		Bundle b = new Bundle();
 		b.putSerializable("bluetooth", this.bluetooth);

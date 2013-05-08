@@ -15,20 +15,23 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
 import android.widget.Toast;
 
 import com.smartpark.bluetooth.BlueController;
-import com.smartpark.fragments.*;
+import com.smartpark.fragments.BluetoothFragment;
+import com.smartpark.fragments.DebugFragment;
+import com.smartpark.fragments.DummySectionFragment;
+import com.smartpark.fragments.GPSFragment;
+import com.smartpark.fragments.SmartParkFragment;
 import com.smartpark.interfaces.OnMessageReceived;
 import com.smartpark.tcp.TCPClient;
 
-public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
-	
+public class MainActivity extends FragmentActivity implements
+		ActionBar.TabListener {
+
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
 	 * fragments for each of the sections. We use a
@@ -38,60 +41,70 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
 	SectionsPagerAdapter mSectionsPagerAdapter;
-	
+
 	/**
 	 * The {@link ViewPager} that will host the section contents.
 	 */
 	ViewPager mViewPager;
-	
+
 	/**
 	 * Fragments, different views in application that you swype, instead of
 	 * activities.
 	 */
 	Fragment fragment;
-	
+	/**
+	 * Bluetooth, this instance will control every aspect of the bluetooth
+	 * adapter
+	 */
 	BlueController bluetooth;
-	
-	
+
 	// Debugging and stuff
 	private static final String TAG = "MainActivityDebug";
 	private static final boolean D = true;
+
 	// ===========================================================================
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
-		if (savedInstanceState != null) {
-            bluetooth = (BlueController) savedInstanceState
-            		.getSerializable("someExpensiveObject");
-        }
 
+		// Restore additional variables and objects from last session
+		if (savedInstanceState != null) {
+			bluetooth = (BlueController) savedInstanceState
+					.getSerializable("bluetooth");
+			// Recreate the bluetooth instance if it is older than one minute
+			Calendar cal = Calendar.getInstance();
+			if(cal.getTimeInMillis() - bluetooth.getTime() > 60000){
+				bluetooth = new BlueController();
+			}
+			References.backgroundThread = (Thread) savedInstanceState
+					.getSerializable("backgroundThread");
+		}
+		// Restoring ends ================================================
+
+		// Creates and starts the background-operation-thread
 		if (References.backgroundThread == null) {
 			References.backgroundThread = new Thread(
 					new BackgoundOperationThread());
-		}
-		References.backgroundThread.start();
-		if (References.backgroundThread.isAlive() == false) {
-			References.backgroundThread = new Thread(
-					new BackgoundOperationThread());
+			References.backgroundThread.start();
+		} else if (References.backgroundThread.isAlive() == false) {
 			References.backgroundThread.start();
 		}
-		
-		// Set up the action bar.
+
+		// Set up the action bar
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		
-		// Create the adapter that will return a fragment for each of the three
-		// primary sections of the app.
+
+		// Create the adapter that will return a fragment for each sections
+		// of the app.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
 				getSupportFragmentManager());
-		
+
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-		
+
 		// When swiping between different sections, select the corresponding
 		// tab. We can also use ActionBar.Tab#select() to do this if we have
 		// a reference to the Tab.
@@ -113,24 +126,30 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
-		
+		// intantiate the bluetooth-control-class
 		bluetooth = new BlueController();
 	}// ===========================================================================
 	
+	/**
+	 * This method will be invoked right before onPause() or onDestroy()
+	 * is invoked and is used to save certain classes that we wish to hold
+	 * for the next session instead of recreating it.
+	 */
 	@Override
-	public void onSaveInstanceState(final Bundle outState){
+	public void onSaveInstanceState(final Bundle outState) {
 		Calendar cal = Calendar.getInstance();
-		cal.getTimeInMillis()
 		this.bluetooth.setTime(cal.getTimeInMillis());
 		Bundle b = new Bundle();
 		b.putSerializable("bluetooth", this.bluetooth);
-		
-//		This save the bluetooth instance for 
+		b.putSerializable("backgroundThread",
+				(Serializable) References.backgroundThread);
+
+		// This saves the bundle for later use
 		outState.putBundle("bundle", b);
-	}
-	
+	}// ===================================================================
+
 	/**
-	 * Create ActionMenu with settings and add our own menu itmes.
+	 * Create ActionMenu with settings and add our own menu items.
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -139,8 +158,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		CreateMenu(menu);
 		return true;
 	}// ===========================================================================
-	
-	
+
 	/**
 	 * Create Menu Create Action Menu that the application will have to start
 	 * other activities.
@@ -162,8 +180,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		aMenu4.setAlphabeticShortcut('d');
 
 	}// ===========================================================================
-	
-	
+
 	/**
 	 * On ActionMenu Select Do something when that get selected in the
 	 * ActionMenu
@@ -205,8 +222,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		}
 		return false;
 	}// ===========================================================================
-	
-	
+
 	// TAB SELECTION-METHODS =================================================
 	@Override
 	public void onTabSelected(ActionBar.Tab tab,
@@ -215,34 +231,35 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		// the ViewPager.
 		mViewPager.setCurrentItem(tab.getPosition());
 	}// ===========================================================================
-	
+
 	@Override
 	public void onTabUnselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
 	}// ===========================================================================
-	
+
 	@Override
 	public void onTabReselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
 
 	}// ===========================================================================
 	// =======================================================================
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
-	protected void onDestroy(){
+	protected void onDestroy() {
 		super.onDestroy();
 
-		References.backgroundThread.stop();
+		((Thread) References.backgroundThread).stop();
 		References.client.stopClient();
 		References.clientThread.stop();
 	}// ===========================================================================
-	
+
 	// onClick METHODS --------------------------------------------------------
-	public void pairedDevicesCount(){
-		Toast.makeText(this, "pairedDevicesCount() invoked", Toast.LENGTH_SHORT).show();
-		
-		if(!BlueController.btAdapter.isEnabled()){
+	public void pairedDevicesCount() {
+		Toast.makeText(this, "pairedDevicesCount() invoked", Toast.LENGTH_SHORT)
+				.show();
+
+		if (!BlueController.btAdapter.isEnabled()) {
 			Toast.makeText(this, "enabling adapter", Toast.LENGTH_SHORT).show();
 			bluetooth.enableAdapter();
 		}
@@ -250,26 +267,35 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		String str = "" + bluetooth.getPairedDevicesList().size();
 		Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
 	}
-	
-	public void isBTavailable(){
-		if(BlueController.btAdapter != null){
+
+	public void isBTavailable() {
+		if (BlueController.btAdapter != null) {
 			Toast.makeText(this, "availabe", Toast.LENGTH_SHORT).show();
-		}else{
+		} else {
 			Toast.makeText(this, "not availabe", Toast.LENGTH_SHORT).show();
 		}
 	}
 	
+	public void isBTEnable(){
+		if(bluetooth.btAdapter.isEnabled()){
+			Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
+		}else{
+			Toast.makeText(this, "Disabled", Toast.LENGTH_SHORT).show();
+		}
+	}
 	
 	
-	// After initial testing, this method must be moved over to the TCPClient-class
+
+	// After initial testing, this method must be moved over to the
+	// TCPClient-class
 	/*
 	 * debugFragment Button Events
 	 */
 	public void connect(View view) {
 		Toast.makeText(this, "connecting...", Toast.LENGTH_LONG).show();
-		
+
 		// new ConnectTask().execute("");
-		
+
 		References.client = new TCPClient(new OnMessageReceived() {
 			@Override
 			// here the messageReceived method is implemented
@@ -277,25 +303,24 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 				Log.e(TAG, message);
 				// this method calls the onProgressUpdate
 				// publishProgress(message);
-				
+
 			}
 		});
-		
+
 		References.clientThread = new Thread(References.client);
 		References.clientThread.start();
-		
+
 	}// ===========================================================================
-	
+
 	public void disconnect(View view) {
 		if (References.client != null) {
 			Toast.makeText(this, "dissconnecting...", Toast.LENGTH_LONG).show();
 			References.client.stopClient();
 		}
 	}// ===========================================================================
-	// onClick METHODS END ========================================================
-	
-	
-	
+		// onClick METHODS END
+		// ========================================================
+
 	// THIS CLASS IS NO LONGER NESSESARY AND NO LONGER USED
 	// WE WILL REMOVE IT WHEN THE INITIAL TESTS ARE DONE
 	public class ConnectTask extends AsyncTask<String, String, TCPClient> {
@@ -330,11 +355,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			// mAdapter.notifyDataSetChanged();
 		}// ===========================================================================
 	}// ===========================================================================
-	
-	
-	
-	
-	
+
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
 	 * one of the sections/tabs/pages.

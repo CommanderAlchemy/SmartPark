@@ -15,10 +15,13 @@ import android.content.IntentFilter;
 import android.util.Log;
 
 public class BlueController extends Activity implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+
+	
+	
+	// Debugging and stuff
+	private static final String TAG = "BlueTooth";
+	private static final boolean D = true;
+	
 	/*
 	 * Since there is only one bluetooth adapter in every handheld device, the
 	 * variables are defined using the static modifier, because they only
@@ -36,6 +39,7 @@ public class BlueController extends Activity implements Serializable {
 	private static ArrayList<BluetoothDevice> foundDevices;
 	private static Set<BluetoothDevice> pairedDevices;
 
+	private static final long serialVersionUID = 1L;
 	private long serializedAt;
 
 	// -------------------------------------------------------------------------------

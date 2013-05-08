@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.smartpark.MainActivity;
+
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -12,17 +14,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.util.Log;
 
 
 public class BlueController extends Activity implements Serializable {
-
-	
-	
-	// Debugging and stuff
-	private static final String TAG = "BlueTooth";
-	private static final boolean D = true;
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/*
 	 * Since there is only one bluetooth adapter in every handheld device, the
 	 * variables are defined using the static modifier, because they only
@@ -40,10 +40,9 @@ public class BlueController extends Activity implements Serializable {
 	private static ArrayList<BluetoothDevice> foundDevices;
 	private static Set<BluetoothDevice> pairedDevices;
 
-	private static final long serialVersionUID = 1L;
 	private long serializedAt;
 
-	
+	// -------------------------------------------------------------------------------
 
 	public BlueController() {
 		// Get the adapter and store it in a static variable
@@ -57,7 +56,7 @@ public class BlueController extends Activity implements Serializable {
 		 * devices
 		 */
 		findFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-	}
+	}// -------------------------------------------------------------------------------
 
 	/**
 	 * This method will first register a BroadcastReceiver for intents carrying
@@ -80,15 +79,16 @@ public class BlueController extends Activity implements Serializable {
 			// Don't forget to unregister during onDestroy
 		}
 		return btAdapter.startDiscovery();
-	}
+	}// -------------------------------------------------------------------------------
 
 	public Set<BluetoothDevice> getPairedDevicesList() {
 		if(!btAdapter.isEnabled()){
+			Log.d("new", "adapter not enabled");
 		}else{
 			pairedDevices = btAdapter.getBondedDevices();
 		}
 		return pairedDevices;
-	}
+	}// -------------------------------------------------------------------------------
 
 	/**
 	 * This method can be called whenever needed. It should however be used when
@@ -99,7 +99,7 @@ public class BlueController extends Activity implements Serializable {
 	 */
 	public ArrayList<BluetoothDevice> getFoundDevices() {
 		return foundDevices;
-	}
+	}// -------------------------------------------------------------------------------
 
 	public void connectTo() {
 		// TODO
@@ -107,7 +107,7 @@ public class BlueController extends Activity implements Serializable {
 
 	public void sendString(ArrayList<String> data) {
 		// TODO
-	}
+	}// -------------------------------------------------------------------------------
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO
@@ -126,11 +126,11 @@ public class BlueController extends Activity implements Serializable {
 				foundDevices.add(device);
 			}
 		}
-	}
+	}// -------------------------------------------------------------------------------
 
 	public boolean isDiscovering(BluetoothAdapter sd) {
 		return btAdapter.isDiscovering();
-	}
+	}// -------------------------------------------------------------------------------
 
 	/**
 	 * This method will unregister the BroadcastReceiver for ACTION_FOUND of the
@@ -139,29 +139,35 @@ public class BlueController extends Activity implements Serializable {
 	public void unRegisterBroadcastReceiver() {
 		unregisterReceiver(mReceiver);
 		BroacastReceiverIsRegistered = false;
-	}
+	}// -------------------------------------------------------------------------------
 
 	public boolean isBluetoothAdapterAvailable() {
 		return btAdapter != null;
-	}
+	}// -------------------------------------------------------------------------------
 
 	public void cancelDiscovery() {
 		// cancel any prior BT device discovery
 		if (btAdapter.isDiscovering()) {
 			btAdapter.cancelDiscovery();
 		}
-	}
+	}// -------------------------------------------------------------------------------
 
 	public void enableAdapterNoUserInteraction() {
 		btAdapter.enable();
 	}
 	
-	public void enableAdapter() {
+	
+	public void enableAdapter(MainActivity mainActivity) {
+		Log.d("new2", "enabling adapter 1");
 		if (!btAdapter.isEnabled()) {
+			Log.d("new2", "enabling adapter 2");
 			Intent enableBtIntent = new Intent(	BluetoothAdapter.ACTION_REQUEST_ENABLE);
-			startActivity(enableBtIntent);
+//			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+			mainActivity.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+			Log.d("new2", "enabling adapter 2");
+
 		}
-	}
+	}// -------------------------------------------------------------------------------
 
 	public boolean disableAdapter(){
 		if(btAdapter.getState() == BluetoothAdapter.STATE_OFF){
@@ -172,13 +178,14 @@ public class BlueController extends Activity implements Serializable {
 		return btAdapter.getState() == BluetoothAdapter.STATE_OFF;
 	}
 	
+	
 	public void makeDiscoverable() {
 		if (!btAdapter.isEnabled()) {
 			Intent enableBtIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 			startActivityForResult(enableBtIntent, REQUEST_DISCOVERABLE_BT);
 		}
-	}
+	}// -------------------------------------------------------------------------------
 
 	public void setTime(long timeInMillis) {
 		// TODO Auto-generated method stub

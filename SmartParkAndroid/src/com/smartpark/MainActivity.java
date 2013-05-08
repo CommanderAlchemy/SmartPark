@@ -34,6 +34,7 @@ import com.smartpark.tcp.*;
 public class MainActivity extends FragmentActivity implements
 		ActionBar.TabListener {
 
+	// Bluetooth Stuff
 	private static final int REQUEST_ENABLE_BT = 1;
 	private static final int REQUEST_DISCOVERABLE_BT = 2;
 

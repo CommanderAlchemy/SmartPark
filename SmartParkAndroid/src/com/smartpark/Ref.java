@@ -11,7 +11,7 @@ public class Ref {
 	// THE ALTERNATIVE WAS TO ALWAYS PASS REFERENCES TO OTHER CLASSES.
 	// TWO OF THE MOST IMPORTATNT CLASSES ARE BACKGROUNDTHREAD-REF AND
 	// CLIENTTHREAD, SINCE ALL CLASSES WILL NEEDS THEIR SERVICES TO OPERATE.
-	public static boolean d = true;
+	public static boolean D = true;
 	public static TCPClient client;
 	public static Thread clientThread;
 	public static BackgoundOperationThread backgroundThread;

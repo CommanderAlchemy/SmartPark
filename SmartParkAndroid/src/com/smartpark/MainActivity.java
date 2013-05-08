@@ -2,34 +2,33 @@ package com.smartpark;
 
 import java.util.Locale;
 import java.util.Set;
-import android.util.Log;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
-
 import android.bluetooth.BluetoothDevice;
-
 import android.content.DialogInterface;
 import android.content.Intent;
-
 import android.os.Bundle;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.smartpark.bluetooth.*;
-import com.smartpark.fragments.*;
-import com.smartpark.interfaces.*;
-import com.smartpark.tcp.*;
+import com.smartpark.bluetooth.BlueController;
+import com.smartpark.fragments.BluetoothFragment;
+import com.smartpark.fragments.DebugFragment;
+import com.smartpark.fragments.DummySectionFragment;
+import com.smartpark.fragments.GPSFragment;
+import com.smartpark.fragments.SmartParkFragment;
+import com.smartpark.interfaces.OnMessageReceived;
+import com.smartpark.tcp.TCPClient;
 
 public class MainActivity extends FragmentActivity implements
 		ActionBar.TabListener {

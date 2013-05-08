@@ -1,14 +1,24 @@
 package com.smartpark;
 
-import java.io.Serializable;
-
 import android.util.Log;
 
 public class BackgoundOperationThread extends Thread {
+	
+	/* keeps a list of booleans to determine if all activities have been
+	destroyed so that the thread wont continue running for ever. */
+	public static boolean mainActivity = true;
+	
+	// Debugging control
+	public static boolean D = false;
 
-	public static boolean b = true;
-	public static boolean d = false;
-
+	
+	
+	public BackgoundOperationThread(){
+		
+		
+		
+	}
+	
 	@Override
 	public void run() {
 		while (true) {
@@ -20,7 +30,7 @@ public class BackgoundOperationThread extends Thread {
 				e.printStackTrace();
 			}
 
-			if (d) {
+			if (Ref.D) {
 				if (!b) {
 					Log.d("BackThread", "thread is no longer running");
 				} else {

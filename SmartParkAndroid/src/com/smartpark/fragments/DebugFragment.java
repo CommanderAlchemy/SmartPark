@@ -22,7 +22,7 @@ public class DebugFragment extends Fragment {
 
 	// Debug Information, the boolean should be stored in a common settings file
 	// in the future!
-	private static boolean D = Ref.D;
+	private static boolean D = Ref.d;
 	private static final String TAG = "DebugFragment";
 
 	// This needs some fixing for code cleanup

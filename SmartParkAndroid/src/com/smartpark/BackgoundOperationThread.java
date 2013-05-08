@@ -39,6 +39,5 @@ public class BackgoundOperationThread extends Thread {
 			}
 
 		}
-		
 	}
 }

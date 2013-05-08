@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.smartpark.R;
+import com.smartpark.Ref;
 
 /**
  * DebugFragment, this will contain some debug information needed during this
@@ -21,7 +22,7 @@ public class DebugFragment extends Fragment {
 
 	// Debug Information, the boolean should be stored in a common settings file
 	// in the future!
-	private static boolean D = true;
+	private static boolean D = Ref.d;
 	private static final String TAG = "DebugFragment";
 
 	// This needs some fixing for code cleanup

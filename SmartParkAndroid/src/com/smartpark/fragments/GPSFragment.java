@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.smartpark.R;
+import com.smartpark.Ref;
 
 /**
  * GPSFragment, this holds the GPS side of the project and will show
@@ -19,7 +20,7 @@ import com.smartpark.R;
 public class GPSFragment extends Fragment {
 
 	// Debug Information, the boolean should be stored in a common settings file in the future!
-	private static boolean D = true;
+	private static boolean D = Ref.d;
 	private static final String TAG = "GPSFragment";
 
 	// This needs some fixing for code cleanup

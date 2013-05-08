@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.smartpark.R;
+import com.smartpark.Ref;
 
 /**
  * BluetoothFragment, this holds the bluetooth side of the project and will show
@@ -21,7 +22,7 @@ public class BluetoothFragment extends Fragment {
 
 	// Debug Information, the boolean should be stored in a common settings file
 	// in the future!
-	private static boolean D = true;
+	private static boolean D = Ref.d;
 	private static final String TAG = "BluetoothFragment";
 
 	// This needs some fixing for code cleanup
@@ -30,7 +31,7 @@ public class BluetoothFragment extends Fragment {
 	public BluetoothFragment() {
 		if (D)
 			Log.e(TAG, "Fragment: " + this.toString() + " Loaded");
-	}// ============================================================================
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,7 +43,7 @@ public class BluetoothFragment extends Fragment {
 		dummyTextView.setText(Integer.toString(getArguments().getInt(
 				ARG_SECTION_NUMBER)));
 		return rootView;
-	}// ============================================================================
+	}
 	
 	public void pairedDevicesCount(){
 		

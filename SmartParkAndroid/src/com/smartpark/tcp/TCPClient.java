@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import com.smartpark.Ref;
 import com.smartpark.interfaces.OnMessageReceived;
 
 import android.util.Log;
@@ -23,36 +24,35 @@ public class TCPClient implements Runnable {
 
 	// Debug
 	private static final String TAG = "SmartPark";
+	private static boolean d = Ref.d;
 
 	// message to send to the server
 	private String mServerMessage;
-	
+
 	// sends message received notifications
 	private OnMessageReceived mMessageListener = null;
-	
+
 	// while this is true, the server will continue running
 	private boolean mRun = false;
-	
+
 	// used to send messages
 	private PrintWriter mBufferOut;
-	
+
 	// used to read messages from the server
 	private BufferedReader mBufferIn;
-	
-	
+
 	/**
 	 * Constructor of the class. OnMessagedReceived listens for the messages
 	 * received from server
 	 */
 	public TCPClient(OnMessageReceived listener) {
 		mMessageListener = listener;
-	}// ===========================================================================
-
-	public void setThread(Thread thread){
-		
 	}
-	
-	
+
+	public void setThread(Thread thread) {
+
+	}
+
 	/**
 	 * Sends the message entered by client to the server
 	 * 
@@ -64,13 +64,15 @@ public class TCPClient implements Runnable {
 			mBufferOut.println(message);
 			mBufferOut.flush();
 		}
-	}// ===========================================================================
+	}
 
 	/**
 	 * Close the connection and release the members
 	 */
 	public void stopClient() {
-		Log.e(TAG, "Closing Connection");
+
+		if (d)
+			Log.d(TAG, "Closing Connection");
 
 		// send mesage that we are closing the connection
 		sendMessage(Settings.Close_Connection);
@@ -82,13 +84,14 @@ public class TCPClient implements Runnable {
 			mBufferOut.close();
 		}
 
-	}// ===========================================================================
+	}
 
 	public void run() {
 		mRun = true;
 
 		try {
-			Log.e(TAG + " TCP Client", "C: Connecting...");
+			if (d)
+				Log.d(TAG + " TCP Client", "C: Connecting...");
 
 			InetAddress serverAddr = InetAddress.getByName(Settings.Server_IP);
 
@@ -119,10 +122,10 @@ public class TCPClient implements Runnable {
 						// call the method messageReceived from MyActivity class
 						mMessageListener.messageReceived(mServerMessage);
 					}
-					
+
 				}
 
-				Log.e(TAG + " RESPONSE FROM SERVER", "S: Received Message: '"
+				Log.d(TAG + " RESPONSE FROM SERVER", "S: Received Message: '"
 						+ mServerMessage + "'");
 
 			} catch (Exception e) {

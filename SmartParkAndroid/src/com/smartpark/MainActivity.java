@@ -1,39 +1,35 @@
 package com.smartpark;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Locale;
 import java.util.Set;
+import android.util.Log;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
-import android.bluetooth.BluetoothAdapter;
+
 import android.bluetooth.BluetoothDevice;
+
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
+
 import android.os.Bundle;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.smartpark.bluetooth.BlueController;
-import com.smartpark.fragments.BluetoothFragment;
-import com.smartpark.fragments.DebugFragment;
-import com.smartpark.fragments.DummySectionFragment;
-import com.smartpark.fragments.GPSFragment;
-import com.smartpark.fragments.SmartParkFragment;
-import com.smartpark.interfaces.OnMessageReceived;
-import com.smartpark.tcp.TCPClient;
+import com.smartpark.bluetooth.*;
+import com.smartpark.fragments.*;
+import com.smartpark.interfaces.*;
+import com.smartpark.tcp.*;
 
 public class MainActivity extends FragmentActivity implements
 		ActionBar.TabListener {
@@ -66,16 +62,16 @@ public class MainActivity extends FragmentActivity implements
 	 * adapter
 	 */
 	BlueController bluetooth;
-	BluetoothAdapter btAdapter;
 
 	// Debugging and stuff
 	private static final String TAG = "MainActivityDebug";
-	private static final boolean D = true;
+	private static final boolean D = Ref.d;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
 		// Debug stuff
 		if (D) {
 			Log.d(TAG, "Starting onCreate, loading savedInstanceState");
@@ -89,12 +85,11 @@ public class MainActivity extends FragmentActivity implements
 			Log.d(TAG, "repopulate References.backgroundThread and run it");
 		}
 		// Creates and starts the background-operation-thread
-		if (References.backgroundThread == null) {
-			References.backgroundThread = new Thread(
-					new BackgoundOperationThread());
-			References.backgroundThread.start();
-		} else if (References.backgroundThread.isAlive() == false) {
-			References.backgroundThread.start();
+		if (Ref.backgroundThread == null) {
+			Ref.backgroundThread = new BackgoundOperationThread();
+			Ref.backgroundThread.start();
+		} else if (Ref.backgroundThread.isAlive() == false) {
+			Ref.backgroundThread.start();
 		}
 		// Debug stuff
 		if (D) {
@@ -146,7 +141,6 @@ public class MainActivity extends FragmentActivity implements
 		}
 		// intantiate the bluetooth-control-class
 		bluetooth = new BlueController();
-		btAdapter = BluetoothAdapter.getDefaultAdapter();
 		// Debug stuff
 		if (D) {
 			Log.d(TAG, "after bt");
@@ -168,25 +162,37 @@ public class MainActivity extends FragmentActivity implements
 
 		Set<BluetoothDevice> pairedDevices = bluetooth.getPairedDevicesList();
 		if (pairedDevices != null) {
-			Toast.makeText(this, "" + pairedDevices.size() + " hello ",
-					Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "" + pairedDevices.size(), Toast.LENGTH_SHORT)
+					.show();
 		}
 		Toast.makeText(this, "end of method", Toast.LENGTH_SHORT).show();
 		Log.d(TAG, "pairedDevicesCount ends");
 
-		AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-		alertDialog.setTitle("Paired devices");
-		alertDialog.setMessage("There are " + pairedDevices.size()
-				+ " devices that this device is currently paired with.");
-		alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				// TODO Add your code for the button here.
-			}
-		});
-		// Set the Icon for the Dialog
-		// alertDialog.setIcon(R.drawable.icon);
-		alertDialog.show();
+		AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+		builder1.setTitle("Title");
+		builder1.setMessage("my message");
+		builder1.setCancelable(true);
+		builder1.setNegativeButton(android.R.string.no,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Add your code for the button here.
+					}
+				});
+		builder1.setNeutralButton("neutral",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Add your code for the button here.
+					}
+				});
+		builder1.setPositiveButton(android.R.string.ok,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Add your code for the button here.
+					}
+				});
 
+		AlertDialog alert = builder1.create();
+		alert.show();
 	}
 
 	public void isBTavailable(View view) {
@@ -264,7 +270,7 @@ public class MainActivity extends FragmentActivity implements
 		MenuItem aMenu4 = menu.add(0, 3, 3, "Item 4");
 		aMenu4.setAlphabeticShortcut('d');
 
-	}// ===========================================================================
+	}
 
 	/**
 	 * On ActionMenu Select Do something when that get selected in the
@@ -331,20 +337,6 @@ public class MainActivity extends FragmentActivity implements
 
 	}
 
-	@SuppressWarnings("deprecation")
-	@Override
-	protected void onDestroy() {
-		// Debug stuff
-		if (D) {
-			Log.d(TAG, "deprecation");
-		}
-		super.onDestroy();
-
-		((Thread) References.backgroundThread).stop();
-		References.client.stopClient();
-		References.clientThread.stop();
-	}
-
 	/*
 	 * debugFragment Button Events
 	 */
@@ -357,7 +349,7 @@ public class MainActivity extends FragmentActivity implements
 
 		// new ConnectTask().execute("");
 
-		References.client = new TCPClient(new OnMessageReceived() {
+		Ref.client = new TCPClient(new OnMessageReceived() {
 			@Override
 			// here the messageReceived method is implemented
 			public void messageReceived(String message) {
@@ -368,8 +360,8 @@ public class MainActivity extends FragmentActivity implements
 			}
 		});
 
-		References.clientThread = new Thread(References.client);
-		References.clientThread.start();
+		Ref.clientThread = new Thread(Ref.client);
+		Ref.clientThread.start();
 
 	}
 
@@ -378,52 +370,52 @@ public class MainActivity extends FragmentActivity implements
 		if (D) {
 			Log.d(TAG, "disconnect");
 		}
-		if (References.client != null) {
+		if (Ref.client != null) {
 			Toast.makeText(this, "dissconnecting...", Toast.LENGTH_LONG).show();
-			References.client.stopClient();
+			Ref.client.stopClient();
 		}
 	}
 
-//	public class ConnectTask extends AsyncTask<String, String, TCPClient> {
-//
-//		@Override
-//		protected TCPClient doInBackground(String... message) {
-//			// Debug stuff
-//			if (D) {
-//				Log.d(TAG, "class ConnectTask doInBackground");
-//			}
-//
-//			// we create a TCPClient object and
-//			References.client = new TCPClient(new OnMessageReceived() {
-//				@Override
-//				// here the messageReceived method is implemented
-//				public void messageReceived(String message) {
-//					Log.e(TAG, message);
-//					// this method calls the onProgressUpdate
-//					publishProgress(message);
-//				}
-//			});
-//			References.client.run();
-//
-//			return null;
-//		}
-//
-//		@Override
-//		protected void onProgressUpdate(String... values) {
-//			// Debug stuff
-//			if (D) {
-//				Log.d(TAG, "onProgressUpdate");
-//			}
-//			super.onProgressUpdate(values);
-//
-//			// in the arrayList we add the messaged received from server
-//			// arrayList.add(values[0]);
-//			// notify the adapter that the data set has changed. This means that
-//			// new message received
-//			// from server was added to the list
-//			// mAdapter.notifyDataSetChanged();
-//		}
-//	}
+	// public class ConnectTask extends AsyncTask<String, String, TCPClient> {
+	//
+	// @Override
+	// protected TCPClient doInBackground(String... message) {
+	// // Debug stuff
+	// if (D) {
+	// Log.d(TAG, "class ConnectTask doInBackground");
+	// }
+	//
+	// // we create a TCPClient object and
+	// References.client = new TCPClient(new OnMessageReceived() {
+	// @Override
+	// // here the messageReceived method is implemented
+	// public void messageReceived(String message) {
+	// Log.e(TAG, message);
+	// // this method calls the onProgressUpdate
+	// publishProgress(message);
+	// }
+	// });
+	// References.client.run();
+	//
+	// return null;
+	// }
+	//
+	// @Override
+	// protected void onProgressUpdate(String... values) {
+	// // Debug stuff
+	// if (D) {
+	// Log.d(TAG, "onProgressUpdate");
+	// }
+	// super.onProgressUpdate(values);
+	//
+	// // in the arrayList we add the messaged received from server
+	// // arrayList.add(values[0]);
+	// // notify the adapter that the data set has changed. This means that
+	// // new message received
+	// // from server was added to the list
+	// // mAdapter.notifyDataSetChanged();
+	// }
+	// }
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to

@@ -2,7 +2,6 @@ package com.smartpark.bluetooth;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.smartpark.MainActivity;
@@ -14,13 +13,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
 import android.util.Log;
-
 
 public class BlueController extends Activity implements Serializable {
 	/**
-	 * 
+	 * Serial
 	 */
 	private static final long serialVersionUID = 1L;
 	/*
@@ -79,16 +76,16 @@ public class BlueController extends Activity implements Serializable {
 			// Don't forget to unregister during onDestroy
 		}
 		return btAdapter.startDiscovery();
-	}// -------------------------------------------------------------------------------
+	}
 
 	public Set<BluetoothDevice> getPairedDevicesList() {
-		if(!btAdapter.isEnabled()){
+		if (!btAdapter.isEnabled()) {
 			Log.d("new", "adapter not enabled");
-		}else{
+		} else {
 			pairedDevices = btAdapter.getBondedDevices();
 		}
 		return pairedDevices;
-	}// -------------------------------------------------------------------------------
+	}
 
 	/**
 	 * This method can be called whenever needed. It should however be used when
@@ -99,7 +96,7 @@ public class BlueController extends Activity implements Serializable {
 	 */
 	public ArrayList<BluetoothDevice> getFoundDevices() {
 		return foundDevices;
-	}// -------------------------------------------------------------------------------
+	}
 
 	public void connectTo() {
 		// TODO
@@ -107,7 +104,7 @@ public class BlueController extends Activity implements Serializable {
 
 	public void sendString(ArrayList<String> data) {
 		// TODO
-	}// -------------------------------------------------------------------------------
+	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO
@@ -126,11 +123,11 @@ public class BlueController extends Activity implements Serializable {
 				foundDevices.add(device);
 			}
 		}
-	}// -------------------------------------------------------------------------------
+	}
 
 	public boolean isDiscovering(BluetoothAdapter sd) {
 		return btAdapter.isDiscovering();
-	}// -------------------------------------------------------------------------------
+	}
 
 	/**
 	 * This method will unregister the BroadcastReceiver for ACTION_FOUND of the
@@ -139,53 +136,53 @@ public class BlueController extends Activity implements Serializable {
 	public void unRegisterBroadcastReceiver() {
 		unregisterReceiver(mReceiver);
 		BroacastReceiverIsRegistered = false;
-	}// -------------------------------------------------------------------------------
+	}
 
 	public boolean isBluetoothAdapterAvailable() {
 		return btAdapter != null;
-	}// -------------------------------------------------------------------------------
+	}
 
 	public void cancelDiscovery() {
 		// cancel any prior BT device discovery
 		if (btAdapter.isDiscovering()) {
 			btAdapter.cancelDiscovery();
 		}
-	}// -------------------------------------------------------------------------------
+	}
 
 	public void enableAdapterNoUserInteraction() {
 		btAdapter.enable();
 	}
-	
-	
+
 	public void enableAdapter(MainActivity mainActivity) {
 		Log.d("new2", "enabling adapter 1");
 		if (!btAdapter.isEnabled()) {
 			Log.d("new2", "enabling adapter 2");
-			Intent enableBtIntent = new Intent(	BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-			mainActivity.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+			Intent enableBtIntent = new Intent(
+					BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			// startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+			mainActivity.startActivityForResult(enableBtIntent,
+					REQUEST_ENABLE_BT);
 			Log.d("new2", "enabling adapter 2");
 
 		}
-	}// -------------------------------------------------------------------------------
+	}
 
-	public boolean disableAdapter(){
-		if(btAdapter.getState() == BluetoothAdapter.STATE_OFF){
+	public boolean disableAdapter() {
+		if (btAdapter.getState() == BluetoothAdapter.STATE_OFF) {
 			return true;
-		}else{
+		} else {
 			btAdapter.disable();
 		}
 		return btAdapter.getState() == BluetoothAdapter.STATE_OFF;
 	}
-	
-	
+
 	public void makeDiscoverable() {
 		if (!btAdapter.isEnabled()) {
 			Intent enableBtIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 			startActivityForResult(enableBtIntent, REQUEST_DISCOVERABLE_BT);
 		}
-	}// -------------------------------------------------------------------------------
+	}
 
 	public void setTime(long timeInMillis) {
 		// TODO Auto-generated method stub

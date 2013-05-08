@@ -1,11 +1,15 @@
 package com.smartpark;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Set;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -57,6 +61,7 @@ public class MainActivity extends FragmentActivity implements
 	 * adapter
 	 */
 	BlueController bluetooth;
+	BluetoothAdapter btAdapter;
 
 	// Debugging and stuff
 	private static final String TAG = "MainActivityDebug";
@@ -68,7 +73,10 @@ public class MainActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		// Debug stuff
+				if (D) {
+					Log.d(TAG, "Starting onCreate, loading savedInstanceState");
+				}
 		// Restore additional variables and objects from last session
 		if (savedInstanceState != null) {
 			bluetooth = (BlueController) savedInstanceState
@@ -82,7 +90,10 @@ public class MainActivity extends FragmentActivity implements
 					.getSerializable("backgroundThread");
 		}
 		// Restoring ends ================================================
-
+		// Debug stuff
+		if (D) {
+			Log.d(TAG, "repopulate References.backgroundThread and run it");
+		}
 		// Creates and starts the background-operation-thread
 		if (References.backgroundThread == null) {
 			References.backgroundThread = new Thread(
@@ -91,7 +102,10 @@ public class MainActivity extends FragmentActivity implements
 		} else if (References.backgroundThread.isAlive() == false) {
 			References.backgroundThread.start();
 		}
-
+		// Debug stuff
+		if (D) {
+			Log.d(TAG, "working on actionbar");
+		}
 		// Set up the action bar
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -100,7 +114,10 @@ public class MainActivity extends FragmentActivity implements
 		// of the app.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
 				getSupportFragmentManager());
-
+		// Debug stuff
+				if (D) {
+					Log.d(TAG, "3");
+				}
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -115,7 +132,10 @@ public class MainActivity extends FragmentActivity implements
 						actionBar.setSelectedNavigationItem(position);
 					}
 				});
-
+		// Debug stuff
+				if (D) {
+					Log.d(TAG, "4");
+				}
 		// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
 			// Create a tab with text corresponding to the page title defined by
@@ -126,9 +146,76 @@ public class MainActivity extends FragmentActivity implements
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
+		// Debug stuff
+				if (D) {
+					Log.d(TAG, "before bt");
+				}
 		// intantiate the bluetooth-control-class
 		bluetooth = new BlueController();
+		btAdapter = BluetoothAdapter.getDefaultAdapter();
+		// Debug stuff
+				if (D) {
+					Log.d(TAG, "after bt");
+				}
 	}// ===========================================================================
+	
+	
+	
+	
+	public void pairedDevicesCount(View view) {
+		Log.d(TAG, "pairedDevicesCount invoked");
+		Toast.makeText(this, "pairedDevicesCount() invoked", Toast.LENGTH_SHORT).show();
+		
+		if (!BlueController.btAdapter.isEnabled()) {
+			Toast.makeText(this, "adapter is not enabled", Toast.LENGTH_SHORT).show();
+		}
+		
+		Toast.makeText(this, "getting pairedlist", Toast.LENGTH_SHORT).show();
+		
+		Set<BluetoothDevice> pairedDevices = bluetooth.getPairedDevicesList();
+		if(pairedDevices != null){
+			Toast.makeText(this, "" + pairedDevices.size() + " hello ", Toast.LENGTH_SHORT).show();
+		}
+		Toast.makeText(this, "end of method", Toast.LENGTH_SHORT).show();
+		Log.d(TAG, "pairedDevicesCount ends");
+	}
+	
+	
+	public void isBTavailable(View view) {
+		Log.d(TAG, "isBTavailable");
+		if (BlueController.btAdapter != null) {
+			Toast.makeText(this, "availabe", Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(this, "not availabe", Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	public void isBTEnable(View view){
+		Log.d(TAG, "enable bluetooth if disabled");
+		Log.d(TAG, BlueController.btAdapter.isEnabled() + " haha");
+		if(BlueController.btAdapter.isEnabled()){
+			Log.d(TAG, "isBTEnable true");
+			Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
+		}else{
+			Log.d(TAG, "isBTEnable false");
+			Toast.makeText(this, "Disabled", Toast.LENGTH_SHORT).show();
+			Log.d(TAG, "enabling adapter");
+			bluetooth.enableAdapter();
+			Log.d(TAG, "enabling done");
+		}
+		
+	}
+	
+	
+	public void onActivityResult(){
+		Log.d(TAG, "enabling done");
+	}
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * This method will be invoked right before onPause() or onDestroy()
@@ -137,6 +224,10 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	@Override
 	public void onSaveInstanceState(final Bundle outState) {
+		// Debug stuff
+				if (D) {
+					Log.d(TAG, "onSaveInstanceState");
+				}
 		Calendar cal = Calendar.getInstance();
 		this.bluetooth.setTime(cal.getTimeInMillis());
 		Bundle b = new Bundle();
@@ -153,6 +244,10 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		// Debug stuff
+		if (D) {
+			Log.d(TAG, "onCreateOptionsMenu");
+		}
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		CreateMenu(menu);
@@ -166,6 +261,10 @@ public class MainActivity extends FragmentActivity implements
 	 * @param menu
 	 */
 	private void CreateMenu(Menu menu) {
+		// Debug stuff
+				if (D) {
+					Log.d(TAG, "CreateMenu");
+				}
 		menu.setQwertyMode(true);
 		MenuItem aMenu1 = menu.add(0, 0, 0, "Login");
 		aMenu1.setAlphabeticShortcut('a');
@@ -187,6 +286,10 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		// Debug stuff
+		if (D) {
+			Log.d(TAG, "onOptionsItemSelected");
+		}
 		// Debug stuff
 		if (D) {
 			Log.d(TAG, "Item: " + item.toString() + "\nID: " + item.getItemId()
@@ -247,6 +350,10 @@ public class MainActivity extends FragmentActivity implements
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onDestroy() {
+		// Debug stuff
+				if (D) {
+					Log.d(TAG, "deprecation");
+				}
 		super.onDestroy();
 
 		((Thread) References.backgroundThread).stop();
@@ -255,34 +362,6 @@ public class MainActivity extends FragmentActivity implements
 	}// ===========================================================================
 
 	// onClick METHODS --------------------------------------------------------
-	public void pairedDevicesCount() {
-		Toast.makeText(this, "pairedDevicesCount() invoked", Toast.LENGTH_SHORT)
-				.show();
-
-		if (!BlueController.btAdapter.isEnabled()) {
-			Toast.makeText(this, "enabling adapter", Toast.LENGTH_SHORT).show();
-			bluetooth.enableAdapter();
-		}
-		Toast.makeText(this, "getting pairedlist", Toast.LENGTH_SHORT).show();
-		String str = "" + bluetooth.getPairedDevicesList().size();
-		Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
-	}
-
-	public void isBTavailable() {
-		if (BlueController.btAdapter != null) {
-			Toast.makeText(this, "availabe", Toast.LENGTH_SHORT).show();
-		} else {
-			Toast.makeText(this, "not availabe", Toast.LENGTH_SHORT).show();
-		}
-	}
-	
-	public void isBTEnable(){
-		if(BlueController.btAdapter.isEnabled()){
-			Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
-		}else{
-			Toast.makeText(this, "Disabled", Toast.LENGTH_SHORT).show();
-		}
-	}
 	
 	
 
@@ -292,6 +371,10 @@ public class MainActivity extends FragmentActivity implements
 	 * debugFragment Button Events
 	 */
 	public void connect(View view) {
+		// Debug stuff
+		if (D) {
+			Log.d(TAG, "connect");
+		}
 		Toast.makeText(this, "connecting...", Toast.LENGTH_LONG).show();
 
 		// new ConnectTask().execute("");
@@ -313,6 +396,10 @@ public class MainActivity extends FragmentActivity implements
 	}// ===========================================================================
 
 	public void disconnect(View view) {
+		// Debug stuff
+				if (D) {
+					Log.d(TAG, "disconnect");
+				}
 		if (References.client != null) {
 			Toast.makeText(this, "dissconnecting...", Toast.LENGTH_LONG).show();
 			References.client.stopClient();
@@ -324,9 +411,14 @@ public class MainActivity extends FragmentActivity implements
 	// THIS CLASS IS NO LONGER NESSESARY AND NO LONGER USED
 	// WE WILL REMOVE IT WHEN THE INITIAL TESTS ARE DONE
 	public class ConnectTask extends AsyncTask<String, String, TCPClient> {
+	
 
 		@Override
 		protected TCPClient doInBackground(String... message) {
+			// Debug stuff
+			if (D) {
+				Log.d(TAG, "class ConnectTask doInBackground");
+			}
 
 			// we create a TCPClient object and
 			References.client = new TCPClient(new OnMessageReceived() {
@@ -345,6 +437,10 @@ public class MainActivity extends FragmentActivity implements
 
 		@Override
 		protected void onProgressUpdate(String... values) {
+			// Debug stuff
+						if (D) {
+							Log.d(TAG, "onProgressUpdate");
+						}
 			super.onProgressUpdate(values);
 
 			// in the arrayList we add the messaged received from server
@@ -361,7 +457,7 @@ public class MainActivity extends FragmentActivity implements
 	 * one of the sections/tabs/pages.
 	 */
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
+		
 		public SectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
 		}// ===========================================================================
@@ -375,9 +471,9 @@ public class MainActivity extends FragmentActivity implements
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
 			Bundle args = new Bundle();
-
+			
 			switch (position) {
-
+			
 			case 0:
 				fragment = new SmartParkFragment();
 				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);

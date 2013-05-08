@@ -186,32 +186,24 @@ public class MainActivity extends FragmentActivity implements
 	
 	
 	public void isBTavailable(View view) {
-		Log.d(TAG, "isBTavailable");
+		Log.d(TAG, "invoking isBTavailable");
 		if (BlueController.btAdapter != null) {
 			Toast.makeText(this, "availabe", Toast.LENGTH_SHORT).show();
 		} else {
 			Toast.makeText(this, "not availabe", Toast.LENGTH_SHORT).show();
 		}
+		Log.d(TAG, "done invoking isBTavailable");
 	}
 	
 	public void isBTEnable(View view){
-		Log.d(TAG, "enable bluetooth if disabled");
-		Log.d(TAG, BlueController.btAdapter.isEnabled() + " haha");
-		
-		if(BlueController.btAdapter.isEnabled()){
-			Log.d(TAG, "isBTEnable true");
-			
+		Log.d(TAG, "enable bluetooth if disabled");		
+		if(BlueController.btAdapter.isEnabled()){			
 			Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
 		}else{
-			Log.d(TAG, "isBTEnable false");
 			Toast.makeText(this, "Disabled", Toast.LENGTH_SHORT).show();
-			Log.d(TAG, "enabling adapter");
-			
 			bluetooth.enableAdapter(this);
-			
-			Log.d(TAG, "enabling done 2");
 		}
-		
+		Log.d(TAG, "Enabling done");		
 	}
 
 	

@@ -148,17 +148,31 @@ public class BlueController extends Activity implements Serializable {
 		}
 	}// -------------------------------------------------------------------------------
 
+	public void enableAdapterNoUserInteraction() {
+		btAdapter.enable();
+	}
+	
+	
 	public void enableAdapter() {
-		Log.d("new2", "enabling adapter 1");
+		Log.d("new2", "enabling adapter 11111");
 		if (!btAdapter.isEnabled()) {
 			Log.d("new2", "enabling adapter 2");
-			Intent enableBtIntent = new Intent(
-					BluetoothAdapter.ACTION_REQUEST_ENABLE);
-			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+			Intent enableBtIntent = new Intent(	BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			startActivity(enableBtIntent);
 			Log.d("new2", "enabling adapter 2");
 		}
 	}// -------------------------------------------------------------------------------
 
+	public boolean disableAdapter(){
+		if(btAdapter.getState() == BluetoothAdapter.STATE_OFF){
+			return true;
+		}else{
+			btAdapter.disable();
+		}
+		return btAdapter.getState() == BluetoothAdapter.STATE_OFF;
+	}
+	
+	
 	public void makeDiscoverable() {
 		if (!btAdapter.isEnabled()) {
 			Intent enableBtIntent = new Intent(

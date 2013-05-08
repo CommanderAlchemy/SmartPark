@@ -76,6 +76,7 @@ public class MainActivity extends FragmentActivity implements
 		// Restore additional variables and objects from last session
 		if (savedInstanceState != null) {
 
+			
 		}
 		// Debug stuff
 		if (D) {

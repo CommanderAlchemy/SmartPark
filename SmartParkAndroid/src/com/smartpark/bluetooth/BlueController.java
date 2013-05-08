@@ -15,21 +15,16 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
-public class BlueController extends Activity implements Serializable {
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = 1L;
-	/*
-	 * Since there is only one bluetooth adapter in every handheld device, the
+public class BlueController {
+	/* Since there is only one bluetooth adapter in every handheld device, the
 	 * variables are defined using the static modifier, because they only
-	 * represent settings and findings of the same adapter.
-	 */
+	 * represent settings and findings of the same adapter. */
 	private static final int REQUEST_ENABLE_BT = 1;
 	private static final int REQUEST_DISCOVERABLE_BT = 2;
 	private static boolean BroacastReceiverIsRegistered = false;
 
 	public static BluetoothAdapter btAdapter;
+	
 	private static MyBroadcastReceiver mReceiver;
 
 	private static IntentFilter findFilter;
@@ -37,7 +32,6 @@ public class BlueController extends Activity implements Serializable {
 	private static ArrayList<BluetoothDevice> foundDevices;
 	private static Set<BluetoothDevice> pairedDevices;
 
-	private long serializedAt;
 
 	// -------------------------------------------------------------------------------
 
@@ -62,14 +56,14 @@ public class BlueController extends Activity implements Serializable {
 	 * asyncronuos and will quickly return a boolean for wheather or not the
 	 * discovery started successfully.
 	 */
-	public boolean findNearbyDevices() {
+	public boolean findNearbyDevices(MainActivity invokerActivity) {
 		// This makes a broadcast receiver to register our adapter's findings
-		// but only if not already registred.
+		// but only if not already registered.
 		if (!BroacastReceiverIsRegistered) {
 			// Register the BroadcastReceiver
-			registerReceiver(mReceiver, findFilter);
+			invokerActivity.registerReceiver(mReceiver, findFilter);
 			/*
-			 * We do not want dublicated registrations and use variable to store
+			 * We do not want duplicated registrations and use variable to store
 			 * the state of the registration.
 			 */
 			BroacastReceiverIsRegistered = true;
@@ -133,8 +127,8 @@ public class BlueController extends Activity implements Serializable {
 	 * This method will unregister the BroadcastReceiver for ACTION_FOUND of the
 	 * Bluetooth device. The registration happen in StartDiscovery().
 	 */
-	public void unRegisterBroadcastReceiver() {
-		unregisterReceiver(mReceiver);
+	public void unRegisterBroadcastReceiver(MainActivity invokerActivity) {
+		invokerActivity.unregisterReceiver(mReceiver);
 		BroacastReceiverIsRegistered = false;
 	}
 
@@ -176,21 +170,14 @@ public class BlueController extends Activity implements Serializable {
 		return btAdapter.getState() == BluetoothAdapter.STATE_OFF;
 	}
 
-	public void makeDiscoverable() {
+	public void makeDiscoverable(MainActivity invokerActivity) {
 		if (!btAdapter.isEnabled()) {
 			Intent enableBtIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-			startActivityForResult(enableBtIntent, REQUEST_DISCOVERABLE_BT);
+			invokerActivity.startActivityForResult(enableBtIntent, REQUEST_DISCOVERABLE_BT);
 		}
 	}
 
-	public void setTime(long timeInMillis) {
-		// TODO Auto-generated method stub
-		serializedAt = timeInMillis;
-	}
 
-	public long getTime() {
-		return this.serializedAt;
-	}
 
 }

@@ -377,6 +377,10 @@ public class MainActivity extends FragmentActivity implements
 		}
 	}
 
+	
+	/**
+	 * Only for inspection, removed later.
+	 */
 	// public class ConnectTask extends AsyncTask<String, String, TCPClient> {
 	//
 	// @Override

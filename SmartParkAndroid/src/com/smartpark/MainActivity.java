@@ -62,13 +62,13 @@ public class MainActivity extends FragmentActivity implements
 
 	// Debugging and stuff
 	private static final String TAG = "MainActivityDebug";
-	private static final boolean D = Ref.d;
+	private static final boolean D = Ref.D;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		
 		// Debug stuff
 		if (D) {
 			Log.d(TAG, "Starting onCreate, loading savedInstanceState");
@@ -88,6 +88,8 @@ public class MainActivity extends FragmentActivity implements
 		} else if (Ref.backgroundThread.isAlive() == false) {
 			Ref.backgroundThread.start();
 		}
+		Ref.backgroundThread.mainActivity = true;
+		
 		// Debug stuff
 		if (D) {
 			Log.d(TAG, "working on actionbar");

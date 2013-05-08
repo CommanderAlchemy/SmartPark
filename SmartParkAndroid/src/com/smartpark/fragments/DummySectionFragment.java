@@ -30,7 +30,7 @@ public class DummySectionFragment extends Fragment {
 
 	public DummySectionFragment() {
 		if (D)
-			Log.e(TAG, "Fragment: " + this.toString() + " Loaded");
+			Log.d(TAG, "Fragment: " + this.toString() + " Loaded");
 	}
 
 	@Override

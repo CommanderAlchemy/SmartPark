@@ -30,7 +30,7 @@ public class DebugFragment extends Fragment {
 
 	public DebugFragment() {
 		if (D)
-			Log.e(TAG, "Fragment: " + this.toString() + " Loaded");
+			Log.d(TAG, "Fragment: " + this.toString() + " Loaded");
 	}
 
 	@Override

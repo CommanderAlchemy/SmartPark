@@ -28,8 +28,8 @@ public class GPSFragment extends Fragment {
 
 	public GPSFragment() {
 		if (D)
-			Log.e(TAG, "Fragment: " + this.toString() + " Loaded");
-	}// ============================================================================
+			Log.d(TAG, "Fragment: " + this.toString() + " Loaded");
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,5 +41,5 @@ public class GPSFragment extends Fragment {
 		dummyTextView.setText(Integer.toString(getArguments().getInt(
 				ARG_SECTION_NUMBER)));
 		return rootView;
-	}// ============================================================================
-}// ============================================================================
+	}
+}

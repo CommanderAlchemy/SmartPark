@@ -207,24 +207,13 @@ public class MainActivity extends FragmentActivity implements
 			Toast.makeText(this, "Disabled", Toast.LENGTH_SHORT).show();
 			Log.d(TAG, "enabling adapter");
 			
-			bluetooth.enableAdapter();
+			bluetooth.enableAdapter(this);
 			
 			Log.d(TAG, "enabling done 2");
 		}
 		
 	}
 
-
-	public void enableAdapter() {
-		Log.d("new2", "enabling adapter 1");
-		if (!btAdapter.isEnabled()) {
-			Log.d("new2", "enabling adapter 2");
-			Intent enableBtIntent = new Intent(	BluetoothAdapter.ACTION_REQUEST_ENABLE);
-			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-			Log.d("new2", "enabling adapter 2");
-		}
-	}// -------------------------------------------------------------------------------
-	
 	
 	
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {

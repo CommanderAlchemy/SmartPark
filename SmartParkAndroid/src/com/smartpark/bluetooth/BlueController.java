@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.smartpark.MainActivity;
+
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -12,6 +14,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.util.Log;
 
 
@@ -154,13 +157,15 @@ public class BlueController extends Activity implements Serializable {
 	}
 	
 	
-	public void enableAdapter() {
+	public void enableAdapter(MainActivity mainActivity) {
 		Log.d("new2", "enabling adapter 1");
 		if (!btAdapter.isEnabled()) {
 			Log.d("new2", "enabling adapter 2");
 			Intent enableBtIntent = new Intent(	BluetoothAdapter.ACTION_REQUEST_ENABLE);
-			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+//			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+			mainActivity.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 			Log.d("new2", "enabling adapter 2");
+
 		}
 	}// -------------------------------------------------------------------------------
 

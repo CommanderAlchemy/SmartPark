@@ -201,18 +201,15 @@ public class MainActivity extends FragmentActivity implements
 			Toast.makeText(this, "Disabled", Toast.LENGTH_SHORT).show();
 			Log.d(TAG, "enabling adapter");
 			bluetooth.enableAdapter();
-			Log.d(TAG, "enabling done");
+			Log.d(TAG, "enabling done 2");
 		}
 		
 	}
-	
-	
-	public void onActivityResult(){
-		Log.d(TAG, "enabling done");
+
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO
+		Log.d(TAG, "enabling done 1");
 	}
-	
-	
-	
 	
 	
 	
@@ -232,9 +229,10 @@ public class MainActivity extends FragmentActivity implements
 		this.bluetooth.setTime(cal.getTimeInMillis());
 		Bundle b = new Bundle();
 		b.putSerializable("bluetooth", this.bluetooth);
+		Log.d(TAG, "Serializable1");
 		b.putSerializable("backgroundThread",
 				(Serializable) References.backgroundThread);
-
+		Log.d(TAG, "Serializable1");
 		// This saves the bundle for later use
 		outState.putBundle("bundle", b);
 	}// ===================================================================

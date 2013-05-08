@@ -12,27 +12,6 @@
         android:id="@+id/section_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/isBTEnable"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/section_label"
-        android:layout_alignTop="@+id/section_label"
-        android:onClick="isBTEnable"
-        android:text="is BT enable" />
-
-    <Button
-        android:id="@+id/queryPairedDevices"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/isBTEnable"
-        android:layout_alignRight="@+id/isBTavailable"
-        android:layout_below="@+id/isBTEnable"
-        android:onClick="pairedDevicesCount"
-        android:text="how many paired" />
     
     <TextView android:id="@+id/textOutput"
         android:layout_width="fill_parent"
@@ -40,12 +19,32 @@
         />
 
     <Button
+        android:id="@+id/queryPairedDevices"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/textOutput"
+        android:layout_alignTop="@+id/textOutput"
+        android:onClick="pairedDevicesCount"
+        android:text="how many paired" />
+
+    <Button
+        android:id="@+id/isBTEnable"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/section_label"
+        android:onClick="isBTEnable"
+        android:text="is BT enable" />
+
+    <Button
         android:id="@+id/isBTavailable"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/queryPairedDevices"
-        android:layout_alignRight="@+id/textOutput"
+        android:layout_alignTop="@+id/textOutput"
+        android:layout_centerHorizontal="true"
         android:onClick="isBTavailable"
         android:text="isBTavailable" />
 

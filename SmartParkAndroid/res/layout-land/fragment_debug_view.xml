@@ -14,23 +14,32 @@
         android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/btnConnect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/section_label"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="78dp"
-        android:onClick="connect"
-        android:text="@string/debug_connect_btn" />
-
-    <Button
         android:id="@+id/disconnect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnConnect"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="41dp"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="42dp"
+        android:layout_toLeftOf="@+id/btnConnect"
         android:onClick="disconnect"
         android:text="@string/debug_disconnect_btn" />
+
+    <Button
+        android:id="@+id/btnConnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="139dp"
+        android:onClick="connect"
+        android:text="@string/debug_connect_btn" />
+
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true" />
 
 </RelativeLayout>

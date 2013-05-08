@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
+
 public class BlueController extends Activity implements Serializable {
 	/**
 	 * 

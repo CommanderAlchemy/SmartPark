@@ -115,6 +115,9 @@ public class MainActivity extends FragmentActivity implements
 					public void onPageSelected(int position) {
 						Log.d(TAG, "position " + position);
 						actionBar.setSelectedNavigationItem(position);
+						if(actionBar.getNavigationMode() == ActionBar.NAVIGATION_MODE_LIST){
+							actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+						}
 					}
 				});
 		// Restoring the position of the actionBar

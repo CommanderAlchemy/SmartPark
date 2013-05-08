@@ -4,16 +4,24 @@ import java.io.Serializable;
 
 import android.util.Log;
 
-public class BackgoundOperationThread implements Runnable, Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class BackgoundOperationThread extends Thread implements Runnable, Serializable {
 
 	@Override
 	public void run() {
-		Log.d("BackThread", "thread is running");
-
+		while(true){
+			
+			Log.d("BackThread", "thread is running");
+			
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+			
+			
+		}
 	}
-
 }

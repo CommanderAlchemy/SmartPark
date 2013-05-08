@@ -84,23 +84,13 @@ public class MainActivity extends FragmentActivity implements
 				if (D) {
 					Log.d(TAG, "Starting onCreate, loading savedInstanceState");
 				}
-//		// Restore additional variables and objects from last session
-//		if (savedInstanceState != null) {
-//			bluetooth = (BlueController) savedInstanceState
-//					.getSerializable("bluetooth");
-//			// Recreate the bluetooth instance if it is older than one minute
-//			Calendar cal = Calendar.getInstance();
-//			if(cal.getTimeInMillis() - bluetooth.getTime() > 60000){
-//				bluetooth = new BlueController();
-//			}
-//			References.backgroundThread = (Thread) savedInstanceState
-//					.getSerializable("backgroundThread");
-//		}
-//	 	// Restoring ends ================================================
-		// Debug stuff
-		if (D) {
-			Log.d(TAG, "repopulate References.backgroundThread and run it");
+		// Restore additional variables and objects from last session
+		if (savedInstanceState != null) {
+		
 		}
+	 	// Restoring ends ================================================
+		// Debug stuff
+		if (D) {Log.d(TAG, "repopulate References.backgroundThread and run it");}
 		// Creates and starts the background-operation-thread
 		if (References.backgroundThread == null) {
 			References.backgroundThread = new Thread(
@@ -110,9 +100,7 @@ public class MainActivity extends FragmentActivity implements
 			References.backgroundThread.start();
 		}
 		// Debug stuff
-		if (D) {
-			Log.d(TAG, "working on actionbar");
-		}
+		if (D) {Log.d(TAG, "working on actionbar");}
 		// Set up the action bar
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -246,15 +234,11 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	@Override
 	public void onSaveInstanceState(final Bundle outState) {
-		// Debug stuff
-				if (D) {
-					Log.d(TAG, "onSaveInstanceState");
-				}
+		Log.d(TAG, "onSaveInstanceState");
+
 		Calendar cal = Calendar.getInstance();
 		this.bluetooth.setTime(cal.getTimeInMillis());
-		Bundle b = new Bundle();
-		Log.d(TAG, "Serializable1");
-		Log.d(TAG, "Serializable1");
+
 		// This saves the bundle for later use
 		outState.putBundle("bundle", b);
 	}// ===================================================================

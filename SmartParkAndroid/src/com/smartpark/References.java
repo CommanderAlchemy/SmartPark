@@ -1,5 +1,6 @@
 package com.smartpark;
 
+import com.smartpark.bluetooth.BlueController;
 import com.smartpark.tcp.TCPClient;
 
 public class References {
@@ -14,5 +15,8 @@ public class References {
 	public static TCPClient client;
 	public static Thread clientThread;
 	public static Thread backgroundThread;
+	public static BlueController bluetooth;
+
+	
 
 }

@@ -14,7 +14,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
-
 public class BlueController extends Activity implements Serializable {
 	/**
 	 * 
@@ -155,11 +154,11 @@ public class BlueController extends Activity implements Serializable {
 	
 	
 	public void enableAdapter() {
-		Log.d("new2", "enabling adapter 11111");
+		Log.d("new2", "enabling adapter 1");
 		if (!btAdapter.isEnabled()) {
 			Log.d("new2", "enabling adapter 2");
 			Intent enableBtIntent = new Intent(	BluetoothAdapter.ACTION_REQUEST_ENABLE);
-			startActivity(enableBtIntent);
+			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 			Log.d("new2", "enabling adapter 2");
 		}
 	}// -------------------------------------------------------------------------------

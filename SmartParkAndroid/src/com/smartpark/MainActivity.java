@@ -35,7 +35,11 @@ import com.smartpark.tcp.TCPClient;
 
 public class MainActivity extends FragmentActivity implements
 		ActionBar.TabListener {
-
+	
+	private static final int REQUEST_ENABLE_BT = 1;
+	private static final int REQUEST_DISCOVERABLE_BT = 2;
+	
+	
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
 	 * fragments for each of the sections. We use a
@@ -77,19 +81,19 @@ public class MainActivity extends FragmentActivity implements
 				if (D) {
 					Log.d(TAG, "Starting onCreate, loading savedInstanceState");
 				}
-		// Restore additional variables and objects from last session
-		if (savedInstanceState != null) {
-			bluetooth = (BlueController) savedInstanceState
-					.getSerializable("bluetooth");
-			// Recreate the bluetooth instance if it is older than one minute
-			Calendar cal = Calendar.getInstance();
-			if(cal.getTimeInMillis() - bluetooth.getTime() > 60000){
-				bluetooth = new BlueController();
-			}
-			References.backgroundThread = (Thread) savedInstanceState
-					.getSerializable("backgroundThread");
-		}
-		// Restoring ends ================================================
+//		// Restore additional variables and objects from last session
+//		if (savedInstanceState != null) {
+//			bluetooth = (BlueController) savedInstanceState
+//					.getSerializable("bluetooth");
+//			// Recreate the bluetooth instance if it is older than one minute
+//			Calendar cal = Calendar.getInstance();
+//			if(cal.getTimeInMillis() - bluetooth.getTime() > 60000){
+//				bluetooth = new BlueController();
+//			}
+//			References.backgroundThread = (Thread) savedInstanceState
+//					.getSerializable("backgroundThread");
+//		}
+//	 	// Restoring ends ================================================
 		// Debug stuff
 		if (D) {
 			Log.d(TAG, "repopulate References.backgroundThread and run it");
@@ -160,7 +164,7 @@ public class MainActivity extends FragmentActivity implements
 	}// ===========================================================================
 	
 	
-	
+
 	
 	public void pairedDevicesCount(View view) {
 		Log.d(TAG, "pairedDevicesCount invoked");
@@ -193,22 +197,39 @@ public class MainActivity extends FragmentActivity implements
 	public void isBTEnable(View view){
 		Log.d(TAG, "enable bluetooth if disabled");
 		Log.d(TAG, BlueController.btAdapter.isEnabled() + " haha");
+		
 		if(BlueController.btAdapter.isEnabled()){
 			Log.d(TAG, "isBTEnable true");
+			
 			Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
 		}else{
 			Log.d(TAG, "isBTEnable false");
 			Toast.makeText(this, "Disabled", Toast.LENGTH_SHORT).show();
 			Log.d(TAG, "enabling adapter");
+			
 			bluetooth.enableAdapter();
+			
 			Log.d(TAG, "enabling done 2");
 		}
 		
 	}
 
+
+	public void enableAdapter() {
+		Log.d("new2", "enabling adapter 1");
+		if (!btAdapter.isEnabled()) {
+			Log.d("new2", "enabling adapter 2");
+			Intent enableBtIntent = new Intent(	BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+			Log.d("new2", "enabling adapter 2");
+		}
+	}// -------------------------------------------------------------------------------
+	
+	
+	
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO
-		Log.d(TAG, "enabling done 1");
+		Log.d(TAG, "onActivityResult");
 	}
 	
 	
@@ -228,10 +249,7 @@ public class MainActivity extends FragmentActivity implements
 		Calendar cal = Calendar.getInstance();
 		this.bluetooth.setTime(cal.getTimeInMillis());
 		Bundle b = new Bundle();
-		b.putSerializable("bluetooth", this.bluetooth);
 		Log.d(TAG, "Serializable1");
-		b.putSerializable("backgroundThread",
-				(Serializable) References.backgroundThread);
 		Log.d(TAG, "Serializable1");
 		// This saves the bundle for later use
 		outState.putBundle("bundle", b);

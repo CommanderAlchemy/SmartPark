@@ -2,6 +2,8 @@ package com.smartpark;
 
 import java.io.Serializable;
 
+import android.util.Log;
+
 public class BackgoundOperationThread implements Runnable, Serializable {
 	/**
 	 * 
@@ -10,6 +12,7 @@ public class BackgoundOperationThread implements Runnable, Serializable {
 
 	@Override
 	public void run() {
+		Log.d("BackThread", "thread is running");
 
 	}
 

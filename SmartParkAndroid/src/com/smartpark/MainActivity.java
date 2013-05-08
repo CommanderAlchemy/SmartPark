@@ -33,11 +33,6 @@ import com.smartpark.tcp.*;
 
 public class MainActivity extends FragmentActivity implements
 		ActionBar.TabListener {
-
-	// Bluetooth Stuff
-	private static final int REQUEST_ENABLE_BT = 1;
-	private static final int REQUEST_DISCOVERABLE_BT = 2;
-
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
 	 * fragments for each of the sections. We use a
@@ -106,10 +101,7 @@ public class MainActivity extends FragmentActivity implements
 		// of the app.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
 				getSupportFragmentManager());
-		// Debug stuff
-		if (D) {
-			Log.d(TAG, "3");
-		}
+		
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -121,12 +113,17 @@ public class MainActivity extends FragmentActivity implements
 				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 					@Override
 					public void onPageSelected(int position) {
+						Log.d(TAG, "position " + position);
 						actionBar.setSelectedNavigationItem(position);
 					}
 				});
 		// Restoring the position of the actionBar
 		if(savedInstanceState != null){
-			actionBar.setSelectedNavigationItem(savedInstanceState.getInt("ActionBarPosition"));
+			Log.d(TAG, "actionbar setting");
+			Log.d(TAG, "actionbar setting " + savedInstanceState.getInt("ActionBarPosition"));
+			
+//			actionBar.setSelectedNavigationItem(savedInstanceState.getInt("ActionBarPosition"));
+			Log.d(TAG, "actionbar set");
 		}
 		// Debug stuff
 		if (D) {
@@ -237,7 +234,10 @@ public class MainActivity extends FragmentActivity implements
 	public void onSaveInstanceState(final Bundle outState) {
 		super.onSaveInstanceState(outState);
 		Log.d(TAG, "onSaveInstanceState");
-		outState.putInt("ActionBarPosition", actionBar.getSelectedNavigationIndex());
+//		outState.putInt("ActionBarPosition", actionBar.getSelectedNavigationIndex());
+		
+		Log.d(TAG, "" + actionBar.getSelectedNavigationIndex());
+
 	}
 
 	/**

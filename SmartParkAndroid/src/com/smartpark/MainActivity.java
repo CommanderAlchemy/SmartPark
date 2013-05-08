@@ -63,6 +63,8 @@ public class MainActivity extends FragmentActivity implements
 	 * adapter
 	 */
 	BlueController bluetooth;
+	
+	ActionBar actionBar;
 
 	// Debugging and stuff
 	private static final String TAG = "MainActivityDebug";
@@ -97,7 +99,7 @@ public class MainActivity extends FragmentActivity implements
 			Log.d(TAG, "working on actionbar");
 		}
 		// Set up the action bar
-		final ActionBar actionBar = getActionBar();
+		actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 		// Create the adapter that will return a fragment for each sections
@@ -122,6 +124,10 @@ public class MainActivity extends FragmentActivity implements
 						actionBar.setSelectedNavigationItem(position);
 					}
 				});
+		// Restoring the position of the actionBar
+		if(savedInstanceState != null){
+			actionBar.setSelectedNavigationItem(savedInstanceState.getInt("ActionBarPosition"));
+		}
 		// Debug stuff
 		if (D) {
 			Log.d(TAG, "4");
@@ -148,7 +154,7 @@ public class MainActivity extends FragmentActivity implements
 		}
 	}
 
-	@SuppressWarnings("deprecation")
+
 	public void pairedDevicesCount(View view) {
 		Log.d(TAG, "pairedDevicesCount invoked");
 		Toast.makeText(this, "pairedDevicesCount() invoked", Toast.LENGTH_SHORT)
@@ -229,7 +235,9 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	@Override
 	public void onSaveInstanceState(final Bundle outState) {
+		super.onSaveInstanceState(outState);
 		Log.d(TAG, "onSaveInstanceState");
+		outState.putInt("ActionBarPosition", actionBar.getSelectedNavigationIndex());
 	}
 
 	/**

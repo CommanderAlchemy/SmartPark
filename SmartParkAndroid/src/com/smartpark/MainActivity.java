@@ -1,6 +1,5 @@
 package com.smartpark;
 
-// Remove
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,11 +37,10 @@ import com.smartpark.tcp.TCPClient;
 
 public class MainActivity extends FragmentActivity implements
 		ActionBar.TabListener {
-	
+
 	private static final int REQUEST_ENABLE_BT = 1;
 	private static final int REQUEST_DISCOVERABLE_BT = 2;
-	
-	
+
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
 	 * fragments for each of the sections. We use a
@@ -74,23 +72,22 @@ public class MainActivity extends FragmentActivity implements
 	private static final String TAG = "MainActivityDebug";
 	private static final boolean D = true;
 
-	// ===========================================================================
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		// Debug stuff
-				if (D) {
-					Log.d(TAG, "Starting onCreate, loading savedInstanceState");
-				}
+		if (D) {
+			Log.d(TAG, "Starting onCreate, loading savedInstanceState");
+		}
 		// Restore additional variables and objects from last session
 		if (savedInstanceState != null) {
-		
+
 		}
-	 	// Restoring ends ================================================
 		// Debug stuff
-		if (D) {Log.d(TAG, "repopulate References.backgroundThread and run it");}
+		if (D) {
+			Log.d(TAG, "repopulate References.backgroundThread and run it");
+		}
 		// Creates and starts the background-operation-thread
 		if (References.backgroundThread == null) {
 			References.backgroundThread = new Thread(
@@ -100,7 +97,9 @@ public class MainActivity extends FragmentActivity implements
 			References.backgroundThread.start();
 		}
 		// Debug stuff
-		if (D) {Log.d(TAG, "working on actionbar");}
+		if (D) {
+			Log.d(TAG, "working on actionbar");
+		}
 		// Set up the action bar
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -110,9 +109,9 @@ public class MainActivity extends FragmentActivity implements
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
 				getSupportFragmentManager());
 		// Debug stuff
-				if (D) {
-					Log.d(TAG, "3");
-				}
+		if (D) {
+			Log.d(TAG, "3");
+		}
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -128,9 +127,9 @@ public class MainActivity extends FragmentActivity implements
 					}
 				});
 		// Debug stuff
-				if (D) {
-					Log.d(TAG, "4");
-				}
+		if (D) {
+			Log.d(TAG, "4");
+		}
 		// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
 			// Create a tab with text corresponding to the page title defined by
@@ -142,57 +141,54 @@ public class MainActivity extends FragmentActivity implements
 					.setTabListener(this));
 		}
 		// Debug stuff
-				if (D) {
-					Log.d(TAG, "before bt");
-				}
+		if (D) {
+			Log.d(TAG, "before bt");
+		}
 		// intantiate the bluetooth-control-class
 		bluetooth = new BlueController();
 		btAdapter = BluetoothAdapter.getDefaultAdapter();
 		// Debug stuff
-				if (D) {
-					Log.d(TAG, "after bt");
-				}
-	}// ===========================================================================
-	
-	
+		if (D) {
+			Log.d(TAG, "after bt");
+		}
+	}
 
-	
 	@SuppressWarnings("deprecation")
 	public void pairedDevicesCount(View view) {
 		Log.d(TAG, "pairedDevicesCount invoked");
-		Toast.makeText(this, "pairedDevicesCount() invoked", Toast.LENGTH_SHORT).show();
-		
+		Toast.makeText(this, "pairedDevicesCount() invoked", Toast.LENGTH_SHORT)
+				.show();
+
 		if (!BlueController.btAdapter.isEnabled()) {
-			Toast.makeText(this, "adapter is not enabled", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "adapter is not enabled", Toast.LENGTH_SHORT)
+					.show();
 		}
-		
+
 		Toast.makeText(this, "getting pairedlist", Toast.LENGTH_SHORT).show();
-		
+
 		Set<BluetoothDevice> pairedDevices = bluetooth.getPairedDevicesList();
-		if(pairedDevices != null){
-			Toast.makeText(this, "" + pairedDevices.size() + " hello ", Toast.LENGTH_SHORT).show();
+		if (pairedDevices != null) {
+			Toast.makeText(this, "" + pairedDevices.size() + " hello ",
+					Toast.LENGTH_SHORT).show();
 		}
 		Toast.makeText(this, "end of method", Toast.LENGTH_SHORT).show();
 		Log.d(TAG, "pairedDevicesCount ends");
-		
+
 		AlertDialog alertDialog = new AlertDialog.Builder(this).create();
 		alertDialog.setTitle("Paired devices");
-		alertDialog.setMessage("There are " + pairedDevices.size() + " devices that this device is currently paired with.");
+		alertDialog.setMessage("There are " + pairedDevices.size()
+				+ " devices that this device is currently paired with.");
 		alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-		   public void onClick(DialogInterface dialog, int which) {
-		      // TODO Add your code for the button here.
-		   }
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Add your code for the button here.
+			}
 		});
 		// Set the Icon for the Dialog
-//		alertDialog.setIcon(R.drawable.icon);
+		// alertDialog.setIcon(R.drawable.icon);
 		alertDialog.show();
 
 	}
-	
-	
-	
-	
-	
+
 	public void isBTavailable(View view) {
 		Log.d(TAG, "invoking isBTavailable");
 		if (BlueController.btAdapter != null) {
@@ -202,46 +198,32 @@ public class MainActivity extends FragmentActivity implements
 		}
 		Log.d(TAG, "done invoking isBTavailable");
 	}
-	
-	
-	
-	
-	public void isBTEnable(View view){
-		Log.d(TAG, "enable bluetooth if disabled");		
-		if(BlueController.btAdapter.isEnabled()){			
+
+	public void isBTEnable(View view) {
+		Log.d(TAG, "enable bluetooth if disabled");
+		if (BlueController.btAdapter.isEnabled()) {
 			Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
-		}else{
+		} else {
 			Toast.makeText(this, "Disabled", Toast.LENGTH_SHORT).show();
 			bluetooth.enableAdapter(this);
 		}
-		Log.d(TAG, "Enabling done");		
+		Log.d(TAG, "Enabling done");
 	}
 
-	
-	
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO
 		Log.d(TAG, "onActivityResult");
 	}
-	
-	
-	
-	
+
 	/**
-	 * This method will be invoked right before onPause() or onDestroy()
-	 * is invoked and is used to save certain classes that we wish to hold
-	 * for the next session instead of recreating it.
+	 * This method will be invoked right before onPause() or onDestroy() is
+	 * invoked and is used to save certain classes that we wish to hold for the
+	 * next session instead of recreating it.
 	 */
 	@Override
 	public void onSaveInstanceState(final Bundle outState) {
 		Log.d(TAG, "onSaveInstanceState");
-
-		Calendar cal = Calendar.getInstance();
-		this.bluetooth.setTime(cal.getTimeInMillis());
-
-		// This saves the bundle for later use
-		outState.putBundle("bundle", b);
-	}// ===================================================================
+	}
 
 	/**
 	 * Create ActionMenu with settings and add our own menu items.
@@ -256,7 +238,7 @@ public class MainActivity extends FragmentActivity implements
 		getMenuInflater().inflate(R.menu.main, menu);
 		CreateMenu(menu);
 		return true;
-	}// ===========================================================================
+	}
 
 	/**
 	 * Create Menu Create Action Menu that the application will have to start
@@ -266,9 +248,9 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	private void CreateMenu(Menu menu) {
 		// Debug stuff
-				if (D) {
-					Log.d(TAG, "CreateMenu");
-				}
+		if (D) {
+			Log.d(TAG, "CreateMenu");
+		}
 		menu.setQwertyMode(true);
 		MenuItem aMenu1 = menu.add(0, 0, 0, "Login");
 		aMenu1.setAlphabeticShortcut('a');
@@ -328,49 +310,41 @@ public class MainActivity extends FragmentActivity implements
 			startActivity(new Intent(this, SettingsActivity.class));
 		}
 		return false;
-	}// ===========================================================================
+	}
 
-	// TAB SELECTION-METHODS =================================================
 	@Override
 	public void onTabSelected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
 		// When the given tab is selected, switch to the corresponding page in
 		// the ViewPager.
 		mViewPager.setCurrentItem(tab.getPosition());
-	}// ===========================================================================
+	}
 
 	@Override
 	public void onTabUnselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
-	}// ===========================================================================
+	}
 
 	@Override
 	public void onTabReselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
 
-	}// ===========================================================================
-	// =======================================================================
+	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onDestroy() {
 		// Debug stuff
-				if (D) {
-					Log.d(TAG, "deprecation");
-				}
+		if (D) {
+			Log.d(TAG, "deprecation");
+		}
 		super.onDestroy();
 
 		((Thread) References.backgroundThread).stop();
 		References.client.stopClient();
 		References.clientThread.stop();
-	}// ===========================================================================
+	}
 
-	// onClick METHODS --------------------------------------------------------
-	
-	
-
-	// After initial testing, this method must be moved over to the
-	// TCPClient-class
 	/*
 	 * debugFragment Button Events
 	 */
@@ -397,74 +371,69 @@ public class MainActivity extends FragmentActivity implements
 		References.clientThread = new Thread(References.client);
 		References.clientThread.start();
 
-	}// ===========================================================================
+	}
 
 	public void disconnect(View view) {
 		// Debug stuff
-				if (D) {
-					Log.d(TAG, "disconnect");
-				}
+		if (D) {
+			Log.d(TAG, "disconnect");
+		}
 		if (References.client != null) {
 			Toast.makeText(this, "dissconnecting...", Toast.LENGTH_LONG).show();
 			References.client.stopClient();
 		}
-	}// ===========================================================================
-		// onClick METHODS END
-		// ========================================================
+	}
 
-	// THIS CLASS IS NO LONGER NESSESARY AND NO LONGER USED
-	// WE WILL REMOVE IT WHEN THE INITIAL TESTS ARE DONE
-	public class ConnectTask extends AsyncTask<String, String, TCPClient> {
-	
-
-		@Override
-		protected TCPClient doInBackground(String... message) {
-			// Debug stuff
-			if (D) {
-				Log.d(TAG, "class ConnectTask doInBackground");
-			}
-
-			// we create a TCPClient object and
-			References.client = new TCPClient(new OnMessageReceived() {
-				@Override
-				// here the messageReceived method is implemented
-				public void messageReceived(String message) {
-					Log.e(TAG, message);
-					// this method calls the onProgressUpdate
-					publishProgress(message);
-				}
-			});
-			References.client.run();
-
-			return null;
-		}// ===========================================================================
-
-		@Override
-		protected void onProgressUpdate(String... values) {
-			// Debug stuff
-						if (D) {
-							Log.d(TAG, "onProgressUpdate");
-						}
-			super.onProgressUpdate(values);
-
-			// in the arrayList we add the messaged received from server
-			// arrayList.add(values[0]);
-			// notify the adapter that the data set has changed. This means that
-			// new message received
-			// from server was added to the list
-			// mAdapter.notifyDataSetChanged();
-		}// ===========================================================================
-	}// ===========================================================================
+//	public class ConnectTask extends AsyncTask<String, String, TCPClient> {
+//
+//		@Override
+//		protected TCPClient doInBackground(String... message) {
+//			// Debug stuff
+//			if (D) {
+//				Log.d(TAG, "class ConnectTask doInBackground");
+//			}
+//
+//			// we create a TCPClient object and
+//			References.client = new TCPClient(new OnMessageReceived() {
+//				@Override
+//				// here the messageReceived method is implemented
+//				public void messageReceived(String message) {
+//					Log.e(TAG, message);
+//					// this method calls the onProgressUpdate
+//					publishProgress(message);
+//				}
+//			});
+//			References.client.run();
+//
+//			return null;
+//		}
+//
+//		@Override
+//		protected void onProgressUpdate(String... values) {
+//			// Debug stuff
+//			if (D) {
+//				Log.d(TAG, "onProgressUpdate");
+//			}
+//			super.onProgressUpdate(values);
+//
+//			// in the arrayList we add the messaged received from server
+//			// arrayList.add(values[0]);
+//			// notify the adapter that the data set has changed. This means that
+//			// new message received
+//			// from server was added to the list
+//			// mAdapter.notifyDataSetChanged();
+//		}
+//	}
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
 	 * one of the sections/tabs/pages.
 	 */
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
-		
+
 		public SectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
-		}// ===========================================================================
+		}
 
 		/**
 		 * {@link Fragment} This sets the different fragment views.
@@ -475,9 +444,9 @@ public class MainActivity extends FragmentActivity implements
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
 			Bundle args = new Bundle();
-			
+
 			switch (position) {
-			
+
 			case 0:
 				fragment = new SmartParkFragment();
 				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
@@ -511,7 +480,7 @@ public class MainActivity extends FragmentActivity implements
 
 			}
 			return fragment;
-		}// ===========================================================================
+		}
 
 		/**
 		 * Getcount This sets how many swipe pages you want to have in the
@@ -521,7 +490,7 @@ public class MainActivity extends FragmentActivity implements
 		public int getCount() {
 			// Show 5 total pages.
 			return 5;
-		}// ===========================================================================
+		}
 
 		/**
 		 * {@link Character} This sets the name on the different sections of the
@@ -543,6 +512,6 @@ public class MainActivity extends FragmentActivity implements
 				return getString(R.string.title_section5).toUpperCase(l);
 			}
 			return null;
-		}// ===========================================================================
+		}
 	}
 }

@@ -42,6 +42,13 @@
         android:layout_alignLeft="@+id/isBTEnable"
         android:layout_below="@+id/isBTEnable"
         android:text="how many paired" 
-        android:onClick="pairedDevicesCount"/>
+        android:onClick="pairedDevicesCount"
+        
+        />
+    
+    <TextView android:id="@+id/textOutput"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
 
 </RelativeLayout>

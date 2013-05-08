@@ -7,9 +7,11 @@ import java.util.Locale;
 import java.util.Set;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -166,6 +168,7 @@ public class MainActivity extends FragmentActivity implements
 	
 
 	
+	@SuppressWarnings("deprecation")
 	public void pairedDevicesCount(View view) {
 		Log.d(TAG, "pairedDevicesCount invoked");
 		Toast.makeText(this, "pairedDevicesCount() invoked", Toast.LENGTH_SHORT).show();
@@ -182,7 +185,23 @@ public class MainActivity extends FragmentActivity implements
 		}
 		Toast.makeText(this, "end of method", Toast.LENGTH_SHORT).show();
 		Log.d(TAG, "pairedDevicesCount ends");
+		
+		AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+		alertDialog.setTitle("Paired devices");
+		alertDialog.setMessage("There are " + pairedDevices.size() + " devices that this device is currently paired with.");
+		alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+		   public void onClick(DialogInterface dialog, int which) {
+		      // TODO Add your code for the button here.
+		   }
+		});
+		// Set the Icon for the Dialog
+//		alertDialog.setIcon(R.drawable.icon);
+		alertDialog.show();
+
 	}
+	
+	
+	
 	
 	
 	public void isBTavailable(View view) {
@@ -194,6 +213,9 @@ public class MainActivity extends FragmentActivity implements
 		}
 		Log.d(TAG, "done invoking isBTavailable");
 	}
+	
+	
+	
 	
 	public void isBTEnable(View view){
 		Log.d(TAG, "enable bluetooth if disabled");		
@@ -538,5 +560,4 @@ public class MainActivity extends FragmentActivity implements
 			return null;
 		}// ===========================================================================
 	}
-
 }

@@ -43,7 +43,7 @@ public class BlueController extends Activity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private long serializedAt;
 
-	// -------------------------------------------------------------------------------
+	
 
 	public BlueController() {
 		// Get the adapter and store it in a static variable
@@ -57,7 +57,7 @@ public class BlueController extends Activity implements Serializable {
 		 * devices
 		 */
 		findFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-	}// -------------------------------------------------------------------------------
+	}
 
 	/**
 	 * This method will first register a BroadcastReceiver for intents carrying
@@ -80,16 +80,15 @@ public class BlueController extends Activity implements Serializable {
 			// Don't forget to unregister during onDestroy
 		}
 		return btAdapter.startDiscovery();
-	}// -------------------------------------------------------------------------------
+	}
 
 	public Set<BluetoothDevice> getPairedDevicesList() {
 		if(!btAdapter.isEnabled()){
-			Log.d("new", "adapter not enabled");
 		}else{
 			pairedDevices = btAdapter.getBondedDevices();
 		}
 		return pairedDevices;
-	}// -------------------------------------------------------------------------------
+	}
 
 	/**
 	 * This method can be called whenever needed. It should however be used when
@@ -100,7 +99,7 @@ public class BlueController extends Activity implements Serializable {
 	 */
 	public ArrayList<BluetoothDevice> getFoundDevices() {
 		return foundDevices;
-	}// -------------------------------------------------------------------------------
+	}
 
 	public void connectTo() {
 		// TODO
@@ -108,7 +107,7 @@ public class BlueController extends Activity implements Serializable {
 
 	public void sendString(ArrayList<String> data) {
 		// TODO
-	}// -------------------------------------------------------------------------------
+	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO
@@ -127,11 +126,11 @@ public class BlueController extends Activity implements Serializable {
 				foundDevices.add(device);
 			}
 		}
-	}// -------------------------------------------------------------------------------
+	}
 
 	public boolean isDiscovering(BluetoothAdapter sd) {
 		return btAdapter.isDiscovering();
-	}// -------------------------------------------------------------------------------
+	}
 
 	/**
 	 * This method will unregister the BroadcastReceiver for ACTION_FOUND of the
@@ -140,33 +139,29 @@ public class BlueController extends Activity implements Serializable {
 	public void unRegisterBroadcastReceiver() {
 		unregisterReceiver(mReceiver);
 		BroacastReceiverIsRegistered = false;
-	}// -------------------------------------------------------------------------------
+	}
 
 	public boolean isBluetoothAdapterAvailable() {
 		return btAdapter != null;
-	}// -------------------------------------------------------------------------------
+	}
 
 	public void cancelDiscovery() {
 		// cancel any prior BT device discovery
 		if (btAdapter.isDiscovering()) {
 			btAdapter.cancelDiscovery();
 		}
-	}// -------------------------------------------------------------------------------
+	}
 
 	public void enableAdapterNoUserInteraction() {
 		btAdapter.enable();
 	}
 	
-	
 	public void enableAdapter() {
-		Log.d("new2", "enabling adapter 11111");
 		if (!btAdapter.isEnabled()) {
-			Log.d("new2", "enabling adapter 2");
 			Intent enableBtIntent = new Intent(	BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			startActivity(enableBtIntent);
-			Log.d("new2", "enabling adapter 2");
 		}
-	}// -------------------------------------------------------------------------------
+	}
 
 	public boolean disableAdapter(){
 		if(btAdapter.getState() == BluetoothAdapter.STATE_OFF){
@@ -177,14 +172,13 @@ public class BlueController extends Activity implements Serializable {
 		return btAdapter.getState() == BluetoothAdapter.STATE_OFF;
 	}
 	
-	
 	public void makeDiscoverable() {
 		if (!btAdapter.isEnabled()) {
 			Intent enableBtIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 			startActivityForResult(enableBtIntent, REQUEST_DISCOVERABLE_BT);
 		}
-	}// -------------------------------------------------------------------------------
+	}
 
 	public void setTime(long timeInMillis) {
 		// TODO Auto-generated method stub

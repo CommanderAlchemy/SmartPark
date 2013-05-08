@@ -277,7 +277,7 @@ public class MainActivity extends FragmentActivity implements
 	}
 	
 	public void isBTEnable(){
-		if(bluetooth.btAdapter.isEnabled()){
+		if(BlueController.btAdapter.isEnabled()){
 			Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
 		}else{
 			Toast.makeText(this, "Disabled", Toast.LENGTH_SHORT).show();

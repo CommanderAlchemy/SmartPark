@@ -366,6 +366,10 @@ public class MainActivity extends FragmentActivity implements
 
 	}
 
+	/**
+	 * Disconnect from server action.
+	 * @param view
+	 */
 	public void disconnect(View view) {
 		// Debug stuff
 		if (D) {

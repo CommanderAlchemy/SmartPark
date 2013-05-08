@@ -57,7 +57,7 @@ public class MainActivity extends FragmentActivity implements
 	 * adapter
 	 */
 	BlueController bluetooth;
-
+	
 	ActionBar actionBar;
 
 	// Debugging and stuff
@@ -68,10 +68,6 @@ public class MainActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
-		// Set up the action bar
-		actionBar = getActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		
 		// Debug stuff
 		if (D) {
@@ -98,12 +94,15 @@ public class MainActivity extends FragmentActivity implements
 		if (D) {
 			Log.d(TAG, "working on actionbar");
 		}
+		// Set up the action bar
+		actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 		// Create the adapter that will return a fragment for each sections
 		// of the app.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
 				getSupportFragmentManager());
-
+		
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -123,10 +122,16 @@ public class MainActivity extends FragmentActivity implements
 					}
 				});
 		// Restoring the position of the actionBar
-		if (savedInstanceState != null) {
-			Log.d(TAG,
-					"actionbar setting "
-							+ savedInstanceState.getInt("ActionBarPosition"));
+		if(savedInstanceState != null){
+			Log.d(TAG, "actionbar setting");
+			Log.d(TAG, "actionbar setting " + savedInstanceState.getInt("ActionBarPosition"));
+			
+//			actionBar.setSelectedNavigationItem(savedInstanceState.getInt("ActionBarPosition"));
+			Log.d(TAG, "actionbar set");
+		}
+		// Debug stuff
+		if (D) {
+			Log.d(TAG, "4");
 		}
 		// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
@@ -138,9 +143,18 @@ public class MainActivity extends FragmentActivity implements
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
+		// Debug stuff
+		if (D) {
+			Log.d(TAG, "before bt");
+		}
 		// intantiate the bluetooth-control-class
 		bluetooth = new BlueController();
+		// Debug stuff
+		if (D) {
+			Log.d(TAG, "after bt");
+		}
 	}
+
 
 	public void pairedDevicesCount(View view) {
 		Log.d(TAG, "pairedDevicesCount invoked");
@@ -224,8 +238,7 @@ public class MainActivity extends FragmentActivity implements
 	public void onSaveInstanceState(final Bundle outState) {
 		super.onSaveInstanceState(outState);
 		Log.d(TAG, "onSaveInstanceState");
-		// outState.putInt("ActionBarPosition",
-		// actionBar.getSelectedNavigationIndex());
+//		outState.putInt("ActionBarPosition", actionBar.getSelectedNavigationIndex());
 		
 		Log.d(TAG, "" + actionBar.getSelectedNavigationIndex());
 
@@ -367,7 +380,6 @@ public class MainActivity extends FragmentActivity implements
 
 	/**
 	 * Disconnect from server action.
-	 * 
 	 * @param view
 	 */
 	public void disconnect(View view) {
@@ -381,6 +393,7 @@ public class MainActivity extends FragmentActivity implements
 		}
 	}
 
+	
 	/**
 	 * Only for inspection, removed later.
 	 */
@@ -449,19 +462,19 @@ public class MainActivity extends FragmentActivity implements
 
 			case 0:
 				fragment = new SmartParkFragment();
-				args.putInt(SmartParkFragment.ARG_SECTION_NUMBER, position + 1);
+				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
 				fragment.setArguments(args);
 				break;
 
 			case 1:
 				fragment = new GPSFragment();
-				args.putInt(GPSFragment.ARG_SECTION_NUMBER, position + 1);
+				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
 				fragment.setArguments(args);
 				break;
 
 			case 2:
 				fragment = new BluetoothFragment();
-				args.putInt(BluetoothFragment.ARG_SECTION_NUMBER, position + 1);
+				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
 				fragment.setArguments(args);
 				break;
 

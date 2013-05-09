@@ -122,7 +122,7 @@ public class BlueController {
 	 */
 	public BluetoothDevice getFoundDeviceByName(String name) {
 		BluetoothDevice device;
-		Iterator<BluetoothDevice> iter = h.iterator();
+		Iterator<BluetoothDevice> iter;
 		if (foundDevices.size() > 0) {
 			iter = foundDevices.iterator();
 

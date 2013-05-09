@@ -127,7 +127,6 @@ public class BlueController {
 		Iterator<BluetoothDevice> iter;
 		if (foundDevices.size() > 0) {
 			iter = foundDevices.iterator();
-
 			while (iter.hasNext()) {
 				device = iter.next();
 				if (device.getName() == name) {

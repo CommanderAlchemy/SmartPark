@@ -24,7 +24,7 @@ public class TCPClient implements Runnable {
 
 	// Debug
 	private static final String TAG = "SmartPark";
-	private static boolean d = Ref.d;
+	private static boolean d = Ref.D;
 
 	// message to send to the server
 	private String mServerMessage;

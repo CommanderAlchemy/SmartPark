@@ -13,6 +13,12 @@ public class Ref {
 	// FOR THE COMPONENTS ON THE DIFFERENT LAYOUTS.
 	// THE ALTERNATIVE WAS TO ALWAYS PASS REFERENCES TO OTHER CLASSES.
 	
+	// CONNECTION STATE INTEGERS
+	public final static int NOT_CONNECTED = -1;
+	public final static int DISCONNECTING = 0;
+	public final static int CONNECTING = 1;
+	public final static int CONNECTED = 2;
+	
 	// Global control-variables
 	public static boolean D = true;
 	
@@ -27,8 +33,8 @@ public class Ref {
 	public static BluetoothDevice btDevice;
 	
 	// Global control-flags
-	public static String tcpState = "not connected"; 		// -1 not connected / 0 disconnecting / 1 - connecting / 2 - connected
-	public static String btState = "not connected"; 		// -1 not connected / 0 disconnecting / 1 - connecting / 2 - connected
+	public static int tcpState = NOT_CONNECTED; 		// -1 not connected / 0 disconnecting / 1 - connecting / 2 - connected
+	public static int btState = NOT_CONNECTED; 			// -1 not connected / 0 disconnecting / 1 - connecting / 2 - connected
 	
 	
 	
@@ -36,10 +42,10 @@ public class Ref {
 	
 	
 	// Changing tcpState
-	public static void setTcpState(String tcpState) {
+	public static void setTcpState(int tcpState) {
 		Ref.tcpState = tcpState;
 	}
-	public static String getTcpState() {
+	public static int getTcpState() {
 		return tcpState;
 	}
 	

@@ -1,13 +1,9 @@
 package com.smartpark.bluetooth;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
-import com.smartpark.MainActivity;
-
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -15,6 +11,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
+
+import com.smartpark.MainActivity;
 
 public class BlueController {
 	/*

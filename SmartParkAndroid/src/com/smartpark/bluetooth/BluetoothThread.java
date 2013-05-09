@@ -5,7 +5,7 @@ import java.io.IOException;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 
-private class BluetoothThread extends Thread {
+public class BluetoothThread extends Thread {
     private final BluetoothSocket mmSocket;
     private final BluetoothDevice mmDevice;
  

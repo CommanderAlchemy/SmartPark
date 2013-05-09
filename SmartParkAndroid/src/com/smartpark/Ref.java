@@ -1,5 +1,8 @@
 package com.smartpark;
 
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+
 import com.smartpark.bluetooth.BlueController;
 import com.smartpark.tcp.TCPClient;
 
@@ -9,14 +12,44 @@ public class Ref {
 	// THIS IS INSPIERED BY THE ANDROID R.CLASS THAT HOUSES ALL REFERENCES
 	// FOR THE COMPONENTS ON THE DIFFERENT LAYOUTS.
 	// THE ALTERNATIVE WAS TO ALWAYS PASS REFERENCES TO OTHER CLASSES.
-	// TWO OF THE MOST IMPORTATNT CLASSES ARE BACKGROUNDTHREAD-REF AND
-	// CLIENTTHREAD, SINCE ALL CLASSES WILL NEEDS THEIR SERVICES TO OPERATE.
-	public static boolean D = true;
-	public static TCPClient client;
-	public static Thread clientThread;
-	public static BackgoundOperationThread backgroundThread;
-	public static BlueController bluetooth;
-
 	
-
+	// Global control-variables
+	public static boolean D = true;
+	
+	// Objects used for Internet communication
+	public static TCPClient tcpClient;
+	public static Thread clientThread;
+	public static BackgoundOperationThread bgThread;
+	
+	// Objects for use with the bluetooth adapter
+	public static BlueController btController;
+	public static BluetoothSocket btSocket;
+	public static BluetoothDevice btDevice;
+	
+	// Global control-flags
+	public static String tcpState = "not connected"; 		// -1 not connected / 0 disconnecting / 1 - connecting / 2 - connected
+	public static String btState = "not connected"; 		// -1 not connected / 0 disconnecting / 1 - connecting / 2 - connected
+	
+	
+	
+	
+	
+	
+	// Changing tcpState
+	public static void setTcpState(String tcpState) {
+		Ref.tcpState = tcpState;
+	}
+	public static String getTcpState() {
+		return tcpState;
+	}
+	
+	// Changing btState
+	public static void setbtState(String btState) {
+		Ref.btState = tcpState;
+	}
+	public static String getbtState() {
+		return btState;
+	}
+	
+	
 }

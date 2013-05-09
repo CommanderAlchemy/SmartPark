@@ -23,7 +23,7 @@ import com.smartpark.Ref;
 public class SmartParkFragment extends Fragment  {
 	
 	// Debug Information, the boolean should be stored in a common settings file in the future!
-	private static boolean D = Ref.d;
+	private static boolean D = Ref.D;
 	private static final String TAG = "SmartParkFragment";
 	
 	// This needs some fixing for code cleanup

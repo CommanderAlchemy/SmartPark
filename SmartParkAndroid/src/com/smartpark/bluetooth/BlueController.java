@@ -2,6 +2,7 @@ package com.smartpark.bluetooth;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Set;
 
 import com.smartpark.MainActivity;
@@ -80,6 +81,28 @@ public class BlueController {
 		}
 		return pairedDevices;
 	}
+	
+	/**
+	 * This method searches for a BluetoothDevice that matches the specified name.
+	 * @param name The name of the bluetooth device
+	 * @return device BluetoothDevice
+	 */
+	public BluetoothDevice getPairedDeviceByName(String name){
+		Set<BluetoothDevice> h = getPairedDevicesList();
+		Iterator<BluetoothDevice> iter = h.iterator();
+		BluetoothDevice device;
+		while(iter.hasNext()){
+			device = iter.next();
+			if(device.getName() == name){
+				return device;
+			}
+		}
+		
+		while()
+		return null;
+	}
+	
+	
 
 	/**
 	 * This method can be called whenever needed. It should however be used when

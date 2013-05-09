@@ -9,7 +9,7 @@ import android.bluetooth.BluetoothSocket;
 public class BluetoothThread extends Thread {
 	/** UUID for Serial Port Profile */
 	private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-	
+	private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
     private final BluetoothSocket mmSocket;
     private final BluetoothDevice mmDevice;
  

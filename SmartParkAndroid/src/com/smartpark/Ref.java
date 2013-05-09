@@ -1,5 +1,8 @@
 package com.smartpark;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 
@@ -14,10 +17,10 @@ public class Ref {
 	// THE ALTERNATIVE WAS TO ALWAYS PASS REFERENCES TO OTHER CLASSES.
 	
 	// CONNECTION STATE INTEGERS
-	public final static int NOT_CONNECTED = -1;
-	public final static int DISCONNECTING = 0;
-	public final static int CONNECTING = 1;
-	public final static int CONNECTED = 2;
+	public final static int STATE_NOT_CONNECTED = -1;
+	public final static int STATE_DISCONNECTING = 0;
+	public final static int STATE_CONNECTING = 1;
+	public final static int STATE_CONNECTED = 2;
 	
 	// Global control-variables
 	public static boolean D = true;
@@ -31,10 +34,13 @@ public class Ref {
 	public static BlueController btController;
 	public static BluetoothSocket btSocket;
 	public static BluetoothDevice btDevice;
+	public static InputStream btInStream;
+	public static OutputStream btOutStream;
+
 	
 	// Global control-flags
-	public static int tcpState = NOT_CONNECTED; 		// -1 not connected / 0 disconnecting / 1 - connecting / 2 - connected
-	public static int btState = NOT_CONNECTED; 			// -1 not connected / 0 disconnecting / 1 - connecting / 2 - connected
+	public static int tcpState = STATE_NOT_CONNECTED; 		// -1 not connected / 0 disconnecting / 1 - connecting / 2 - connected
+	public static int btState = STATE_NOT_CONNECTED; 			// -1 not connected / 0 disconnecting / 1 - connecting / 2 - connected
 	
 	
 	
@@ -50,10 +56,10 @@ public class Ref {
 	}
 	
 	// Changing btState
-	public static void setbtState(String btState) {
+	public static void setbtState(int btState) {
 		Ref.btState = tcpState;
 	}
-	public static String getbtState() {
+	public static int getbtState() {
 		return btState;
 	}
 	

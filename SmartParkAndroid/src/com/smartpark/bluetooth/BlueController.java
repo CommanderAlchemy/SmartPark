@@ -1,8 +1,10 @@
 package com.smartpark.bluetooth;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.UUID;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -13,6 +15,7 @@ import android.content.IntentFilter;
 import android.util.Log;
 
 import com.smartpark.MainActivity;
+import com.smartpark.Ref;
 
 public class BlueController {
 	/*
@@ -32,6 +35,13 @@ public class BlueController {
 
 	private static ArrayList<BluetoothDevice> foundDevices;
 	private static Set<BluetoothDevice> pairedDevices;
+
+	private static final UUID MY_UUID = UUID
+			.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
+	// Debugging and stuff
+	private static final String TAG = "BlueController";
+	private static final boolean D = Ref.D;
 
 	// -------------------------------------------------------------------------------
 
@@ -81,8 +91,6 @@ public class BlueController {
 		return pairedDevices;
 	}
 
-	
-	
 	/**
 	 * This method searches for a BluetoothDevice that matches the specified
 	 * name. It will only search for the device among paired devices.
@@ -113,7 +121,7 @@ public class BlueController {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * This method searches for a BluetoothDevice that matches the specified
 	 * name. It will only search for the device among found devices.
@@ -136,10 +144,7 @@ public class BlueController {
 		}
 		return null;
 	}
-	
-	
-	
-	
+
 	/**
 	 * This method can be called whenever needed. It should however be used when
 	 * the bluetooth adapter is discovering. The ArrayList, foundDevices, is
@@ -153,7 +158,49 @@ public class BlueController {
 
 	public void connectAsynchroniouslyTo() {
 		// TODO
-		// start a thread to manage connection to a 
+		// start a thread to manage connection to a BluetoothDevice saved in
+		// Ref.java
+
+		Ref.btState = Ref.STATE_CONNECTING;
+		new Thread() {
+
+			public void run() {
+				try {
+					Ref.btSocket = Ref.btDevice
+							.createRfcommSocketToServiceRecord(UUID
+									.fromString("00001101-0000-1000-8000-00805F9B34FB"));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					Log.e(TAG, "Socket init Exception: " + e);
+					e.printStackTrace();
+				}
+
+				try {
+					// This is a blocking call and will only return on a
+					// successful connection or an exception
+					Ref.btSocket.connect();
+				} catch (IOException e) {
+					// Close the socket
+					try {
+						Log.e(TAG, "Connection Exception: ", e);
+						Ref.btSocket.close();
+					} catch (IOException e2) {
+						Log.e(TAG, "Socket Close Exception: " + e2);
+					}
+					Ref.btState = Ref.STATE_NOT_CONNECTED;
+				}
+				try {
+					Log.d(TAG, "Init btSocket I/O Streams");
+					Ref.btInStream = Ref.btSocket.getInputStream();
+					Ref.btOutStream = Ref.btSocket.getOutputStream();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					Log.e(TAG, "Socket I/O Streams Exception" + e);
+				}
+				Log.d(TAG, "BlueTooth Connection Successfull");
+				Ref.btState = Ref.STATE_CONNECTED;
+			}
+		}.start();
 	}
 
 	public void sendString(ArrayList<String> data) {
@@ -162,21 +209,6 @@ public class BlueController {
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO
-	}
-
-	private class MyBroadcastReceiver extends BroadcastReceiver {
-
-		public void onReceive(Context context, Intent intent) {
-			// may need to chain this to a recognizing function
-			String action = intent.getAction();
-			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-				// Get the BluetoothDevice object from the Intent
-				BluetoothDevice device = intent
-						.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-				// Add the found device to the foundDevices ArrayList
-				foundDevices.add(device);
-			}
-		}
 	}
 
 	public boolean isDiscovering(BluetoothAdapter sd) {
@@ -228,13 +260,28 @@ public class BlueController {
 		}
 		return btAdapter.getState() == BluetoothAdapter.STATE_TURNING_OFF;
 	}
-	
+
 	public void makeDiscoverable(MainActivity invokerActivity) {
 		if (!btAdapter.isEnabled()) {
 			Intent enableBtIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 			invokerActivity.startActivityForResult(enableBtIntent,
 					REQUEST_DISCOVERABLE_BT);
+		}
+	}
+
+	private class MyBroadcastReceiver extends BroadcastReceiver {
+
+		public void onReceive(Context context, Intent intent) {
+			// may need to chain this to a recognizing function
+			String action = intent.getAction();
+			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+				// Get the BluetoothDevice object from the Intent
+				BluetoothDevice device = intent
+						.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+				// Add the found device to the foundDevices ArrayList
+				foundDevices.add(device);
+			}
 		}
 	}
 

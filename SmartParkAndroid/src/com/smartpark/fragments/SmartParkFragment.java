@@ -49,7 +49,7 @@ public class SmartParkFragment extends Fragment  {
 	public void onDestroy(){
 		super.onDestroy();
 		Log.d(TAG, " -- DestroyFragment");
-		Ref.backgroundThread.b = false;
+		Ref.bgThread.b = false;
 
 	}
 	

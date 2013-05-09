@@ -82,13 +82,13 @@ public class MainActivity extends FragmentActivity implements
 			Log.d(TAG, "repopulate References.backgroundThread and run it");
 		}
 		// Creates and starts the background-operation-thread
-		if (Ref.backgroundThread == null) {
-			Ref.backgroundThread = new BackgoundOperationThread();
-			Ref.backgroundThread.start();
-		} else if (Ref.backgroundThread.isAlive() == false) {
-			Ref.backgroundThread.start();
+		if (Ref.bgThread == null) {
+			Ref.bgThread = new BackgoundOperationThread();
+			Ref.bgThread.start();
+		} else if (Ref.bgThread.isAlive() == false) {
+			Ref.bgThread.start();
 		}
-		Ref.backgroundThread.mainActivity = true;
+		Ref.bgThread.mainActivity = true;
 		
 		// Debug stuff
 		if (D) {
@@ -362,7 +362,7 @@ public class MainActivity extends FragmentActivity implements
 
 		// new ConnectTask().execute("");
 
-		Ref.client = new TCPClient(new OnMessageReceived() {
+		Ref.tcpClient = new TCPClient(new OnMessageReceived() {
 			@Override
 			// here the messageReceived method is implemented
 			public void messageReceived(String message) {
@@ -373,7 +373,7 @@ public class MainActivity extends FragmentActivity implements
 			}
 		});
 
-		Ref.clientThread = new Thread(Ref.client);
+		Ref.clientThread = new Thread(Ref.tcpClient);
 		Ref.clientThread.start();
 
 	}
@@ -387,9 +387,9 @@ public class MainActivity extends FragmentActivity implements
 		if (D) {
 			Log.d(TAG, "disconnect");
 		}
-		if (Ref.client != null) {
+		if (Ref.tcpClient != null) {
 			Toast.makeText(this, "dissconnecting...", Toast.LENGTH_LONG).show();
-			Ref.client.stopClient();
+			Ref.tcpClient.stopClient();
 		}
 	}
 

@@ -81,6 +81,8 @@ public class BlueController {
 		return pairedDevices;
 	}
 
+	
+	
 	/**
 	 * This method searches for a BluetoothDevice that matches the specified
 	 * name. It will only search for the device among paired devices.
@@ -150,8 +152,9 @@ public class BlueController {
 		return foundDevices;
 	}
 
-	public void connectTo() {
+	public void connectAsynchroniouslyTo() {
 		// TODO
+		// start a thread to manage connection to a 
 	}
 
 	public void sendString(ArrayList<String> data) {

@@ -1,11 +1,16 @@
 package com.smartpark.bluetooth;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 
 public class BluetoothThread extends Thread {
+	
+	/** UUID for Serial Port Profile */
+	private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+	
     private final BluetoothSocket mmSocket;
     private final BluetoothDevice mmDevice;
  
@@ -18,7 +23,7 @@ public class BluetoothThread extends Thread {
         // Get a BluetoothSocket to connect with the given BluetoothDevice
         try {
             // MY_UUID is the app's UUID string, also used by the server code
-            tmp = device.(MY_UUID);
+            tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
         } catch (IOException e) { }
         mmSocket = tmp;
     }

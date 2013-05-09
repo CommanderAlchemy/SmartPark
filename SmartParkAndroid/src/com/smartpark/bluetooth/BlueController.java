@@ -83,8 +83,7 @@ public class BlueController {
 
 	/**
 	 * This method searches for a BluetoothDevice that matches the specified
-	 * name. It will first search for the device among paired devices and then
-	 * search in possibly found devices.
+	 * name. It will only search for the device among paired devices.
 	 * 
 	 * @param name
 	 *            The name of the bluetooth device
@@ -112,6 +111,33 @@ public class BlueController {
 		}
 		return null;
 	}
+	
+	/**
+	 * This method searches for a BluetoothDevice that matches the specified
+	 * name. It will only search for the device among found devices.
+	 * 
+	 * @param name
+	 *            The name of the bluetooth device
+	 * @return device BluetoothDevice
+	 */
+	public BluetoothDevice getFoundDeviceByName(String name) {
+		BluetoothDevice device;
+		Iterator<BluetoothDevice> iter = h.iterator();
+		if (foundDevices.size() > 0) {
+			iter = foundDevices.iterator();
+
+			while (iter.hasNext()) {
+				device = iter.next();
+				if (device.getName() == name) {
+					return device;
+				}
+			}
+		}
+		return null;
+	}
+	
+	
+	
 	
 	/**
 	 * This method can be called whenever needed. It should however be used when

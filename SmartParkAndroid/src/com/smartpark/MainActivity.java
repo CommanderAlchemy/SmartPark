@@ -4,6 +4,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothDevice;
@@ -126,13 +127,13 @@ public class MainActivity extends FragmentActivity implements
 
 		// // Restoring the position of the actionBar
 		// if (savedInstanceState != null) {
-		// Log.d(TAG,"actionbar setting "+
+		// Log.d(TAG,"actionBar setting "+
 		// savedInstanceState.getInt("ActionBarPosition"));
 		// //
 		// actionBar.setSelectedNavigationItem(savedInstanceState.getInt("ActionBarPosition"));
 		// Log.d(TAG, "actionbar set");
 		// }
-		
+
 		// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
 			// Create a tab with text corresponding to the page title defined by
@@ -149,53 +150,41 @@ public class MainActivity extends FragmentActivity implements
 	public void onStart() {
 		Log.e(TAG, "++ onStart ++");
 		// Check to see if bluetooth is available
-		Log.d(TAG, "invoking isBTavailable");
-		if (Ref.btAdapter != null) {
-			Toast.makeText(this, "availabe", Toast.LENGTH_SHORT).show();
+		if (Ref.btAdapter == null) {
+			AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+			builder1.setTitle("Problem");
+			builder1.setMessage("Your phone does not seem to have Bluetooth. This is needed to conenct with the SP-device!");
+			builder1.setCancelable(false);
+			builder1.setPositiveButton(android.R.string.ok,
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							// TODO Add your code for the button here.
+						}
+					});
 		} else {
-			Toast.makeText(this, "not availabe", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "Bluetooth found", Toast.LENGTH_SHORT).show();
 		}
-		Log.d(TAG, "done invoking isBTavailable");
 
-		// Enable bluetooth if disabled by askign the user first
-		Log.d(TAG, "enable bluetooth if disabled");
-		if (Ref.btAdapter.isEnabled()) {
-			Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
-		} else {
-			Toast.makeText(this, "Disabled", Toast.LENGTH_SHORT).show();
-			/*
-			 * the "this" is required so that the method can start another
+		// Enable bluetooth if disabled by asking the user first
+		Log.d(TAG, "--> enable bluetooth if disabled");
+		if (!Ref.btAdapter.isEnabled()) {
+			/* the "this" is required so that the method can start another
 			 * activity. Only the activity currently running in thread can start
-			 * other activities.
-			 */
+			 * other activities. */
 			Ref.btController.enableAdapter(this);
-			Log.d(TAG, "Enabling done");
+			Log.d(TAG, "--> Enabling done");
+			Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
 		}
 	}
-
+	
 	// We have to change this TODO
 	public void pairedDevicesCount(View view) {
 		Log.e(TAG, "++ pairedDevicesCount ++");
-		Toast.makeText(this, "pairedDevicesCount() invoked", Toast.LENGTH_SHORT)
+		Toast.makeText(this, "++ pairedDevicesCount ++", Toast.LENGTH_SHORT)
 				.show();
+	}
 
-		if (!BlueController.btAdapter.isEnabled()) {
-			Toast.makeText(this, "adapter is not enabled", Toast.LENGTH_SHORT)
-					.show();
-		}
-
-		Toast.makeText(this, "getting pairedlist", Toast.LENGTH_SHORT).show();
-
-		Set<BluetoothDevice> pairedDevices = Ref.btController
-				.getPairedDevicesList();
-		if (pairedDevices != null) {
-			Toast.makeText(this, "" + pairedDevices.size(), Toast.LENGTH_SHORT)
-					.show();
-		}
-
-		Toast.makeText(this, "end of method", Toast.LENGTH_SHORT).show();
-		Log.d(TAG, "pairedDevicesCount ends");
-
+	public void gfh() {
 		AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
 		builder1.setTitle("Title");
 		builder1.setMessage("my message");
@@ -218,8 +207,6 @@ public class MainActivity extends FragmentActivity implements
 						// TODO Add your code for the button here.
 					}
 				});
-
-		// what is this
 		AlertDialog alert = builder1.create();
 		alert.show();
 	}
@@ -238,9 +225,23 @@ public class MainActivity extends FragmentActivity implements
 
 		switch (requestCode) {
 		case Ref.REQUEST_ENABLE_BT:
-
+			if (resultCode == Activity.RESULT_OK) {
+				Toast.makeText(this, "Enabling Bluetooth", Toast.LENGTH_SHORT)
+						.show();
+			} else {
+				Toast.makeText(this, "Cancel enabling Bluetooth",
+						Toast.LENGTH_SHORT).show();
+			}
 			break;
-
+		case Ref.REQUEST_DISCOVERABLE_BT:
+			if (resultCode == Activity.RESULT_OK) {
+				Toast.makeText(this, "Bluetooth Discoverable", Toast.LENGTH_SHORT)
+				.show();
+			}else{
+				Toast.makeText(this, "Bluetooth not Discoverable", Toast.LENGTH_SHORT)
+				.show();
+			}
+			break;
 		default:
 			break;
 		}

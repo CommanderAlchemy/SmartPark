@@ -51,12 +51,13 @@ public class Ref {
 	
 	// Global control-flags
 	public static int tcpState = STATE_NOT_CONNECTED; 		// -1 not connected / 0 disconnecting / 1 - connecting / 2 - connected
-	public static int btState = STATE_NOT_CONNECTED; 			// -1 not connected / 0 disconnecting / 1 - connecting / 2 - connected
+	public static int btState = STATE_NOT_CONNECTED; 		// -1 not connected / 0 disconnecting / 1 - connecting / 2 - connected
 	
 	
 	
 	
 	
+	// Not needed if you ask me
 	
 	// Changing tcpState
 	public static void setTcpState(int tcpState) {

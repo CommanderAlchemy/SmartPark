@@ -100,23 +100,14 @@ public class BlueController {
 	 * @return device BluetoothDevice
 	 */
 	public BluetoothDevice getPairedDeviceByName(String name) {
+		Log.d(TAG, name);
 		BluetoothDevice device;
 		Set<BluetoothDevice> h = getPairedDevicesList();
 		Iterator<BluetoothDevice> iter = h.iterator();
 		while (iter.hasNext()) {
 			device = iter.next();
-			if (device.getName() == name) {
+			if (device.getName().equals(name)) {
 				return device;
-			}
-		}
-		if (foundDevices.size() > 0) {
-			iter = foundDevices.iterator();
-
-			while (iter.hasNext()) {
-				device = iter.next();
-				if (device.getName() == name) {
-					return device;
-				}
 			}
 		}
 		return null;
@@ -137,7 +128,7 @@ public class BlueController {
 			iter = foundDevices.iterator();
 			while (iter.hasNext()) {
 				device = iter.next();
-				if (device.getName() == name) {
+				if (device.getName().equals(name)) {
 					return device;
 				}
 			}
@@ -166,18 +157,20 @@ public class BlueController {
 
 			public void run() {
 				try {
+					// fa87c0d0-afac-11de-8a39-0800200c9a66
+					// 00001101-0000-1000-8000-00805F9B34FB
 					Ref.btSocket = Ref.btDevice
 							.createRfcommSocketToServiceRecord(UUID
-									.fromString("00001101-0000-1000-8000-00805F9B34FB"));
+									.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66"));
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					Log.e(TAG, "Socket init Exception: " + e);
-					e.printStackTrace();
 				}
-
+				
 				try {
 					// This is a blocking call and will only return on a
 					// successful connection or an exception
+					Ref.btController.cancelDiscovery();
 					Ref.btSocket.connect();
 				} catch (IOException e) {
 					// Close the socket
@@ -197,7 +190,9 @@ public class BlueController {
 					// TODO Auto-generated catch block
 					Log.e(TAG, "Socket I/O Streams Exception" + e);
 				}
-				Log.d(TAG, "BlueTooth Connection Successfull");
+				if(Ref.btSocket.isConnected()) {
+					Log.d(TAG, "BlueTooth Connection Successfull");
+				}
 				Ref.btState = Ref.STATE_CONNECTED;
 			}
 		}.start();
@@ -205,6 +200,7 @@ public class BlueController {
 
 	public void sendString(ArrayList<String> data) {
 		// TODO
+		
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {

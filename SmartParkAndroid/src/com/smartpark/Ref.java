@@ -1,5 +1,7 @@
 package com.smartpark;
 
+
+
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -24,6 +26,9 @@ public class Ref {
 	
 	// Global control-variables
 	public static boolean D = true;
+	
+	// Activity state-flags
+	
 	
 	// Objects used for Internet communication
 	public static TCPClient tcpClient;

@@ -52,12 +52,8 @@ public class MainActivity extends FragmentActivity implements
 	 * activities.
 	 */
 	Fragment fragment;
-	/**
-	 * Bluetooth, this instance will control every aspect of the bluetooth
-	 * adapter
-	 */
-	BlueController bluetooth;
-	
+
+
 	ActionBar actionBar;
 
 	// Debugging and stuff
@@ -68,6 +64,9 @@ public class MainActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		// Instantiate the bluetooth-control-class
+		Ref.btController = new BlueController();
 		
 		// Debug stuff
 		if (D) {
@@ -89,7 +88,7 @@ public class MainActivity extends FragmentActivity implements
 			Ref.bgThread.start();
 		}
 		Ref.bgThread.mainActivity = true;
-		
+
 		// Debug stuff
 		if (D) {
 			Log.d(TAG, "working on actionbar");
@@ -102,7 +101,7 @@ public class MainActivity extends FragmentActivity implements
 		// of the app.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
 				getSupportFragmentManager());
-		
+
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -114,25 +113,21 @@ public class MainActivity extends FragmentActivity implements
 				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 					@Override
 					public void onPageSelected(int position) {
-						Log.d(TAG, "position " + position);
+						if (D)
+							Log.d(TAG, "position " + position);
 						actionBar.setSelectedNavigationItem(position);
-						if(actionBar.getNavigationMode() == ActionBar.NAVIGATION_MODE_LIST){
-							actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-						}
 					}
 				});
 		// Restoring the position of the actionBar
-		if(savedInstanceState != null){
-			Log.d(TAG, "actionbar setting");
-			Log.d(TAG, "actionbar setting " + savedInstanceState.getInt("ActionBarPosition"));
-			
-//			actionBar.setSelectedNavigationItem(savedInstanceState.getInt("ActionBarPosition"));
+		if (savedInstanceState != null) {
+			Log.d(TAG,
+					"actionbar setting "
+							+ savedInstanceState.getInt("ActionBarPosition"));
+
+			// actionBar.setSelectedNavigationItem(savedInstanceState.getInt("ActionBarPosition"));
 			Log.d(TAG, "actionbar set");
 		}
-		// Debug stuff
-		if (D) {
-			Log.d(TAG, "4");
-		}
+
 		// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
 			// Create a tab with text corresponding to the page title defined by
@@ -143,18 +138,9 @@ public class MainActivity extends FragmentActivity implements
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
-		// Debug stuff
-		if (D) {
-			Log.d(TAG, "before bt");
-		}
-		// intantiate the bluetooth-control-class
-		bluetooth = new BlueController();
-		// Debug stuff
-		if (D) {
-			Log.d(TAG, "after bt");
-		}
-	}
 
+		
+	}
 
 	public void pairedDevicesCount(View view) {
 		Log.d(TAG, "pairedDevicesCount invoked");
@@ -168,7 +154,7 @@ public class MainActivity extends FragmentActivity implements
 
 		Toast.makeText(this, "getting pairedlist", Toast.LENGTH_SHORT).show();
 
-		Set<BluetoothDevice> pairedDevices = bluetooth.getPairedDevicesList();
+		Set<BluetoothDevice> pairedDevices = Ref.btController.getPairedDevicesList();
 		if (pairedDevices != null) {
 			Toast.makeText(this, "" + pairedDevices.size(), Toast.LENGTH_SHORT)
 					.show();
@@ -219,7 +205,7 @@ public class MainActivity extends FragmentActivity implements
 			Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
 		} else {
 			Toast.makeText(this, "Disabled", Toast.LENGTH_SHORT).show();
-			bluetooth.enableAdapter(this);
+			Ref.btController.enableAdapter(this);
 		}
 		Log.d(TAG, "Enabling done");
 	}
@@ -238,10 +224,10 @@ public class MainActivity extends FragmentActivity implements
 	public void onSaveInstanceState(final Bundle outState) {
 		super.onSaveInstanceState(outState);
 		Log.d(TAG, "onSaveInstanceState");
-//		outState.putInt("ActionBarPosition", actionBar.getSelectedNavigationIndex());
-		
-		Log.d(TAG, "" + actionBar.getSelectedNavigationIndex());
+		// outState.putInt("ActionBarPosition",
+		// actionBar.getSelectedNavigationIndex());
 
+		Log.d(TAG, "" + actionBar.getSelectedNavigationIndex());
 	}
 
 	/**
@@ -380,6 +366,7 @@ public class MainActivity extends FragmentActivity implements
 
 	/**
 	 * Disconnect from server action.
+	 * 
 	 * @param view
 	 */
 	public void disconnect(View view) {
@@ -393,7 +380,6 @@ public class MainActivity extends FragmentActivity implements
 		}
 	}
 
-	
 	/**
 	 * Only for inspection, removed later.
 	 */

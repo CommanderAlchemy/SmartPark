@@ -5,6 +5,7 @@ package com.smartpark;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 
@@ -30,18 +31,23 @@ public class Ref {
 	// Activity state-flags
 	
 	
+	
 	// Objects used for Internet communication
 	public static TCPClient tcpClient;
 	public static Thread clientThread;
 	public static BackgoundOperationThread bgThread;
 	
 	// Objects for use with the bluetooth adapter
+	public static BluetoothAdapter btAdapter;	
 	public static BlueController btController;
 	public static BluetoothSocket btSocket;
 	public static BluetoothDevice btDevice;
 	public static InputStream btInStream;
 	public static OutputStream btOutStream;
-
+	
+	// RequestCodes for controlling the bluetooth
+	public static final int REQUEST_ENABLE_BT = 1;
+	public static final int REQUEST_DISCOVERABLE_BT = 2;
 	
 	// Global control-flags
 	public static int tcpState = STATE_NOT_CONNECTED; 		// -1 not connected / 0 disconnecting / 1 - connecting / 2 - connected

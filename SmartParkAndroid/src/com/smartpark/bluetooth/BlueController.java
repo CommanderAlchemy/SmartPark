@@ -18,24 +18,26 @@ import com.smartpark.MainActivity;
 import com.smartpark.Ref;
 
 public class BlueController {
-	/*
-	 * Since there is only one bluetooth adapter in every handheld device, the
+	/* Since there is only one bluetooth adapter in every handheld device, the
 	 * variables are defined using the static modifier, because they only
-	 * represent settings and findings of the same adapter.
-	 */
-	private static final int REQUEST_ENABLE_BT = 1;
-	private static final int REQUEST_DISCOVERABLE_BT = 2;
+	 * represent settings and findings of the same adapter. However, they are
+	 * all private to this class. All public class-variables are moved to 
+	 * Ref.java to avoid code duplication. */
+	
+	
+	// Flags
 	private static boolean BroacastReceiverIsRegistered = false;
-
-	public static BluetoothAdapter btAdapter;
-
+	
+	// Class-instances used locally
 	private static MyBroadcastReceiver mReceiver;
-
 	private static IntentFilter findFilter;
 
+	
 	private static ArrayList<BluetoothDevice> foundDevices;
 	private static Set<BluetoothDevice> pairedDevices;
-
+	
+	
+	// Constants used locally
 	private static final UUID MY_UUID = UUID
 			.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
@@ -48,7 +50,7 @@ public class BlueController {
 	public BlueController() {
 		// Get the adapter and store it in a static variable
 		// This initializes the class
-		btAdapter = BluetoothAdapter.getDefaultAdapter();
+		Ref.btAdapter = BluetoothAdapter.getDefaultAdapter();
 
 		// Create a BroadcastReceiver for ACTION_FOUND
 		mReceiver = new MyBroadcastReceiver();
@@ -79,14 +81,14 @@ public class BlueController {
 			BroacastReceiverIsRegistered = true;
 			// Don't forget to unregister during onDestroy
 		}
-		return btAdapter.startDiscovery();
+		return Ref.btAdapter.startDiscovery();
 	}
 
 	public Set<BluetoothDevice> getPairedDevicesList() {
-		if (!btAdapter.isEnabled()) {
+		if (!Ref.btAdapter.isEnabled()) {
 			Log.d("new", "adapter not enabled");
 		} else {
-			pairedDevices = btAdapter.getBondedDevices();
+			pairedDevices = Ref.btAdapter.getBondedDevices();
 		}
 		return pairedDevices;
 	}
@@ -147,6 +149,9 @@ public class BlueController {
 		return foundDevices;
 	}
 
+	/**
+	 * This method aims at connecting the to the device that is stored in 
+	 */
 	public void connectAsynchroniouslyTo() {
 		// TODO
 		// start a thread to manage connection to a BluetoothDevice saved in
@@ -203,12 +208,8 @@ public class BlueController {
 		
 	}
 
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO
-	}
-
 	public boolean isDiscovering(BluetoothAdapter sd) {
-		return btAdapter.isDiscovering();
+		return Ref.btAdapter.isDiscovering();
 	}
 
 	/**
@@ -221,48 +222,47 @@ public class BlueController {
 	}
 
 	public boolean isBluetoothAdapterAvailable() {
-		return btAdapter != null;
+		return Ref.btAdapter != null;
 	}
 
 	public void cancelDiscovery() {
 		// cancel any prior BT device discovery
-		if (btAdapter.isDiscovering()) {
-			btAdapter.cancelDiscovery();
+		if (Ref.btAdapter.isDiscovering()) {
+			Ref.btAdapter.cancelDiscovery();
 		}
 	}
 
 	public void enableAdapterNoUserInteraction() {
-		btAdapter.enable();
+		Ref.btAdapter.enable();
 	}
 
 	public boolean enableAdapter(MainActivity mainActivity) {
 		Log.d("new2", "invoke enableAdapter");
-		if (!btAdapter.isEnabled()) {
+		if (!Ref.btAdapter.isEnabled()) {
 			Log.d("new2", "enabling adapter 2");
 			Intent enableBtIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			// startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-			mainActivity.startActivityForResult(enableBtIntent,
-					REQUEST_ENABLE_BT);
+			mainActivity.startActivityForResult(enableBtIntent,	Ref.REQUEST_ENABLE_BT);
 		}
-		return btAdapter.getState() == BluetoothAdapter.STATE_TURNING_ON;
+		return Ref.btAdapter.getState() == BluetoothAdapter.STATE_TURNING_ON;
 	}
 
 	public boolean disableAdapter() {
-		if (btAdapter.getState() == BluetoothAdapter.STATE_OFF) {
+		if (Ref.btAdapter.getState() == BluetoothAdapter.STATE_OFF) {
 			return true;
 		} else {
-			btAdapter.disable();
+			Ref.btAdapter.disable();
 		}
-		return btAdapter.getState() == BluetoothAdapter.STATE_TURNING_OFF;
+		return Ref.btAdapter.getState() == BluetoothAdapter.STATE_TURNING_OFF;
 	}
 
 	public void makeDiscoverable(MainActivity invokerActivity) {
-		if (!btAdapter.isEnabled()) {
+		if (!Ref.btAdapter.isEnabled()) {
 			Intent enableBtIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 			invokerActivity.startActivityForResult(enableBtIntent,
-					REQUEST_DISCOVERABLE_BT);
+					Ref.REQUEST_DISCOVERABLE_BT);
 		}
 	}
 

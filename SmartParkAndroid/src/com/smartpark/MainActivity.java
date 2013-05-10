@@ -53,33 +53,32 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	Fragment fragment;
 
-
 	ActionBar actionBar;
 
 	// Debugging and stuff
-	private static final String TAG = "MainActivityDebug";
+	private static final String TAG = "MainActivity";
 	private static final boolean D = Ref.D;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.e(TAG, "++ onCreate ++");
+
 		setContentView(R.layout.activity_main);
-		
-		// Instantiate the bluetooth-control-class
-		Ref.btController = new BlueController();
-		
-		// Debug stuff
-		if (D) {
-			Log.d(TAG, "Starting onCreate, loading savedInstanceState");
-		}
+
+		if (D)
+			Log.d(TAG, "Starting onCreate," + "loading savedInstanceState");
+
 		// Restore additional variables and objects from last session
 		if (savedInstanceState != null) {
+		}
 
-		}
-		// Debug stuff
-		if (D) {
-			Log.d(TAG, "repopulate References.backgroundThread and run it");
-		}
+		if (D)
+			Log.d(TAG, "repopulate References." + "backgroundThread and run it");
+
+		// Instantiate the bluetooth-control-class
+		Ref.btController = new BlueController();
+
 		// Creates and starts the background-operation-thread
 		if (Ref.bgThread == null) {
 			Ref.bgThread = new BackgoundOperationThread();
@@ -88,19 +87,25 @@ public class MainActivity extends FragmentActivity implements
 			Ref.bgThread.start();
 		}
 		Ref.bgThread.mainActivity = true;
+		// ------------------------------------------------------
 
-		// Debug stuff
-		if (D) {
+		if (D)
 			Log.d(TAG, "working on actionbar");
-		}
+
 		// Set up the action bar
 		actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-		// Create the adapter that will return a fragment for each sections
-		// of the app.
+		if (D)
+			Log.d(TAG, "instantiating SectionsPagerAdapter");
+
+		// Create the adapter that will return a fragment for each sections of
+		// the app.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
 				getSupportFragmentManager());
+
+		if (D)
+			Log.d(TAG, "passing SectionsPagerAdapter to ViewPager");
 
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -118,16 +123,16 @@ public class MainActivity extends FragmentActivity implements
 						actionBar.setSelectedNavigationItem(position);
 					}
 				});
-		// Restoring the position of the actionBar
-		if (savedInstanceState != null) {
-			Log.d(TAG,
-					"actionbar setting "
-							+ savedInstanceState.getInt("ActionBarPosition"));
 
-			// actionBar.setSelectedNavigationItem(savedInstanceState.getInt("ActionBarPosition"));
-			Log.d(TAG, "actionbar set");
-		}
-
+		// // Restoring the position of the actionBar
+		// if (savedInstanceState != null) {
+		// Log.d(TAG,"actionbar setting "+
+		// savedInstanceState.getInt("ActionBarPosition"));
+		// //
+		// actionBar.setSelectedNavigationItem(savedInstanceState.getInt("ActionBarPosition"));
+		// Log.d(TAG, "actionbar set");
+		// }
+		
 		// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
 			// Create a tab with text corresponding to the page title defined by
@@ -138,12 +143,39 @@ public class MainActivity extends FragmentActivity implements
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
-
-		
 	}
 
+	@Override
+	public void onStart() {
+		Log.e(TAG, "++ onStart ++");
+		// Check to see if bluetooth is available
+		Log.d(TAG, "invoking isBTavailable");
+		if (Ref.btAdapter != null) {
+			Toast.makeText(this, "availabe", Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(this, "not availabe", Toast.LENGTH_SHORT).show();
+		}
+		Log.d(TAG, "done invoking isBTavailable");
+
+		// Enable bluetooth if disabled by askign the user first
+		Log.d(TAG, "enable bluetooth if disabled");
+		if (Ref.btAdapter.isEnabled()) {
+			Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(this, "Disabled", Toast.LENGTH_SHORT).show();
+			/*
+			 * the "this" is required so that the method can start another
+			 * activity. Only the activity currently running in thread can start
+			 * other activities.
+			 */
+			Ref.btController.enableAdapter(this);
+			Log.d(TAG, "Enabling done");
+		}
+	}
+
+	// We have to change this TODO
 	public void pairedDevicesCount(View view) {
-		Log.d(TAG, "pairedDevicesCount invoked");
+		Log.e(TAG, "++ pairedDevicesCount ++");
 		Toast.makeText(this, "pairedDevicesCount() invoked", Toast.LENGTH_SHORT)
 				.show();
 
@@ -154,11 +186,13 @@ public class MainActivity extends FragmentActivity implements
 
 		Toast.makeText(this, "getting pairedlist", Toast.LENGTH_SHORT).show();
 
-		Set<BluetoothDevice> pairedDevices = Ref.btController.getPairedDevicesList();
+		Set<BluetoothDevice> pairedDevices = Ref.btController
+				.getPairedDevicesList();
 		if (pairedDevices != null) {
 			Toast.makeText(this, "" + pairedDevices.size(), Toast.LENGTH_SHORT)
 					.show();
 		}
+
 		Toast.makeText(this, "end of method", Toast.LENGTH_SHORT).show();
 		Log.d(TAG, "pairedDevicesCount ends");
 
@@ -185,34 +219,31 @@ public class MainActivity extends FragmentActivity implements
 					}
 				});
 
+		// what is this
 		AlertDialog alert = builder1.create();
 		alert.show();
 	}
 
 	public void isBTavailable(View view) {
-		Log.d(TAG, "invoking isBTavailable");
-		if (BlueController.btAdapter != null) {
-			Toast.makeText(this, "availabe", Toast.LENGTH_SHORT).show();
-		} else {
-			Toast.makeText(this, "not availabe", Toast.LENGTH_SHORT).show();
-		}
-		Log.d(TAG, "done invoking isBTavailable");
+
 	}
 
 	public void isBTEnable(View view) {
-		Log.d(TAG, "enable bluetooth if disabled");
-		if (BlueController.btAdapter.isEnabled()) {
-			Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
-		} else {
-			Toast.makeText(this, "Disabled", Toast.LENGTH_SHORT).show();
-			Ref.btController.enableAdapter(this);
-		}
-		Log.d(TAG, "Enabling done");
+
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO
-		Log.d(TAG, "onActivityResult");
+		Log.e(TAG, "++ onActivityResult ++");
+
+		switch (requestCode) {
+		case Ref.REQUEST_ENABLE_BT:
+
+			break;
+
+		default:
+			break;
+		}
 	}
 
 	/**

@@ -168,47 +168,48 @@ public class MainActivity extends FragmentActivity implements
 		// Enable bluetooth if disabled by asking the user first
 		Log.d(TAG, "--> enable bluetooth if disabled");
 		if (!Ref.btAdapter.isEnabled()) {
-			/* the "this" is required so that the method can start another
+			/*
+			 * the "this" is required so that the method can start another
 			 * activity. Only the activity currently running in thread can start
-			 * other activities. */
+			 * other activities.
+			 */
 			Ref.btController.enableAdapter(this);
 			Log.d(TAG, "--> Enabling done");
 			Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
 		}
 	}
 	
-	// We have to change this TODO
+	@Override
+	public void onPause(){
+		// TODO
+		// We have to save everything in this emthod for later use
+		
+	}
+
+	/**
+	 * This method will be invoked right before onPause() or onDestroy() is
+	 * invoked and is used to save certain data that we wish to hold for the
+	 * next session instead of recreating them.
+	 */
+	@Override
+	public void onSaveInstanceState(final Bundle outState) {
+		super.onSaveInstanceState(outState);
+		Log.d(TAG, "onSaveInstanceState");
+		// outState.putInt("ActionBarPosition",
+		// actionBar.getSelectedNavigationIndex());
+
+		Log.d(TAG, "" + actionBar.getSelectedNavigationIndex());
+	}
+
+	// =======================
+	// onCLICK-METHODS SECTION
+	// =======================
+
+	// Three buttons we no longer need
 	public void pairedDevicesCount(View view) {
 		Log.e(TAG, "++ pairedDevicesCount ++");
 		Toast.makeText(this, "++ pairedDevicesCount ++", Toast.LENGTH_SHORT)
 				.show();
-	}
-
-	public void gfh() {
-		AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-		builder1.setTitle("Title");
-		builder1.setMessage("my message");
-		builder1.setCancelable(true);
-		builder1.setNegativeButton(android.R.string.no,
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Add your code for the button here.
-					}
-				});
-		builder1.setNeutralButton("neutral",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Add your code for the button here.
-					}
-				});
-		builder1.setPositiveButton(android.R.string.ok,
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Add your code for the button here.
-					}
-				});
-		AlertDialog alert = builder1.create();
-		alert.show();
 	}
 
 	public void isBTavailable(View view) {
@@ -219,6 +220,134 @@ public class MainActivity extends FragmentActivity implements
 
 	}
 
+	// ------------------------------
+
+	@Override
+	public void onTabSelected(ActionBar.Tab tab,
+			FragmentTransaction fragmentTransaction) {
+		// When the given tab is selected, switch to the corresponding page in
+		// the ViewPager.
+		mViewPager.setCurrentItem(tab.getPosition());
+	}
+
+	@Override
+	public void onTabUnselected(ActionBar.Tab tab,
+			FragmentTransaction fragmentTransaction) {
+	}
+
+	@Override
+	public void onTabReselected(ActionBar.Tab tab,
+			FragmentTransaction fragmentTransaction) {
+	}
+
+	/*
+	 * debugFragment Button Events
+	 */
+	/**
+	 * Connect to server onClick-method.
+	 * 
+	 * @param view
+	 */
+	public void connect(View view) {
+		// Debug stuff
+		if (D) {
+			Log.d(TAG, "connect");
+		}
+		Toast.makeText(this, "connecting...", Toast.LENGTH_LONG).show();
+
+		// new ConnectTask().execute("");
+
+		Ref.tcpClient = new TCPClient(new OnMessageReceived() {
+			@Override
+			// here the messageReceived method is implemented
+			public void messageReceived(String message) {
+				Log.e(TAG, message);
+				// this method calls the onProgressUpdate
+				// publishProgress(message);
+
+			}
+		});
+
+		Ref.clientThread = new Thread(Ref.tcpClient);
+		Ref.clientThread.start();
+
+	}
+
+	/**
+	 * Disconnect from server onClick-method.
+	 * 
+	 * @param view
+	 */
+	public void disconnect(View view) {
+		// Debug stuff
+		if (D) {
+			Log.d(TAG, "disconnect");
+		}
+		if (Ref.tcpClient != null) {
+			Toast.makeText(this, "dissconnecting...", Toast.LENGTH_LONG).show();
+			Ref.tcpClient.stopClient();
+		}
+	}
+
+	// ===============================
+	// STUFF WE NEED TO TAKE A LOOK AT
+	// ===============================
+
+	/**
+	 * Artur: Only for inspection, removed later.
+	 */
+	/**
+	 * Saeed: Yeah!!!
+	 */
+	// public class ConnectTask extends AsyncTask<String, String, TCPClient> {
+	//
+	// @Override
+	// protected TCPClient doInBackground(String... message) {
+	// // Debug stuff
+	// if (D) {
+	// Log.d(TAG, "class ConnectTask doInBackground");
+	// }
+	//
+	// // we create a TCPClient object and
+	// References.client = new TCPClient(new OnMessageReceived() {
+	// @Override
+	// // here the messageReceived method is implemented
+	// public void messageReceived(String message) {
+	// Log.e(TAG, message);
+	// // this method calls the onProgressUpdate
+	// publishProgress(message);
+	// }
+	// });
+	// References.client.run();
+	//
+	// return null;
+	// }
+	//
+	// @Override
+	// protected void onProgressUpdate(String... values) {
+	// // Debug stuff
+	// if (D) {
+	// Log.d(TAG, "onProgressUpdate");
+	// }
+	// super.onProgressUpdate(values);
+	//
+	// // in the arrayList we add the messaged received from server
+	// // arrayList.add(values[0]);
+	// // notify the adapter that the data set has changed. This means that
+	// // new message received
+	// // from server was added to the list
+	// // mAdapter.notifyDataSetChanged();
+	// }
+	// }
+
+	// =================================
+	// FINISHED WORKING ON THESE METHODS
+	// =================================
+
+	/*
+	 * This will be invoked by the startActivityForResult of the
+	 * blueController-class
+	 */
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO
 		Log.e(TAG, "++ onActivityResult ++");
@@ -235,31 +364,16 @@ public class MainActivity extends FragmentActivity implements
 			break;
 		case Ref.REQUEST_DISCOVERABLE_BT:
 			if (resultCode == Activity.RESULT_OK) {
-				Toast.makeText(this, "Bluetooth Discoverable", Toast.LENGTH_SHORT)
-				.show();
-			}else{
-				Toast.makeText(this, "Bluetooth not Discoverable", Toast.LENGTH_SHORT)
-				.show();
+				Toast.makeText(this, "Bluetooth Discoverable",
+						Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(this, "Bluetooth not Discoverable",
+						Toast.LENGTH_SHORT).show();
 			}
 			break;
 		default:
 			break;
 		}
-	}
-
-	/**
-	 * This method will be invoked right before onPause() or onDestroy() is
-	 * invoked and is used to save certain classes that we wish to hold for the
-	 * next session instead of recreating it.
-	 */
-	@Override
-	public void onSaveInstanceState(final Bundle outState) {
-		super.onSaveInstanceState(outState);
-		Log.d(TAG, "onSaveInstanceState");
-		// outState.putInt("ActionBarPosition",
-		// actionBar.getSelectedNavigationIndex());
-
-		Log.d(TAG, "" + actionBar.getSelectedNavigationIndex());
 	}
 
 	/**
@@ -349,116 +463,35 @@ public class MainActivity extends FragmentActivity implements
 		return false;
 	}
 
-	@Override
-	public void onTabSelected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
-		// When the given tab is selected, switch to the corresponding page in
-		// the ViewPager.
-		mViewPager.setCurrentItem(tab.getPosition());
-	}
-
-	@Override
-	public void onTabUnselected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
-	}
-
-	@Override
-	public void onTabReselected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
-
-	}
-
-	/*
-	 * debugFragment Button Events
-	 */
-	public void connect(View view) {
-		// Debug stuff
-		if (D) {
-			Log.d(TAG, "connect");
-		}
-		Toast.makeText(this, "connecting...", Toast.LENGTH_LONG).show();
-
-		// new ConnectTask().execute("");
-
-		Ref.tcpClient = new TCPClient(new OnMessageReceived() {
-			@Override
-			// here the messageReceived method is implemented
-			public void messageReceived(String message) {
-				Log.e(TAG, message);
-				// this method calls the onProgressUpdate
-				// publishProgress(message);
-
-			}
-		});
-
-		Ref.clientThread = new Thread(Ref.tcpClient);
-		Ref.clientThread.start();
-
-	}
+	// ================
+	// INTERNAL CLASSES
+	// ================
 
 	/**
-	 * Disconnect from server action.
+	 * This is a sleep-class. This will be used whenever we want to wait for
+	 * other parts of the program to get ready. Methods can start a thread that
+	 * is taking a long time to finish, then they will need to wait processing
+	 * more code before the started threads return.
 	 * 
-	 * @param view
+	 * @author Saeed
+	 * 
 	 */
-	public void disconnect(View view) {
-		// Debug stuff
-		if (D) {
-			Log.d(TAG, "disconnect");
-		}
-		if (Ref.tcpClient != null) {
-			Toast.makeText(this, "dissconnecting...", Toast.LENGTH_LONG).show();
-			Ref.tcpClient.stopClient();
+	public class TestSleep {
+		public void main(String[] args) {
+			System.out.println("Do this stuff");
+			try {
+				Thread.currentThread();
+				Thread.sleep(3000);
+			} catch (Exception e) {
+				Log.e("Therad sleep", "--> Sleep didn't work");
+			}
+			System.out.println("Now do everything after this");
 		}
 	}
 
 	/**
-	 * Only for inspection, removed later.
-	 */
-	// public class ConnectTask extends AsyncTask<String, String, TCPClient> {
-	//
-	// @Override
-	// protected TCPClient doInBackground(String... message) {
-	// // Debug stuff
-	// if (D) {
-	// Log.d(TAG, "class ConnectTask doInBackground");
-	// }
-	//
-	// // we create a TCPClient object and
-	// References.client = new TCPClient(new OnMessageReceived() {
-	// @Override
-	// // here the messageReceived method is implemented
-	// public void messageReceived(String message) {
-	// Log.e(TAG, message);
-	// // this method calls the onProgressUpdate
-	// publishProgress(message);
-	// }
-	// });
-	// References.client.run();
-	//
-	// return null;
-	// }
-	//
-	// @Override
-	// protected void onProgressUpdate(String... values) {
-	// // Debug stuff
-	// if (D) {
-	// Log.d(TAG, "onProgressUpdate");
-	// }
-	// super.onProgressUpdate(values);
-	//
-	// // in the arrayList we add the messaged received from server
-	// // arrayList.add(values[0]);
-	// // notify the adapter that the data set has changed. This means that
-	// // new message received
-	// // from server was added to the list
-	// // mAdapter.notifyDataSetChanged();
-	// }
-	// }
-
-	/**
-	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-	 * one of the sections/tabs/pages.
+	 * A FragmentPagerAdapter that returns a fragment corresponding to one of
+	 * the sections/tabs/pages.
 	 */
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
 

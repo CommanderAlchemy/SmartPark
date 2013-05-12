@@ -37,7 +37,7 @@ public class BackgoundOperationThread extends Thread {
 
 	@Override
 	public void run() {
-		Log.w(TAG, "Started");
+		Log.e(TAG, "--> bgThread Started");
 		/*
 		 * Check the connection states Handle the states
 		 * 
@@ -53,14 +53,14 @@ public class BackgoundOperationThread extends Thread {
 
 		if (Ref.btDevice == null) {
 			if (Ref.btController == null)
-				Log.e(TAG, "FUCK YOU");
-			BluetoothDevice device = Ref.btController.getPairedDeviceByName("Speed");
+				Log.e(TAG, "FUCK YOU"); // <-- You may want to remove that before you give it to Rolf
+			BluetoothDevice device = Ref.btController.getPairedDeviceByName("HC-06-SLAVE");
 			if (device != null) {
 				Ref.btDevice = device;
-				Ref.btController.connectAsynchroniouslyTo();
-				Log.w(TAG, "problem " + device.getAddress());
+				Ref.btController.connect();
+				Log.d(TAG, "--> connected to " + device.getAddress());
 			} else {
-				Log.w(TAG, "device is null, bluetooth not found");
+				Log.w(TAG, "--> device is null, bluetooth not found");
 			}
 
 		}
@@ -87,13 +87,17 @@ public class BackgoundOperationThread extends Thread {
 			Integer t = Integer.parseInt(inData) + 1;
 			sendBT(t.toString());
 		}
+		Log.d(TAG, "--> DATA read " + inData);
 
 		while (true) {
 			if (Ref.btSocket != null) {
 				if (Ref.btState == Ref.STATE_NOT_CONNECTED) {
 					Log.d(TAG, "not connected to bt");
 				}
-
+				Log.d(TAG, "--> writting data");
+				sendBT("1");
+				Log.d(TAG, "--> wrote data");
+				
 				while (btTransmitBuffer.size() > 0
 						&& Ref.getbtState() == Ref.STATE_CONNECTED) {
 					btWrite();
@@ -112,7 +116,8 @@ public class BackgoundOperationThread extends Thread {
 			}
 
 			inData = btRead();
-
+			Log.d(TAG, "--> DATA read " + inData);
+			
 			if (inData != null) {
 				Integer t = Integer.parseInt(inData) + 1;
 				sendBT(t.toString());
@@ -133,6 +138,7 @@ public class BackgoundOperationThread extends Thread {
 				if (false)
 					Log.d("BackThread", "Application is frontmost");
 			} else {
+				Log.d("TAG", "--> bgThread timer started");
 				if (shutdownTime == 0) {
 					shutdownTime = System.currentTimeMillis();
 				} else if (System.currentTimeMillis() - shutdownTime > 5000) {
@@ -149,7 +155,6 @@ public class BackgoundOperationThread extends Thread {
 			}
 			Log.e(TAG, "The thread died");
 		}
-		
 	}
 
 	private String btRead() {

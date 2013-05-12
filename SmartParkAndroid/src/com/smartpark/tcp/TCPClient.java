@@ -23,8 +23,8 @@ import android.util.Log;
 public class TCPClient implements Runnable {
 
 	// Debug
-	private static final String TAG = "SmartPark";
-	private static boolean d = Ref.D;
+	private static final String TAG = "TCPClient";
+	private static boolean D = Ref.D;
 
 	// message to send to the server
 	private String mServerMessage;
@@ -71,10 +71,10 @@ public class TCPClient implements Runnable {
 	 */
 	public void stopClient() {
 
-		if (d)
+		if (D)
 			Log.d(TAG, "Closing Connection");
 
-		// send mesage that we are closing the connection
+		// send message that we are closing the connection
 		sendMessage(Settings.Close_Connection);
 
 		mRun = false;
@@ -90,7 +90,7 @@ public class TCPClient implements Runnable {
 		mRun = true;
 
 		try {
-			if (d)
+			if (D)
 				Log.d(TAG + " TCP Client", "C: Connecting...");
 
 			InetAddress serverAddr = InetAddress.getByName(Settings.Server_IP);
@@ -122,10 +122,9 @@ public class TCPClient implements Runnable {
 						// call the method messageReceived from MyActivity class
 						mMessageListener.messageReceived(mServerMessage);
 					}
-
 				}
 
-				Log.d(TAG + " RESPONSE FROM SERVER", "S: Received Message: '"
+				Log.d(TAG + "RESPONSE FROM SERVER", "S: Received Message: '"
 						+ mServerMessage + "'");
 
 			} catch (Exception e) {

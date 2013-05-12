@@ -41,20 +41,20 @@ public class MainActivity extends FragmentActivity implements
 	 * intensive, it may be best to switch to a
 	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
-	SectionsPagerAdapter mSectionsPagerAdapter;
+	private SectionsPagerAdapter mSectionsPagerAdapter;
 
 	/**
 	 * The {@link ViewPager} that will host the section contents.
 	 */
-	ViewPager mViewPager;
+	private ViewPager mViewPager;
 
 	/**
 	 * Fragments, different views in application that you swype, instead of
 	 * activities.
 	 */
-	Fragment fragment;
+	private Fragment fragment;
 
-	ActionBar actionBar;
+	private ActionBar actionBar;
 
 	// Debugging and stuff
 	private static final String TAG = "MainActivity";
@@ -68,37 +68,14 @@ public class MainActivity extends FragmentActivity implements
 		setContentView(R.layout.activity_main);
 
 		if (D)
-			Log.d(TAG, "Starting onCreate," + "loading savedInstanceState");
-
-		// Restore additional variables and objects from last session
-		if (savedInstanceState != null) {
-		}
-
-		if (D)
-			Log.d(TAG, "repopulate References." + "backgroundThread and run it");
-
-		// Instantiate the bluetooth-control-class
-		Ref.btController = new BlueController();
-
-		// Creates and starts the background-operation-thread
-		if (Ref.bgThread == null) {
-			Ref.bgThread = new BackgoundOperationThread();
-			Ref.bgThread.start();
-		} else if (Ref.bgThread.isAlive() == false) {
-			Ref.bgThread.start();
-		}
-		Ref.bgThread.mainActivity = true;
-		// ------------------------------------------------------
-
-		if (D)
-			Log.d(TAG, "working on actionbar");
+			Log.d(TAG, "--> Getting the actionBar and setting its navigation mode");
 
 		// Set up the action bar
 		actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 		if (D)
-			Log.d(TAG, "instantiating SectionsPagerAdapter");
+			Log.d(TAG, "--> instantiating SectionsPagerAdapter");
 
 		// Create the adapter that will return a fragment for each sections of
 		// the app.
@@ -124,16 +101,6 @@ public class MainActivity extends FragmentActivity implements
 						actionBar.setSelectedNavigationItem(position);
 					}
 				});
-
-		// // Restoring the position of the actionBar
-		// if (savedInstanceState != null) {
-		// Log.d(TAG,"actionBar setting "+
-		// savedInstanceState.getInt("ActionBarPosition"));
-		// //
-		// actionBar.setSelectedNavigationItem(savedInstanceState.getInt("ActionBarPosition"));
-		// Log.d(TAG, "actionbar set");
-		// }
-
 		// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
 			// Create a tab with text corresponding to the page title defined by
@@ -144,10 +111,44 @@ public class MainActivity extends FragmentActivity implements
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
+		
+		if (D)
+			Log.d(TAG, "--> loading from savedInstanceState");
+
+		// Restore additional variables and objects from last session
+		if (savedInstanceState != null) {
+		}
+
+		if (D)
+			Log.d(TAG, "--> instantiate btController and bgThread");
+		
+		if (Ref.btController == null){
+			Ref.btController = new BlueController();
+		}
+		
+		// Creates and starts the background-operation-thread
+		if (Ref.bgThread == null) {
+			Ref.bgThread = new BackgoundOperationThread();
+			Ref.bgThread.start();
+		} else if (Ref.bgThread.isAlive() == false) {
+			Ref.bgThread.start();
+		}
+		Ref.bgThread.mainActivity = true;
+
+
+		// // Restoring the position of the actionBar
+		// if (savedInstanceState != null) {
+		// Log.d(TAG,"actionBar setting "+
+		// savedInstanceState.getInt("ActionBarPosition"));
+		// //
+		// actionBar.setSelectedNavigationItem(savedInstanceState.getInt("ActionBarPosition"));
+		// Log.d(TAG, "actionbar set");
+		// }
 	}
 
 	@Override
 	public void onStart() {
+		super.onStart();
 		Log.e(TAG, "++ onStart ++");
 		// Check to see if bluetooth is available
 		if (Ref.btAdapter == null) {
@@ -161,6 +162,8 @@ public class MainActivity extends FragmentActivity implements
 							// TODO Add your code for the button here.
 						}
 					});
+			AlertDialog alert = builder1.create();
+			alert.show();
 		} else {
 			Toast.makeText(this, "Bluetooth found", Toast.LENGTH_SHORT).show();
 		}
@@ -177,14 +180,17 @@ public class MainActivity extends FragmentActivity implements
 			Log.d(TAG, "--> Enabling done");
 			Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
 		}
-	}
-	
+		Log.d(TAG, "--> BT is enabled");
+
+	}// -------------------------------------------------------------------------------------
+
 	@Override
-	public void onPause(){
+	public void onPause() {
+		super.onPause();
 		// TODO
-		// We have to save everything in this emthod for later use
-		
-	}
+		// We have to save everything in this method for later use
+
+	}// -------------------------------------------------------------------------------------
 
 	/**
 	 * This method will be invoked right before onPause() or onDestroy() is
@@ -199,7 +205,7 @@ public class MainActivity extends FragmentActivity implements
 		// actionBar.getSelectedNavigationIndex());
 
 		Log.d(TAG, "" + actionBar.getSelectedNavigationIndex());
-	}
+	}// -------------------------------------------------------------------------------------
 
 	// =======================
 	// onCLICK-METHODS SECTION

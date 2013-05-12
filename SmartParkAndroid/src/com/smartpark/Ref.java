@@ -28,10 +28,6 @@ public class Ref {
 	// Global control-variables
 	public static boolean D = true;
 	
-	// Activity state-flags
-	
-	
-	
 	// Objects used for Internet communication
 	public static TCPClient tcpClient;
 	public static Thread clientThread;
@@ -50,9 +46,8 @@ public class Ref {
 	public static final int REQUEST_DISCOVERABLE_BT = 2;
 	
 	// Global control-flags
-	public static int tcpState = STATE_NOT_CONNECTED; 		// -1 not connected / 0 disconnecting / 1 - connecting / 2 - connected
-	public static int btState = STATE_NOT_CONNECTED; 		// -1 not connected / 0 disconnecting / 1 - connecting / 2 - connected
-	
+	public static int tcpState = STATE_NOT_CONNECTED;
+	public static int btState = STATE_NOT_CONNECTED;
 	
 	
 	

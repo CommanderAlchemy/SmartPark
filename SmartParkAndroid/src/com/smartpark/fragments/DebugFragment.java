@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.smartpark.R;
-import com.smartpark.Ref;
+import com.smartpark.background.Ref;
 
 /**
  * DebugFragment, this will contain some debug information needed during this

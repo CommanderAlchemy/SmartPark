@@ -1,9 +1,5 @@
 package com.smartpark.fragments;
 
-import java.lang.ref.Reference;
-
-import android.app.Activity;
-import android.app.Application.ActivityLifecycleCallbacks;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -13,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.smartpark.R;
-import com.smartpark.Ref;
+import com.smartpark.background.Ref;
 
 /**
  * SmartParkFragment, this holds the general page of our application

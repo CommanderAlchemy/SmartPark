@@ -1,4 +1,4 @@
-package com.smartpark;
+package com.smartpark.other;
 
 import android.app.Activity;
 import android.app.AlertDialog;

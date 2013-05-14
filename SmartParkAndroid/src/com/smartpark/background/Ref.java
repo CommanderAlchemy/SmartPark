@@ -32,7 +32,7 @@ public class Ref {
 	// Objects used for Internet communication
 	public static TCPClient tcpClient;
 	public static Thread clientThread;
-	public static BackgoundOperationThread bgThread;
+	public static BackgroundOperationThread bgThread;
 	
 	// Objects for use with the bluetooth adapter
 	public static BluetoothAdapter btAdapter;	

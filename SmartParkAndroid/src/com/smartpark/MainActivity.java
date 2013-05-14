@@ -1,4 +1,4 @@
-package com.smartpark.activities;
+package com.smartpark;
 
 import java.util.Locale;
 
@@ -21,7 +21,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.smartpark.R;
-import com.smartpark.background.BackgoundOperationThread;
+import com.smartpark.background.BackgroundOperationThread;
 import com.smartpark.background.Ref;
 import com.smartpark.bluetooth.BlueController;
 import com.smartpark.fragments.BluetoothFragment;
@@ -30,6 +30,8 @@ import com.smartpark.fragments.DummySectionFragment;
 import com.smartpark.fragments.GPSFragment;
 import com.smartpark.fragments.SmartParkFragment;
 import com.smartpark.interfaces.OnMessageReceived;
+import com.smartpark.otherActivities.LoginActivity;
+import com.smartpark.otherActivities.SettingsActivity;
 import com.smartpark.tcp.TCPClient;
 
 public class MainActivity extends FragmentActivity implements
@@ -67,11 +69,12 @@ public class MainActivity extends FragmentActivity implements
 		Log.e(TAG, "++ onCreate ++");
 
 		setContentView(R.layout.activity_main);
-		
+
 		Ref.mainActivity = this;
 
 		if (D)
-			Log.d(TAG, "--> Getting the actionBar and setting its navigation mode");
+			Log.d(TAG,
+					"--> Getting the actionBar and setting its navigation mode");
 
 		// Set up the action bar
 		actionBar = getActionBar();
@@ -114,7 +117,7 @@ public class MainActivity extends FragmentActivity implements
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
-		
+
 		if (D)
 			Log.d(TAG, "--> loading from savedInstanceState");
 
@@ -124,20 +127,10 @@ public class MainActivity extends FragmentActivity implements
 
 		if (D)
 			Log.d(TAG, "--> instantiate btController and bgThread");
-		
-		if (Ref.btController == null){
+
+		if (Ref.btController == null) {
 			Ref.btController = new BlueController();
 		}
-		
-		// Creates and starts the background-operation-thread
-		if (Ref.bgThread == null) {
-			Ref.bgThread = new BackgoundOperationThread();
-			Ref.bgThread.start();
-		} else if (Ref.bgThread.isAlive() == false) {
-			Ref.bgThread.start();
-		}
-		Ref.bgThread.activityMAIN = true;
-
 
 		// // Restoring the position of the actionBar
 		// if (savedInstanceState != null) {
@@ -153,6 +146,16 @@ public class MainActivity extends FragmentActivity implements
 	public void onStart() {
 		super.onStart();
 		Log.e(TAG, "++ onStart ++");
+
+		// Creates and starts the background-operation-thread
+		if (Ref.bgThread == null) {
+			Ref.bgThread = new BackgroundOperationThread();
+			Ref.bgThread.start();
+		} else if (!Ref.bgThread.isAlive()) {
+			Ref.bgThread.start();
+		}
+		Ref.bgThread.activityMAIN = true;
+
 		// Check to see if bluetooth is available
 		if (Ref.btAdapter == null) {
 			AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
@@ -162,17 +165,17 @@ public class MainActivity extends FragmentActivity implements
 			builder1.setPositiveButton(android.R.string.ok,
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
-							// TODO Add your code for the button here.
 						}
 					});
 			AlertDialog alert = builder1.create();
 			alert.show();
 		} else {
-			Toast.makeText(this, "Bluetooth avaiable", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "Bluetooth avaiable", Toast.LENGTH_SHORT)
+					.show();
 		}
 
 		// Enable bluetooth if disabled by asking the user first
-		
+
 		if (!Ref.btAdapter.isEnabled()) {
 			Log.d(TAG, "--> bluetooth is disabled");
 			/*
@@ -210,6 +213,18 @@ public class MainActivity extends FragmentActivity implements
 		// actionBar.getSelectedNavigationIndex());
 
 		Log.d(TAG, "" + actionBar.getSelectedNavigationIndex());
+	}// -------------------------------------------------------------------------------------
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		/* Most resources are being handles by the bgTherad and will be
+		released by it and not here. This method is only responsible for
+		resources taken by this activity. */
+		/* Ref will not be emptied since its references could be used by
+		 * the bgThread. */
+		Ref.btController.unRegister_DeviceFoundReceiver(this);
+		Ref.btController.unRegister_AdapterStateReceiver(this);
 	}// -------------------------------------------------------------------------------------
 
 	// =======================

@@ -15,8 +15,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
-import com.smartpark.activities.MainActivity;
+import com.smartpark.MainActivity;
 import com.smartpark.background.Ref;
+import com.smartpark.broadcastReceivers.BT_FoundDeviceReceiver;
+import com.smartpark.broadcastReceivers.BT_StateReceiver;
 
 public class BlueController {
 	/*
@@ -31,10 +33,14 @@ public class BlueController {
 	private static boolean BroacastReceiverIsRegistered = false;
 
 	// Class-instances used locally
-	private static MyBroadcastReceiver mReceiver;
-	private static IntentFilter findFilter;
+	private static BT_FoundDeviceReceiver bt_foundDeviceReceiver;
+	private static BT_StateReceiver bt_stateReceiver;
 
-	private static ArrayList<BluetoothDevice> foundDevices  = new ArrayList<BluetoothDevice>();
+	private static IntentFilter bt_findFilter;
+	private static IntentFilter bt_stateFilter;
+	private static IntentFilter bt_connectionStateFilter;
+
+	private static ArrayList<BluetoothDevice> foundDevices = new ArrayList<BluetoothDevice>();
 	private static Set<BluetoothDevice> pairedDevices = null;
 
 	// Constants used locally
@@ -53,15 +59,37 @@ public class BlueController {
 		// Get the adapter and store it in a static variable
 		// This initializes the class
 		Ref.btAdapter = BluetoothAdapter.getDefaultAdapter();
-
+		/* Create a filter so that we only receive intent for events
+		 * that we are intereseted in. */
+		bt_findFilter = new IntentFilter(
+				BluetoothDevice.ACTION_FOUND);
+		bt_stateFilter = new IntentFilter(
+				BluetoothAdapter.ACTION_STATE_CHANGED);
+		bt_connectionStateFilter = new IntentFilter(
+				BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
+		
+		
+		
 		// Create a BroadcastReceiver for ACTION_FOUND
-		mReceiver = new MyBroadcastReceiver();
-		/*
-		 * Create a filter so that we only receive intent created by newly found
-		 * devices
-		 */
-		findFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+		bt_foundDeviceReceiver = new BT_FoundDeviceReceiver();
+		bt_stateReceiver = new BT_StateReceiver();
+		
 	}// -------------------------------------------------------------------------------
+
+	public void cleanUp() {
+		/*
+		 * This method will close and unregister and set everything to null to
+		 * make ready for a clean transition for shutdown.
+		 */
+		/*
+		 * This method is intended to be used in the class that is more likely
+		 * to be the last class to exit and should not be invoked like in
+		 * orientation changes.
+		 */
+		Ref.mainActivity.unregisterReceiver(bt_foundDeviceReceiver);
+		Ref.mainActivity.unregisterReceiver(bt_stateReceiver);
+
+	}
 
 	/**
 	 * This method will first register a BroadcastReceiver for intents carrying
@@ -78,7 +106,8 @@ public class BlueController {
 		// but only if not already registered.
 		if (!BroacastReceiverIsRegistered) {
 			// Register the BroadcastReceiver
-			invokerActivity.registerReceiver(mReceiver, findFilter);
+			invokerActivity
+					.registerReceiver(bt_foundDeviceReceiver, bt_findFilter);
 			/*
 			 * We do not want duplicated registrations and use variable to store
 			 * the state of the registration.
@@ -110,7 +139,7 @@ public class BlueController {
 	 */
 	public BluetoothDevice getPairedDeviceByName(String name) {
 		Log.d(TAG, "++ getPairedDeviceByName ++");
-		
+
 		Log.d(TAG, "--> Getting BluetoothDevice for: " + name);
 		BluetoothDevice device;
 		Set<BluetoothDevice> h = getPairedDevicesList();
@@ -177,7 +206,8 @@ public class BlueController {
 		try {
 			// fa87c0d0-afac-11de-8a39-0800200c9a66
 			// 00001101-0000-1000-8000-00805F9B34FB
-			Ref.btSocket = Ref.btDevice.createRfcommSocketToServiceRecord(SerialPort);
+			Ref.btSocket = Ref.btDevice
+					.createRfcommSocketToServiceRecord(SerialPort);
 			try {
 				// This is a blocking call and will only return on a
 				// successful connection or an exception
@@ -200,7 +230,6 @@ public class BlueController {
 			Ref.btState = Ref.STATE_NOT_CONNECTED;
 		}
 
-		
 		try {
 			Log.d(TAG, "--> Init btSocket I/O Streams");
 			Ref.btInStream = Ref.btSocket.getInputStream();
@@ -233,10 +262,21 @@ public class BlueController {
 	 * This method will unregister the BroadcastReceiver for ACTION_FOUND of the
 	 * Bluetooth device. The registration happen in StartDiscovery().
 	 */
-	public void unRegisterBroadcastReceiver(MainActivity invokerActivity) {
-		Log.d("tag", "++ unRegisterBroadcastReceiver ++");
+	public void unRegister_DeviceFoundReceiver(Activity invokerActivity) {
+		Log.d("tag", "++ unRegister_DeviceFoundReceiver ++");
 
-		invokerActivity.unregisterReceiver(mReceiver);
+		invokerActivity.unregisterReceiver(bt_foundDeviceReceiver);
+		BroacastReceiverIsRegistered = false;
+	}
+
+	/**
+	 * This method will unregister the BroadcastReceiver for ACTION_FOUND of the
+	 * Bluetooth device. The registration happen in StartDiscovery().
+	 */
+	public void unRegister_AdapterStateReceiver(Activity invokerActivity) {
+		Log.d("tag", "++ unRegister_AdapterStateReceiver ++");
+
+		invokerActivity.unregisterReceiver(bt_foundDeviceReceiver);
 		BroacastReceiverIsRegistered = false;
 	}
 
@@ -250,6 +290,7 @@ public class BlueController {
 		// cancel any prior BT device discovery
 		if (Ref.btAdapter.isDiscovering()) {
 			Ref.btAdapter.cancelDiscovery();
+
 		}
 	}
 
@@ -263,13 +304,15 @@ public class BlueController {
 		Log.d("tag", "++ enableAdapter ++");
 		if (!Ref.btAdapter.isEnabled()) {
 			Log.d("TAG", "enabling adapter");
-			Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			Intent enableBtIntent = new Intent(
+					BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			// startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 			mainActivity.startActivityForResult(enableBtIntent,
 					Ref.REQUEST_ENABLE_BT);
 		}
 		int state = Ref.btAdapter.getState();
-		return state == BluetoothAdapter.STATE_TURNING_ON || state == BluetoothAdapter.STATE_ON;
+		return state == BluetoothAdapter.STATE_TURNING_ON
+				|| state == BluetoothAdapter.STATE_ON;
 	}
 
 	public boolean disableAdapter() {
@@ -292,23 +335,28 @@ public class BlueController {
 				Ref.REQUEST_DISCOVERABLE_BT);
 	}
 
-	// ================
-	// INTERNAL CLASSES
-	// ================
+	// // ================
+	// // INTERNAL CLASSES
+	// // ================
+	//
+	// private class BT_FoundDeviceReceiver extends BroadcastReceiver {
+	//
+	// public void onReceive(Context context, Intent intent) {
+	// // may need to chain this to a recognizing function
+	// String action = intent.getAction();
+	// if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+	// // Get the BluetoothDevice object from the Intent
+	// BluetoothDevice device = intent
+	// .getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+	// // Add the found device to the foundDevices ArrayList
+	// foundDevices.add(device);
+	// }
+	// }
+	// }
 
-	private class MyBroadcastReceiver extends BroadcastReceiver {
+	public void setFoundDevice(BluetoothDevice device) {
 
-		public void onReceive(Context context, Intent intent) {
-			// may need to chain this to a recognizing function
-			String action = intent.getAction();
-			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-				// Get the BluetoothDevice object from the Intent
-				BluetoothDevice device = intent
-						.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-				// Add the found device to the foundDevices ArrayList
-				foundDevices.add(device);
-			}
-		}
+		foundDevices.add(device);
 	}
 
 }

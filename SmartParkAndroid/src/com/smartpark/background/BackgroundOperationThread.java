@@ -11,7 +11,7 @@ import android.bluetooth.BluetoothDevice;
 import android.util.Log;
 import android.widget.Toast;
 
-public class BackgoundOperationThread extends Thread {
+public class BackgroundOperationThread extends Thread {
 	
 	/*
 	 * keeps a list of booleans to determine if all activities have been
@@ -38,10 +38,16 @@ public class BackgoundOperationThread extends Thread {
 	
 	private boolean run = true;
 	
-	public BackgoundOperationThread() {
+	private boolean shutdownFlag = false;
+	
+	public BackgroundOperationThread() {
 		Log.e(TAG, "++ bgThread Constructor ++");
 		
 		// TODO
+	}
+	
+	public void powerDown(){
+		shutdownFlag = true;
 	}
 	
 	@Override
@@ -107,7 +113,7 @@ public class BackgoundOperationThread extends Thread {
 									"Bluetooth avaialbe", Toast.LENGTH_SHORT)
 									.show();
 							try {
-								BackgoundOperationThread.sleep(1200);
+								BackgroundOperationThread.sleep(1200);
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								Log.e(TAG, "Interrupted Exception occured" + e);
@@ -156,7 +162,7 @@ public class BackgoundOperationThread extends Thread {
 				Log.d("TAG", "--> bgThread timer started");
 				if (shutdownTime == 0) {
 					shutdownTime = System.currentTimeMillis();
-				} else if (System.currentTimeMillis() - shutdownTime > 5000) {
+				} else if (System.currentTimeMillis() - shutdownTime > 30000) {
 					shutdownThread();
 					run = false;
 					Log.i(TAG, "--> Shutting down thread");
@@ -172,6 +178,8 @@ public class BackgoundOperationThread extends Thread {
 			}
 		}
 		Log.i(TAG, "--> Thread is shutdown");
+		// In case the thread-instance is reused this will avoid a problem for us
+		shutdownFlag = false;
 	}
 	
 	private String btRead() {

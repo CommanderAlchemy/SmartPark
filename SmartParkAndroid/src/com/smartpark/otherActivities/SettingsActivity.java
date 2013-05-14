@@ -1,4 +1,4 @@
-package com.smartpark.activities;
+package com.smartpark.otherActivities;
 
 import java.util.List;
 

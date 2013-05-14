@@ -1,4 +1,4 @@
-package com.smartpark;
+package com.smartpark.;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,7 +12,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class BackgoundOperationThread extends Thread {
-
+	
 	/*
 	 * keeps a list of booleans to determine if all activities have been
 	 * destroyed so that the thread wont continue running for ever.
@@ -20,30 +20,30 @@ public class BackgoundOperationThread extends Thread {
 	public boolean activityMAIN = false;
 	public boolean activitySettings = false;
 	public boolean activityLOGIN = false;
-
+	
 	private static long shutdownTime = 0; // 0 = never
-
+	
 	// TRANSMITBUFFERS
 	private LinkedList<String> btTransmitBuffer = new LinkedList<String>();
 	private LinkedList<String> tcpTransmitBuffer = new LinkedList<String>();
-
+	
 	// Debugging and stuff
 	private static final String TAG = "bgThread";
 	private static final boolean D = Ref.D;
-
+	
 	// Device to connect to
 	private final String SMARTPARK_DEVICE = "HC-06-SLAVE";
-
+	
 	private BufferedReader bufferedReader;
-
+	
 	private boolean run = true;
-
+	
 	public BackgoundOperationThread() {
 		Log.e(TAG, "++ bgThread Constructor ++");
-
+		
 		// TODO
 	}
-
+	
 	@Override
 	public void run() {
 		Log.e(TAG, "++ bgThread started ++");
@@ -52,7 +52,7 @@ public class BackgoundOperationThread extends Thread {
 		run = true;
 		// ===========================================================
 		while (run) {
-
+			
 			if (Ref.btState == Ref.STATE_CONNECTED) {
 				// Code to process
 				try {
@@ -71,12 +71,12 @@ public class BackgoundOperationThread extends Thread {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
+				
 				while (btTransmitBuffer.size() > 0
 						&& Ref.getbtState() == Ref.STATE_CONNECTED) {
 					Log.d(TAG, "BT sending data");
 					btWrite();
-
+					
 				}
 				// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 			} else {
@@ -84,12 +84,12 @@ public class BackgoundOperationThread extends Thread {
 				Log.e(TAG, "BT not connected: handling error");
 				if (Ref.btDevice == null || Ref.btState != Ref.STATE_CONNECTED) {
 					Ref.btState = Ref.STATE_CONNECTING;
-
+					
 					if (Ref.btController == null) {
 						Log.e(TAG, "BlueController intance recreate");
 						Ref.btController = new BlueController();
 					}
-
+					
 					BluetoothDevice device = Ref.btController
 							.getPairedDeviceByName(SMARTPARK_DEVICE);
 					if (device == null) {
@@ -97,11 +97,11 @@ public class BackgoundOperationThread extends Thread {
 						for (int i = 0; i < 10; i++) {
 							device = Ref.btController
 									.getFoundDeviceByName(SMARTPARK_DEVICE);
-
+							
 							if (device != null
 									&& device.getName()
 											.equals(SMARTPARK_DEVICE)) {
-
+								
 							}
 							Toast.makeText(Ref.mainActivity,
 									"Bluetooth avaialbe", Toast.LENGTH_SHORT)
@@ -128,27 +128,27 @@ public class BackgoundOperationThread extends Thread {
 
 			if (Ref.tcpState == Ref.STATE_CONNECTED) {
 				// Code to process
-
+				
 				// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 			} else {
 				// Handle reconnection
-
+				
 			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-
+			
 			// -----------------------------------------------------
 			// -----------------------------------------------------
 			// -----------------------------------------------------
 			// -----------------------------------------------------
-
+			
 			Log.d(TAG, "BT buffer size: " + btTransmitBuffer.size());
-
+			
 			// Check to see if the thread needs to start shutting down
 			// Log.d(TAG, "--> thread running");
 			try {
 				Thread.sleep(3000);
 			} catch (InterruptedException e) {
 			}
-
+			
 			if (activityMAIN || activitySettings || activityLOGIN) {
 				shutdownTime = 0;
 				// Log.d(TAG, "thread not idled");
@@ -173,7 +173,7 @@ public class BackgoundOperationThread extends Thread {
 		}
 		Log.i(TAG, "--> Thread is shutdown");
 	}
-
+	
 	private String btRead() {
 		Log.e(TAG, "++ btRead ++");
 		String inData = null;

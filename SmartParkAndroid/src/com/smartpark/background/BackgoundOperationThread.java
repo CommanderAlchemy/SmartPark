@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-package com.smartpark.;
-=======
 package com.smartpark.background;
->>>>>>> refs/remotes/origin/master
 
 import java.io.BufferedReader;
 import java.io.IOException;

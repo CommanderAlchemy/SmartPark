@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -33,11 +34,11 @@ public class BlueController {
 	private static MyBroadcastReceiver mReceiver;
 	private static IntentFilter findFilter;
 
-	private static ArrayList<BluetoothDevice> foundDevices;
-	private static Set<BluetoothDevice> pairedDevices;
+	private static ArrayList<BluetoothDevice> foundDevices  = new ArrayList<BluetoothDevice>();
+	private static Set<BluetoothDevice> pairedDevices = null;
 
 	// Constants used locally
-	private static final UUID MY_UUID = UUID
+	private static final UUID SerialPort = UUID
 			.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
 	// Debugging and stuff
@@ -47,7 +48,7 @@ public class BlueController {
 	// -------------------------------------------------------------------------------
 
 	public BlueController() {
-		Log.d("tag", "++ Constructor: BlueController ++");
+		Log.d(TAG, "++ Constructor: BlueController ++");
 
 		// Get the adapter and store it in a static variable
 		// This initializes the class
@@ -70,7 +71,7 @@ public class BlueController {
 	 * discovery started successfully. After this method returns, the found
 	 * devices can be received by invoking getFoundDevices().
 	 */
-	public boolean findNearbyDevices(MainActivity invokerActivity) {
+	public boolean findNearbyDevices(Activity invokerActivity) {
 		Log.d("tag", "++ findNearbyDevices ++");
 
 		// This makes a broadcast receiver to register our adapter's findings
@@ -89,10 +90,10 @@ public class BlueController {
 	}
 
 	public Set<BluetoothDevice> getPairedDevicesList() {
-		Log.d("tag", "++ getPairedDevicesList ++");
+		Log.d(TAG, "++ getPairedDevicesList ++");
 
 		if (!Ref.btAdapter.isEnabled()) {
-			Log.d("new", "adapter not enabled");
+			Log.d(TAG, "adapter not enabled");
 		} else {
 			pairedDevices = Ref.btAdapter.getBondedDevices();
 		}
@@ -108,7 +109,7 @@ public class BlueController {
 	 * @return device BluetoothDevice
 	 */
 	public BluetoothDevice getPairedDeviceByName(String name) {
-		Log.d("tag", "++ getPairedDeviceByName ++");
+		Log.d(TAG, "++ getPairedDeviceByName ++");
 		
 		Log.d(TAG, "--> Getting BluetoothDevice for: " + name);
 		BluetoothDevice device;
@@ -176,8 +177,7 @@ public class BlueController {
 		try {
 			// fa87c0d0-afac-11de-8a39-0800200c9a66
 			// 00001101-0000-1000-8000-00805F9B34FB
-			Ref.btSocket = Ref.btDevice.createRfcommSocketToServiceRecord(UUID
-					.fromString("00001101-0000-1000-8000-00805F9B34FB"));
+			Ref.btSocket = Ref.btDevice.createRfcommSocketToServiceRecord(SerialPort);
 			try {
 				// This is a blocking call and will only return on a
 				// successful connection or an exception

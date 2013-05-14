@@ -66,6 +66,8 @@ public class MainActivity extends FragmentActivity implements
 		Log.e(TAG, "++ onCreate ++");
 
 		setContentView(R.layout.activity_main);
+		
+		Ref.mainActivity = this;
 
 		if (D)
 			Log.d(TAG, "--> Getting the actionBar and setting its navigation mode");
@@ -83,7 +85,7 @@ public class MainActivity extends FragmentActivity implements
 				getSupportFragmentManager());
 
 		if (D)
-			Log.d(TAG, "passing SectionsPagerAdapter to ViewPager");
+			Log.d(TAG, "--> passing SectionsPagerAdapter to ViewPager");
 
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -133,7 +135,7 @@ public class MainActivity extends FragmentActivity implements
 		} else if (Ref.bgThread.isAlive() == false) {
 			Ref.bgThread.start();
 		}
-		Ref.bgThread.mainActivity = true;
+		Ref.bgThread.activityMAIN = true;
 
 
 		// // Restoring the position of the actionBar
@@ -165,12 +167,13 @@ public class MainActivity extends FragmentActivity implements
 			AlertDialog alert = builder1.create();
 			alert.show();
 		} else {
-			Toast.makeText(this, "Bluetooth found", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "Bluetooth avaiable", Toast.LENGTH_SHORT).show();
 		}
 
 		// Enable bluetooth if disabled by asking the user first
-		Log.d(TAG, "--> enable bluetooth if disabled");
+		
 		if (!Ref.btAdapter.isEnabled()) {
+			Log.d(TAG, "--> bluetooth is disabled");
 			/*
 			 * the "this" is required so that the method can start another
 			 * activity. Only the activity currently running in thread can start
@@ -189,7 +192,7 @@ public class MainActivity extends FragmentActivity implements
 		super.onPause();
 		// TODO
 		// We have to save everything in this method for later use
-
+		Ref.bgThread.activityMAIN = false;
 	}// -------------------------------------------------------------------------------------
 
 	/**
@@ -214,15 +217,16 @@ public class MainActivity extends FragmentActivity implements
 	// Three buttons we no longer need
 	public void pairedDevicesCount(View view) {
 		Log.e(TAG, "++ pairedDevicesCount ++");
-		Toast.makeText(this, "++ pairedDevicesCount ++", Toast.LENGTH_SHORT)
-				.show();
 	}
 
 	public void isBTavailable(View view) {
-
+		Ref.bgThread.sendByBT("1");
+		Log.d(TAG, "wrote 1");
 	}
 
 	public void isBTEnable(View view) {
+		Ref.bgThread.sendByBT("10");
+		Log.d(TAG, "wrote 10");
 
 	}
 

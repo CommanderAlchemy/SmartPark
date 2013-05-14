@@ -5,6 +5,7 @@ package com.smartpark;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -49,22 +50,26 @@ public class Ref {
 	public static int tcpState = STATE_NOT_CONNECTED;
 	public static int btState = STATE_NOT_CONNECTED;
 	
+	// Reference to mainActivity
+	public static Activity mainActivity;
+	
+	
 	
 	
 	
 	// Not needed if you ask me
 	
 	// Changing tcpState
-	public static void setTcpState(int tcpState) {
-		Ref.tcpState = tcpState;
+	public static void setTcpState(int state) {
+		tcpState = state;
 	}
 	public static int getTcpState() {
 		return tcpState;
 	}
 	
 	// Changing btState
-	public static void setbtState(int btState) {
-		Ref.btState = tcpState;
+	public static void setbtState(int state) {
+		btState = state;
 	}
 	public static int getbtState() {
 		return btState;

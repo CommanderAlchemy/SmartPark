@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
 
+import com.smartpark.bluetooth.BlueController;
+
 import android.bluetooth.BluetoothDevice;
 import android.util.Log;
 import android.widget.Toast;
@@ -15,9 +17,9 @@ public class BackgoundOperationThread extends Thread {
 	 * keeps a list of booleans to determine if all activities have been
 	 * destroyed so that the thread wont continue running for ever.
 	 */
-	public static boolean mainActivity = true;
-	public static boolean settingsActivity = true;
-	public static boolean loginActivity = true;
+	public boolean activityMAIN = false;
+	public boolean activitySettings = false;
+	public boolean activityLOGIN = false;
 
 	private static long shutdownTime = 0; // 0 = never
 
@@ -29,120 +31,135 @@ public class BackgoundOperationThread extends Thread {
 	private static final String TAG = "bgThread";
 	private static final boolean D = Ref.D;
 
+	// Device to connect to
+	private final String SMARTPARK_DEVICE = "HC-06-SLAVE";
+
 	private BufferedReader bufferedReader;
 
+	private boolean run = true;
+
 	public BackgoundOperationThread() {
+		Log.e(TAG, "++ bgThread Constructor ++");
+
 		// TODO
 	}
 
 	@Override
 	public void run() {
-		Log.e(TAG, "--> bgThread Started");
-		/*
-		 * Check the connection states Handle the states
-		 * 
-		 * See if there is anything to be send Send till there is nothing bo be
-		 * send
-		 * 
-		 * See if anything has been received Handle the incoming data If engine
-		 * is of, then start parking-methods
-		 * 
-		 * 
-		 * Calculate an average of the position
-		 */
+		Log.e(TAG, "++ bgThread started ++");
+		String btInData = null;
+		String tcpInData = null;
+		run = true;
+		// ===========================================================
+		while (run) {
 
-		if (Ref.btDevice == null) {
-			if (Ref.btController == null)
-				Log.e(TAG, "FUCK YOU"); // <-- You may want to remove that before you give it to Rolf
-			BluetoothDevice device = Ref.btController.getPairedDeviceByName("HC-06-SLAVE");
-			if (device != null) {
-				Ref.btDevice = device;
-				Ref.btController.connect();
-				Log.d(TAG, "--> connected to " + device.getAddress());
-			} else {
-				Log.w(TAG, "--> device is null, bluetooth not found");
-			}
+			if (Ref.btState == Ref.STATE_CONNECTED) {
+				// Code to process
+				try {
+					Log.d(TAG, "--> reading started");
 
-		}
-
-		String inData = null;
-
-		try {
-			Thread.sleep((long) (Math.random() * 3000));
-		} catch (InterruptedException e2) {
-			// TODO Auto-generated catch block
-			Log.e(TAG, "Thread sleep failed at Math.random");
-		}
-		while (Ref.btInStream == null) {
-			if (Ref.btInStream != null) {
-				
-				bufferedReader = new BufferedReader(new InputStreamReader(Ref.btInStream));
-				Log.d(TAG, "reader created !");
-			}
-		}
-
-		inData = btRead();
-		if (inData != null) {
-			Log.d(TAG, "Received data");
-			Integer t = Integer.parseInt(inData) + 1;
-			sendBT(t.toString());
-		}
-		Log.d(TAG, "--> DATA read " + inData);
-
-		while (true) {
-			if (Ref.btSocket != null) {
-				if (Ref.btState == Ref.STATE_NOT_CONNECTED) {
-					Log.d(TAG, "not connected to bt");
+					btInData = btRead();
+					Log.d(TAG, "--> DATA read                  " + btInData);
+					Integer t = Integer.parseInt(btInData);
+					if (t != 10) {
+						t++;
+						Log.d(TAG, "Will now send: " + Integer.toString(t));
+						sendByBT(Integer.toString(t));
+					}
+					Log.d(TAG, "--> reading started");
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				Log.d(TAG, "--> writting data");
-				sendBT("1");
-				Log.d(TAG, "--> wrote data");
-				
+
 				while (btTransmitBuffer.size() > 0
 						&& Ref.getbtState() == Ref.STATE_CONNECTED) {
+					Log.d(TAG, "BT sending data");
 					btWrite();
+
 				}
+				// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+			} else {
+				// Handle reconnection
+				Log.e(TAG, "   Reconnection: handling error");
+				if (Ref.btDevice == null || Ref.btState != Ref.STATE_CONNECTED) {
+					Ref.btState = Ref.STATE_CONNECTING;
 
-				// while (tcpTransmitBuffer.size() > 0 && Ref.gettcpState() ==
-				// Ref.STATE_CONNECTED) {
-				// byte[] data = btTransmitBuffer.removeFirst().getBytes();
-				// try {
-				// Ref.tcpOutStream.write(data); TODO
-				// } catch (IOException e1) {
-				// Log.e(TAG, "Sending of data with BT failed" + e1);
-				// }
-				// }
+					if (Ref.btController == null) {
+						Log.e(TAG, "BlueController intance recreate");
+						Ref.btController = new BlueController();
+					}
 
-			}
+					BluetoothDevice device = Ref.btController
+							.getPairedDeviceByName(SMARTPARK_DEVICE);
+					if (device == null) {
+						Ref.btController.findNearbyDevices(Ref.mainActivity);
+						for (int i = 0; i < 10; i++) {
+							device = Ref.btController
+									.getFoundDeviceByName(SMARTPARK_DEVICE);
 
-			inData = btRead();
-			Log.d(TAG, "--> DATA read " + inData);
-			
-			if (inData != null) {
-				Integer t = Integer.parseInt(inData) + 1;
-				sendBT(t.toString());
-			}
+							if (device != null
+									&& device.getName()
+											.equals(SMARTPARK_DEVICE)) {
 
-			// Check to see if the connections are OK
+							}
+							Toast.makeText(Ref.mainActivity,
+									"Bluetooth avaialbe", Toast.LENGTH_SHORT)
+									.show();
+							try {
+								BackgoundOperationThread.sleep(1200);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								Log.e(TAG, "Interrupted Exception occured" + e);
+							}
+						}
+					}
+					if (device != null) {
+						Ref.btDevice = device;
+						Ref.btController.connect();
+						Log.d(TAG, "--> connected to " + device.getAddress());
+						bufferedReader = new BufferedReader(
+								new InputStreamReader(Ref.btInStream));
+					} else {
+						Log.w(TAG, "--> device is null, bluetooth not found");
+					}
+				}
+			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
-			// -----------------------------------------
-			Log.d(TAG, "thread igang 2");
+			if (Ref.tcpState == Ref.STATE_CONNECTED) {
+				// Code to process
+
+				// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+			} else {
+				// Handle reconnection
+
+			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+			// -----------------------------------------------------
+			// -----------------------------------------------------
+			// -----------------------------------------------------
+			// -----------------------------------------------------
+
+			Log.d(TAG, "BT buffer size: " + btTransmitBuffer.size());
+
+			// Check to see if the thread needs to start shutting down
+			// Log.d(TAG, "--> thread running");
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(3000);
 			} catch (InterruptedException e) {
 			}
 
-			if (mainActivity || settingsActivity || loginActivity) {
+			if (activityMAIN || activitySettings || activityLOGIN) {
 				shutdownTime = 0;
-				Log.d(TAG, "thread igang");
-				if (false)
-					Log.d("BackThread", "Application is frontmost");
+				// Log.d(TAG, "thread not idled");
 			} else {
 				Log.d("TAG", "--> bgThread timer started");
 				if (shutdownTime == 0) {
 					shutdownTime = System.currentTimeMillis();
 				} else if (System.currentTimeMillis() - shutdownTime > 5000) {
 					shutdownThread();
+					run = false;
+					Log.i(TAG, "--> Shutting down thread");
 				}
 				if (D)
 					Log.d("BackThread",
@@ -153,61 +170,75 @@ public class BackgoundOperationThread extends Thread {
 				} catch (InterruptedException e) {
 				}
 			}
-			Log.e(TAG, "The thread died");
 		}
+		Log.i(TAG, "--> Thread is shutdown");
 	}
 
 	private String btRead() {
+		Log.e(TAG, "++ btRead ++");
 		String inData = null;
 		if (Ref.btInStream != null) {
+			Log.e(TAG, "iStream good");
 			try {
-				bufferedReader = new BufferedReader(new InputStreamReader(Ref.btInStream));
-				if(bufferedReader == null){
-					bufferedReader = new BufferedReader(new InputStreamReader(Ref.btInStream));
-					Log.e(TAG, "bufferedReader = null");					
+				if (bufferedReader == null) {
+					if (Ref.btInStream != null) {
+						bufferedReader = new BufferedReader(
+								new InputStreamReader(Ref.btInStream));
+						Log.e(TAG, "bufferedReader was = null");
+					}
 				}
+				Log.e(TAG, "bufferedreader good");
 				if (bufferedReader.ready()) {
+					Log.e(TAG, "reader ready");
 					inData = bufferedReader.readLine();
 					Log.d(TAG, "DATA= " + bufferedReader.readLine());
 				}
 			} catch (IOException e1) {
-
-				 if (!Ref.btSocket.isConnected()) {
+				if (Ref.getbtState() != Ref.STATE_CONNECTED) {
 					Ref.setbtState(Ref.STATE_NOT_CONNECTED);
 					Log.e(TAG, "btSocket not connected");
 				}
 			}
+		}else{
+			Ref.btState = Ref.STATE_NOT_CONNECTED;
 		}
 		return inData;
 	}
 
 	private void btWrite() {
+		Log.e(TAG, "++ btWrite ++");
 		byte[] data = btTransmitBuffer.removeFirst().getBytes();
 		try {
 			Ref.btOutStream.write(data);
 		} catch (IOException e1) {
 			Log.e(TAG, "Sending of data with bt failed" + e1);
+			if (Ref.btState != Ref.STATE_CONNECTED) {
+				Ref.btState = Ref.STATE_NOT_CONNECTED;
+				Log.e(TAG, "btSocket set to NOT CONNECTED");
+			}
 		}
 	}
-
+	
 	private void shutdownThread() {
-		// TODO Auto-generated method stub
-
+		Log.e(TAG, "++ shutdownThread ++");
+		// Do not invoke method that forcefully shut a thread down.
+		// Let the run method run out.
+		//		this.shutdownThread();
 		try {
 			Ref.btSocket.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 		}
-
 		Ref.bgThread = null;
-
+	}
+	
+	// The next two methods put strings in transmitbuffer
+	public void sendByBT(String data) {
+		Log.e(TAG, "++ sendByBT ++");
+		btTransmitBuffer.addLast(data + "\r\n");
 	}
 
-	public void sendBT(String data) {
-		btTransmitBuffer.addLast(data);
-	}
-
-	public void sendTCP(String data) {
+	public void sendByTCP(String data) {
+		Log.e(TAG, "++ sendByTCP ++");
 		tcpTransmitBuffer.addLast(data);
 	}
 

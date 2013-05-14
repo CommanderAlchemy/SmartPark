@@ -12,7 +12,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class BackgoundOperationThread extends Thread {
-
+	// haha
 	/*
 	 * keeps a list of booleans to determine if all activities have been
 	 * destroyed so that the thread wont continue running for ever.

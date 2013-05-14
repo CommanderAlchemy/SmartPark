@@ -37,10 +37,7 @@ public class Ref {
 	// Objects for use with the bluetooth adapter
 	public static BluetoothAdapter btAdapter;	
 	public static BlueController btController;
-	public static BluetoothSocket btSocket;
-	public static BluetoothDevice btDevice;
-	public static InputStream btInStream;
-	public static OutputStream btOutStream;
+
 	
 	// RequestCodes for controlling the bluetooth
 	public static final int REQUEST_ENABLE_BT = 1;

@@ -8,7 +8,7 @@ import android.bluetooth.BluetoothSocket;
 
 import com.smartpark.background.Ref;
 
-public class BluetoothThread extends Thread {
+public class BluetoothThread_not_used extends Thread {
 	/** UUID for Serial Port Profile */
 	private static final UUID MY_UUID = UUID
 			.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -20,7 +20,7 @@ public class BluetoothThread extends Thread {
 	private static final String TAG = "BlueController";
 	private static final boolean D = Ref.D;
 
-	public BluetoothThread(BluetoothDevice device) {
+	public BluetoothThread_not_used(BluetoothDevice device) {
 		// Use a temporary object that is later assigned to mmSocket,
 		// because mmSocket is final
 		BluetoothSocket tmp = null;

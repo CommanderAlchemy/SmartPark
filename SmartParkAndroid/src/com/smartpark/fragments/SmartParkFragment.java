@@ -36,6 +36,8 @@ public class SmartParkFragment extends Fragment  {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		Log.e(TAG, "++ onCreateView ++");
+
 		View rootView = inflater.inflate(R.layout.fragment_sp_view,
 				container, false);
 		TextView dummyTextView = (TextView) rootView
@@ -48,7 +50,7 @@ public class SmartParkFragment extends Fragment  {
 	@Override
 	public void onDestroy(){
 		super.onDestroy();
-		Log.d(TAG, " -- DestroyFragment");
+		Log.e(TAG, "++ DestroyFragment ++");
 
 	}
 	

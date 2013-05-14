@@ -12,7 +12,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class BackgoundOperationThread extends Thread {
-	// haha
+
 	/*
 	 * keeps a list of booleans to determine if all activities have been
 	 * destroyed so that the thread wont continue running for ever.
@@ -81,7 +81,7 @@ public class BackgoundOperationThread extends Thread {
 				// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 			} else {
 				// Handle reconnection
-				Log.e(TAG, "   Reconnection: handling error");
+				Log.e(TAG, "BT not connected: handling error");
 				if (Ref.btDevice == null || Ref.btState != Ref.STATE_CONNECTED) {
 					Ref.btState = Ref.STATE_CONNECTING;
 

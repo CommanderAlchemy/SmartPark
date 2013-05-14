@@ -167,7 +167,7 @@ public class BlueController {
 	 * BluetoothDevice in Ref.java
 	 */
 	public void connect() {
-		Log.d("tag", "++ connect ++");
+		Log.e(TAG, "++ connect ++");
 
 		Ref.btState = Ref.STATE_CONNECTING;
 

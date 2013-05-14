@@ -190,6 +190,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void onPause() {
 		super.onPause();
+		Log.e(TAG, "++ onStart ++");
 		// TODO
 		// We have to save everything in this method for later use
 		Ref.bgThread.activityMAIN = false;
@@ -203,7 +204,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void onSaveInstanceState(final Bundle outState) {
 		super.onSaveInstanceState(outState);
-		Log.d(TAG, "onSaveInstanceState");
+		Log.d(TAG, "++ onSaveInstanceState ++");
 		// outState.putInt("ActionBarPosition",
 		// actionBar.getSelectedNavigationIndex());
 

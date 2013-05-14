@@ -7,6 +7,7 @@ import java.util.LinkedList;
 
 import com.smartpark.bluetooth.BlueController;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.util.Log;
 import android.widget.Toast;
@@ -42,8 +43,19 @@ public class BackgroundOperationThread extends Thread {
 	
 	public BackgroundOperationThread() {
 		Log.e(TAG, "++ bgThread Constructor ++");
-		
-		// TODO
+		// BT
+		Ref.btState = Ref.STATE_NOT_CONNECTED;
+		Ref.btAdapter = BluetoothAdapter.getDefaultAdapter();
+		Ref.btController = new BlueController();
+		Ref.btDevice = null;
+		Ref.btInStream = null;
+		Ref.btOutStream = null;
+		// TCP
+		Ref.tcpState = Ref.STATE_NOT_CONNECTED;
+		Ref.btSocket = null;
+		Ref.clientThread = null;
+		Ref.tcpClient = null;
+		// TODO add more to this
 	}
 	
 	public void powerDown(){
@@ -74,8 +86,7 @@ public class BackgroundOperationThread extends Thread {
 					}
 					Log.d(TAG, "--> reading started");
 				} catch (NumberFormatException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Log.e(TAG, "NumberFormatException:\n" + e);
 				}
 				
 				while (btTransmitBuffer.size() > 0
@@ -99,7 +110,7 @@ public class BackgroundOperationThread extends Thread {
 					BluetoothDevice device = Ref.btController
 							.getPairedDeviceByName(SMARTPARK_DEVICE);
 					if (device == null) {
-						Ref.btController.findNearbyDevices(Ref.mainActivity);
+						Ref.btController.findNearbyDevices(Ref.activeActivity);
 						for (int i = 0; i < 10; i++) {
 							device = Ref.btController
 									.getFoundDeviceByName(SMARTPARK_DEVICE);
@@ -109,7 +120,7 @@ public class BackgroundOperationThread extends Thread {
 											.equals(SMARTPARK_DEVICE)) {
 								
 							}
-							Toast.makeText(Ref.mainActivity,
+							Toast.makeText(Ref.activeActivity,
 									"Bluetooth avaialbe", Toast.LENGTH_SHORT)
 									.show();
 							try {

@@ -51,7 +51,7 @@ public class Ref {
 	public static int btState = STATE_NOT_CONNECTED;
 	
 	// Reference to mainActivity
-	public static Activity mainActivity;
+	public static Activity activeActivity;
 	
 	
 	
@@ -60,6 +60,10 @@ public class Ref {
 	// Not needed if you ask me
 	
 	// Changing tcpState
+	public static boolean tcpIsConnected(){
+		return tcpState == STATE_CONNECTED;
+	}
+	
 	public static void setTcpState(int state) {
 		tcpState = state;
 	}
@@ -68,6 +72,10 @@ public class Ref {
 	}
 	
 	// Changing btState
+	public static boolean btIsConnected(){
+		return btState == STATE_CONNECTED;
+	}
+	
 	public static void setbtState(int state) {
 		btState = state;
 	}

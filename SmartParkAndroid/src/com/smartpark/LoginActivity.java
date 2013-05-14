@@ -1,4 +1,4 @@
-package com.smartpark.otherActivities;
+package com.smartpark;
 
 import com.smartpark.R;
 import com.smartpark.R.id;

@@ -8,7 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 
 public class BT_FoundDeviceReceiver extends BroadcastReceiver {
-
+	
+	@Override
 	public void onReceive(Context context, Intent intent) {
 		// may need to chain this to a recognizing function
 		String action = intent.getAction();

@@ -30,8 +30,6 @@ import com.smartpark.fragments.DummySectionFragment;
 import com.smartpark.fragments.GPSFragment;
 import com.smartpark.fragments.SmartParkFragment;
 import com.smartpark.interfaces.OnMessageReceived;
-import com.smartpark.otherActivities.LoginActivity;
-import com.smartpark.otherActivities.SettingsActivity;
 import com.smartpark.tcp.TCPClient;
 
 public class MainActivity extends FragmentActivity implements
@@ -70,7 +68,7 @@ public class MainActivity extends FragmentActivity implements
 
 		setContentView(R.layout.activity_main);
 
-		Ref.mainActivity = this;
+		Ref.activeActivity = this;
 
 		if (D)
 			Log.d(TAG,

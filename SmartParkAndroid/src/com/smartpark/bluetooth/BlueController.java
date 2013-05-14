@@ -59,21 +59,19 @@ public class BlueController {
 		// Get the adapter and store it in a static variable
 		// This initializes the class
 		Ref.btAdapter = BluetoothAdapter.getDefaultAdapter();
-		/* Create a filter so that we only receive intent for events
-		 * that we are intereseted in. */
-		bt_findFilter = new IntentFilter(
-				BluetoothDevice.ACTION_FOUND);
-		bt_stateFilter = new IntentFilter(
-				BluetoothAdapter.ACTION_STATE_CHANGED);
+		/*
+		 * Create a filter so that we only receive intent for events that we are
+		 * interested in.
+		 */
+		bt_findFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+		bt_stateFilter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
 		bt_connectionStateFilter = new IntentFilter(
 				BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
-		
-		
-		
+
 		// Create a BroadcastReceiver for ACTION_FOUND
 		bt_foundDeviceReceiver = new BT_FoundDeviceReceiver();
 		bt_stateReceiver = new BT_StateReceiver();
-		
+
 	}// -------------------------------------------------------------------------------
 
 	public void cleanUp() {
@@ -86,8 +84,8 @@ public class BlueController {
 		 * to be the last class to exit and should not be invoked like in
 		 * orientation changes.
 		 */
-		Ref.mainActivity.unregisterReceiver(bt_foundDeviceReceiver);
-		Ref.mainActivity.unregisterReceiver(bt_stateReceiver);
+		Ref.activeActivity.unregisterReceiver(bt_foundDeviceReceiver);
+		Ref.activeActivity.unregisterReceiver(bt_stateReceiver);
 
 	}
 
@@ -106,8 +104,8 @@ public class BlueController {
 		// but only if not already registered.
 		if (!BroacastReceiverIsRegistered) {
 			// Register the BroadcastReceiver
-			invokerActivity
-					.registerReceiver(bt_foundDeviceReceiver, bt_findFilter);
+			invokerActivity.registerReceiver(bt_foundDeviceReceiver,
+					bt_findFilter);
 			/*
 			 * We do not want duplicated registrations and use variable to store
 			 * the state of the registration.
@@ -209,13 +207,15 @@ public class BlueController {
 			Ref.btSocket = Ref.btDevice
 					.createRfcommSocketToServiceRecord(SerialPort);
 			try {
-				// This is a blocking call and will only return on a
-				// successful connection or an exception
+				// This will only return on a successful connection
+				// or an exception
 				Ref.btController.cancelDiscovery();
 				Ref.btSocket.connect();
-				Ref.btState = Ref.STATE_CONNECTED;
+				/* Next line not needed after implementing BroadcastReceiver for
+				 * it. */
+				// Ref.btState = Ref.STATE_CONNECTED;
 			} catch (IOException e) {
-				// Close the socket
+				// Close the socket upon error
 				try {
 					Log.e(TAG, "Connection Exception: ", e);
 					Ref.btSocket.close();
@@ -237,19 +237,13 @@ public class BlueController {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			Log.e(TAG, "Socket I/O Streams Exception" + e);
+			Ref.btState = Ref.STATE_NOT_CONNECTED;
 		}
-		if (Ref.btSocket.isConnected()) {
-			Log.d(TAG, "BlueTooth Connection Successfull");
-			Ref.btState = Ref.STATE_CONNECTED;
-		}
-		// }
-		// }.start();
 	}
 
 	public void sendString(ArrayList<String> data) {
 		Log.d("tag", "++ sendString ++");
 		// TODO
-
 	}
 
 	public boolean isDiscovering(BluetoothAdapter sd) {
@@ -279,11 +273,11 @@ public class BlueController {
 		invokerActivity.unregisterReceiver(bt_foundDeviceReceiver);
 		BroacastReceiverIsRegistered = false;
 	}
-
+	
 	public boolean isBluetoothAdapterAvailable() {
 		return Ref.btAdapter != null;
 	}
-
+	
 	public void cancelDiscovery() {
 		Log.d("tag", "++ cancelDiscovery ++");
 

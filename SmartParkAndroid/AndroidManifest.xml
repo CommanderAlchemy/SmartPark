@@ -35,7 +35,7 @@
             android:label="@string/title_activity_settings" >
         </activity>
         <activity
-            android:name="com.smartpark.otherActivities.LoginActivity"
+            android:name="com.smartpark.LoginActivity"
             android:label="@string/title_activity_login"
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>

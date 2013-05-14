@@ -1,13 +1,11 @@
-package com.smartpark;
+package com.smartpark.activities;
 
 import java.util.Locale;
-import java.util.Set;
 
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
-import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,6 +20,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.smartpark.R;
+import com.smartpark.background.BackgoundOperationThread;
+import com.smartpark.background.Ref;
 import com.smartpark.bluetooth.BlueController;
 import com.smartpark.fragments.BluetoothFragment;
 import com.smartpark.fragments.DebugFragment;

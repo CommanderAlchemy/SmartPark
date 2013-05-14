@@ -8,10 +8,10 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
-import com.smartpark.Ref;
-import com.smartpark.interfaces.OnMessageReceived;
-
 import android.util.Log;
+
+import com.smartpark.background.Ref;
+import com.smartpark.interfaces.OnMessageReceived;
 
 /**
  * TCP Client, this class holds the implementation of kommunication protocol for

@@ -1,4 +1,4 @@
-package com.smartpark;
+package com.smartpark.activities;
 
 import java.util.List;
 
@@ -18,6 +18,8 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
+
+import com.smartpark.R;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On

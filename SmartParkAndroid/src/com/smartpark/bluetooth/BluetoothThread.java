@@ -3,10 +3,10 @@ package com.smartpark.bluetooth;
 import java.io.IOException;
 import java.util.UUID;
 
-import com.smartpark.Ref;
-
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+
+import com.smartpark.background.Ref;
 
 public class BluetoothThread extends Thread {
 	/** UUID for Serial Port Profile */

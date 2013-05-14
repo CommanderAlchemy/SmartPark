@@ -1,4 +1,6 @@
-package com.smartpark;
+package com.smartpark.activities;
+
+import com.smartpark.R;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

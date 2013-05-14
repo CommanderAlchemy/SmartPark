@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.smartpark.R;
-import com.smartpark.Ref;
+import com.smartpark.background.Ref;
 
 /**
  * DummySectionFragment, this is the playground for testing things out before

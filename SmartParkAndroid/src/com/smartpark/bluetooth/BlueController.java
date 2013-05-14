@@ -15,8 +15,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
-import com.smartpark.MainActivity;
-import com.smartpark.Ref;
+import com.smartpark.activities.MainActivity;
+import com.smartpark.background.Ref;
 
 public class BlueController {
 	/*

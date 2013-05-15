@@ -42,7 +42,7 @@ public class BackgroundOperationThread extends Thread {
 	private boolean shutdownFlag = false;
 
 	public BackgroundOperationThread() {
-		Log.e(TAG, "++ bgThread Constructor ++");
+		Log.i(TAG, "++ bgThread Constructor ++");
 		// BT
 		Ref.btState = Ref.STATE_NOT_CONNECTED;
 		Ref.btAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -64,7 +64,7 @@ public class BackgroundOperationThread extends Thread {
 	public void run() {
 		// TODO remember to check for the shutdownFlag
 		
-		Log.e(TAG, "++ bgThread started ++");
+		Log.i(TAG, "++ bgThread started ++");
 		String btInData = null;
 		String tcpInData = null;
 		run = true;
@@ -157,7 +157,7 @@ public class BackgroundOperationThread extends Thread {
 			// -----------------------------------------------------
 			// -----------------------------------------------------
 			// -----------------------------------------------------
-
+			
 			Log.d(TAG, "BT buffer size: " + btTransmitBuffer.size());
 
 			// Check to see if the thread needs to start shutting down
@@ -171,7 +171,7 @@ public class BackgroundOperationThread extends Thread {
 				shutdownTime = 0;
 				// Log.d(TAG, "thread not idled");
 			} else {
-				Log.d("TAG", "--> bgThread timer started");
+				Log.d(TAG, "--> bgThread timer started");
 				if (shutdownTime == 0) {
 					shutdownTime = System.currentTimeMillis();
 				} else if (System.currentTimeMillis() - shutdownTime > 30000) {
@@ -189,14 +189,14 @@ public class BackgroundOperationThread extends Thread {
 				}
 			}
 		}
-		Log.i(TAG, "--> Thread is shutdown");
+		Log.d(TAG, "--> Thread is shutdown");
 		// In case the thread-instance is reused this will avoid a problem for
 		// us
 		shutdownFlag = false;
 	}
 
 	private void btWrite() {
-		Log.e(TAG, "++ btWrite ++");
+		Log.i(TAG, "++ btWrite ++");
 		if (Ref.btIsConnected()) {
 			byte[] data = btTransmitBuffer.removeFirst().getBytes();
 			Ref.btController.sendBytes(data);
@@ -204,23 +204,23 @@ public class BackgroundOperationThread extends Thread {
 	}
 
 	private void shutdownThread() {
-		Log.e(TAG, "++ shutdownThread ++");
+		Log.i(TAG, "++ shutdownThread ++");
 		// Do not invoke method that forcefully shut a thread down.
 		// Let the run method run out.
 		// this.shutdownThread(); wont work, just like suspend() and stop()
 
-		Ref.btController.close();
+		Ref.btController.closeConnection();
 		Ref.bgThread = null;
 	}
 
 	// The next two methods put strings in transmitbuffer
 	public void sendByBT(String data) {
-		Log.e(TAG, "++ sendByBT ++");
+		Log.i(TAG, "++ sendByBT ++");
 		btTransmitBuffer.addLast(data + "\r\n");
 	}
 
 	public void sendByTCP(String data) {
-		Log.e(TAG, "++ sendByTCP ++");
+		Log.i(TAG, "++ sendByTCP ++");
 		tcpTransmitBuffer.addLast(data);
 	}
 

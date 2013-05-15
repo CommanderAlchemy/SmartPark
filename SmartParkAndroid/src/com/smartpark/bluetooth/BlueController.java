@@ -14,8 +14,6 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
@@ -67,7 +65,8 @@ public class BlueController {
 	// -------------------------------------------------------------------------------
 
 	public BlueController() {
-		Log.d(TAG, "++ Constructor: BlueController ++");
+		if (D)
+			Log.i(TAG, "++ Constructor: BlueController ++");
 
 		// Get the adapter and store it in a static variable
 		// This initializes the class
@@ -114,7 +113,8 @@ public class BlueController {
 	 * devices can be received by invoking getFoundDevices().
 	 */
 	public boolean findNearbyDevices(Activity invokerActivity) {
-		Log.d("tag", "++ findNearbyDevices ++");
+		if (D)
+			Log.i(TAG, "++ findNearbyDevices ++");
 
 		// This makes a broadcast receiver to register our adapter's findings
 		// but only if not already registered.
@@ -133,10 +133,12 @@ public class BlueController {
 	}
 
 	public Set<BluetoothDevice> getPairedDevicesList() {
-		Log.d(TAG, "++ getPairedDevicesList ++");
+		if (D)
+			Log.i(TAG, "++ getPairedDevicesList ++");
 
 		if (!Ref.btAdapter.isEnabled()) {
-			Log.d(TAG, "adapter not enabled");
+			if (D)
+				Log.e(TAG, "adapter not enabled");
 		} else {
 			pairedDevices = Ref.btAdapter.getBondedDevices();
 		}
@@ -152,9 +154,11 @@ public class BlueController {
 	 * @return device BluetoothDevice
 	 */
 	public BluetoothDevice getPairedDeviceByName(String name) {
-		Log.d(TAG, "++ getPairedDeviceByName ++");
+		if (D)
+			Log.i(TAG, "++ getPairedDeviceByName ++");
 
-		Log.d(TAG, "--> Getting BluetoothDevice for: " + name);
+		if (D)
+			Log.d(TAG, "--> Getting BluetoothDevice for: " + name);
 		BluetoothDevice device;
 		Set<BluetoothDevice> h = getPairedDevicesList();
 		Iterator<BluetoothDevice> iter = h.iterator();
@@ -176,7 +180,8 @@ public class BlueController {
 	 * @return device BluetoothDevice
 	 */
 	public BluetoothDevice getFoundDeviceByName(String name) {
-		Log.d("tag", "++ getFoundDeviceByName ++");
+		if (D)
+			Log.i(TAG, "++ getFoundDeviceByName ++");
 
 		BluetoothDevice device;
 		Iterator<BluetoothDevice> iter;
@@ -200,7 +205,8 @@ public class BlueController {
 	 * @return foundDevices These are the found devices so far
 	 */
 	public ArrayList<BluetoothDevice> getFoundDevices() {
-		Log.d("tag", "++ getFoundDevices ++");
+		if (D)
+			Log.i(TAG, "++ getFoundDevices ++");
 
 		return foundDevices;
 	}
@@ -210,7 +216,8 @@ public class BlueController {
 	 * BluetoothDevice in Ref.java
 	 */
 	public void connect() {
-		Log.e(TAG, "++ connect ++");
+		if (D)
+			Log.i(TAG, "++ connect ++");
 
 		Ref.btState = Ref.STATE_CONNECTING;
 
@@ -234,65 +241,80 @@ public class BlueController {
 			} catch (IOException e) {
 				// Close the socket upon error
 				try {
-					Log.e(TAG, "Connection Exception: ", e);
+					if (D)
+						Log.e(TAG, "Connection Exception: ", e);
 					btSocket.close();
 				} catch (IOException e2) {
-					Log.e(TAG, "Socket Close Exception: " + e2);
+					if (D)
+						Log.e(TAG, "Socket Close Exception: " + e2);
 				}
 				Ref.btState = Ref.STATE_NOT_CONNECTED;
 			}
 		} catch (IOException e) {
-			Log.e(TAG, "Socket init Exception: " + e);
+			if (D)
+				Log.e(TAG, "Socket init Exception: " + e);
 			Ref.btState = Ref.STATE_NOT_CONNECTED;
 		}
 
 		try {
-			Log.d(TAG, "--> Init btSocket I/O Streams");
+			if (D)
+				Log.d(TAG, "--> Init btSocket I/O Streams");
 			btInStream = btSocket.getInputStream();
 			btOutStream = btSocket.getOutputStream();
 		} catch (IOException e) {
-			Log.e(TAG, "Socket I/O Streams Exception" + e);
+			if (D)
+				Log.e(TAG, "Socket I/O Streams Exception" + e);
 			Ref.btState = Ref.STATE_NOT_CONNECTED;
 		}
 	}
 
 	public void sendBytes(byte[] data) {
-		Log.d(TAG, "++ sendString ++");
+		if (D)
+			Log.i(TAG, "++ sendString ++");
 		try {
 			btOutStream.write(data);
 		} catch (IOException e1) {
-			Log.e(TAG, "Sending of data with bt failed" + e1);
+			if (D)
+				Log.e(TAG, "Sending of data with bt failed" + e1);
 			if (Ref.btState != Ref.STATE_CONNECTED) {
 				Ref.btState = Ref.STATE_NOT_CONNECTED;
-				Log.e(TAG, "btSocket set to NOT CONNECTED");
+				if (D)
+					Log.e(TAG, "btSocket set to NOT CONNECTED");
 			}
 		}
 	}
 
 	public String receiveString() {
-		Log.e(TAG, "++ receiveString ++");
+		if (D)
+			Log.i(TAG, "++ receiveString ++");
 		if (btInStream != null) {
-			Log.e(TAG, "iStream good");
+			if (D)
+				Log.e(TAG, "iStream good");
 			String inData = null;
 			try {
 				if (bufferedReader == null) {
 					if (btInStream != null) {
 						bufferedReader = new BufferedReader(
 								new InputStreamReader(btInStream));
-						Log.e(TAG, "bufferedReader was = null");
+						if (D)
+							Log.e(TAG, "bufferedReader was = null");
 					}
 				}
-				Log.e(TAG, "bufferedreader good");
+				if (D)
+					Log.e(TAG, "bufferedreader good");
 				if (bufferedReader.ready()) {
-					Log.e(TAG, "reader ready");
+					if (D)
+						Log.e(TAG, "reader ready");
 					inData = bufferedReader.readLine();
-					Log.d(TAG, "DATA= " + bufferedReader.readLine());
+					if (D)
+						Log.d(TAG, "DATA= " + bufferedReader.readLine());
 					return inData;
 				}
 			} catch (IOException e1) {
 				if (Ref.getbtState() != Ref.STATE_CONNECTED) {
 					Ref.setbtState(Ref.STATE_NOT_CONNECTED);
-					Log.e(TAG, "btSocket not connected");
+					if (D)
+						Log.e(TAG, "btSocket not connected");
 				}
 			}
 		} else {
@@ -302,7 +324,8 @@ public class BlueController {
 	}
 
 	public boolean isDiscovering() {
-		Log.d("tag", "++ isDiscovering ++");
+		if (D)
+			Log.d(TAG, "++ isDiscovering ++");
 		return Ref.btAdapter.isDiscovering();
 	}
 
@@ -314,18 +337,21 @@ public class BlueController {
 	 *            The reference to the invoking activity
 	 */
 	public void unRegister_DeviceFoundReceiver(Activity invokerActivity) {
-		Log.d("tag", "++ unRegister_DeviceFoundReceiver ++");
+		if (D)
+			Log.i(TAG, "++ unRegister_DeviceFoundReceiver ++");
 
 		invokerActivity.unregisterReceiver(bt_foundDeviceReceiver);
 		BroacastReceiverIsRegistered = false;
 	}
-	
-	public boolean close(){
+
+	public boolean closeConnection() {
+		if (D) Log.i(TAG, "++ closeConnection ++");
 		try {
 			btSocket.close();
 			return true;
 		} catch (IOException e) {
-			Log.e(TAG, "Error closing btSocket: " + e);
+			if (D)
+				Log.e(TAG, "Error closing btSocket: " + e);
 			return false;
 		}
 	}
@@ -338,7 +364,8 @@ public class BlueController {
 	 *            The reference to the invoking activity
 	 */
 	public void unRegister_AdapterStateReceiver(Activity invokerActivity) {
-		Log.d("tag", "++ unRegister_AdapterStateReceiver ++");
+		if (D)
+			Log.i(TAG, "++ unRegister_AdapterStateReceiver ++");
 
 		invokerActivity.unregisterReceiver(bt_foundDeviceReceiver);
 		BroacastReceiverIsRegistered = false;
@@ -349,7 +376,8 @@ public class BlueController {
 	}
 
 	public void cancelDiscovery() {
-		Log.d("tag", "++ cancelDiscovery ++");
+		if (D)
+			Log.i(TAG, "++ cancelDiscovery ++");
 
 		// cancel any prior BT device discovery
 		if (Ref.btAdapter.isDiscovering()) {
@@ -358,14 +386,17 @@ public class BlueController {
 	}
 
 	public void enableAdapterNoUserInteraction() {
-		Log.d("tag", "++ enableAdapterNoUserInteraction ++");
+		if (D)
+			Log.i(TAG, "++ enableAdapterNoUserInteraction ++");
 		Ref.btAdapter.enable();
 	}
 
 	public boolean enableAdapter(MainActivity invokerActivity) {
-		Log.d("tag", "++ enableAdapter ++");
+		if (D)
+			Log.i(TAG, "++ enableAdapter ++");
 		if (!Ref.btAdapter.isEnabled()) {
-			Log.d("TAG", "enabling adapter");
+			if (D)
+				Log.d(TAG, "enabling adapter");
 			Intent enableBtIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			invokerActivity.startActivityForResult(enableBtIntent,
@@ -377,7 +408,8 @@ public class BlueController {
 	}
 
 	public boolean disableAdapter() {
-		Log.d("tag", "++ disableAdapter ++");
+		if (D)
+			Log.i(TAG, "++ disableAdapter ++");
 		if (Ref.btAdapter.getState() == BluetoothAdapter.STATE_OFF) {
 			return true;
 		} else {
@@ -389,7 +421,8 @@ public class BlueController {
 	}
 
 	public void makeDiscoverable(MainActivity invokerActivity) {
-		Log.d("tag", "++ makeDiscoverable ++");
+		if (D)
+			Log.i(TAG, "++ makeDiscoverable ++");
 		Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 		intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 120);
 		invokerActivity.startActivityForResult(intent,

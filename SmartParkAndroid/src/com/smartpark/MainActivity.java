@@ -50,7 +50,7 @@ public class MainActivity extends FragmentActivity implements
 	private ViewPager mViewPager;
 
 	/**
-	 * Fragments, different views in application that you swype, instead of
+	 * Fragments, different views in application that you swipe, instead of
 	 * activities.
 	 */
 	private Fragment fragment;
@@ -64,7 +64,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.e(TAG, "++ onCreate ++");
+		Log.i(TAG, "++ onCreate ++");
 
 		setContentView(R.layout.activity_main);
 
@@ -100,8 +100,7 @@ public class MainActivity extends FragmentActivity implements
 				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 					@Override
 					public void onPageSelected(int position) {
-						if (D)
-							Log.d(TAG, "position " + position);
+						if (D) Log.d(TAG, "position " + position);
 						actionBar.setSelectedNavigationItem(position);
 					}
 				});
@@ -143,7 +142,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void onStart() {
 		super.onStart();
-		Log.e(TAG, "++ onStart ++");
+		Log.i(TAG, "++ onStart ++");
 
 		// Creates and starts the background-operation-thread
 		if (Ref.bgThread == null) {
@@ -192,7 +191,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void onPause() {
 		super.onPause();
-		Log.e(TAG, "++ onStart ++");
+		Log.i(TAG, "++ onStart ++");
 		// TODO
 		// We have to save everything in this method for later use
 		Ref.bgThread.activityMAIN = false;
@@ -206,7 +205,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void onSaveInstanceState(final Bundle outState) {
 		super.onSaveInstanceState(outState);
-		Log.d(TAG, "++ onSaveInstanceState ++");
+		Log.i(TAG, "++ onSaveInstanceState ++");
 		// outState.putInt("ActionBarPosition",
 		// actionBar.getSelectedNavigationIndex());
 
@@ -216,6 +215,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		Log.i(TAG, "++ onDestroy ++");
 		/* Most resources are being handles by the bgTherad and will be
 		released by it and not here. This method is only responsible for
 		resources taken by this activity. */
@@ -233,20 +233,19 @@ public class MainActivity extends FragmentActivity implements
 	public void pairedDevicesCount(View view) {
 		Log.e(TAG, "++ pairedDevicesCount ++");
 	}
-
+	
 	public void isBTavailable(View view) {
 		Ref.bgThread.sendByBT("1");
 		Log.d(TAG, "wrote 1");
 	}
-
+	
 	public void isBTEnable(View view) {
 		Ref.bgThread.sendByBT("10");
 		Log.d(TAG, "wrote 10");
-
 	}
-
+	
 	// ------------------------------
-
+	
 	@Override
 	public void onTabSelected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
@@ -283,10 +282,10 @@ public class MainActivity extends FragmentActivity implements
 		// new ConnectTask().execute("");
 
 		Ref.tcpClient = new TCPClient(new OnMessageReceived() {
-			@Override
 			// here the messageReceived method is implemented
+			@Override
 			public void messageReceived(String message) {
-				Log.e(TAG, message);
+				Log.i(TAG, "++ messageReceived ++ TCP: " + message);
 				// this method calls the onProgressUpdate
 				// publishProgress(message);
 
@@ -407,9 +406,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Debug stuff
-		if (D) {
-			Log.d(TAG, "onCreateOptionsMenu");
-		}
+		if (D) Log.d(TAG, "onCreateOptionsMenu");
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		CreateMenu(menu);

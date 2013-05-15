@@ -32,7 +32,7 @@ public class SmartParkFragment extends Fragment  {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.e(TAG, "++ onCreateView ++");
+		Log.i(TAG, "++ onCreateView ++");
 
 		View rootView = inflater.inflate(R.layout.fragment_sp_view,
 				container, false);
@@ -43,12 +43,7 @@ public class SmartParkFragment extends Fragment  {
 		return rootView;
 	}
 
-	@Override
-	public void onDestroy(){
-		super.onDestroy();
-		Log.e(TAG, "++ DestroyFragment ++");
-
-	}
+	
 	
 	
 	

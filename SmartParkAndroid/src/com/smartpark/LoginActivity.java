@@ -1,11 +1,5 @@
 package com.smartpark;
 
-import com.smartpark.R;
-import com.smartpark.R.id;
-import com.smartpark.R.layout;
-import com.smartpark.R.menu;
-import com.smartpark.R.string;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;

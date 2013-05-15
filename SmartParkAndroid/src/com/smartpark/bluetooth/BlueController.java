@@ -71,7 +71,7 @@ public class BlueController {
 		// Get the adapter and store it in a static variable
 		// This initializes the class
 		Ref.btAdapter = BluetoothAdapter.getDefaultAdapter();
-
+		Log.i(TAG, "before registering 1");
 		/*
 		 * Create a filter so that we only receive intent for events that we are
 		 * interested in.
@@ -80,11 +80,11 @@ public class BlueController {
 		bt_stateFilter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
 		bt_connectionStateFilter = new IntentFilter(
 				BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
-
+		Log.i(TAG, "before registering 2");
 		// Create a BroadcastReceiver for ACTION_FOUND
 		bt_foundDeviceReceiver = new BT_FoundDeviceReceiver();
 		bt_stateReceiver = new BT_StateReceiver();
-
+		Log.i(TAG, "before registering 3");
 		// These will be unregistered in bgThread shutdown
 		Ref.activeActivity.registerReceiver(bt_foundDeviceReceiver,
 				bt_findFilter);
@@ -107,7 +107,7 @@ public class BlueController {
 		Ref.activeActivity.unregisterReceiver(bt_stateReceiver);
 		btInStream = null;
 		btOutStream = null;
-		btSocket = null;
+//		btSocket = null;
 		btDevice = null;
 	}
 
@@ -374,7 +374,7 @@ public class BlueController {
 			return Ref.RESULT_OK;
 		} catch (IOException e) {
 			if (D)
-				Log.e(TAG, "Error closing btSocket: " + e);
+				Log.e(TAG, "Error closing btSocket: ", e);
 			return Ref.RESULT_IO_EXCEPTION;
 		}
 	}

@@ -22,7 +22,7 @@ public class BT_StateReceiver extends BroadcastReceiver {
 		final String action = intent.getAction();
 		int event;
 		if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
-			// getIntExtra(int state, default int)
+			// --> getIntExtra(int state, default int)
 			event = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
 			
 			switch (event) {
@@ -45,23 +45,23 @@ public class BT_StateReceiver extends BroadcastReceiver {
 			switch (event) {
 			case BluetoothAdapter.STATE_DISCONNECTED:
 				Ref.btState = Ref.STATE_NOT_CONNECTED;
-				Log.d(TAG, "--> BT - STATE_NOT_CONNECTED");
+				if(D) Log.d(TAG, "--> BT - STATE_NOT_CONNECTED");
 				break;
 			case BluetoothAdapter.STATE_CONNECTED:
 				Ref.btState = Ref.STATE_CONNECTED;
-				Log.d(TAG, "--> BT - STATE_CONNECTED");
+				if(D) Log.d(TAG, "--> BT - STATE_CONNECTED");
 				break;
 			case BluetoothAdapter.STATE_CONNECTING:
 				Ref.btState = Ref.STATE_CONNECTING;
-				Log.d(TAG, "--> BT - STATE_CONNECTING");
+				if(D) Log.d(TAG, "--> BT - STATE_CONNECTING");
 				break;
 			case BluetoothAdapter.STATE_DISCONNECTING:
 				Ref.btState = Ref.STATE_DISCONNECTING;
-				Log.d(TAG, "--> BT - STATE_DISCONNECTING");
+				if(D) Log.d(TAG, "--> BT - STATE_DISCONNECTING");
 				break;
 			default:
 				Ref.btState = Ref.STATE_NOT_CONNECTED;
-				Log.e(TAG, "--> BT - STATE_DISCONNECTING (default case = inconclusive)");
+				if(D) Log.e(TAG, "--> BT - STATE_DISCONNECTING (default case = inconclusive)");
 			}
 		}
 	}

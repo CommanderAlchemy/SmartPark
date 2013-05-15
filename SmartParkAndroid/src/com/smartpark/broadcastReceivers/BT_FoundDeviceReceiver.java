@@ -9,6 +9,9 @@ import android.content.Intent;
 
 public class BT_FoundDeviceReceiver extends BroadcastReceiver {
 	
+	private static final boolean D = Ref.D;
+	private static final String TAG = "BT_FoundDeviceReceiver";
+	
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		// may need to chain this to a recognizing function

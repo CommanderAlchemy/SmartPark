@@ -1,18 +1,15 @@
 package com.smartpark.background;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.util.LinkedList;
-
-import com.smartpark.bluetooth.BlueController;
-import com.smartpark.interfaces.OnMessageReceivedListener;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.smartpark.bluetooth.BlueController;
 
 public class BackgroundOperationThread extends Thread {
 
@@ -174,7 +171,6 @@ public class BackgroundOperationThread extends Thread {
 
 			if (activityMAIN || activitySettings || activityLOGIN) {
 				shutdownTime = 0;
-				// Log.d(TAG, "thread not idled");
 			} else {
 				Log.d(TAG, "--> bgThread timer started");
 				if (shutdownTime == 0) {
@@ -195,8 +191,8 @@ public class BackgroundOperationThread extends Thread {
 			}
 		}
 		Log.d(TAG, "--> Thread is shutdown");
-		// In case the thread-instance is reused this will avoid a problem for
-		// us
+		/* In case the thread-instance is reused this will avoid
+		a problem for us. */
 		shutdownFlag = false;
 	}// ==================================================================
 

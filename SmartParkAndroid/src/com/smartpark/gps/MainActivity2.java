@@ -11,31 +11,31 @@ import android.widget.TextView;
 import com.smartpark.R;
 
 public class MainActivity2 extends Activity {
-	
-	TextView t;
+
+	TextView gps_text;
 	GPSReceiver gpsReceiver;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-	}	
+	}
 	
 	@Override
-    protected void onResume() {
-        super.onResume();
-//        t = (TextView) findViewById(R.id.gps_text);
-        gpsReceiver = new GPSReceiver();
-        registerReceiver(gpsReceiver, new IntentFilter("GPSUPDATE"));
-//        t.setText(gpsReceiver.getGPSinfo());
-    }
-
-    @Override
-    protected void onPause() {
-        unregisterReceiver(gpsReceiver);
-        super.onPause();
-    }
-
+	protected void onResume() {
+		super.onResume();
+		gps_text = (TextView) findViewById(R.id.gps_text);
+		gpsReceiver = new GPSReceiver(gps_text);
+		registerReceiver(gpsReceiver, new IntentFilter("GPSUPDATE"));
+		gps_text.setText(gpsReceiver.getGPSinfo());
+	}
+	
+	@Override
+	protected void onPause() {
+		unregisterReceiver(gpsReceiver);
+		super.onPause();
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -43,15 +43,15 @@ public class MainActivity2 extends Activity {
 		return true;
 	}
 	
-	public void startGPS(View view){
-		t = (TextView)findViewById(R.id.gps_text);
-		t.setText("Starting");
+	public void startGPS(View view) {
+		gps_text = (TextView) findViewById(R.id.gps_text);
+		gps_text.setText("Starting");
 		startService(new Intent(getBaseContext(), GPSService.class));
 	}
 	
-	public void endGPS(View view){
-		t = (TextView)findViewById(R.id.gps_text);
-		t.setText("Ending");
+	public void endGPS(View view) {
+		gps_text = (TextView) findViewById(R.id.gps_text);
+		gps_text.setText("Ending");
 		stopService(new Intent(getBaseContext(), GPSService.class));
 	}
 	

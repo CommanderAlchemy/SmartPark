@@ -8,6 +8,8 @@ import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -18,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.smartpark.background.BackgroundOperationThread;
@@ -28,6 +31,8 @@ import com.smartpark.fragments.DebugFragment;
 import com.smartpark.fragments.DummySectionFragment;
 import com.smartpark.fragments.GPSFragment;
 import com.smartpark.fragments.SmartParkFragment;
+import com.smartpark.gps.GPSReceiver;
+import com.smartpark.gps.GPSService;
 import com.smartpark.tcp.TCPController;
 
 public class MainActivity extends FragmentActivity implements
@@ -54,6 +59,10 @@ public class MainActivity extends FragmentActivity implements
 	private Fragment fragment;
 
 	private ActionBar actionBar;
+	
+	// used in GPS-fragment class
+	private TextView gps_text;
+	private GPSReceiver gpsReceiver;
 
 	// Debugging and stuff
 	private static final String TAG = "MainActivity";
@@ -67,7 +76,7 @@ public class MainActivity extends FragmentActivity implements
 		Log.i(TAG, "++ onCreate ++");
 
 		setContentView(R.layout.activity_main);
-
+		Ref.activeActivity = this;
 		if (D)
 			Log.d(TAG,
 					"--> Getting the actionBar and setting its navigation mode");
@@ -123,13 +132,7 @@ public class MainActivity extends FragmentActivity implements
 
 		if (D)
 			Log.d(TAG, "--> instantiate btController and bgThread");
-
-		if (Ref.btController == null) {
-			Ref.btController = new BlueController();
-		}
-
 	}
-
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -139,13 +142,13 @@ public class MainActivity extends FragmentActivity implements
 		 * by it and not here. This method is only responsible for resources
 		 * taken by this activity.
 		 */
-		// Ref will not be emptied since its references could be used by bgThread.
+		// Ref will not be emptied since its references could be used by
+		// bgThread.
 		Ref.btController.unRegister_DeviceFoundReceiver(this);
 		Ref.btController.unRegister_AdapterStateReceiver(this);
 	}// -------------------------------------------------------------------------------------
-		// onStart and onStop must go hand in hand
-		// (onRestart can also be used before onStart is invoked)
-
+	// onStart and onStop must go hand in hand
+	// (onRestart can also be used before onStart is invoked)
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -191,13 +194,12 @@ public class MainActivity extends FragmentActivity implements
 			Log.d(TAG, "--> Enabling done");
 			Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
 		}
-		Log.d(TAG, "--> BT is enabled");
 
 	}// -------------------------------------------------------------------------------------
 
 	@Override
 	public void onRestart() {
-
+		super.onRestart();
 	}
 
 	@Override
@@ -205,14 +207,27 @@ public class MainActivity extends FragmentActivity implements
 		super.onStop();
 
 	}
-
-	// onCreate and onDestroy must go hand in hand
+	// onResume and onPause must go hand in hand
 	@Override
 	public void onResume() {
 		super.onResume();
 		Ref.activeActivity = this;
+		// These belong to GPSFragment
+		gps_text = (TextView) findViewById(R.id.gps_text);
+		gpsReceiver = new GPSReceiver(gps_text);
+		registerReceiver(gpsReceiver, new IntentFilter(LocationManager.KEY_LOCATION_CHANGED));
+//		gps_text.setText(gpsReceiver.getGPSinfo());
 	}
-
+	@Override
+	public void onPause() {
+		Log.i(TAG, "++ onPause ++");
+		// belong to GPSFragment
+		unregisterReceiver(gpsReceiver);
+		// TODO
+		// We have to save everything in this method for later use
+		Ref.bgThread.activityMAIN = false;
+		super.onPause();
+	}// ------------------------------------------------------------
 	/**
 	 * This method will be invoked right before onPause() is invoked and is used
 	 * to save certain data that we wish to hold for the next session instead of
@@ -222,29 +237,15 @@ public class MainActivity extends FragmentActivity implements
 	public void onSaveInstanceState(final Bundle outState) {
 		super.onSaveInstanceState(outState);
 		Log.i(TAG, "++ onSaveInstanceState ++");
-		// outState.putInt("ActionBarPosition",
-		// actionBar.getSelectedNavigationIndex());
-
-		Log.d(TAG, "" + actionBar.getSelectedNavigationIndex());
-	}// -------------------------------------------------------------------------------------
-
-	@Override
-	public void onPause() {
-		super.onPause();
-		Log.i(TAG, "++ onStart ++");
-		// TODO
-		// We have to save everything in this method for later use
-		Ref.bgThread.activityMAIN = false;
-	}// -------------------------------------------------------------------------------------
-		// ======= END OF LIFECYCLE METHODS ===========================
+	}// ------------------------------------------------------------
+	// ======= END OF LIFECYCLE METHODS ===========================
 
 	// =======================
 	// onCLICK-METHODS SECTION
 	// =======================
 
-	// Three buttons we no longer need
 	public void pairedDevicesCount(View view) {
-		Log.e(TAG, "++ pairedDevicesCount ++");
+		Log.i(TAG, "++ pairedDevicesCount ++");
 	}
 
 	public void isBTavailable(View view) {
@@ -257,6 +258,18 @@ public class MainActivity extends FragmentActivity implements
 		Log.d(TAG, "wrote 10");
 	}
 
+	public void startGPS(View view) {
+		gps_text = (TextView) findViewById(R.id.gps_text);
+		gps_text.setText("Starting");
+		startService(new Intent(getBaseContext(), GPSService.class));
+	}
+	
+	public void endGPS(View view) {
+		gps_text = (TextView) findViewById(R.id.gps_text);
+		gps_text.setText("Ending");
+		stopService(new Intent(getBaseContext(), GPSService.class));
+	}
+	
 	// ------------------------------
 
 	@Override
@@ -286,9 +299,8 @@ public class MainActivity extends FragmentActivity implements
 	 * @param view
 	 */
 	public void connect(View view) {
-		// Debug stuff
 		if (D)
-			Log.d(TAG, "connect");
+			Log.i(TAG, "++ connect ++");
 		Toast.makeText(this, "connecting to server", Toast.LENGTH_LONG).show();
 		// new ConnectTask().execute("");
 		Ref.tcpClient = new TCPController();
@@ -300,9 +312,8 @@ public class MainActivity extends FragmentActivity implements
 	 * @param view
 	 */
 	public void disconnect(View view) {
-		// Debug stuff
 		if (D)
-			Log.d(TAG, "disconnect");
+			Log.i(TAG, "++ disconnect ++");
 		if (Ref.tcpClient != null) {
 			Toast.makeText(this, "disconnecting...", Toast.LENGTH_LONG).show();
 			Ref.tcpClient.disconnect();
@@ -318,8 +329,7 @@ public class MainActivity extends FragmentActivity implements
 	 * blueController-class
 	 */
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO
-		Log.e(TAG, "++ onActivityResult ++");
+		Log.i(TAG, "++ onActivityResult ++");
 
 		switch (requestCode) {
 		case Ref.REQUEST_ENABLE_BT:
@@ -350,9 +360,8 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Debug stuff
 		if (D)
-			Log.d(TAG, "onCreateOptionsMenu");
+			Log.i(TAG, "++ onCreateOptionsMenu ++");
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		CreateMenu(menu);
@@ -368,7 +377,7 @@ public class MainActivity extends FragmentActivity implements
 	private void CreateMenu(Menu menu) {
 		// Debug stuff
 		if (D) {
-			Log.d(TAG, "CreateMenu");
+			Log.i(TAG, "++ CreateMenu ++");
 		}
 		menu.setQwertyMode(true);
 		MenuItem aMenu1 = menu.add(0, 0, 0, "Login");
@@ -391,11 +400,9 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Debug stuff
 		if (D) {
-			Log.d(TAG, "onOptionsItemSelected");
+			Log.i(TAG, "++ onOptionsItemSelected ++");
 		}
-		// Debug stuff
 		if (D) {
 			Log.d(TAG, "Item: " + item.toString() + "\nID: " + item.getItemId()
 					+ "\nIntent: " + item.getIntent());
@@ -453,7 +460,6 @@ public class MainActivity extends FragmentActivity implements
 			} catch (Exception e) {
 				Log.e("Therad sleep", "--> Sleep didn't work");
 			}
-			System.out.println("Now do everything after this");
 		}
 	}
 

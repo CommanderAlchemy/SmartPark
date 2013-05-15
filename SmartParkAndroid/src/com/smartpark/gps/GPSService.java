@@ -4,13 +4,9 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.HandlerThread;
 import android.os.IBinder;
-import android.os.Looper;
-import android.os.Process;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -49,7 +45,7 @@ public class GPSService extends Service{
 	        gpsinfo.putExtra("GPSCOORDINATES", "Latitide " + latitude + " Longitude " + longitude);
 	        GPSService.this.getBaseContext().sendBroadcast(gpsinfo);
 	        Log.e(TAG, "Latitude: " + latitude + " Longitude: " + longitude);
-//	        String Text = "Latitud = " + latitude + "\nLongitud = " + longitude;
+//	        String Text = "Latitude = " + latitude + "\nLongitud = " + longitude;
 //			
 //		    Toast.makeText( getApplicationContext(), Text, Toast.LENGTH_SHORT).show();
 	    }

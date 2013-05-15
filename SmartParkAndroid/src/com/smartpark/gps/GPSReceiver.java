@@ -11,14 +11,15 @@ public class GPSReceiver extends BroadcastReceiver{
 	private String gpsinfo;
 	private TextView t;
 	
-	public GPSReceiver(TextView t){
-		this.t = t;
+	public GPSReceiver(){
+//		this.t = t;
 	}
 	
+	@Override
 	public void onReceive(Context context, Intent intent) {
 		gpsinfo = intent.getStringExtra("GPSCOORDINATES");
 		Toast.makeText(context , gpsinfo, Toast.LENGTH_SHORT).show();
-		t.setText(gpsinfo);
+//		t.setText(gpsinfo);
 	}
 	
 	public String getGPSinfo(){

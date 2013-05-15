@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.UnknownHostException;
 
 import android.util.Log;
@@ -45,36 +46,21 @@ public class TCPController {
 	private BufferedReader mBufferIn;
 
 	// The connection socket
-	private Socket socket;
+	private Socket tcpSocket;
 
+	// ===================================================================
 	/**
 	 * Constructor of the class. OnMessagedReceived listens for the messages
 	 * received from server
 	 */
 	public TCPController() {
-		try {
-			InetAddress serverAddr = InetAddress.getByName(Settings.Server_IP);
-			// create a socket to make the connection with the server
-			socket = new Socket(serverAddr, Settings.Server_Port);
-			// sends the message to the server
-			mBufferOut = new PrintWriter(new BufferedWriter(
-					new OutputStreamWriter(socket.getOutputStream())), true);
+		// This will take care of connection and update the tcpState in Ref
+		connect(); // We are not error handling here
 
-			// receives the message which the server sends back
-			mBufferIn = new BufferedReader(new InputStreamReader(
-					socket.getInputStream()));
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			Log.e(TAG, "UnknownHostException: ", e);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			Log.e(TAG, "IOException: ", e);
-			e.printStackTrace();
-		}
-		// We now have a 
-
+		// Instantiating listener
 		mMessageListener = new OnMessageReceivedListener() {
-			// here the messageReceived method is implemented
+			// messageReceived method is implemented. It is a listener
+			// for incoming messages from the TCP connection.
 			@Override
 			public void messageReceived(String message) {
 				Log.i(TAG, "++ messageReceived ++ TCP: " + message);
@@ -83,31 +69,39 @@ public class TCPController {
 			}
 		};
 	}// ==================================================================
-
-	public int connect(){
-		try {
-			InetAddress serverAddr = InetAddress.getByName(Settings.Server_IP);
-			// create a socket to make the connection with the server
-			socket = new Socket(serverAddr, Settings.Server_Port);
-			// sends the message to the server
-			mBufferOut = new PrintWriter(new BufferedWriter(
-					new OutputStreamWriter(socket.getOutputStream())), true);
-
-			// receives the message which the server sends back
-			mBufferIn = new BufferedReader(new InputStreamReader(
-					socket.getInputStream()));
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			Log.e(TAG, "UnknownHostException: ", e);
-			return Ref.RESULT_UNKNOWN_HOST_EXCEPTION;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			Log.e(TAG, "IOException: ", e);
-			return Ref.RESULT_IO_EXCEPTION;
-		}
-		return 0;
-	}
 	
+
+	// ===================================================================
+	public void connect() {
+		new Thread(){
+			public void run(){
+				try {
+					Ref.tcpState = Ref.STATE_CONNECTING;
+					InetAddress serverAddr = InetAddress.getByName(Settings.Server_IP);
+					// create a socket to make the connection with the server
+					tcpSocket = new Socket(serverAddr, Settings.Server_Port);
+					tcpSocket.setKeepAlive(true);
+					if (tcpSocket.isConnected()){
+						mBufferOut = new PrintWriter(new BufferedWriter(
+								new OutputStreamWriter(tcpSocket.getOutputStream())),
+								true);
+						mBufferIn = new BufferedReader(new InputStreamReader(
+								tcpSocket.getInputStream()));
+						Ref.tcpState = Ref.STATE_CONNECTED;
+					} else {
+						Ref.tcpState = Ref.STATE_NOT_CONNECTED;
+					}
+				} catch (UnknownHostException e) {
+					Log.e(TAG, "UnknownHostException: ", e);
+					Ref.tcpState = Ref.STATE_NOT_CONNECTED;
+				} catch (IOException e) {
+					Log.e(TAG, "IOException: ", e);
+					Ref.tcpState = Ref.STATE_NOT_CONNECTED;
+				}
+			}
+		}.start();		
+	}// ===================================================================
+	// ===================================================================
 	/**
 	 * Sends the message entered by client to the server
 	 * 
@@ -122,12 +116,12 @@ public class TCPController {
 			mBufferOut.println(message);
 			mBufferOut.flush();
 		}
-	}
-	
+	}// ===================================================================
+	// ===================================================================
 	/**
 	 * Close the connection and release the members
 	 */
-	public void stopClient() {
+	public void disconnect() {
 		if (D)
 			Log.d(TAG, "Closing Connection");
 		// send message that we are closing the connection
@@ -138,23 +132,20 @@ public class TCPController {
 			mBufferOut.close();
 			try {
 				mBufferIn.close(); // should this be added TODO
-				socket.close(); // should this be added
+				tcpSocket.close(); // should this be added
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 		}
-	}
-
+	}// ===================================================================
+	// ===================================================================
 	public void run() {
 		mRun = true;
 		try {
 			if (D)
 				Log.d(TAG + " TCP Client", "C: Connecting...");
-
 			try {
-
 				// send login name and password
 				sendMessage(Settings.Login_Name + "Commander" + " ; "
 						+ Settings.Password + "Password");
@@ -183,12 +174,10 @@ public class TCPController {
 				// this socket
 				// after it is closed, which means a new socket instance has to
 				// be created.
-				socket.close();
+				tcpSocket.close();
 			}
 		} catch (Exception e) {
 			Log.e(TAG + " TCP", "C: Error", e);
 		}
-
 	}// ===========================================================================
-
 }

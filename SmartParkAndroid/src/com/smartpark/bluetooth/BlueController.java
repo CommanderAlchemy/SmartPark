@@ -214,10 +214,27 @@ public class BlueController {
 	public ArrayList<BluetoothDevice> getFoundDevices() {
 		if (D)
 			Log.i(TAG, "++ getFoundDevices ++");
-
 		return foundDevices;
 	}
-
+	
+	
+	public int disconnect(){
+		if (D)
+			Log.i(TAG, "++ disconnect ++");
+		Ref.btState = Ref.STATE_DISCONNECTING;
+		try {
+			btSocket.close();
+			Ref.btState = Ref.STATE_NOT_CONNECTED;
+			return Ref.RESULT_OK;
+		} catch (IOException e) {
+			if (D)
+				Log.e(TAG, "IO Exception: ", e);
+			Ref.btState = Ref.STATE_NOT_CONNECTED;
+			return Ref.RESULT_IO_EXCEPTION;
+		}
+	}
+	
+	
 	/**
 	 * This method aims at connecting to the device that is stored as
 	 * BluetoothDevice in Ref.java
@@ -238,7 +255,7 @@ public class BlueController {
 			try {
 				// This will only return on a successful connection
 				// or an exception
-				Ref.btController.cancelDiscovery();
+				Ref.btController.stopDiscovery();
 				btSocket.connect();
 				/*
 				 * Next line not needed after implementing BroadcastReceiver for
@@ -275,11 +292,12 @@ public class BlueController {
 		}
 	}
 
-	public void sendBytes(byte[] data) {
+	public int sendBytes(byte[] data) {
 		if (D)
 			Log.i(TAG, "++ sendString ++");
 		try {
 			btOutStream.write(data);
+			return Ref.RESULT_OK;
 		} catch (IOException e1) {
 			if (D)
 				Log.e(TAG, "Sending of data with bt failed" + e1);
@@ -288,6 +306,7 @@ public class BlueController {
 				if (D)
 					Log.e(TAG, "btSocket set to NOT CONNECTED");
 			}
+			return Ref.RESULT_IO_EXCEPTION;
 		}
 	}
 
@@ -379,7 +398,7 @@ public class BlueController {
 		return Ref.btAdapter != null;
 	}
 
-	public void cancelDiscovery() {
+	public void stopDiscovery() {
 		if (D)
 			Log.i(TAG, "++ cancelDiscovery ++");
 

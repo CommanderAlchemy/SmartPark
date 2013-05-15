@@ -28,7 +28,7 @@ public class GPSFragment extends Fragment {
 
 	public GPSFragment() {
 		if (D)
-			Log.d(TAG, "Fragment: " + this.toString() + " Loaded");
+			Log.i(TAG, "++ Fragment: " + this.toString() + " Loaded ++");
 	}
 
 	@Override
@@ -42,4 +42,10 @@ public class GPSFragment extends Fragment {
 				ARG_SECTION_NUMBER)));
 		return rootView;
 	}
+	
+	
+	
+	
+	
+	
 }

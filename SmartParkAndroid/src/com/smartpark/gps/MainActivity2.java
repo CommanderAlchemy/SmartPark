@@ -1,20 +1,16 @@
 package com.smartpark.gps;
 
-import com.smartpark.R;
-
-import android.net.ConnectivityManager;
-import android.os.Bundle;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class MainActivity extends Activity {
+import com.smartpark.R;
+
+public class MainActivity2 extends Activity {
 	
 	TextView t;
 	GPSReceiver gpsReceiver;
@@ -23,15 +19,14 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
 	}	
 	
 	@Override
     protected void onResume() {
         super.onResume();
-        gpsReceiver = new GPSReceiver(t);
+//        t = (TextView) findViewById(R.id.gps_text);
+        gpsReceiver = new GPSReceiver();
         registerReceiver(gpsReceiver, new IntentFilter("GPSUPDATE"));
-//        TextView t = (TextView)findViewById(R.id.text_Hello);
 //        t.setText(gpsReceiver.getGPSinfo());
     }
 
@@ -49,13 +44,13 @@ public class MainActivity extends Activity {
 	}
 	
 	public void startGPS(View view){
-		t = (TextView)findViewById(R.id.text_Hello);
+		t = (TextView)findViewById(R.id.gps_text);
 		t.setText("Starting");
 		startService(new Intent(getBaseContext(), GPSService.class));
 	}
 	
 	public void endGPS(View view){
-		t = (TextView)findViewById(R.id.text_Hello);
+		t = (TextView)findViewById(R.id.gps_text);
 		t.setText("Ending");
 		stopService(new Intent(getBaseContext(), GPSService.class));
 	}

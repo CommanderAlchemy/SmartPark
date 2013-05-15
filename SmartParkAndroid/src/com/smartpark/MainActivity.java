@@ -20,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.smartpark.R;
 import com.smartpark.background.BackgroundOperationThread;
 import com.smartpark.background.Ref;
 import com.smartpark.bluetooth.BlueController;
@@ -29,7 +28,6 @@ import com.smartpark.fragments.DebugFragment;
 import com.smartpark.fragments.DummySectionFragment;
 import com.smartpark.fragments.GPSFragment;
 import com.smartpark.fragments.SmartParkFragment;
-import com.smartpark.interfaces.OnMessageReceivedListener;
 import com.smartpark.tcp.TCPController;
 
 public class MainActivity extends FragmentActivity implements
@@ -61,14 +59,14 @@ public class MainActivity extends FragmentActivity implements
 	private static final String TAG = "MainActivity";
 	private static final boolean D = Ref.D;
 
+	// ======== START OF LIFECYCLE METHODS =======================
+	// onCreate and onDestroy must go hand in hand
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.i(TAG, "++ onCreate ++");
 
 		setContentView(R.layout.activity_main);
-
-		Ref.activeActivity = this;
 
 		if (D)
 			Log.d(TAG,
@@ -100,7 +98,8 @@ public class MainActivity extends FragmentActivity implements
 				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 					@Override
 					public void onPageSelected(int position) {
-						if (D) Log.d(TAG, "position " + position);
+						if (D)
+							Log.d(TAG, "position " + position);
 						actionBar.setSelectedNavigationItem(position);
 					}
 				});
@@ -129,15 +128,23 @@ public class MainActivity extends FragmentActivity implements
 			Ref.btController = new BlueController();
 		}
 
-		// // Restoring the position of the actionBar
-		// if (savedInstanceState != null) {
-		// Log.d(TAG,"actionBar setting "+
-		// savedInstanceState.getInt("ActionBarPosition"));
-		// //
-		// actionBar.setSelectedNavigationItem(savedInstanceState.getInt("ActionBarPosition"));
-		// Log.d(TAG, "actionbar set");
-		// }
 	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		Log.i(TAG, "++ onDestroy ++");
+		/*
+		 * Most resources are being handles by the bgTherad and will be released
+		 * by it and not here. This method is only responsible for resources
+		 * taken by this activity.
+		 */
+		// Ref will not be emptied since its references could be used by bgThread.
+		Ref.btController.unRegister_DeviceFoundReceiver(this);
+		Ref.btController.unRegister_AdapterStateReceiver(this);
+	}// -------------------------------------------------------------------------------------
+		// onStart and onStop must go hand in hand
+		// (onRestart can also be used before onStart is invoked)
 
 	@Override
 	public void onStart() {
@@ -189,18 +196,27 @@ public class MainActivity extends FragmentActivity implements
 	}// -------------------------------------------------------------------------------------
 
 	@Override
-	public void onPause() {
-		super.onPause();
-		Log.i(TAG, "++ onStart ++");
-		// TODO
-		// We have to save everything in this method for later use
-		Ref.bgThread.activityMAIN = false;
-	}// -------------------------------------------------------------------------------------
+	public void onRestart() {
+
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+
+	}
+
+	// onCreate and onDestroy must go hand in hand
+	@Override
+	public void onResume() {
+		super.onResume();
+		Ref.activeActivity = this;
+	}
 
 	/**
-	 * This method will be invoked right before onPause() or onDestroy() is
-	 * invoked and is used to save certain data that we wish to hold for the
-	 * next session instead of recreating them.
+	 * This method will be invoked right before onPause() is invoked and is used
+	 * to save certain data that we wish to hold for the next session instead of
+	 * recreating them.
 	 */
 	@Override
 	public void onSaveInstanceState(final Bundle outState) {
@@ -213,17 +229,14 @@ public class MainActivity extends FragmentActivity implements
 	}// -------------------------------------------------------------------------------------
 
 	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		Log.i(TAG, "++ onDestroy ++");
-		/* Most resources are being handles by the bgTherad and will be
-		released by it and not here. This method is only responsible for
-		resources taken by this activity. */
-		/* Ref will not be emptied since its references could be used by
-		 * the bgThread. */
-		Ref.btController.unRegister_DeviceFoundReceiver(this);
-		Ref.btController.unRegister_AdapterStateReceiver(this);
+	public void onPause() {
+		super.onPause();
+		Log.i(TAG, "++ onStart ++");
+		// TODO
+		// We have to save everything in this method for later use
+		Ref.bgThread.activityMAIN = false;
 	}// -------------------------------------------------------------------------------------
+		// ======= END OF LIFECYCLE METHODS ===========================
 
 	// =======================
 	// onCLICK-METHODS SECTION
@@ -233,19 +246,19 @@ public class MainActivity extends FragmentActivity implements
 	public void pairedDevicesCount(View view) {
 		Log.e(TAG, "++ pairedDevicesCount ++");
 	}
-	
+
 	public void isBTavailable(View view) {
 		Ref.bgThread.sendByBT("1");
 		Log.d(TAG, "wrote 1");
 	}
-	
+
 	public void isBTEnable(View view) {
 		Ref.bgThread.sendByBT("10");
 		Log.d(TAG, "wrote 10");
 	}
-	
+
 	// ------------------------------
-	
+
 	@Override
 	public void onTabSelected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
@@ -274,15 +287,11 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	public void connect(View view) {
 		// Debug stuff
-		if (D) 
+		if (D)
 			Log.d(TAG, "connect");
-		
-		Toast.makeText(this, "connecting...", Toast.LENGTH_LONG).show();
-
+		Toast.makeText(this, "connecting to server", Toast.LENGTH_LONG).show();
 		// new ConnectTask().execute("");
-		
 		Ref.tcpClient = new TCPController();
-		
 	}
 
 	/**
@@ -292,12 +301,11 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	public void disconnect(View view) {
 		// Debug stuff
-		if (D) {
+		if (D)
 			Log.d(TAG, "disconnect");
-		}
 		if (Ref.tcpClient != null) {
-			Toast.makeText(this, "dissconnecting...", Toast.LENGTH_LONG).show();
-			Ref.tcpClient.stopClient();
+			Toast.makeText(this, "disconnecting...", Toast.LENGTH_LONG).show();
+			Ref.tcpClient.disconnect();
 		}
 	}
 
@@ -312,7 +320,7 @@ public class MainActivity extends FragmentActivity implements
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO
 		Log.e(TAG, "++ onActivityResult ++");
-		
+
 		switch (requestCode) {
 		case Ref.REQUEST_ENABLE_BT:
 			if (resultCode == Activity.RESULT_OK) {
@@ -336,14 +344,15 @@ public class MainActivity extends FragmentActivity implements
 			break;
 		}
 	}
-	
+
 	/**
 	 * Create ActionMenu with settings and add our own menu items.
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Debug stuff
-		if (D) Log.d(TAG, "onCreateOptionsMenu");
+		if (D)
+			Log.d(TAG, "onCreateOptionsMenu");
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		CreateMenu(menu);

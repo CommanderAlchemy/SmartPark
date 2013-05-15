@@ -15,7 +15,7 @@
         android:layout_height="wrap_content" />
     
     <TextView
-        android:id="@+id/text_Hello"
+        android:id="@+id/gps_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/section_label"

@@ -436,12 +436,8 @@ public class BlueController {
 	 * @param device
 	 */
 	public void setFoundDevice(BluetoothDevice device) {
-		/*
-		 * This will give possible duplicates, but these wont be many and wont
-		 * lead to performance decrease. But the workaround might decrease
-		 * performance a bit.
-		 */
-		foundDevices.add(device);
+		if(foundDevices.contains(device)){
+			foundDevices.add(device);
+		}
 	}
-
 }

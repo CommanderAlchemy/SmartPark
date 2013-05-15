@@ -1,20 +1,13 @@
 package com.smartpark.background;
 
-
-
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 
 import com.smartpark.bluetooth.BlueController;
-import com.smartpark.tcp.TCPClient;
+import com.smartpark.tcp.TCPController;
 
 public class Ref {
-
+	
 	// ACOLLECTION OF REFERENCES THAT MOST OF THE CLASSES NEED TO OPERATE
 	// THIS IS INSPIERED BY THE ANDROID R.CLASS THAT HOUSES ALL REFERENCES
 	// FOR THE COMPONENTS ON THE DIFFERENT LAYOUTS.
@@ -26,41 +19,42 @@ public class Ref {
 	public final static int STATE_CONNECTING = 1;
 	public final static int STATE_CONNECTED = 2;
 	
-	// Global control-variables
-	public static boolean D = true;
-	
-	// Objects used for Internet communication
-	public static TCPClient tcpClient;
-	public static Thread clientThread;
-	public static BackgroundOperationThread bgThread;
-	
-	// Objects for use with the bluetooth adapter
-	public static BluetoothAdapter btAdapter;	
-	public static BlueController btController;
-
-	
-	// RequestCodes for controlling the bluetooth
-	public static final int REQUEST_ENABLE_BT = 1;
-	public static final int REQUEST_DISCOVERABLE_BT = 2;
+	// RESPONSES
+	public final static int RESULT_OK = 0;
+	public final static int RESULT_IO_EXCEPTION = -1;
+	public final static int RESULT_UNKNOWN_HOST_EXCEPTION = -2;
 	
 	// Global control-flags
 	public static int tcpState = STATE_NOT_CONNECTED;
 	public static int btState = STATE_NOT_CONNECTED;
 	
-	// Reference to mainActivity
+	// RequestCodes for controlling the bluetooth
+	public static final int REQUEST_ENABLE_BT = 1;
+	public static final int REQUEST_DISCOVERABLE_BT = 2;
+	
+	// Reference to the currently active activity
 	public static Activity activeActivity;
 	
+	// Global control-variable
+	public static boolean D = true;
 	
+	// Objects used for Internet communication
+	public static TCPController tcpClient;
 	
+	// Reference to the background thread
+	public static BackgroundOperationThread bgThread;
+	public static boolean isBotRunning = false;
 	
+	// Objects for use with the bluetooth adapter
+	public static BluetoothAdapter btAdapter;
+	public static BlueController btController;
 	
-	// Not needed if you ask me
+	// ==================================================
 	
-	// Changing tcpState
-	public static boolean tcpIsConnected(){
+	// getters and setters for Internet state
+	public static boolean tcpIsConnected() {
 		return tcpState == STATE_CONNECTED;
 	}
-	
 	public static void setTcpState(int state) {
 		tcpState = state;
 	}
@@ -68,17 +62,14 @@ public class Ref {
 		return tcpState;
 	}
 	
-	// Changing btState
-	public static boolean btIsConnected(){
+	// getters and setters for bluetooth state
+	public static boolean btIsConnected() {
 		return btState == STATE_CONNECTED;
 	}
-	
 	public static void setbtState(int state) {
 		btState = state;
 	}
 	public static int getbtState() {
 		return btState;
 	}
-	
-	
 }

@@ -71,6 +71,7 @@ public class BlueController {
 		// Get the adapter and store it in a static variable
 		// This initializes the class
 		Ref.btAdapter = BluetoothAdapter.getDefaultAdapter();
+
 		/*
 		 * Create a filter so that we only receive intent for events that we are
 		 * interested in.
@@ -84,6 +85,12 @@ public class BlueController {
 		bt_foundDeviceReceiver = new BT_FoundDeviceReceiver();
 		bt_stateReceiver = new BT_StateReceiver();
 
+		// These will be unregistered in bgThread shutdown
+		Ref.activeActivity.registerReceiver(bt_foundDeviceReceiver,
+				bt_findFilter);
+		Ref.activeActivity.registerReceiver(bt_stateReceiver, bt_stateFilter);
+		Ref.activeActivity.registerReceiver(bt_stateReceiver,
+				bt_connectionStateFilter);
 	}// -------------------------------------------------------------------------------
 
 	public void cleanUp() {
@@ -293,15 +300,11 @@ public class BlueController {
 			String inData = null;
 			try {
 				if (bufferedReader == null) {
-					if (btInStream != null) {
-						bufferedReader = new BufferedReader(
-								new InputStreamReader(btInStream));
-						if (D)
-							Log.e(TAG, "bufferedReader was = null");
-					}
+					if (D)
+						Log.e(TAG, "bufferedReader was = null");
+					bufferedReader = new BufferedReader(new InputStreamReader(
+							btInStream));
 				}
-				if (D)
-					Log.e(TAG, "bufferedreader good");
 				if (bufferedReader.ready()) {
 					if (D)
 						Log.e(TAG, "reader ready");
@@ -344,15 +347,16 @@ public class BlueController {
 		BroacastReceiverIsRegistered = false;
 	}
 
-	public boolean closeConnection() {
-		if (D) Log.i(TAG, "++ closeConnection ++");
+	public int closeConnection() {
+		if (D)
+			Log.i(TAG, "++ closeConnection ++");
 		try {
 			btSocket.close();
-			return true;
+			return Ref.RESULT_OK;
 		} catch (IOException e) {
 			if (D)
 				Log.e(TAG, "Error closing btSocket: " + e);
-			return false;
+			return Ref.RESULT_IO_EXCEPTION;
 		}
 	}
 
@@ -436,7 +440,7 @@ public class BlueController {
 	 * @param device
 	 */
 	public void setFoundDevice(BluetoothDevice device) {
-		if(foundDevices.contains(device)){
+		if (foundDevices.contains(device)) {
 			foundDevices.add(device);
 		}
 	}

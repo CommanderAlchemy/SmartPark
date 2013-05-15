@@ -1,4 +1,4 @@
-package com.smartpark.tcp;
+package com.smartpark;
 
 /**
  * Settings class that includes all the settings for the application and TCP connection.

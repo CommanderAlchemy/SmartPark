@@ -29,8 +29,8 @@ import com.smartpark.fragments.DebugFragment;
 import com.smartpark.fragments.DummySectionFragment;
 import com.smartpark.fragments.GPSFragment;
 import com.smartpark.fragments.SmartParkFragment;
-import com.smartpark.interfaces.OnMessageReceived;
-import com.smartpark.tcp.TCPClient;
+import com.smartpark.interfaces.OnMessageReceivedListener;
+import com.smartpark.tcp.TCPController;
 
 public class MainActivity extends FragmentActivity implements
 		ActionBar.TabListener {
@@ -274,27 +274,15 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	public void connect(View view) {
 		// Debug stuff
-		if (D) {
+		if (D) 
 			Log.d(TAG, "connect");
-		}
+		
 		Toast.makeText(this, "connecting...", Toast.LENGTH_LONG).show();
 
 		// new ConnectTask().execute("");
-
-		Ref.tcpClient = new TCPClient(new OnMessageReceived() {
-			// here the messageReceived method is implemented
-			@Override
-			public void messageReceived(String message) {
-				Log.i(TAG, "++ messageReceived ++ TCP: " + message);
-				// this method calls the onProgressUpdate
-				// publishProgress(message);
-
-			}
-		});
-
-		Ref.clientThread = new Thread(Ref.tcpClient);
-		Ref.clientThread.start();
-
+		
+		Ref.tcpClient = new TCPController();
+		
 	}
 
 	/**
@@ -313,57 +301,6 @@ public class MainActivity extends FragmentActivity implements
 		}
 	}
 
-	// ===============================
-	// STUFF WE NEED TO TAKE A LOOK AT
-	// ===============================
-
-	/**
-	 * Artur: Only for inspection, removed later.
-	 */
-	/**
-	 * Saeed: Yeah!!!
-	 */
-	// public class ConnectTask extends AsyncTask<String, String, TCPClient> {
-	//
-	// @Override
-	// protected TCPClient doInBackground(String... message) {
-	// // Debug stuff
-	// if (D) {
-	// Log.d(TAG, "class ConnectTask doInBackground");
-	// }
-	//
-	// // we create a TCPClient object and
-	// References.client = new TCPClient(new OnMessageReceived() {
-	// @Override
-	// // here the messageReceived method is implemented
-	// public void messageReceived(String message) {
-	// Log.e(TAG, message);
-	// // this method calls the onProgressUpdate
-	// publishProgress(message);
-	// }
-	// });
-	// References.client.run();
-	//
-	// return null;
-	// }
-	//
-	// @Override
-	// protected void onProgressUpdate(String... values) {
-	// // Debug stuff
-	// if (D) {
-	// Log.d(TAG, "onProgressUpdate");
-	// }
-	// super.onProgressUpdate(values);
-	//
-	// // in the arrayList we add the messaged received from server
-	// // arrayList.add(values[0]);
-	// // notify the adapter that the data set has changed. This means that
-	// // new message received
-	// // from server was added to the list
-	// // mAdapter.notifyDataSetChanged();
-	// }
-	// }
-
 	// =================================
 	// FINISHED WORKING ON THESE METHODS
 	// =================================
@@ -375,7 +312,7 @@ public class MainActivity extends FragmentActivity implements
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO
 		Log.e(TAG, "++ onActivityResult ++");
-
+		
 		switch (requestCode) {
 		case Ref.REQUEST_ENABLE_BT:
 			if (resultCode == Activity.RESULT_OK) {
@@ -399,7 +336,7 @@ public class MainActivity extends FragmentActivity implements
 			break;
 		}
 	}
-
+	
 	/**
 	 * Create ActionMenu with settings and add our own menu items.
 	 */

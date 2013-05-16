@@ -15,8 +15,8 @@ import android.widget.Toast;
 public class GPSService extends Service {
 
 	private LocationManager locationManager;
-	private static final int LOCATION_INTERVAL = 1000;
-	private static final float LOCATION_DISTANCE = 10f;
+	private static final int LOCATION_INTERVAL = 10;
+	private static final float LOCATION_DISTANCE = 1f;
 
 	private static final boolean D = Ref.D;
 	private static final String TAG = "GPSService";
@@ -48,8 +48,9 @@ public class GPSService extends Service {
 		} catch (java.lang.SecurityException ex) {
 			Log.e(TAG, "fail to request location update, ignore", ex);
 		} catch (IllegalArgumentException ex) {
-			Log.e(TAG, "network provider does not exist, " + ex.getMessage());
+			Log.e(TAG, "network provider does not exist, " + ex);
 		}
+		
 		try {
 			locationManager.requestLocationUpdates(
 					LocationManager.GPS_PROVIDER, LOCATION_INTERVAL,
@@ -57,7 +58,7 @@ public class GPSService extends Service {
 		} catch (java.lang.SecurityException ex) {
 			Log.e(TAG, "fail to request location update, ignore", ex);
 		} catch (IllegalArgumentException ex) {
-			Log.e(TAG, "gps provider does not exist " + ex.getMessage());
+			Log.e(TAG, "gps provider does not exist " + ex);
 		}
 	}// ==========================================================
 
@@ -98,8 +99,7 @@ public class GPSService extends Service {
 	 */
 	public IBinder onBind(Intent arg0) {
 		return null;
-	}// ==========================================================
-		// ======= INTERNAL CLASS ===========================================
+	}
 
 	private class LocationListener implements android.location.LocationListener {
 
@@ -119,24 +119,26 @@ public class GPSService extends Service {
 			}
 			double latitude = mLastLocation.getLatitude();
 			double longitude = mLastLocation.getLongitude();
-			Intent gpsinfo = new Intent(LocationManager.KEY_LOCATION_CHANGED);
+			Intent gpsinfo = new Intent("com.smartpark.gpsinfo");
+			
 			gpsinfo.putExtra("GPSCOORDINATES", "Latitide " + latitude
 					+ " Longitude " + longitude);
-			GPSService.this.getBaseContext().sendBroadcast(gpsinfo);
+			sendBroadcast(gpsinfo);
 			Log.d(TAG, "Latitude: " + latitude + " Longitude: " + longitude);
 			String Text = "Latitude = " + latitude + "\nLongitud = "
 					+ longitude;
 
 			Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_SHORT)
 					.show();
+			Log.i(TAG, "++ onLocationChanged done ++: ");
+
 		}// ==========================================================
 
 		@Override
 		public void onProviderDisabled(String provider) {
-
 			Log.i(TAG, "++ onProviderDisabled ++ : " + provider);
 		}// ==========================================================
-
+		
 		@Override
 		public void onProviderEnabled(String provider) {
 			Log.i(TAG, "++ onProviderEnabled ++ : " + provider);
@@ -144,7 +146,7 @@ public class GPSService extends Service {
 
 		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras) {
-			Log.i(TAG, "++ onStatusChanged ++ : " + provider);
+			Log.i(TAG, "++ onStatusChanged ++ : " + provider + " " + status + " " + extras);
 		}// ==========================================================
 
 		/**
@@ -211,6 +213,6 @@ public class GPSService extends Service {
 			}
 			return provider1.equals(provider2);
 		}// ==========================================================
-	}// ======= INTERNAL CLASS END =================================
+	}
 
 }

@@ -13,6 +13,9 @@
     <string name="welcome_text">Page Under Construction</string>
     <string name="debug_connect_btn">connect</string>
     <string name="debug_disconnect_btn">disconnect</string>
+    <string name="gps_start">Start</string>
+    <string name="gps_stop">Stop</string>
+    <string name="GPS_Start">GPS Start</string>
     
     
 

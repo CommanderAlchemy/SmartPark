@@ -2,6 +2,7 @@ package com.smartpark.background;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.widget.TextView;
 
 import com.smartpark.bluetooth.BlueController;
 import com.smartpark.tcp.TCPController;
@@ -12,6 +13,19 @@ public class Ref {
 	// THIS IS INSPIERED BY THE ANDROID R.CLASS THAT HOUSES ALL REFERENCES
 	// FOR THE COMPONENTS ON THE DIFFERENT LAYOUTS.
 	// THE ALTERNATIVE WAS TO ALWAYS PASS REFERENCES TO OTHER CLASSES.
+	
+	// GLOBAL APPLICATION STATE FLAGS
+	public static boolean bt_findIntentIsRegistered;
+	public static boolean bt_stateIntentIsRegistered ;
+	public static boolean bt_connectionStateReceiverIsRegistered;
+	public static boolean gpsReceiverIsRegistered;
+	
+	
+	
+	
+	
+	
+	
 	
 	// CONNECTION STATE INTEGERS
 	public final static int STATE_NOT_CONNECTED = -1;
@@ -48,6 +62,8 @@ public class Ref {
 	// Objects for use with the bluetooth adapter
 	public static BluetoothAdapter btAdapter;
 	public static BlueController btController;
+	
+	public static TextView gps_text;
 	
 	// ==================================================
 	

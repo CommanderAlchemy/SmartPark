@@ -13,27 +13,32 @@
         android:hint="¤"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-    
-    <TextView
-        android:id="@+id/gps_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/section_label"
-        android:text="GPS coordinates" />
+
     <Button
-        android:id="@+id/buttonStart" 
+        android:id="@+id/GPS_Start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Start"
-        android:onClick="startGPS"/>
-    <Button 
-        android:id="@+id/buttonStop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_below="@+id/GPS_Stop"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/buttonStart"
-        android:text="Stop"
-        android:onClick="endGPS"/>
+        android:layout_marginTop="40dp"
+        android:onClick="startGPS"
+        android:text="GPS Start" />
+    
+    <Button
+        android:id="@+id/GPS_Stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/GPS_Start"
+        android:layout_below="@+id/section_label"
+        android:onClick="endGPS"
+        android:text="GPS Stop" />
+
+    <TextView
+        android:id="@+id/GPSInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/GPS_Stop"
+        android:layout_centerVertical="true"
+        android:text="@string/GPS_Start" />
     
 </RelativeLayout>

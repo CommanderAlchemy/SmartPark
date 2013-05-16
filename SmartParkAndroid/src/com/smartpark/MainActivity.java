@@ -9,7 +9,6 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -25,7 +24,6 @@ import android.widget.Toast;
 
 import com.smartpark.background.BackgroundOperationThread;
 import com.smartpark.background.Ref;
-import com.smartpark.bluetooth.BlueController;
 import com.smartpark.fragments.BluetoothFragment;
 import com.smartpark.fragments.DebugFragment;
 import com.smartpark.fragments.DummySectionFragment;
@@ -59,10 +57,12 @@ public class MainActivity extends FragmentActivity implements
 	private Fragment fragment;
 
 	private ActionBar actionBar;
-	
+
 	// used in GPS-fragment class
-	private TextView gps_text;
+	// private TextView gps_text;
 	private GPSReceiver gpsReceiver;
+
+	private TextView gps_text;
 
 	// Debugging and stuff
 	private static final String TAG = "MainActivity";
@@ -76,7 +76,11 @@ public class MainActivity extends FragmentActivity implements
 		Log.i(TAG, "++ onCreate ++");
 
 		setContentView(R.layout.activity_main);
+
+		gps_text = (TextView) findViewById(R.id.GPSInfo);
+
 		Ref.activeActivity = this;
+
 		if (D)
 			Log.d(TAG,
 					"--> Getting the actionBar and setting its navigation mode");
@@ -87,7 +91,6 @@ public class MainActivity extends FragmentActivity implements
 
 		if (D)
 			Log.d(TAG, "--> instantiating SectionsPagerAdapter");
-
 		// Create the adapter that will return a fragment for each sections of
 		// the app.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
@@ -133,6 +136,7 @@ public class MainActivity extends FragmentActivity implements
 		if (D)
 			Log.d(TAG, "--> instantiate btController and bgThread");
 	}
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -142,13 +146,41 @@ public class MainActivity extends FragmentActivity implements
 		 * by it and not here. This method is only responsible for resources
 		 * taken by this activity.
 		 */
+
 		// Ref will not be emptied since its references could be used by
 		// bgThread.
-		Ref.btController.unRegister_DeviceFoundReceiver(this);
-		Ref.btController.unRegister_AdapterStateReceiver(this);
+		try {
+			if (Ref.bt_findIntentIsRegistered) {
+				Ref.btController.unRegister_DeviceFoundReceiver(this);
+				Ref.bt_findIntentIsRegistered = false;
+			}
+		} catch (Exception e) {
+			Log.e(TAG, "Something went poop device");
+		}
+
+		try {
+			if (Ref.bt_stateIntentIsRegistered) {
+				Log.e(TAG, "true uuuuuuuuuuuuuuuu");
+				Ref.btController.unRegister_AdapterStateReceiver(this);
+				Ref.bt_stateIntentIsRegistered = false;
+			}
+		} catch (Exception e) {
+			Log.e(TAG, "Something went poop in adapter");
+		}
+
+		try {
+			if (Ref.gpsReceiverIsRegistered) {
+				unregisterReceiver(gpsReceiver);
+				Ref.gpsReceiverIsRegistered = false;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
 	}// -------------------------------------------------------------------------------------
-	// onStart and onStop must go hand in hand
-	// (onRestart can also be used before onStart is invoked)
+		// onStart and onStop must go hand in hand
+		// (onRestart can also be used before onStart is invoked)
+
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -200,34 +232,46 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void onRestart() {
 		super.onRestart();
+		Log.i(TAG, "++ onRestart ++");
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
+		Log.i(TAG, "++ onStop ++");
 
 	}
+
 	// onResume and onPause must go hand in hand
 	@Override
 	public void onResume() {
 		super.onResume();
+		// TODO
+		Log.i(TAG, "++ onResume ++");
+
 		Ref.activeActivity = this;
-		// These belong to GPSFragment
-		gps_text = (TextView) findViewById(R.id.gps_text);
-		gpsReceiver = new GPSReceiver(gps_text);
-		registerReceiver(gpsReceiver, new IntentFilter(LocationManager.KEY_LOCATION_CHANGED));
-//		gps_text.setText(gpsReceiver.getGPSinfo());
+
 	}
+
 	@Override
 	public void onPause() {
+		super.onPause();
 		Log.i(TAG, "++ onPause ++");
 		// belong to GPSFragment
-		unregisterReceiver(gpsReceiver);
+		try {
+			if (Ref.gpsReceiverIsRegistered) {
+				unregisterReceiver(gpsReceiver);
+				Ref.gpsReceiverIsRegistered = false;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		// TODO
 		// We have to save everything in this method for later use
 		Ref.bgThread.activityMAIN = false;
-		super.onPause();
+
 	}// ------------------------------------------------------------
+
 	/**
 	 * This method will be invoked right before onPause() is invoked and is used
 	 * to save certain data that we wish to hold for the next session instead of
@@ -238,7 +282,7 @@ public class MainActivity extends FragmentActivity implements
 		super.onSaveInstanceState(outState);
 		Log.i(TAG, "++ onSaveInstanceState ++");
 	}// ------------------------------------------------------------
-	// ======= END OF LIFECYCLE METHODS ===========================
+		// ======= END OF LIFECYCLE METHODS ===========================
 
 	// =======================
 	// onCLICK-METHODS SECTION
@@ -259,17 +303,26 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	public void startGPS(View view) {
-		gps_text = (TextView) findViewById(R.id.gps_text);
-		gps_text.setText("Starting");
+		System.out.println("StartGPS");
+
+		// These belong to GPSFragment
+		gps_text = (TextView) findViewById(R.id.GPSInfo);
+		gpsReceiver = new GPSReceiver(gps_text);
+		if (!Ref.gpsReceiverIsRegistered) {
+			registerReceiver(gpsReceiver, new IntentFilter(
+					"com.smartpark.gpsinfo"));
+			Ref.gpsReceiverIsRegistered = true;
+		}
+
 		startService(new Intent(getBaseContext(), GPSService.class));
 	}
-	
+
 	public void endGPS(View view) {
-		gps_text = (TextView) findViewById(R.id.gps_text);
+		// gps_text = (TextView) findViewById(R.id.asdf);
 		gps_text.setText("Ending");
 		stopService(new Intent(getBaseContext(), GPSService.class));
 	}
-	
+
 	// ------------------------------
 
 	@Override

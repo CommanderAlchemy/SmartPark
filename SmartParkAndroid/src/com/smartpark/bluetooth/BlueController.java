@@ -85,12 +85,18 @@ public class BlueController {
 		bt_foundDeviceReceiver = new BT_FoundDeviceReceiver();
 		bt_stateReceiver = new BT_StateReceiver();
 		Log.i(TAG, "before registering 3");
+
 		// These will be unregistered in bgThread shutdown
 		Ref.activeActivity.registerReceiver(bt_foundDeviceReceiver,
 				bt_findFilter);
+		Ref.bt_findIntentIsRegistered = true;
+
 		Ref.activeActivity.registerReceiver(bt_stateReceiver, bt_stateFilter);
+		Ref.bt_stateIntentIsRegistered = true;
+
 		Ref.activeActivity.registerReceiver(bt_stateReceiver,
 				bt_connectionStateFilter);
+		Ref.bt_connectionStateReceiverIsRegistered = true;
 	}// -------------------------------------------------------------------------------
 
 	public void cleanUp() {
@@ -103,11 +109,11 @@ public class BlueController {
 		 * to be the last class to exit and should not be invoked like in
 		 * orientation changes.
 		 */
-		Ref.activeActivity.unregisterReceiver(bt_foundDeviceReceiver);
-		Ref.activeActivity.unregisterReceiver(bt_stateReceiver);
+		unRegister_DeviceFoundReceiver(Ref.activeActivity);
+		unRegister_AdapterStateReceiver(Ref.activeActivity);
 		btInStream = null;
 		btOutStream = null;
-//		btSocket = null;
+		btSocket = null;
 		btDevice = null;
 	}
 
@@ -216,9 +222,8 @@ public class BlueController {
 			Log.i(TAG, "++ getFoundDevices ++");
 		return foundDevices;
 	}
-	
-	
-	public int disconnect(){
+
+	public int disconnect() {
 		if (D)
 			Log.i(TAG, "++ disconnect ++");
 		Ref.btState = Ref.STATE_DISCONNECTING;
@@ -226,15 +231,14 @@ public class BlueController {
 			btSocket.close();
 			Ref.btState = Ref.STATE_NOT_CONNECTED;
 			return Ref.RESULT_OK;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			if (D)
 				Log.e(TAG, "IO Exception: ", e);
 			Ref.btState = Ref.STATE_NOT_CONNECTED;
 			return Ref.RESULT_IO_EXCEPTION;
 		}
 	}
-	
-	
+
 	/**
 	 * This method aims at connecting to the device that is stored as
 	 * BluetoothDevice in Ref.java
@@ -257,24 +261,25 @@ public class BlueController {
 				// or an exception
 				Ref.btController.stopDiscovery();
 				btSocket.connect();
+				Ref.btState = Ref.STATE_CONNECTED;
 				/*
 				 * Next line not needed after implementing BroadcastReceiver for
 				 * it.
 				 */
 				// Ref.btState = Ref.STATE_CONNECTED;
-			} catch (IOException e) {
+			} catch (Exception e) {
 				// Close the socket upon error
 				try {
 					if (D)
 						Log.e(TAG, "Connection Exception: ", e);
 					btSocket.close();
-				} catch (IOException e2) {
+				} catch (Exception e2) {
 					if (D)
 						Log.e(TAG, "Socket Close Exception: " + e2);
 				}
 				Ref.btState = Ref.STATE_NOT_CONNECTED;
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			if (D)
 				Log.e(TAG, "Socket init Exception: " + e);
 			Ref.btState = Ref.STATE_NOT_CONNECTED;
@@ -285,7 +290,7 @@ public class BlueController {
 				Log.d(TAG, "--> Init btSocket I/O Streams");
 			btInStream = btSocket.getInputStream();
 			btOutStream = btSocket.getOutputStream();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			if (D)
 				Log.e(TAG, "Socket I/O Streams Exception" + e);
 			Ref.btState = Ref.STATE_NOT_CONNECTED;
@@ -298,7 +303,7 @@ public class BlueController {
 		try {
 			btOutStream.write(data);
 			return Ref.RESULT_OK;
-		} catch (IOException e1) {
+		} catch (Exception e1) {
 			if (D)
 				Log.e(TAG, "Sending of data with bt failed" + e1);
 			if (Ref.btState != Ref.STATE_CONNECTED) {
@@ -315,7 +320,7 @@ public class BlueController {
 			Log.i(TAG, "++ receiveString ++");
 		if (btInStream != null) {
 			if (D)
-				Log.e(TAG, "iStream good");
+				Log.d(TAG, "iStream good");
 			String inData = null;
 			try {
 				if (bufferedReader == null) {
@@ -326,13 +331,13 @@ public class BlueController {
 				}
 				if (bufferedReader.ready()) {
 					if (D)
-						Log.e(TAG, "reader ready");
+						Log.d(TAG, "reader ready");
 					inData = bufferedReader.readLine();
 					if (D)
-						Log.d(TAG, "DATA= " + bufferedReader.readLine());
+						Log.d(TAG, "DATA= " + inData);
 					return inData;
 				}
-			} catch (IOException e1) {
+			} catch (Exception e1) {
 				if (Ref.getbtState() != Ref.STATE_CONNECTED) {
 					Ref.setbtState(Ref.STATE_NOT_CONNECTED);
 					if (D)
@@ -363,7 +368,8 @@ public class BlueController {
 			Log.i(TAG, "++ unRegister_DeviceFoundReceiver ++");
 
 		invokerActivity.unregisterReceiver(bt_foundDeviceReceiver);
-		BroacastReceiverIsRegistered = false;
+		Ref.bt_findIntentIsRegistered = false;
+
 	}
 
 	public int closeConnection() {
@@ -372,7 +378,7 @@ public class BlueController {
 		try {
 			btSocket.close();
 			return Ref.RESULT_OK;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			if (D)
 				Log.e(TAG, "Error closing btSocket: ", e);
 			return Ref.RESULT_IO_EXCEPTION;
@@ -391,7 +397,7 @@ public class BlueController {
 			Log.i(TAG, "++ unRegister_AdapterStateReceiver ++");
 
 		invokerActivity.unregisterReceiver(bt_foundDeviceReceiver);
-		BroacastReceiverIsRegistered = false;
+		Ref.bt_stateIntentIsRegistered = false;
 	}
 
 	public boolean isBluetoothAdapterAvailable() {

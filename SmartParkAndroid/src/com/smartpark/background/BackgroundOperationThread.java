@@ -38,8 +38,6 @@ public class BackgroundOperationThread extends Thread {
 
 	private boolean run = true;
 
-	private boolean shutdownFlag = false;
-
 	// =========== END OF CLASS VARIABLES ===============================
 
 	public BackgroundOperationThread() {
@@ -56,7 +54,7 @@ public class BackgroundOperationThread extends Thread {
 
 	public void powerDown() {
 		// When this flag gets set, the thread is told to shut it self down
-		shutdownFlag = true;
+		run = false;
 	}// ==================================================================
 
 	private boolean reconnectBT() {
@@ -67,28 +65,29 @@ public class BackgroundOperationThread extends Thread {
 			Log.e(TAG, "BlueController intance recreate");
 			Ref.btController = new BlueController();
 		}
-		if(Ref.btAdapter == null){
+		if (Ref.btAdapter == null) {
 			Ref.btAdapter = BluetoothAdapter.getDefaultAdapter();
 		}
-//		if(Ref.bt);
+		// if(Ref.bt);
 
 		BluetoothDevice device = Ref.btController
 				.getPairedDeviceByName(SMARTPARK_DEVICE);
 		if (device == null) {
+			Log.i(TAG, "Find devices");
 			Ref.btController.findNearbyDevices(Ref.activeActivity);
 			for (int i = 0; i < 10; i++) {
 				device = Ref.btController
 						.getFoundDeviceByName(SMARTPARK_DEVICE);
 
 				if (device != null && device.getName().equals(SMARTPARK_DEVICE)) {
-
+					Toast.makeText(Ref.activeActivity,
+							"SmartPark-device found", Toast.LENGTH_SHORT)
+							.show();
 				}
-				Toast.makeText(Ref.activeActivity, "Bluetooth available",
-						Toast.LENGTH_SHORT).show();
+
 				try {
 					BackgroundOperationThread.sleep(1200);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					Log.e(TAG, "Interrupted Exception occured" + e);
 				}
 			}
@@ -96,14 +95,14 @@ public class BackgroundOperationThread extends Thread {
 		if (device != null) {
 			BlueController.btDevice = device;
 			Ref.btController.connect();
-			Log.d(TAG, "--> connected to " + device.getAddress());
+			Log.e(TAG, "--> connected to " + device.getAddress());
 			bufferedReader = new BufferedReader(new InputStreamReader(
 					BlueController.btInStream));
 		} else {
 			Log.w(TAG, "--> device is null, bluetooth not found");
 		}
 		return true;
-	}
+	}// ================================================================
 
 	@Override
 	public void run() {
@@ -115,23 +114,25 @@ public class BackgroundOperationThread extends Thread {
 		run = true;
 
 		while (run) {
-
 			if (Ref.btState == Ref.STATE_CONNECTED) {
 				// Code to process
 				try {
 					Log.d(TAG, "--> reading started");
 
 					btInData = Ref.btController.receiveString();
-					Log.d(TAG, "--> DATA read                  " + btInData);
-					Integer t = Integer.parseInt(btInData);
-					if (t != 10) {
-						t++;
-						Log.d(TAG, "Will now send: " + Integer.toString(t));
-						sendByBT(Integer.toString(t));
+					Log.i(TAG, "--> DATA read                  " + btInData);
+					if (btInData != null) {
+						Integer t = Integer.parseInt(btInData);
+						if (t != 100) {
+							t++;
+							Log.d(TAG, "Will now send: " + t.toString());
+							sendByBT(t.toString());
+							Log.w(TAG, "Just send: " + t);
+						}
 					}
-					Log.d(TAG, "--> reading started");
+					Log.d(TAG, "--> reading ended");
 				} catch (NumberFormatException e) {
-					Log.e(TAG, "NumberFormatException:\n" + e);
+					Log.e(TAG, "NumberFormatException");
 				}
 
 				while (btTransmitBuffer.size() > 0
@@ -143,7 +144,8 @@ public class BackgroundOperationThread extends Thread {
 				// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 			} else {
 				// Handle reconnection
-
+				Log.e(TAG, "BT disconnected");
+				reconnectBT();
 			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
 			if (Ref.tcpState == Ref.STATE_CONNECTED) {
@@ -160,12 +162,12 @@ public class BackgroundOperationThread extends Thread {
 			// -----------------------------------------------------
 			// -----------------------------------------------------
 
-			Log.d(TAG, "BT buffer size: " + btTransmitBuffer.size());
+			// Log.d(TAG, "BT buffer size: " + btTransmitBuffer.size());
 
 			// Check to see if the thread needs to start shutting down
 			// Log.d(TAG, "--> thread running");
 			try {
-				Thread.sleep(3000);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 			}
 
@@ -191,9 +193,11 @@ public class BackgroundOperationThread extends Thread {
 			}
 		}
 		Log.d(TAG, "--> Thread is shutdown");
-		/* In case the thread-instance is reused this will avoid
-		a problem for us. */
-		shutdownFlag = false;
+		/*
+		 * In case the thread-instance is reused this will avoid a problem for
+		 * us.
+		 */
+		run = true;
 	}// ==================================================================
 
 	private void btWrite() {

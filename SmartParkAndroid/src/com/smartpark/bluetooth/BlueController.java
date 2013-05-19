@@ -18,7 +18,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
-import com.smartpark.MainActivity;
+import com.smartpark.activities.MainActivity;
 import com.smartpark.background.Ref;
 import com.smartpark.broadcastReceivers.BT_FoundDeviceReceiver;
 import com.smartpark.broadcastReceivers.BT_StateReceiver;

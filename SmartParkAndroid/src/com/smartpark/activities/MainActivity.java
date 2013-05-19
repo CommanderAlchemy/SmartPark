@@ -1,4 +1,4 @@
-package com.smartpark;
+package com.smartpark.activities;
 
 import java.util.Locale;
 
@@ -22,6 +22,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.smartpark.R;
+import com.smartpark.R.id;
+import com.smartpark.R.layout;
+import com.smartpark.R.menu;
+import com.smartpark.R.string;
 import com.smartpark.background.BackgroundOperationThread;
 import com.smartpark.background.Ref;
 import com.smartpark.fragments.BluetoothFragment;

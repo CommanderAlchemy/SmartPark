@@ -59,7 +59,7 @@ public class Ref {
 	
 	// Reference to the background thread
 	public static BackgroundOperationThread bgThread;
-	public static boolean isBotRunning = false;
+	public static boolean isBOTRunning = false;
 	
 	// Objects for use with the bluetooth adapter
 	public static BluetoothAdapter btAdapter;

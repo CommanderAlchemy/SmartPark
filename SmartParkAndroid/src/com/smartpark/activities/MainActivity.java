@@ -1,4 +1,4 @@
-package com.smartpark;
+package com.smartpark.activities;
 
 import java.util.Locale;
 
@@ -21,6 +21,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.smartpark.R;
+import com.smartpark.activities.LoginActivity;
+import com.smartpark.activities.SettingsActivity;
 import com.smartpark.background.BackgroundOperationThread;
 import com.smartpark.background.Ref;
 import com.smartpark.fragments.BluetoothFragment;
@@ -28,7 +31,6 @@ import com.smartpark.fragments.DebugFragment;
 import com.smartpark.fragments.DummySectionFragment;
 import com.smartpark.fragments.GPSFragment;
 import com.smartpark.fragments.SmartParkFragment;
-import com.smartpark.gps.GPSReceiver;
 import com.smartpark.gps.GPSService;
 import com.smartpark.tcp.TCPController;
 
@@ -56,8 +58,6 @@ public class MainActivity extends FragmentActivity implements
 	private Fragment fragment;
 
 	private ActionBar actionBar;
-
-	
 
 	private TextView gps_text;
 
@@ -152,7 +152,7 @@ public class MainActivity extends FragmentActivity implements
 				Ref.bt_findIntentIsRegistered = false;
 			}
 		} catch (Exception e) {
-			Log.e(TAG, "Something went poop device");
+			Log.e(TAG, "Something went poop in device");
 		}
 
 		try {
@@ -165,19 +165,10 @@ public class MainActivity extends FragmentActivity implements
 			Log.e(TAG, "Something went poop in adapter");
 		}
 
-//		try {
-//			if (Ref.gpsReceiverIsRegistered) {
-//				unregisterReceiver(gpsReceiver);
-//				Ref.gpsReceiverIsRegistered = false;
-//			}
-//		} catch (Exception e) {
-//			// TODO: handle exception
-//		}
+	}// ------------------------------------------------------------------------
 
-	}// -------------------------------------------------------------------------------------
-		// onStart and onStop must go hand in hand
-		// (onRestart can also be used before onStart is invoked)
-
+	// onStart and onStop must go hand in hand
+	// (onRestart can also be used before onStart is invoked)
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -253,14 +244,14 @@ public class MainActivity extends FragmentActivity implements
 		super.onPause();
 		Log.i(TAG, "++ onPause ++");
 		// belong to GPSFragment
-//		try {
-//			if (Ref.gpsReceiverIsRegistered) {
-//				unregisterReceiver(gpsReceiver);
-//				Ref.gpsReceiverIsRegistered = false;
-//			}
-//		} catch (Exception e) {
-//			// TODO: handle exception
-//		}
+		// try {
+		// if (Ref.gpsReceiverIsRegistered) {
+		// unregisterReceiver(gpsReceiver);
+		// Ref.gpsReceiverIsRegistered = false;
+		// }
+		// } catch (Exception e) {
+		// // TODO: handle exception
+		// }
 		// TODO
 		// We have to save everything in this method for later use
 		Ref.bgThread.activityMAIN = false;
@@ -302,9 +293,7 @@ public class MainActivity extends FragmentActivity implements
 
 		// These belong to GPSFragment
 		Ref.gps_text = (TextView) findViewById(R.id.GPSInfo);
-		
-		
-		
+
 		startService(new Intent(getBaseContext(), GPSService.class));
 	}
 

@@ -60,7 +60,11 @@ public class BackgroundOperationThread extends Thread {
 	private boolean reconnectBT() {
 		Log.e(TAG, "++ reconnectBT ++");
 		Ref.btState = Ref.STATE_CONNECTING;
+		boolean discovering;
+		//
+		Log.e(TAG, "isConnected? " + Ref.btController.isConnected());
 		Ref.btController.closeConnection();
+
 		if (Ref.btController == null) {
 			Log.e(TAG, "BlueController intance recreate");
 			Ref.btController = new BlueController();
@@ -68,23 +72,27 @@ public class BackgroundOperationThread extends Thread {
 		if (Ref.btAdapter == null) {
 			Ref.btAdapter = BluetoothAdapter.getDefaultAdapter();
 		}
-		// if(Ref.bt);
 
 		BluetoothDevice device = Ref.btController
 				.getPairedDeviceByName(SMARTPARK_DEVICE);
+
 		if (device == null) {
+			// The device is not previously paired with this phone
 			Log.i(TAG, "Find devices");
-			Ref.btController.findNearbyDevices(Ref.activeActivity);
+			discovering = Ref.btController
+					.findNearbyDevices(Ref.activeActivity);
 			for (int i = 0; i < 10; i++) {
 				device = Ref.btController
 						.getFoundDeviceByName(SMARTPARK_DEVICE);
+				Log.i(TAG, "is discovering: " + Ref.btAdapter.isDiscovering());
 
 				if (device != null && device.getName().equals(SMARTPARK_DEVICE)) {
-					Toast.makeText(Ref.activeActivity,
-							"SmartPark-device found", Toast.LENGTH_SHORT)
-							.show();
+					Log.i(TAG, "in if sats");
+//					Toast.makeText(Ref.activeActivity,
+//							"SmartPark-device found", Toast.LENGTH_SHORT)
+//							.show();
 				}
-
+				Log.i(TAG, "till here");
 				try {
 					BackgroundOperationThread.sleep(1200);
 				} catch (InterruptedException e) {
@@ -128,7 +136,7 @@ public class BackgroundOperationThread extends Thread {
 							Log.d(TAG, "Will now send: " + t.toString());
 							sendByBT(t.toString());
 							Log.w(TAG, "Just send: " + t);
-						}else{
+						} else {
 							t = 0;
 							sendByBT(t.toString());
 						}
@@ -160,8 +168,9 @@ public class BackgroundOperationThread extends Thread {
 
 			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
-			Log.e(TAG, "Connection state: " + (Ref.btState == Ref.STATE_CONNECTED));
-			
+			Log.e(TAG, "Connection state: "
+					+ (Ref.btState == Ref.STATE_CONNECTED));
+
 			// -----------------------------------------------------
 			// -----------------------------------------------------
 			// -----------------------------------------------------

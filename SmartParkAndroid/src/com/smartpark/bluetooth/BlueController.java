@@ -19,7 +19,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
-import com.smartpark.MainActivity;
+import com.smartpark.activities.MainActivity;
 import com.smartpark.background.Ref;
 import com.smartpark.broadcastReceivers.BT_FoundDeviceReceiver;
 import com.smartpark.broadcastReceivers.BT_StateReceiver;
@@ -64,7 +64,7 @@ public class BlueController {
 	private static final boolean D = Ref.D;
 
 	// -------------------------------------------------------------------------------
-//	public BlueController(Context instantiatorClass) {
+	// public BlueController(Context instantiatorClass) {
 	public BlueController() {
 		if (D)
 			Log.i(TAG, "++ Constructor: BlueController ++");
@@ -143,7 +143,10 @@ public class BlueController {
 			BroacastReceiverIsRegistered = true;
 			// Don't forget to unregister during onDestroy
 		}
-		return Ref.btAdapter.startDiscovery();
+		if (!Ref.btAdapter.isDiscovering()) {
+			Ref.btAdapter.startDiscovery();
+		}
+		return Ref.btAdapter.isDiscovering();
 	}
 
 	public Set<BluetoothDevice> getPairedDevicesList() {
@@ -199,6 +202,7 @@ public class BlueController {
 
 		BluetoothDevice device;
 		Iterator<BluetoothDevice> iter;
+		Log.i(TAG, "Found devices: " + foundDevices.size());
 		if (foundDevices.size() > 0) {
 			iter = foundDevices.iterator();
 			while (iter.hasNext()) {
@@ -376,7 +380,9 @@ public class BlueController {
 		if (D)
 			Log.i(TAG, "++ closeConnection ++");
 		try {
-			btSocket.close();
+			if (btSocket != null && btSocket.isConnected()) {
+				btSocket.close();
+			}
 			return Ref.RESULT_OK;
 		} catch (Exception e) {
 			if (D)
@@ -420,7 +426,7 @@ public class BlueController {
 		Ref.btAdapter.enable();
 	}
 
-	public boolean enableAdapter(MainActivity invokerActivity) {
+	public boolean enableAdapter(Activity mainActivity) {
 		if (D)
 			Log.i(TAG, "++ enableAdapter ++");
 		if (!Ref.btAdapter.isEnabled()) {
@@ -428,7 +434,7 @@ public class BlueController {
 				Log.d(TAG, "enabling adapter");
 			Intent enableBtIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_ENABLE);
-			invokerActivity.startActivityForResult(enableBtIntent,
+			mainActivity.startActivityForResult(enableBtIntent,
 					Ref.REQUEST_ENABLE_BT);
 		}
 		int state = Ref.btAdapter.getState();
@@ -465,8 +471,15 @@ public class BlueController {
 	 * @param device
 	 */
 	public void setFoundDevice(BluetoothDevice device) {
-		if (foundDevices.contains(device)) {
-			foundDevices.add(device);
+		// if (!foundDevices.contains(device)) {
+		foundDevices.add(device);
+		// }
+	}
+
+	public boolean isConnected() {
+		if (btSocket != null) {
+			return btSocket.isConnected();
 		}
+		return false;
 	}
 }

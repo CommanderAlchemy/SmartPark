@@ -1,6 +1,10 @@
-package com.smartpark;
+package com.smartpark.activities;
 
 import java.util.List;
+
+import com.smartpark.R;
+import com.smartpark.R.string;
+import com.smartpark.R.xml;
 
 import android.annotation.TargetApi;
 import android.content.Context;

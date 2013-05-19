@@ -8,7 +8,6 @@ import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -58,9 +57,7 @@ public class MainActivity extends FragmentActivity implements
 
 	private ActionBar actionBar;
 
-	// used in GPS-fragment class
-	// private TextView gps_text;
-	private GPSReceiver gpsReceiver;
+	
 
 	private TextView gps_text;
 
@@ -168,14 +165,14 @@ public class MainActivity extends FragmentActivity implements
 			Log.e(TAG, "Something went poop in adapter");
 		}
 
-		try {
-			if (Ref.gpsReceiverIsRegistered) {
-				unregisterReceiver(gpsReceiver);
-				Ref.gpsReceiverIsRegistered = false;
-			}
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+//		try {
+//			if (Ref.gpsReceiverIsRegistered) {
+//				unregisterReceiver(gpsReceiver);
+//				Ref.gpsReceiverIsRegistered = false;
+//			}
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//		}
 
 	}// -------------------------------------------------------------------------------------
 		// onStart and onStop must go hand in hand
@@ -246,11 +243,9 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void onResume() {
 		super.onResume();
-		// TODO
 		Log.i(TAG, "++ onResume ++");
 
 		Ref.activeActivity = this;
-
 	}
 
 	@Override
@@ -258,14 +253,14 @@ public class MainActivity extends FragmentActivity implements
 		super.onPause();
 		Log.i(TAG, "++ onPause ++");
 		// belong to GPSFragment
-		try {
-			if (Ref.gpsReceiverIsRegistered) {
-				unregisterReceiver(gpsReceiver);
-				Ref.gpsReceiverIsRegistered = false;
-			}
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+//		try {
+//			if (Ref.gpsReceiverIsRegistered) {
+//				unregisterReceiver(gpsReceiver);
+//				Ref.gpsReceiverIsRegistered = false;
+//			}
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//		}
 		// TODO
 		// We have to save everything in this method for later use
 		Ref.bgThread.activityMAIN = false;
@@ -298,7 +293,7 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	public void isBTEnable(View view) {
-		Ref.bgThread.sendByBT("10");
+		Ref.bgThread.sendByBT("999950");
 		Log.d(TAG, "wrote 10");
 	}
 
@@ -306,20 +301,14 @@ public class MainActivity extends FragmentActivity implements
 		System.out.println("StartGPS");
 
 		// These belong to GPSFragment
-		gps_text = (TextView) findViewById(R.id.GPSInfo);
-		gpsReceiver = new GPSReceiver(gps_text);
-		if (!Ref.gpsReceiverIsRegistered) {
-			registerReceiver(gpsReceiver, new IntentFilter(
-					"com.smartpark.gpsinfo"));
-			Ref.gpsReceiverIsRegistered = true;
-		}
-
+		Ref.gps_text = (TextView) findViewById(R.id.GPSInfo);
+		
+		
+		
 		startService(new Intent(getBaseContext(), GPSService.class));
 	}
 
 	public void endGPS(View view) {
-		// gps_text = (TextView) findViewById(R.id.asdf);
-		gps_text.setText("Ending");
 		stopService(new Intent(getBaseContext(), GPSService.class));
 	}
 

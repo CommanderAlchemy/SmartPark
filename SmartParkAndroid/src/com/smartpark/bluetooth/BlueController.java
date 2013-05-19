@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
@@ -63,7 +64,7 @@ public class BlueController {
 	private static final boolean D = Ref.D;
 
 	// -------------------------------------------------------------------------------
-
+//	public BlueController(Context instantiatorClass) {
 	public BlueController() {
 		if (D)
 			Log.i(TAG, "++ Constructor: BlueController ++");
@@ -303,15 +304,14 @@ public class BlueController {
 		try {
 			btOutStream.write(data);
 			return Ref.RESULT_OK;
-		} catch (Exception e1) {
+		} catch (IOException e1) {
 			if (D)
 				Log.e(TAG, "Sending of data with bt failed" + e1);
-			if (Ref.btState != Ref.STATE_CONNECTED) {
-				Ref.btState = Ref.STATE_NOT_CONNECTED;
-				if (D)
-					Log.e(TAG, "btSocket set to NOT CONNECTED");
-			}
+			Ref.btState = Ref.STATE_NOT_CONNECTED;
 			return Ref.RESULT_IO_EXCEPTION;
+		} catch (Exception e1) {
+			Log.e(TAG, "ggggggggggggggggggg" + e1);
+			return Ref.RESULT_EXCEPTION;
 		}
 	}
 

@@ -37,6 +37,8 @@ public class Ref {
 	public final static int RESULT_OK = 0;
 	public final static int RESULT_IO_EXCEPTION = -1;
 	public final static int RESULT_UNKNOWN_HOST_EXCEPTION = -2;
+	public final static int RESULT_EXCEPTION = -3;
+	
 	
 	// Global control-flags
 	public static int tcpState = STATE_NOT_CONNECTED;

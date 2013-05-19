@@ -123,11 +123,14 @@ public class BackgroundOperationThread extends Thread {
 					Log.i(TAG, "--> DATA read                  " + btInData);
 					if (btInData != null) {
 						Integer t = Integer.parseInt(btInData);
-						if (t != 100) {
+						if (t != 1000000) {
 							t++;
 							Log.d(TAG, "Will now send: " + t.toString());
 							sendByBT(t.toString());
 							Log.w(TAG, "Just send: " + t);
+						}else{
+							t = 0;
+							sendByBT(t.toString());
 						}
 					}
 					Log.d(TAG, "--> reading ended");
@@ -157,6 +160,8 @@ public class BackgroundOperationThread extends Thread {
 
 			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
+			Log.e(TAG, "Connection state: " + (Ref.btState == Ref.STATE_CONNECTED));
+			
 			// -----------------------------------------------------
 			// -----------------------------------------------------
 			// -----------------------------------------------------

@@ -13,6 +13,7 @@ import android.content.IntentFilter;
 import android.os.IBinder;
 import android.preference.PreferenceManager.OnActivityResultListener;
 import android.util.Log;
+import android.widget.Toast;
 
 public class BackOperationService extends Service {
 
@@ -55,6 +56,7 @@ public class BackOperationService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate(); // Not needed
+		Toast.makeText(applicationContext, "Service started", Toast.LENGTH_SHORT).show();
 	}
 	
 	@Override

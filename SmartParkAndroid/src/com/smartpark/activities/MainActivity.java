@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.smartpark.R;
 import com.smartpark.activities.LoginActivity;
 import com.smartpark.activities.SettingsActivity;
+import com.smartpark.background.BackOperationService;
 import com.smartpark.background.BackgroundOperationThread;
 import com.smartpark.background.Ref;
 import com.smartpark.bluetooth.BlueController;
@@ -78,7 +79,9 @@ public class MainActivity extends FragmentActivity implements
 		gps_text = (TextView) findViewById(R.id.GPSInfo);
 
 		Ref.activeActivity = this;
-
+		
+		startService(new Intent(getBaseContext(), BackOperationService.class));
+		
 		if (D)
 			Log.d(TAG,
 					"--> Getting the actionBar and setting its navigation mode");
@@ -130,9 +133,6 @@ public class MainActivity extends FragmentActivity implements
 		// Restore additional variables and objects from last session
 		if (savedInstanceState != null) {
 		}
-
-		if (D)
-			Log.d(TAG, "--> instantiate btController and bgThread");
 	}
 
 	@Override
@@ -144,6 +144,7 @@ public class MainActivity extends FragmentActivity implements
 		 * by it and not here. This method is only responsible for resources
 		 * taken by this activity.
 		 */
+//		Ref.bgThread.activityMAIN = false;
 
 		// Ref will not be emptied since its references could be used by
 		// bgThread.
@@ -182,22 +183,21 @@ public class MainActivity extends FragmentActivity implements
 //		} else if (!Ref.bgThread.isAlive()) {
 //			Ref.bgThread.start();
 //		}
-		Ref.bgThread.activityMAIN = true;
 
 
-
-		// Enable bluetooth if disabled by asking the user first
-		if (!Ref.btController.isEnabled()) {
-			Log.d(TAG, "--> bluetooth is disabled");
-			/*
-			 * the "this" is required so that the method can start another
-			 * activity. Only the activity currently running in thread can start
-			 * other activities.
-			 */
-			Ref.btController.enableAdapter();
-			Log.d(TAG, "--> Enabling done");
-			Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
-		}
+//
+//		// Enable bluetooth if disabled by asking the user first
+//		if (!Ref.btController.isEnabled()) {
+//			Log.d(TAG, "--> bluetooth is disabled");
+//			/*
+//			 * the "this" is required so that the method can start another
+//			 * activity. Only the activity currently running in thread can start
+//			 * other activities.
+//			 */
+//			Ref.btController.enableAdapter();
+//			Log.d(TAG, "--> Enabling done");
+//			Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
+//		}
 
 	}// -------------------------------------------------------------------------------------
 
@@ -220,7 +220,8 @@ public class MainActivity extends FragmentActivity implements
 		super.onResume();
 		Log.i(TAG, "++ onResume ++");
 
-		Ref.activeActivity = this;
+//		Ref.activeActivity = this;
+//		Ref.bgThread.activityMAIN = true;
 	}
 
 	@Override
@@ -229,7 +230,7 @@ public class MainActivity extends FragmentActivity implements
 		Log.i(TAG, "++ onPause ++");
 		
 		// We have to save everything in this method for later use
-		Ref.bgThread.activityMAIN = false;
+//		Ref.bgThread.activityMAIN = false;
 
 	}// ------------------------------------------------------------
 

@@ -5,18 +5,53 @@
     android:orientation="vertical" >
 
     <RelativeLayout
-        android:id="@+id/LeftRelativeLayout34"
-        android:layout_width="match_parent"
+        android:id="@+id/relativelayout_datepicker"
+        android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         tools:context=".MainActivity$DummySectionFragment" >
 
-        <DatePicker
-            android:id="@+id/datePicker1"
+        <TextView
+            android:id="@+id/txtFromDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true" />
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="19dp"
+            android:text="From:"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtFromDate"
+            android:layout_alignBottom="@id/txtFromDate"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="34dp"
+            android:layout_toRightOf="@+id/txtFromDate"
+            android:background="?android:attr/selectableItemBackground"
+            android:text="Button" />
+
+        <TextView
+            android:id="@+id/txtToDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/txtFromDate"
+            android:layout_below="@+id/txtFromDate"
+            android:text="To:"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <Button
+            android:id="@+id/Button01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/button1"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/txtFromDate"
+            android:background="?android:attr/selectableItemBackground"
+            android:text="Button" />
 
     </RelativeLayout>
 

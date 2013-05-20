@@ -38,8 +38,18 @@ public class BackgroundOperationThread extends Thread {
 	// =========== END OF CLASS VARIABLES ===============================
 
 	public BackgroundOperationThread(Context applicationContext) {
-		this.applicationContext = applicationContext;
 		Log.i(TAG, "++ bgThread Constructor ++");
+
+		this.applicationContext = applicationContext;
+
+		// BT
+		Ref.btState = Ref.STATE_NOT_CONNECTED;
+		btController = new BlueController(applicationContext);
+
+		// TCP
+		Ref.tcpState = Ref.STATE_NOT_CONNECTED;
+		Ref.tcpClient = null;
+		// TODO add more to this
 
 		// Check to see if bluetooth is available
 		if (!btController.isBluetoothAdapterAvailable()) {
@@ -66,14 +76,6 @@ public class BackgroundOperationThread extends Thread {
 					Toast.LENGTH_SHORT).show();
 		}
 
-		// BT
-		Ref.btState = Ref.STATE_NOT_CONNECTED;
-		btController = new BlueController(applicationContext);
-
-		// TCP
-		Ref.tcpState = Ref.STATE_NOT_CONNECTED;
-		Ref.tcpClient = null;
-		// TODO add more to this
 	}// ==================================================================
 
 	public void powerDown() {
@@ -106,8 +108,8 @@ public class BackgroundOperationThread extends Thread {
 			 */
 			btController.enableAdapter();
 			Log.d(TAG, "--> Enabling done");
-			Toast.makeText(applicationContext, "Enabled", Toast.LENGTH_SHORT)
-					.show();
+//			Toast.makeText(applicationContext, "Enabled", Toast.LENGTH_SHORT)
+//					.show();
 		}
 
 		if (btController == null) {
@@ -178,7 +180,7 @@ public class BackgroundOperationThread extends Thread {
 
 			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
-			Log.e(TAG, "Connection state: "
+			Log.i(TAG, "Connection state: "
 					+ (Ref.btState == Ref.STATE_CONNECTED));
 
 			// -----------------------------------------------------
@@ -191,14 +193,13 @@ public class BackgroundOperationThread extends Thread {
 			// Check to see if the thread needs to start shutting down
 			// Log.d(TAG, "--> thread running");
 			try {
-				Thread.sleep(500);
+				Thread.sleep(1200);
 			} catch (InterruptedException e) {
+				Log.e(TAG, "InterruptedException: ", e);
 			}
-
 			if (activityMAIN || activitySettings || activityLOGIN) {
 				shutdownTime = 0;
 			} else {
-				Log.d(TAG, "--> bgThread timer started");
 				if (shutdownTime == 0) {
 					shutdownTime = System.currentTimeMillis();
 				} else if (System.currentTimeMillis() - shutdownTime > 30000) {
@@ -213,6 +214,7 @@ public class BackgroundOperationThread extends Thread {
 				try {
 					Thread.sleep(3000);
 				} catch (InterruptedException e) {
+					Log.e(TAG, "InterruptedException: ", e);
 				}
 			}
 		}
@@ -253,7 +255,7 @@ public class BackgroundOperationThread extends Thread {
 		// this.shutdownThread(); wont work, just like suspend() and stop()
 
 		btController.closeConnection();
-//		Ref.bgThread = null;
+		// Ref.bgThread = null;
 	}// ==================================================================
 
 	// The next two methods put strings in transmitbuffer

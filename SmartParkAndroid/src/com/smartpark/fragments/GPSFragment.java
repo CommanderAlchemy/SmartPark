@@ -12,14 +12,16 @@ import com.smartpark.R;
 import com.smartpark.background.Ref;
 
 /**
- * GPSFragment, this holds the GPS side of the project and will show
- * GPS specific information
+ * GPSFragment, this holds the GPS side of the project and will show GPS
+ * specific information
+ * 
  * @author commander
- *
+ * 
  */
 public class GPSFragment extends Fragment {
 
-	// Debug Information, the boolean should be stored in a common settings file in the future!
+	// Debug Information, the boolean should be stored in a common settings file
+	// in the future!
 	private static boolean D = Ref.D;
 	private static final String TAG = "GPSFragment";
 
@@ -34,16 +36,15 @@ public class GPSFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.frag_history_view,
-				container, false);
-//		TextView dummyTextView = (TextView) rootView
-//				.findViewById(R.id.section_label);
-//		dummyTextView.setText(Integer.toString(getArguments().getInt(
-//				ARG_SECTION_NUMBER)));
+		View rootView = inflater.inflate(R.layout.frag_history_view, container,
+				false);
+		// DELETE THIS LATER
+		// TextView dummyTextView = (TextView) rootView
+		// .findViewById(R.id.section_label);
+		// dummyTextView.setText(Integer.toString(getArguments().getInt(
+		// ARG_SECTION_NUMBER)));
+
 		return rootView;
 	}
-	
-	
-	
-	
+
 }

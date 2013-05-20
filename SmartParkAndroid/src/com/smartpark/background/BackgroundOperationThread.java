@@ -257,7 +257,7 @@ public class BackgroundOperationThread extends Thread {
 		// this.shutdownThread(); wont work, just like suspend() and stop()
 
 		btController.closeConnection();
-		Ref.bgThread = null;
+//		Ref.bgThread = null;
 	}// ==================================================================
 
 	// The next two methods put strings in transmitbuffer

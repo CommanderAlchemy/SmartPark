@@ -42,5 +42,6 @@
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
         <service android:name="com.smartpark.gps.GPSService" />
+        
     </application>
 </manifest>

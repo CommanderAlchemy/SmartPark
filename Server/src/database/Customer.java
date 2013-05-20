@@ -5,7 +5,7 @@ import java.sql.Statement;
 
 public class Customer extends Database {
 	private long id;
-	private long cont;
+	private int cont;
 	private String ssNbr;
 	private String forname;
 	private String lastname;
@@ -57,7 +57,7 @@ public class Customer extends Database {
 	 * @param adress
 	 * @param phoneNbr
 	 */
-	public Customer(long cont, String ssNbr, String forename, String lastname,
+	public Customer(int cont, String ssNbr, String forename, String lastname,
 			String address, String phoneNbr, String password,
 			String smartParkID, String registered) {
 		this();
@@ -81,18 +81,15 @@ public class Customer extends Database {
 	public void CreateCustomerTable() {
 		try {
 			/* @formatter:off */
-			sql = "CREATE TABLE " + tblName + " " 
-					+ "(ID INTEGER PRIMARY KEY,"
-					+ "cont					INT			NOT NULL,"
-					+ "ssNbr				TEXT		NOT NULL," 
+			sql = "CREATE TABLE " + tblName + " " + "(ID INTEGER PRIMARY KEY,"
+					+ "cont					INT			NOT NULL," + "ssNbr				TEXT		NOT NULL,"
 					+ "Forname				TEXT		NOT NULL,"
 					+ "Lastname				TEXT		NOT NULL,"
 					+ "Address         		TEXT		NOT NULL,"
 					+ "PhoneNbr       		TEXT		NOT NULL,"
 					+ "Password				TEXT		NOT NULL,"
 					+ "SmartParkID			TEXT		NOT NULL,"
-					+ "Registered			TEXT		NOT NULL,"
-					+ "Balance				REAL)";
+					+ "Registered			TEXT		NOT NULL," + "Balance				REAL)";
 			/* @formatter:on */
 			statement = super.getConnection().createStatement();
 			statement.executeUpdate(sql);
@@ -111,17 +108,11 @@ public class Customer extends Database {
 			/* @formatter:off */
 			sql = "INSERT INTO Customer "
 					+ "(ID,cont,ssNbr,ForName,Lastname,Address,PhoneNbr,Password,SmartParkID,Registered,Balance) "
-					+ "VALUES (" + "NULL"			+ ","
-								 + c.cont			+ ",'"
-								 + c.ssNbr 			+ "','"
-								 + c.forname 		+ "','"
-								 + c.lastname 		+ "','"
-								 + c.address 		+ "','"
-								 + c.phoneNbr		+ "','"
-								 + c.password		+ "','"
-								 + c.smartParkID	+ "','"
-								 + c.registered		+ "',"
-								 + c.balance		+ ");";
+					+ "VALUES (" + "NULL" + "," + c.cont + ",'" + c.ssNbr
+					+ "','" + c.forname + "','" + c.lastname + "','"
+					+ c.address + "','" + c.phoneNbr + "','" + c.password
+					+ "','" + c.smartParkID + "','" + c.registered + "',"
+					+ c.balance + ");";
 
 			/* @formatter:on */
 			statement = super.getConnection().createStatement();
@@ -140,33 +131,31 @@ public class Customer extends Database {
 
 	private void selectCustomer(String searchValue) {
 		try {
-//			super.getConnection().setAutoCommit(false);
+			// super.getConnection().setAutoCommit(false);
 			statement = super.getConnection().createStatement();
 
 			// result = statement.executeQuery("SELECT * FROM Customer;");
-			if (searchValue != null){
+			if (searchValue != null) {
 				result = statement
-					.executeQuery("SELECT ID,cont,ssNbr,Forname,Lastname,Address,PhoneNbr,Password,SmartParkID,Registered,Balance FROM Customer WHERE ssNbr = '"
-							+ searchValue + "';" );
+						.executeQuery("SELECT ID,cont,ssNbr,Forname,Lastname,Address,PhoneNbr,Password,SmartParkID,Registered,Balance FROM Customer WHERE ssNbr = '"
+								+ searchValue + "';");
+			} else {
+				result = statement.executeQuery("SELECT * FROM Customer;"
+						+ searchValue);
 			}
-			else{
-				result = statement
-						.executeQuery("SELECT * FROM Customer;"
-								+ searchValue);
-			}
-				
+
 			while (result.next()) {
-				this.id 		= result.getInt("ID");
-				this.cont 		= result.getLong("cont");
-				this.ssNbr 		= result.getString("ssNbr");
-				this.forname 	= result.getString("Forname");
-				this.lastname 	= result.getString("Lastname");
-				this.address 	= result.getString("Address");
-				this.phoneNbr	= result.getString("PhoneNbr");
-				this.password 	= result.getString("Password");
-				this.smartParkID= result.getString("SmartParkID");
+				this.id = result.getInt("ID");
+				this.cont = result.getInt("cont");
+				this.ssNbr = result.getString("ssNbr");
+				this.forname = result.getString("Forname");
+				this.lastname = result.getString("Lastname");
+				this.address = result.getString("Address");
+				this.phoneNbr = result.getString("PhoneNbr");
+				this.password = result.getString("Password");
+				this.smartParkID = result.getString("SmartParkID");
 				this.registered = result.getString("Registered");
-				this.balance 	= result.getLong("balance");
+				this.balance = result.getLong("balance");
 				System.out.println(this.toString());
 			}
 			result.close();
@@ -225,6 +214,14 @@ public class Customer extends Database {
 	 */
 	public long getId() {
 		return id;
+	}
+
+	public int getCont() {
+		return cont;
+	}
+
+	public void setCont(int cont) {
+		this.cont = cont;
 	}
 
 	/**
@@ -360,30 +357,24 @@ public class Customer extends Database {
 	 */
 	public String toString() {
 		/* @formatter:off */
-		String string = "ID: "		+ this.id
-				+ " controller: "	+ this.cont
-				+ " ssNbr: "		+ this.ssNbr 
-				+ " Name: "			+ this.forname 
-				+ " Lastname: " 	+ this.lastname 
-				+ " Address: "		+ this.address 
-				+ " PhoneNbr: " 	+ this.phoneNbr
-				+ " Password: " 	+ this.password
-				+ " SmartParkID: "	+ this.smartParkID
-				+ " Registered: "	+ this.registered
-				+ " Balance: "		+ this.balance;
+		String string = "ID: " + this.id + " controller: " + this.cont
+				+ " ssNbr: " + this.ssNbr + " Name: " + this.forname
+				+ " Lastname: " + this.lastname + " Address: " + this.address
+				+ " PhoneNbr: " + this.phoneNbr + " Password: " + this.password
+				+ " SmartParkID: " + this.smartParkID + " Registered: "
+				+ this.registered + " Balance: " + this.balance;
 		/* @formatter:on */
 		return string;
 	}
 
 	public static void main(String[] args) {
 		Customer c = new Customer();
-//		c.CreateCustomerTable();
-//		c.InsertCustomerData(new Customer(1,"910611", "Artur", "Olech", "Snödroppsgatan3", "0762361910", "artur", "001First", "Today"));
-//		c.InsertCustomerData(new Customer(0,"820620", "Saeed", "Ghasemi", "Hyllie", "0763150074", "saeed", "002Second", "Tomorrow"));
-//		c.InsertCustomerData(new Customer(0,"na", "Truls", "Haraldsson", "Trelleborg", "some number", "truls", "003Third", "Never"));
+		c.CreateCustomerTable();
+		c.InsertCustomerData(new Customer(1, "910611", "Artur", "Olech","Snödroppsgatan3", "0762361910", "artur", "001First", "Today"));
+		c.InsertCustomerData(new Customer(0, "820620", "Saeed", "Ghasemi","Hyllie", "0763150074", "saeed", "002Second", "Tomorrow"));
+		c.InsertCustomerData(new Customer(0, "na", "Truls", "Haraldsson","Trelleborg", "some number", "truls", "003Third", "Never"));
 		c.selectCustomer(null);
-		c.selectCustomer("910611");
-
+		c.selectCustomer("9-10611");
 
 	}
 }

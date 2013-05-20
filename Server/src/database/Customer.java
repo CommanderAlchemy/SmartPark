@@ -24,7 +24,7 @@ public class Customer extends Database {
 	 * Avail columns in the customer table
 	 */
 	public enum Col{
-		ID,ssNbr,Forname,Lastname,adress,PhoneNbr,balance,password
+		ID,ssNbr,Forname,Lastname,Address,PhoneNbr,Password,Balance,SmartparkID
 	}
 	/**
 	 * Constructor for Customer

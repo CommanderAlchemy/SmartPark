@@ -261,14 +261,14 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	public void startGPS(View view) {
-		System.out.println("StartGPS");
-
+		Log.i(TAG, "++ startGPS ++");
+		
 		// These belong to GPSFragment
 		Ref.gps_text = (TextView) findViewById(R.id.GPSInfo);
-
+		
 		startService(new Intent(getBaseContext(), GPSService.class));
 		startService(new Intent(getBaseContext(), BackOperationService.class));
-
+		
 	}
 
 	public void endGPS(View view) {

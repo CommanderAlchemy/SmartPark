@@ -6,15 +6,12 @@ import java.sql.SQLException;
 
 public class Database {
 	private String dbName;
-	private String tblName;
 	private Connection c = null;
 
 	// private static final String create = "CREATE TABLE";
 
-	public Database(String dbName, String tblName) {
+	public Database(String dbName) {
 		this.dbName = dbName;
-		this.tblName = tblName;
-
 		initConnection();
 
 	}

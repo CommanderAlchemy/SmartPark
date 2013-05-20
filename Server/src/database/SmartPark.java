@@ -1,8 +1,11 @@
 package database;
 
+import java.sql.ResultSet;
+import java.sql.Statement;
+
 public class SmartPark extends Database {
-	private String id;
-	private String deviceID; // The Device ID
+	private long id;
+	private static String deviceID; // The Device ID
 	private String ssNbr; // Connected to a persons.
 	private String position;
 	private String startStamp;
@@ -10,26 +13,36 @@ public class SmartPark extends Database {
 	private String licensePlate;
 	private String carModel; // Not needed atm, but may be needed in the future
 
-	private static String dbName = "test";
-	private static String tblName = "SmartPark";
+	private final static String dbName = "test";
+	private String tblName;
+	
+	private String sql;
+	private Statement statement = null;
+	private ResultSet result;
+	
+	public enum Col {
+		ID, ssNbr, Position, StartStamp, StopStamp, LicensePlate, CarModel
+	}
+	
+	public SmartPark(String deviceID){
+		super(dbName);
+		SmartPark.deviceID = deviceID;
+		this.tblName = "SmartPark_" + deviceID;
+	}
 
 	/**
-	 * Constructor for SmartParkDevice
-	 * 
-	 * @param deviceID
-	 *            long deviceID
-	 * @param connectedTo
-	 *            long Connected to
-	 * @param latitude
-	 *            long latitude
-	 * @param longitude
-	 *            long longitude
+	 * Constructor for smartpark
+	 * @param ssNbr
+	 * @param position
+	 * @param startStamp
+	 * @param stopStamp
+	 * @param licensePlate
+	 * @param carModel
 	 */
-	public SmartPark(String deviceID, String ssNbr, String position,
+	public SmartPark(String ssNbr, String position,
 			String startStamp, String stopStamp, String licensePlate,
 			String carModel) {
-		super(dbName, tblName + "_" + deviceID);
-		this.deviceID = deviceID;
+		super(dbName);
 		this.ssNbr = ssNbr;
 		this.position = position;
 		this.startStamp = startStamp;
@@ -38,13 +51,131 @@ public class SmartPark extends Database {
 		this.carModel = carModel;
 
 	}
+	public void CreateSmartParkTable() {
+		try {
+			System.out.println("Create " + tblName);
+			/* @formatter:off */
+			sql = "CREATE TABLE " + tblName + " " 
+					+ "(ID INTEGER PRIMARY KEY,"
+					+ "ssNbr				TEXT		NOT NULL," 
+					+ "Position				TEXT		NOT NULL,"
+					+ "StartStamp			TEXT		NOT NULL,"
+					+ "StopStamp       		TEXT		NOT NULL,"
+					+ "LicensePlate    		TEXT		NOT NULL,"
+					+ "CarModel				TEXT		NOT NULL)";
+			/* @formatter:on */
+			statement = super.getConnection().createStatement();
+			statement.executeUpdate(sql);
+			statement.close();
+			super.closeConnection();
+		} catch (Exception e) {
+			System.out.println("[ERROR] During Create New SmartPark Table:");
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		System.out
+				.println(tblName + " table successfully created in " + dbName);
+	}
+
+	public void InsertSmartParkData(SmartPark sp) {
+		try {
+			/* @formatter:off */
+			sql = "INSERT INTO SmartPark_" + this.deviceID + " "
+					+ "(ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel) "
+					+ "VALUES (" + "NULL"			+ ",'"
+								 + sp.ssNbr 		+ "','"
+								 + sp.position 		+ "','"
+								 + sp.startStamp 	+ "','"
+								 + sp.stopStamp		+ "','"
+								 + sp.licensePlate	+ "','"
+								 + sp.carModel		+ "');";
+
+			/* @formatter:on */
+			statement = super.getConnection().createStatement();
+			statement.executeUpdate(sql);
+			statement.close();
+			super.closeConnection();
+
+		} catch (Exception e) {
+			System.out
+					.println("[ERROR] During Insert New Customer Into SmartPark Table:");
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		System.out.println(this.deviceID + " sucessfully inserted into " + dbName
+				+ "." + tblName);
+	}
+
+	private void selectSmartPark(SmartPark sp, Col c, String searchValue) {
+		try {
+//			super.getConnection().setAutoCommit(false);
+			statement = super.getConnection().createStatement();
+
+			// result = statement.executeQuery("SELECT * FROM Customer;");
+			if (searchValue != null){
+				result = statement
+					.executeQuery("SELECT ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel FROM SmartPark_" + sp.deviceID + " WHERE " + c  + " = '"
+							+ searchValue + "';" );
+			}
+			else{
+				result = statement
+						.executeQuery("SELECT * FROM SmartPark_" + sp.deviceID + ";");
+			}
+				
+			while (result.next()) {
+				this.id 			= result.getLong("ID");
+				this.ssNbr 			= result.getString("ssNbr");
+				this.position 		= result.getString("Position");
+				this.startStamp 	= result.getString("StartStamp");
+				this.stopStamp 		= result.getString("StopStamp");
+				this.licensePlate	= result.getString("LicensePlate");
+				this.carModel 		= result.getString("CarModel");
+				System.out.println(this.toString());
+			}
+			result.close();
+			statement.close();
+			super.closeConnection();
+
+		} catch (Exception e) {
+			System.out.println("[ERROR] During Lookup Table");
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+	}
+
+	/**
+	 * Update Customer data in Customer Table if exists
+	 * 
+	 * @param searchCol
+	 *            What Column are you searching after?
+	 * @param searchValue
+	 *            What value should that column be?
+	 * @param whatCol
+	 *            What Column do you want to change?
+	 * @param whatValue
+	 *            What value should that column be?
+	 */
+	public void UpdateSmartParkData(Col searchCol, String searchValue,
+			Col whatCol, String whatValue) {
+		try {
+			// super.getConnection().setAutoCommit(false);
+			statement = super.getConnection().createStatement();
+
+			sql = "UPDATE SmartPark-" + deviceID + " set " + whatCol + " = '" + whatValue
+					+ "' where " + searchCol + "=" + searchValue + ";";
+			System.out.println(sql);
+			statement.executeUpdate(sql);
+			// super.getConnection().commit();
+
+		} catch (Exception e) {
+			System.out.println("[ERROR] During update SmartPark table :");
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+	}
 
 	/**
 	 * Get ID
 	 * 
 	 * @return
 	 */
-	public String getID() {
+	public long getID() {
 		return id;
 	}
 
@@ -53,7 +184,7 @@ public class SmartPark extends Database {
 	 * 
 	 * @param iD
 	 */
-	public void setID(String id) {
+	public void setID(long id) {
 		this.id = id;
 	}
 
@@ -198,6 +329,13 @@ public class SmartPark extends Database {
 				+ " carModel: " 	+ this.carModel;
 		/* @formatter:on */
 		return string;
+	}
+	public static void main(String[] args) {
+		SmartPark sp = new SmartPark("001First");
+		sp.CreateSmartParkTable();
+		sp.InsertSmartParkData(new SmartPark("910611", "Long/Lat", "StartTime", "StopTime", "OPH500", "Nissan"));
+		sp.selectSmartPark(null, null, null);
+		sp.selectSmartPark(sp, Col.LicensePlate, "MRO519");
 	}
 
 }

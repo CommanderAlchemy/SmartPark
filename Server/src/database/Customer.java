@@ -27,7 +27,7 @@ public class Customer extends Database {
 	 * Avail columns in the customer table
 	 */
 	public enum Col {
-		ID, cont, ssNbr, Forname, Lastname, Address, PhoneNbr, Password, Balance, SmartparkID, Registered
+		ID, cont, ssNbr, Forname, Lastname, Address, PhoneNbr, Password, SmartparkID, Registered, Balance
 	}
 
 	/**
@@ -44,7 +44,7 @@ public class Customer extends Database {
 	 * Empty Constructor to read customer data from database
 	 */
 	public Customer() {
-		super(dbName, tblName);
+		super(dbName);
 
 	}
 
@@ -60,7 +60,7 @@ public class Customer extends Database {
 	public Customer(long cont, String ssNbr, String forename, String lastname,
 			String address, String phoneNbr, String password,
 			String smartParkID, String registered) {
-		super(dbName, tblName);
+		this();
 		this.cont = cont;
 		this.ssNbr = ssNbr;
 		this.forname = forename;

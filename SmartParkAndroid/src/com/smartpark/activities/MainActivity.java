@@ -184,7 +184,7 @@ public class MainActivity extends FragmentActivity implements
 		Ref.bgThread.activityMAIN = true;
 
 		// Check to see if bluetooth is available
-		if (Ref.btAdapter == null) {
+		if (Ref.btAdapter != null) {
 			AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
 			builder1.setTitle("Problem");
 			builder1.setMessage("Your phone does not seem to have Bluetooth. This is needed to conenct with the SP-device!");
@@ -192,6 +192,12 @@ public class MainActivity extends FragmentActivity implements
 			builder1.setPositiveButton(android.R.string.ok,
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
+						}
+					});
+			builder1.setNegativeButton("Exit",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							finish();
 						}
 					});
 			AlertDialog alert = builder1.create();

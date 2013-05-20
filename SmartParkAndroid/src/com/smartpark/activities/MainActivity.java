@@ -79,7 +79,7 @@ public class MainActivity extends FragmentActivity implements
 
 		Ref.activeActivity = this;
 		
-		startService(new Intent(getBaseContext(), BackOperationService.class));
+//		startService(new Intent(getBaseContext(), BackOperationService.class));
 		
 
 		if (D)
@@ -271,6 +271,8 @@ public class MainActivity extends FragmentActivity implements
 		Ref.gps_text = (TextView) findViewById(R.id.GPSInfo);
 
 		startService(new Intent(getBaseContext(), GPSService.class));
+		startService(new Intent(getBaseContext(), BackOperationService.class));
+
 	}
 
 	public void endGPS(View view) {

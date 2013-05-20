@@ -56,7 +56,7 @@ public class BackOperationService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate(); // Not needed
-		Toast.makeText(applicationContext, "Service started", Toast.LENGTH_SHORT).show();
+//		Toast.makeText(applicationContext, "Service started", Toast.LENGTH_SHORT).show();
 	}
 	
 	@Override
@@ -88,16 +88,13 @@ public class BackOperationService extends Service {
 		super.onStartCommand(intent, flags, startId);
 		// These are all unregistered in onDestroy
 		// Register a receiver for found BT-devices
-		applicationContext.registerReceiver(btFoundDeviceReceiver,
-				btFoundDeviceFilter);
+		registerReceiver(btFoundDeviceReceiver,btFoundDeviceFilter);
 		btFindIntentIsRegistered = true;
 		// Register a receiver for BT-adapter state changes
-		applicationContext.registerReceiver(btAdapterStateReceiver,
-				btAdapterStateFilter);
+		registerReceiver(btAdapterStateReceiver,btAdapterStateFilter);
 		btStateIntentIsRegistered = true;
 		// Register a receiver for BT-connection changes
-		applicationContext.registerReceiver(btAdapterStateReceiver,
-				btConnectionStateFilter);
+		registerReceiver(btAdapterStateReceiver,btConnectionStateFilter);
 		btConnectionStateIntentIsRegistered = true;
 		
 		

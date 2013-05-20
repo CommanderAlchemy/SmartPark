@@ -1,12 +1,8 @@
 package com.smartpark.background;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.LinkedList;
 
 import android.app.AlertDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;

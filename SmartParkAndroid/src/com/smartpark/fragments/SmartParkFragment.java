@@ -1,18 +1,14 @@
 package com.smartpark.fragments;
 
-import android.content.BroadcastReceiver;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.smartpark.R;
 import com.smartpark.background.Ref;
-import com.smartpark.gps.GPSReceiver;
 
 /**
  * SmartParkFragment, this holds the general page of our application

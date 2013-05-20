@@ -33,11 +33,11 @@
         android:layout_below="@+id/isBTEnable"
         android:onClick="pairedDevicesCount"
         android:text="how many paired" />
-    
-    <TextView android:id="@+id/textOutput"
+
+    <TextView
+        android:id="@+id/textOutput"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        />
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/isBTavailable"
@@ -48,5 +48,41 @@
         android:layout_alignRight="@+id/textOutput"
         android:onClick="isBTavailable"
         android:text="isBTavailable" />
+
+    <TextView
+        android:id="@+id/GPSInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/GPS_Stop"
+        android:text="@string/GPS_Start" />
+
+    <Button
+        android:id="@+id/GPS_Stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="120dp"
+        android:layout_toLeftOf="@+id/isBTavailable"
+        android:onClick="endGPS"
+        android:text="GPS Stop" />
+
+    <Button
+        android:id="@+id/GPS_Start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/GPS_Stop"
+        android:layout_centerVertical="true"
+        android:onClick="startGPS"
+        android:text="GPS Start" />
+
+    <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/GPS_Stop"
+        android:layout_marginTop="51dp"
+        android:layout_toRightOf="@+id/isBTEnable"
+        android:hint="¤" />
 
 </RelativeLayout>

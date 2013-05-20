@@ -7,38 +7,5 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity$DummySectionFragment" >
-
-    <TextView
-        android:id="@+id/section_label"
-        android:hint="¤"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/GPS_Start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/GPS_Stop"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:onClick="startGPS"
-        android:text="GPS Start" />
-    
-    <Button
-        android:id="@+id/GPS_Stop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/GPS_Start"
-        android:layout_below="@+id/section_label"
-        android:onClick="endGPS"
-        android:text="GPS Stop" />
-
-    <TextView
-        android:id="@+id/GPSInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/GPS_Stop"
-        android:layout_centerVertical="true"
-        android:text="@string/GPS_Start" />
     
 </RelativeLayout>

@@ -4,9 +4,7 @@ import java.util.Locale;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.FragmentTransaction;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,9 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.smartpark.R;
-import com.smartpark.activities.LoginActivity;
-import com.smartpark.activities.SettingsActivity;
-import com.smartpark.background.BackgroundOperationThread;
 import com.smartpark.background.Ref;
 import com.smartpark.bluetooth.BlueController;
 import com.smartpark.fragments.BluetoothFragment;
@@ -78,6 +73,9 @@ public class MainActivity extends FragmentActivity implements
 		gps_text = (TextView) findViewById(R.id.GPSInfo);
 
 		Ref.activeActivity = this;
+		
+		
+		
 
 		if (D)
 			Log.d(TAG,

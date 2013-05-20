@@ -16,15 +16,12 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.smartpark.activities.MainActivity;
 import com.smartpark.background.BackgroundOperationThread;
 import com.smartpark.background.Ref;
-import com.smartpark.broadcastReceivers.BTFoundDeviceReceiver;
-import com.smartpark.broadcastReceivers.BTAdapterStateReceiver;
 
 public class BlueController {
 	/*

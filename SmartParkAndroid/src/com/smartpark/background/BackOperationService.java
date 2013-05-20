@@ -1,8 +1,5 @@
 package com.smartpark.background;
 
-import com.smartpark.broadcastReceivers.BTFoundDeviceReceiver;
-import com.smartpark.broadcastReceivers.BTAdapterStateReceiver;
-
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -13,7 +10,9 @@ import android.content.IntentFilter;
 import android.os.IBinder;
 import android.preference.PreferenceManager.OnActivityResultListener;
 import android.util.Log;
-import android.widget.Toast;
+
+import com.smartpark.broadcastReceivers.BTAdapterStateReceiver;
+import com.smartpark.broadcastReceivers.BTFoundDeviceReceiver;
 
 public class BackOperationService extends Service {
 
@@ -70,15 +69,15 @@ public class BackOperationService extends Service {
 		
 		// Unregister all BroadcastReceivers that are registered
 		if (btFindIntentIsRegistered) {
-			applicationContext.unregisterReceiver(btFoundDeviceReceiver);
+			unregisterReceiver(btFoundDeviceReceiver);
 			btFindIntentIsRegistered = false;
 		}
 		if (btStateIntentIsRegistered) {
-			applicationContext.unregisterReceiver(btAdapterStateReceiver);
+			unregisterReceiver(btAdapterStateReceiver);
 			btStateIntentIsRegistered = false;
 		}
 		if (btConnectionStateIntentIsRegistered) {
-			applicationContext.unregisterReceiver(btAdapterStateReceiver);
+			unregisterReceiver(btAdapterStateReceiver);
 			btConnectionStateIntentIsRegistered = false;
 		}
 	}

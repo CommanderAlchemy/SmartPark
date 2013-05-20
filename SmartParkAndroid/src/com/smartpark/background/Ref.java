@@ -1,7 +1,6 @@
 package com.smartpark.background;
 
 import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
 import android.widget.TextView;
 
 import com.smartpark.bluetooth.BlueController;

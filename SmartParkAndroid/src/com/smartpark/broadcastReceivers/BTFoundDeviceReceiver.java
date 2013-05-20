@@ -1,13 +1,13 @@
 package com.smartpark.broadcastReceivers;
 
-import com.smartpark.background.Ref;
-import com.smartpark.bluetooth.BlueController;
-
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+
+import com.smartpark.background.Ref;
+import com.smartpark.bluetooth.BlueController;
 
 public class BTFoundDeviceReceiver extends BroadcastReceiver {
 

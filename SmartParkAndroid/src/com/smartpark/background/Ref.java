@@ -3,7 +3,6 @@ package com.smartpark.background;
 import android.app.Activity;
 import android.widget.TextView;
 
-import com.smartpark.bluetooth.BlueController;
 import com.smartpark.tcp.TCPController;
 
 public class Ref {

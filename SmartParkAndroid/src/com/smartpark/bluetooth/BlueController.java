@@ -20,7 +20,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.smartpark.activities.MainActivity;
-import com.smartpark.background.BackgroundOperationThread;
 import com.smartpark.background.Ref;
 
 public class BlueController {

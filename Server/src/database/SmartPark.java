@@ -1,12 +1,17 @@
 package database;
 
 public class SmartPark extends Database {
-	private long deviceID; // The Device ID
-	private long connecteTo; // Connected to what personID
+	private String id;
+	private String deviceID; // The Device ID
+	private String ssNbr; // Connected to a persons.
+	private String position;
+	private String startStamp;
+	private String stopStamp;
+	private String licensePlate;
+	private String carModel; // Not needed atm, but may be needed in the future
 
-	// Current Position
-	private long latitude;
-	private long longitude;
+	private static String dbName = "test";
+	private static String tblName = "SmartPark";
 
 	/**
 	 * Constructor for SmartParkDevice
@@ -20,23 +25,44 @@ public class SmartPark extends Database {
 	 * @param longitude
 	 *            long longitude
 	 */
-	public SmartPark(long deviceID, long connectedTo, long latitude,
-			long longitude) {
-		//TODO Fix this.
-		super(null,null);
+	public SmartPark(String deviceID, String ssNbr, String position,
+			String startStamp, String stopStamp, String licensePlate,
+			String carModel) {
+		super(dbName, tblName + "_" + deviceID);
 		this.deviceID = deviceID;
-		this.connecteTo = connectedTo;
-		this.latitude = latitude;
-		this.longitude = longitude;
+		this.ssNbr = ssNbr;
+		this.position = position;
+		this.startStamp = startStamp;
+		this.stopStamp = stopStamp;
+		this.licensePlate = licensePlate;
+		this.carModel = carModel;
 
 	}
 
 	/**
-	 * Get Device ID
+	 * Get ID
 	 * 
-	 * @return long deviceID
+	 * @return
 	 */
-	public long getDeviceID() {
+	public String getID() {
+		return id;
+	}
+
+	/**
+	 * Set ID
+	 * 
+	 * @param iD
+	 */
+	public void setID(String id) {
+		this.id = id;
+	}
+
+	/**
+	 * Get DeviceID
+	 * 
+	 * @return
+	 */
+	public String getDeviceID() {
 		return deviceID;
 	}
 
@@ -44,69 +70,134 @@ public class SmartPark extends Database {
 	 * Set DeviceID
 	 * 
 	 * @param deviceID
-	 *            long deviceID
 	 */
-	public void setDeviceID(long deviceID) {
+	public void setDeviceID(String deviceID) {
 		this.deviceID = deviceID;
 	}
 
 	/**
-	 * Get ConnectedTo Returns the owner of the SmartParkDevice
+	 * Get ssNbr
 	 * 
 	 * @return
 	 */
-	public long getConnectedTo() {
-		return connecteTo;
+	public String getSsNbr() {
+		return ssNbr;
 	}
 
 	/**
-	 * Set ConnectedTo Sets the owner of the SmartParkDevice
+	 * Set ssNbr
 	 * 
-	 * @param connecteTo
+	 * @param ssNbr
 	 */
-	public void setConnecteTo(long connecteTo) {
-		this.connecteTo = connecteTo;
+	public void setSsNbr(String ssNbr) {
+		this.ssNbr = ssNbr;
 	}
 
 	/**
-	 * Get Latitude get the current latitude position (long)
-	 * 
-	 * @return long
-	 */
-	public long getLatitude() {
-		return latitude;
-	}
-
-	/**
-	 * Set Latitude position
-	 * 
-	 * @param latitude
-	 */
-	public void setLatitude(long latitude) {
-		this.latitude = latitude;
-	}
-
-	/**
-	 * Get Longitude position (long)
+	 * Get Position(Long/Lat)
 	 * 
 	 * @return
 	 */
-	public long getLongitude() {
-		return longitude;
+	public String getPosition() {
+		return position;
 	}
 
 	/**
-	 * set Longitude position
+	 * Set Position (Long/Lat)
 	 * 
-	 * @param longitude
-	 *            long
+	 * @param position
 	 */
-	public void setLongitude(long longitude) {
-		this.longitude = longitude;
+	public void setPosition(String position) {
+		this.position = position;
 	}
 
+	/**
+	 * Get Start Stamp of parking
+	 * 
+	 * @return
+	 */
+	public String getStartStamp() {
+		return startStamp;
+	}
+
+	/**
+	 * Set Start Stamp of parking
+	 * 
+	 * @param startStamp
+	 */
+	public void setStartStamp(String startStamp) {
+		this.startStamp = startStamp;
+	}
+
+	/**
+	 * Get Stop Stamp of parking
+	 * 
+	 * @return
+	 */
+	public String getStopStamp() {
+		return stopStamp;
+	}
+
+	/**
+	 * Set Stop Stamp of parking
+	 * 
+	 * @param stopStamp
+	 */
+	public void setStopStamp(String stopStamp) {
+		this.stopStamp = stopStamp;
+	}
+
+	/**
+	 * Get LicensePlate
+	 * 
+	 * @return
+	 */
+	public String getLicensePlate() {
+		return licensePlate;
+	}
+
+	/**
+	 * Set LicensePlate
+	 * 
+	 * @param licensePlate
+	 */
+	public void setLicensePlate(String licensePlate) {
+		this.licensePlate = licensePlate;
+	}
+
+	/**
+	 * Get Car Model
+	 * 
+	 * @return
+	 */
+	public String getCarModel() {
+		return carModel;
+	}
+
+	/**
+	 * Set Car Model
+	 * 
+	 * @param carModel
+	 */
+	public void setCarModel(String carModel) {
+		this.carModel = carModel;
+	}
+
+	/**
+	 * To string method, write out all information of the current object.
+	 */
 	public String toString() {
-		return "SmartPark";
+		/* @formatter:off */
+		String string = "ID: "		+ this.id
+				+ " deviceID: "		+ this.deviceID
+				+ " ssNbr: "		+ this.ssNbr
+				+ " position: "		+ this.position 
+				+ " startStamp: " 	+ this.startStamp 
+				+ " stopStamp: "	+ this.stopStamp
+				+ " licensePlate: " + this.licensePlate
+				+ " carModel: " 	+ this.carModel;
+		/* @formatter:on */
+		return string;
 	}
 
 }

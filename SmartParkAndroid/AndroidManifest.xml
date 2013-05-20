@@ -45,4 +45,5 @@
         <service android:name="com.smartpark.gps.GPSService" />
         <service android:name="com.smartpark.background.BackOperationService" />
     </application>
+
 </manifest>

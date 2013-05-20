@@ -75,7 +75,7 @@ public class MainActivity extends FragmentActivity implements
 
 		Ref.activeActivity = this;
 		
-//		startService(new Intent(getBaseContext(), BackOperationService.class));
+		startService(new Intent(getBaseContext(), BackOperationService.class));
 		
 
 		if (D)

@@ -36,7 +36,7 @@ public class BackOperationService extends Service {
 	private static boolean btConnectionStateIntentIsRegistered;
 	private static boolean gpsReceiverIsRegistered;
 	
-	private Context applicationContext = getApplicationContext();
+//	private Context applicationContext = getApplicationContext();
 	
 	private String TAG = "BackOperationService";
 	private boolean D = Ref.D;

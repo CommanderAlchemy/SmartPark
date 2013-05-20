@@ -122,6 +122,8 @@ public class BackgroundOperationThread extends Thread {
 		if (D)
 			Log.e(TAG, "isConnected? " + btController.isConnected());
 		btController.closeConnection();
+		btController.reconnectBT();
+		
 		
 		if (device == null) {
 			// The device is not previously paired with this phone

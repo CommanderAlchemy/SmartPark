@@ -224,7 +224,7 @@ public class BlueController {
 		if (btAdapter == null) {
 			btAdapter = BluetoothAdapter.getDefaultAdapter();
 		}
-
+		
 		// The first check protects the next check against NullPointerException
 		if (btDevice != null && !btDevice.getName().equals(SMARTPARK_DEVICE)) {
 			if (!btDevice.getName().equals(SMARTPARK_DEVICE)) {
@@ -234,6 +234,10 @@ public class BlueController {
 			btDevice = getPairedDeviceByName(SMARTPARK_DEVICE);
 		}
 
+		
+		
+		
+		
 		if (btDevice == null) {
 			Log.i(TAG, "The device is not previously paired with this phone");
 			discovering = findNearbyDevices(Ref.activeActivity);

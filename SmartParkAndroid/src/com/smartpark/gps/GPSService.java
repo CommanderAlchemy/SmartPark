@@ -18,6 +18,8 @@ import com.smartpark.background.Ref;
 
 public class GPSService extends Service {
 
+	public static boolean gpsReceiverIsRegistered;
+
 	private LocationManager locationManager;
 
 	private static final int LOCATION_INTERVAL = 100; // Millisecond
@@ -80,8 +82,8 @@ public class GPSService extends Service {
 	@Override
 	public void onDestroy() {
 		super.onDestroy(); // this is not needed in service
-
 		Log.i(TAG, "++ onDestroy ++: ");
+		
 		Toast.makeText(this, "GPS-service ended", Toast.LENGTH_SHORT).show();
 
 		// Disable receiving of new updates from providers
@@ -90,15 +92,18 @@ public class GPSService extends Service {
 				locationManager.removeUpdates(networkLocationListener);
 				locationManager.removeUpdates(gpsLocationListener);
 			} catch (Exception ex) {
-				Log.i(TAG, "fail to remove location listners, ignore", ex);
+				Log.e(TAG, "fail to remove location listners", ex);
 			}
 		}
-		
+
 		try {
-			unregisterReceiver(gpsReceiver);
+			if (gpsReceiverIsRegistered) {
+				unregisterReceiver(gpsReceiver);
+				gpsReceiverIsRegistered = false;
+			}
 		} catch (Exception e) {
 			Log.e(TAG, "unregistration failed", e);
-			Ref.gpsReceiverIsRegistered = false;
+			gpsReceiverIsRegistered = false;
 		}
 	}
 
@@ -126,17 +131,17 @@ public class GPSService extends Service {
 		 * service. It is unregistered in onDestroy of this service. This
 		 * service is started by the BackOperationService.
 		 */
-		if (!Ref.gpsReceiverIsRegistered) {
+		if (!gpsReceiverIsRegistered) {
 			try {
 				registerReceiver(gpsReceiver, new IntentFilter(
 						"com.smartpark.gpsinfo"));
-				Ref.gpsReceiverIsRegistered = true;
+				gpsReceiverIsRegistered = true;
 			} catch (Exception e) {
 				Log.e(TAG, "registration failed", e);
-				Ref.gpsReceiverIsRegistered = false;
+				gpsReceiverIsRegistered = false;
 			}
 		}
-		
+
 		Toast.makeText(this, "GPS-service started", Toast.LENGTH_SHORT).show();
 		Log.i(TAG, "GPS-service started");
 
@@ -166,34 +171,34 @@ public class GPSService extends Service {
 		Location mLastLocation;
 
 		// ==========================================================
-		
+
 		public OurLocationListener(String provider) {
 			// Log.e(TAG, "LocationListener " + provider);
 			mLastLocation = new Location(provider);
 		}// ==========================================================
-		
+
 		@Override
 		public void onLocationChanged(Location location) {
 			Log.i(TAG, "++ onLocationChanged ++: " + location);
 			if (isBetterLocation(location, mLastLocation)) {
 				mLastLocation.set(location);
 			}
-			
+
 			double latitude = mLastLocation.getLatitude();
 			double longitude = mLastLocation.getLongitude();
 			Intent gpsinfo = new Intent("com.smartpark.gpsinfo");
 
 			gpsinfo.putExtra("location", location);
-			
+
 			gpsinfo.putExtra("GPS_COORDINATES", "Latitide " + latitude
 					+ " Longitude " + longitude);
 			sendBroadcast(gpsinfo);
-			
+
 			Log.d(TAG, "Latitude: " + latitude + " Longitude: " + longitude);
-			
-			Toast.makeText(getApplicationContext(), "Latitude = " + latitude + "\nLongitud = "
-					+ longitude, Toast.LENGTH_SHORT)
-					.show();
+
+			Toast.makeText(getApplicationContext(),
+					"Latitude = " + latitude + "\nLongitud = " + longitude,
+					Toast.LENGTH_SHORT).show();
 
 		}// ==========================================================
 

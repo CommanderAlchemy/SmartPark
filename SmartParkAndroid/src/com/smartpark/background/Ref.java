@@ -63,7 +63,7 @@ public class Ref {
 	
 	// Objects for use with the bluetooth adapter
 //	public static BluetoothAdapter btAdapter;
-//	public static BlueController btController;
+	public static BlueController btController;
 	
 	public static TextView gps_text;
 	

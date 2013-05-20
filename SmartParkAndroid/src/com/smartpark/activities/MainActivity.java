@@ -26,6 +26,7 @@ import com.smartpark.activities.LoginActivity;
 import com.smartpark.activities.SettingsActivity;
 import com.smartpark.background.BackgroundOperationThread;
 import com.smartpark.background.Ref;
+import com.smartpark.bluetooth.BlueController;
 import com.smartpark.fragments.BluetoothFragment;
 import com.smartpark.fragments.DebugFragment;
 import com.smartpark.fragments.DummySectionFragment;
@@ -186,15 +187,14 @@ public class MainActivity extends FragmentActivity implements
 
 
 		// Enable bluetooth if disabled by asking the user first
-		// TODO
-		if (!Ref.btAdapter.isEnabled()) {
+		if (!Ref.btController.isEnabled()) {
 			Log.d(TAG, "--> bluetooth is disabled");
 			/*
 			 * the "this" is required so that the method can start another
 			 * activity. Only the activity currently running in thread can start
 			 * other activities.
 			 */
-			Ref.btController.enableAdapter(this);
+			Ref.btController.enableAdapter();
 			Log.d(TAG, "--> Enabling done");
 			Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
 		}
@@ -338,7 +338,7 @@ public class MainActivity extends FragmentActivity implements
 		Log.i(TAG, "++ onActivityResult ++");
 
 		switch (requestCode) {
-		case Ref.REQUEST_ENABLE_BT:
+		case BlueController.REQUEST_ENABLE_BT:
 			if (resultCode == Activity.RESULT_OK) {
 				Toast.makeText(this, "Enabling Bluetooth", Toast.LENGTH_SHORT)
 						.show();
@@ -347,7 +347,7 @@ public class MainActivity extends FragmentActivity implements
 						Toast.LENGTH_SHORT).show();
 			}
 			break;
-		case Ref.REQUEST_DISCOVERABLE_BT:
+		case BlueController.REQUEST_DISCOVERABLE_BT:
 			if (resultCode == Activity.RESULT_OK) {
 				Toast.makeText(this, "Bluetooth Discoverable",
 						Toast.LENGTH_SHORT).show();

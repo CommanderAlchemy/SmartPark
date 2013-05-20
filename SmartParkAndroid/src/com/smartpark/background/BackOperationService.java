@@ -11,6 +11,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
+import android.preference.PreferenceManager.OnActivityResultListener;
+import android.util.Log;
 
 public class BackOperationService extends Service {
 
@@ -35,6 +37,9 @@ public class BackOperationService extends Service {
 	private static boolean gpsReceiverIsRegistered;
 	
 	private Context applicationContext = getApplicationContext();
+	
+	private String TAG = "BackOperationService";
+	private boolean D = Ref.D;
 
 	// ============ END OF CLASS-VARIABLES ===========================
 	
@@ -97,4 +102,27 @@ public class BackOperationService extends Service {
 		return START_STICKY;
 	}
 
+	
+	
+	public class ty implements OnActivityResultListener{
+
+		@Override
+		public boolean onActivityResult(int requestCode, int resultCode,Intent data) {
+			Log.e(TAG, "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+			
+			// TODO Auto-generated method stub
+			return false;
+		}
+		
+	}
+	
+	
+	public void onActivityResult(){
+		
+	}
+	
+	
+	
+	
+	
 }

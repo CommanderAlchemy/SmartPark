@@ -94,8 +94,6 @@ public class BlueController {
 		 * to be the last class to exit and should not be invoked like in
 		 * orientation changes.
 		 */
-		unRegister_DeviceFoundReceiver();
-		unRegister_AdapterStateReceiver();
 		btInStream = null;
 		btOutStream = null;
 		btSocket = null;
@@ -114,19 +112,6 @@ public class BlueController {
 		if (D)
 			Log.i(TAG, "++ findNearbyDevices ++");
 
-		// This makes a broadcast receiver to register our adapter's findings
-		// but only if not already registered.
-		if (!BroacastReceiverIsRegistered) {
-			// Register the BroadcastReceiver
-			invokerActivity.registerReceiver(bt_foundDeviceReceiver,
-					bt_findFilter);
-			/*
-			 * We do not want duplicated registrations and use variable to store
-			 * the state of the registration.
-			 */
-			BroacastReceiverIsRegistered = true;
-			// Don't forget to unregister during onDestroy
-		}
 		if (!btAdapter.isDiscovering()) {
 			btAdapter.startDiscovery();
 		}
@@ -401,22 +386,20 @@ public class BlueController {
 		return btAdapter.isDiscovering();
 	}
 
-	/**
-	 * This method will unregister the BroadcastReceiver for ACTION_FOUND of the
-	 * Bluetooth device. The registration happen in StartDiscovery().
-	 * 
-	 * @param invokerActivity
-	 *            The reference to the invoking activity
-	 */
-	public void unRegister_DeviceFoundReceiver() {
-		if (D)
-			Log.i(TAG, "++ unRegister_DeviceFoundReceiver ++");
-
-		if (Ref.bt_findIntentIsRegistered) {
-			applicationContext.unregisterReceiver(bt_foundDeviceReceiver);
-			Ref.bt_findIntentIsRegistered = false;
-		}
-	}
+//	/**
+//	 * This method will unregister the BroadcastReceiver for ACTION_FOUND of the
+//	 * Bluetooth device. The registration happen in StartDiscovery().
+//	 * 
+//	 * @param invokerActivity
+//	 *            The reference to the invoking activity
+//	 */
+//	public void unRegister_DeviceFoundReceiver() {
+//		if (D)
+//			Log.i(TAG, "++ unRegister_DeviceFoundReceiver ++");
+//
+//			applicationContext.unregisterReceiver(bt_foundDeviceReceiver);
+//		}
+//	}
 
 	public int closeConnection() {
 		if (D)
@@ -437,22 +420,22 @@ public class BlueController {
 		}
 	}
 
-	/**
-	 * This method will unregister the BroadcastReceiver for ACTION_FOUND of the
-	 * Bluetooth device. The registration happen in startDiscovery().
-	 * 
-	 * @param invokerActivity
-	 *            The reference to the invoking activity
-	 */
-	public void unRegister_AdapterStateReceiver() {
-		if (D)
-			Log.i(TAG, "++ unRegister_AdapterStateReceiver ++");
-
-		if (Ref.bt_stateIntentIsRegistered) {
-			applicationContext.unregisterReceiver(bt_foundDeviceReceiver);
-			Ref.bt_stateIntentIsRegistered = false;
-		}
-	}
+//	/**
+//	 * This method will unregister the BroadcastReceiver for ACTION_FOUND of the
+//	 * Bluetooth device. The registration happen in startDiscovery().
+//	 * 
+//	 * @param invokerActivity
+//	 *            The reference to the invoking activity
+//	 */
+//	public void unRegister_AdapterStateReceiver() {
+//		if (D)
+//			Log.i(TAG, "++ unRegister_AdapterStateReceiver ++");
+//
+//		if (btStateIntentIsRegistered) {
+//			applicationContext.unregisterReceiver(bt_foundDeviceReceiver);
+//			Ref.bt_stateIntentIsRegistered = false;
+//		}
+//	}
 
 	public boolean isBluetoothAdapterAvailable() {
 		return btAdapter != null;
@@ -474,7 +457,7 @@ public class BlueController {
 		btAdapter.enable();
 	}
 
-	public boolean enableAdapter(Activity mainActivity) {
+	public boolean enableAdapter() {
 		if (D)
 			Log.i(TAG, "++ enableAdapter ++");
 		if (!btAdapter.isEnabled()) {
@@ -482,14 +465,17 @@ public class BlueController {
 				Log.d(TAG, "enabling adapter");
 			Intent enableBtIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_ENABLE);
-			mainActivity.startActivityForResult(enableBtIntent,
-					Ref.REQUEST_ENABLE_BT);
+			Ref.activeActivity.startActivityForResult(enableBtIntent,REQUEST_ENABLE_BT);
 		}
 		int state = btAdapter.getState();
 		return state == BluetoothAdapter.STATE_TURNING_ON
 				|| state == BluetoothAdapter.STATE_ON;
 	}
 
+	public boolean isEnabled(){
+		return btAdapter.isEnabled();
+	}
+	
 	public boolean disableAdapter() {
 		if (D)
 			Log.i(TAG, "++ disableAdapter ++");
@@ -507,9 +493,8 @@ public class BlueController {
 		if (D)
 			Log.i(TAG, "++ makeDiscoverable ++");
 		Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-		intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 120);
-		invokerActivity.startActivityForResult(intent,
-				Ref.REQUEST_DISCOVERABLE_BT);
+		intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+		invokerActivity.startActivityForResult(intent,REQUEST_DISCOVERABLE_BT);
 	}
 
 	/**

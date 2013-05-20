@@ -217,6 +217,7 @@ public class BlueController {
 
 	public boolean reconnectBT() {
 		Log.e(TAG, "++ reconnectBT ++");
+		
 		Ref.btState = Ref.STATE_CONNECTING;
 		boolean discovering;
 
@@ -268,7 +269,7 @@ public class BlueController {
 
 	/**
 	 * This method aims at connecting to the device in a separate thread. This
-	 * method returns immidiately.
+	 * method returns immediately.
 	 */
 	public void connect() {
 		if (D)
@@ -293,7 +294,7 @@ public class BlueController {
 						 * Next line not needed after implementing
 						 * BroadcastReceiver for it.
 						 */
-						// Ref.btState = Ref.STATE_CONNECTED;
+						Ref.btState = Ref.STATE_CONNECTED;
 					} catch (Exception e) {
 						// Close the socket upon error
 						try {

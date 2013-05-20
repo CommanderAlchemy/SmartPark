@@ -35,19 +35,20 @@ public class BackgroundOperationThread extends Thread {
 	private static final boolean D = Ref.D;
 
 	private static Context applicationContext;
-	
+
 	private boolean run = true;
 	private BlueController btController;
-	
+
 	// =========== END OF CLASS VARIABLES ===============================
 
 	public BackgroundOperationThread(Context applicationContext) {
 		this.applicationContext = applicationContext;
 		Log.i(TAG, "++ bgThread Constructor ++");
-		
+
 		// Check to see if bluetooth is available
 		if (!btController.isBluetoothAdapterAvailable()) {
-			AlertDialog.Builder builder1 = new AlertDialog.Builder(applicationContext);
+			AlertDialog.Builder builder1 = new AlertDialog.Builder(
+					applicationContext);
 			builder1.setTitle("Problem");
 			builder1.setMessage("Your phone does not seem to have Bluetooth. This is needed to conenct with the SP-device!");
 			builder1.setCancelable(false);
@@ -65,55 +66,81 @@ public class BackgroundOperationThread extends Thread {
 			AlertDialog alert = builder1.create();
 			alert.show();
 		} else {
-			Toast.makeText(applicationContext, "Bluetooth avaiable", Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(applicationContext, "Bluetooth avaiable",
+					Toast.LENGTH_SHORT).show();
 		}
-		
+
 		// BT
 		Ref.btState = Ref.STATE_NOT_CONNECTED;
 		btController = new BlueController(applicationContext);
-		
+
 		// TCP
 		Ref.tcpState = Ref.STATE_NOT_CONNECTED;
 		Ref.tcpClient = null;
 		// TODO add more to this
 	}// ==================================================================
-	
+
 	public void powerDown() {
 		// When this flag gets set, the thread is told to shut it self down
 		run = false;
 	}// ==================================================================
-	
-	private boolean reconnectBT() {
-		Log.e(TAG, "++ reconnectBT ++");
+
+	private boolean fixConnections() {
+		Log.e(TAG, "++ fixConnections ++");
+		
+		// Enable bluetooth if disabled by asking the user first
+		if (btController.isEnabled()) {
+			Log.d(TAG, "--> bluetooth is disabled");
+			/*
+			 * Certain methods need to invoke methods of an Activity-class. But
+			 * in order to Categorize and keep method for certain functions in a
+			 * single class, we let those method get the reference for the
+			 * currently active Activity so to invoke their methods. Methods
+			 * will get this reference from Ref, where it is maintained by the
+			 * different activities. Only the activity currently running in
+			 * thread can start other activities. Therefore, they provide their
+			 * reference in Ref for other methods to ask them to invoke certain
+			 * method. This is a wildly used method on the Internet beside using
+			 * getApplicationContext() which is used by us for creating Toasts
+			 * and others. enableAdapter() in BlueController is one of those
+			 * methods.
+			 */
+			btController.enableAdapter();
+			Log.d(TAG, "--> Enabling done");
+			Toast.makeText(applicationContext, "Enabled", Toast.LENGTH_SHORT)
+					.show();
+		}
+
 		Ref.btState = Ref.STATE_CONNECTING;
 		boolean discovering;
-		
+
 		if (btController == null) {
 			Log.e(TAG, "BlueController intance recreate");
 			btController = new BlueController(applicationContext);
 		}
-		
-		if(D)Log.e(TAG, "isConnected? " + btController.isConnected());
+
+		if (D)
+			Log.e(TAG, "isConnected? " + btController.isConnected());
 		btController.closeConnection();
 
 		if (device == null) {
 			// The device is not previously paired with this phone
 			Log.i(TAG, "Find devices");
-			discovering = btController
-					.findNearbyDevices(Ref.activeActivity);
+			discovering = btController.findNearbyDevices(Ref.activeActivity);
 			for (int i = 0; i < 10; i++) {
-				device = btController
-						.getFoundDeviceByName(SMARTPARK_DEVICE);
-				if(D)Log.i(TAG, "is discovering: " + btController.isDiscovering());
+				device = btController.getFoundDeviceByName(SMARTPARK_DEVICE);
+				if (D)
+					Log.i(TAG,
+							"is discovering: " + btController.isDiscovering());
 
 				if (device != null && device.getName().equals(SMARTPARK_DEVICE)) {
 					Log.i(TAG, "in if sats");
-//					Toast.makeText(Ref.activeActivity,
-//							"SmartPark-device found", Toast.LENGTH_SHORT)
-//							.show();
+					// Toast.makeText(Ref.activeActivity,
+					// "SmartPark-device found", Toast.LENGTH_SHORT)
+					// .show();
 				}
-				if(D)Log.i(TAG, "till here");
+				if (D)
+					Log.i(TAG, "till here");
 				try {
 					BackgroundOperationThread.sleep(1200);
 				} catch (InterruptedException e) {
@@ -124,9 +151,11 @@ public class BackgroundOperationThread extends Thread {
 		if (device != null) {
 			BlueController.btDevice = device;
 			btController.connect();
-			if(D)Log.e(TAG, "--> connected to " + device.getAddress());
+			if (D)
+				Log.e(TAG, "--> connected to " + device.getAddress());
 		} else {
-			if(D)Log.w(TAG, "--> device is null, bluetooth not found");
+			if (D)
+				Log.w(TAG, "--> device is null, bluetooth not found");
 		}
 		return true;
 	}// ================================================================
@@ -135,7 +164,8 @@ public class BackgroundOperationThread extends Thread {
 	public void run() {
 		// TODO remember to check for the shutdownFlag
 
-		if(D)Log.i(TAG, "++ bgThread started ++");
+		if (D)
+			Log.i(TAG, "++ bgThread started ++");
 		String btInData = null;
 		String tcpInData = null;
 		run = true;

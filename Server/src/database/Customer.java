@@ -5,6 +5,7 @@ import java.sql.Statement;
 
 public class Customer extends Database {
 	private long id;
+	private long cont;
 	private String ssNbr;
 	private String forname;
 	private String lastname;
@@ -26,7 +27,7 @@ public class Customer extends Database {
 	 * Avail columns in the customer table
 	 */
 	public enum Col {
-		ID, ssNbr, Forname, Lastname, Address, PhoneNbr, Password, Balance, SmartparkID, Registered
+		ID, cont, ssNbr, Forname, Lastname, Address, PhoneNbr, Password, Balance, SmartparkID, Registered
 	}
 
 	/**
@@ -56,10 +57,11 @@ public class Customer extends Database {
 	 * @param adress
 	 * @param phoneNbr
 	 */
-	public Customer(String ssNbr, String forename, String lastname,
+	public Customer(long cont, String ssNbr, String forename, String lastname,
 			String address, String phoneNbr, String password,
 			String smartParkID, String registered) {
 		super(dbName, tblName);
+		this.cont = cont;
 		this.ssNbr = ssNbr;
 		this.forname = forename;
 		this.lastname = lastname;
@@ -81,6 +83,7 @@ public class Customer extends Database {
 			/* @formatter:off */
 			sql = "CREATE TABLE " + tblName + " " 
 					+ "(ID INTEGER PRIMARY KEY,"
+					+ "cont					INT			NOT NULL,"
 					+ "ssNbr				TEXT		NOT NULL," 
 					+ "Forname				TEXT		NOT NULL,"
 					+ "Lastname				TEXT		NOT NULL,"
@@ -107,8 +110,9 @@ public class Customer extends Database {
 		try {
 			/* @formatter:off */
 			sql = "INSERT INTO Customer "
-					+ "(ID,ssNbr,ForName,Lastname,Address,PhoneNbr,Password,SmartParkID,Registered,Balance) "
-					+ "VALUES (" + "NULL"			+ ",'"
+					+ "(ID,cont,ssNbr,ForName,Lastname,Address,PhoneNbr,Password,SmartParkID,Registered,Balance) "
+					+ "VALUES (" + "NULL"			+ ","
+								 + c.cont			+ ",'"
 								 + c.ssNbr 			+ "','"
 								 + c.forname 		+ "','"
 								 + c.lastname 		+ "','"
@@ -142,7 +146,7 @@ public class Customer extends Database {
 			// result = statement.executeQuery("SELECT * FROM Customer;");
 			if (searchValue != null){
 				result = statement
-					.executeQuery("SELECT ID,ssNbr,Forname,Lastname,Address,PhoneNbr,Password,SmartParkID,Registered,Balance FROM Customer WHERE ssNbr = '"
+					.executeQuery("SELECT ID,cont,ssNbr,Forname,Lastname,Address,PhoneNbr,Password,SmartParkID,Registered,Balance FROM Customer WHERE ssNbr = '"
 							+ searchValue + "';" );
 			}
 			else{
@@ -153,6 +157,7 @@ public class Customer extends Database {
 				
 			while (result.next()) {
 				this.id = result.getInt("ID");
+				this.cont =	result.getLong("cont");
 				this.ssNbr = result.getString("ssNbr");
 				this.forname = result.getString("Forname");
 				this.lastname = result.getString("Lastname");
@@ -355,7 +360,8 @@ public class Customer extends Database {
 	 */
 	public String toString() {
 		/* @formatter:off */
-		String string = "ID: "		+ this.id 
+		String string = "ID: "		+ this.id
+				+ " controller: "	+ this.cont
 				+ " ssNbr: "		+ this.ssNbr 
 				+ " Name: "			+ this.forname 
 				+ " Lastname: " 	+ this.lastname 

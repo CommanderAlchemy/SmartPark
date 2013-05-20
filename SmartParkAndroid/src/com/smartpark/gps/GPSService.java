@@ -204,17 +204,15 @@ public class GPSService extends Service {
 		@Override
 		public void onProviderDisabled(String provider) {
 			Log.i(TAG, "++ onProviderDisabled ++ : " + provider);
-			Toast.makeText(getApplicationContext(),
-					"++ onProviderDisabled ++ : " + provider,
-					Toast.LENGTH_SHORT).show();
+			Toast.makeText(Ref.activeActivity,"++ onProviderDisabled ++ : " + provider,Toast.LENGTH_SHORT).show();
 			/*
 			 * Alert the user that the GPS-provider is disabled and this should
 			 * be enabled.
 			 */
 			AlertDialog.Builder builder1 = new AlertDialog.Builder(
-					getApplicationContext());
+					Ref.activeActivity);
 			builder1.setTitle("GPS Disabled!");
-			builder1.setMessage("PGS is disabled and this is vital for the operation of this application.\n"
+			builder1.setMessage("GPS is disabled and this is vital for the operation of this application.\n"
 					+ "Please reenable it.");
 			builder1.setCancelable(false);
 			builder1.setPositiveButton(android.R.string.ok,
@@ -230,8 +228,7 @@ public class GPSService extends Service {
 		@Override
 		public void onProviderEnabled(String provider) {
 			Log.i(TAG, "++ onProviderEnabled ++ : " + provider);
-			Toast.makeText(getApplicationContext(),
-					"++ onProviderEnabled ++ : " + provider, Toast.LENGTH_SHORT)
+			Toast.makeText(Ref.activeActivity,"++ onProviderEnabled ++ : " + provider, Toast.LENGTH_SHORT)
 					.show();
 		}// ==========================================================
 

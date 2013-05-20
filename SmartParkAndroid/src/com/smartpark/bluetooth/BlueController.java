@@ -34,11 +34,10 @@ public class BlueController {
 
 	// Flags
 	private static boolean BroacastReceiverIsRegistered = false;
-	
+
 	// RequestCodes for controlling the bluetooth
 	public static final int REQUEST_ENABLE_BT = 1;
 	public static final int REQUEST_DISCOVERABLE_BT = 2;
-	
 
 	private static ArrayList<BluetoothDevice> foundDevices = new ArrayList<BluetoothDevice>();
 	private static Set<BluetoothDevice> pairedDevices = null;
@@ -142,13 +141,17 @@ public class BlueController {
 
 		if (D)
 			Log.d(TAG, "--> Getting BluetoothDevice for: " + name);
+
 		BluetoothDevice device;
 		Set<BluetoothDevice> h = getPairedDevicesList();
-		Iterator<BluetoothDevice> iter = h.iterator();
-		while (iter.hasNext()) {
-			device = iter.next();
-			if (device.getName().equals(name)) {
-				return device;
+		Log.e(TAG, h.toString());
+		if (h != null) {
+			Iterator<BluetoothDevice> iter = h.iterator();
+			while (iter.hasNext()) {
+				device = iter.next();
+				if (device.getName().equals(name)) {
+					return device;
+				}
 			}
 		}
 		return null;
@@ -214,14 +217,14 @@ public class BlueController {
 
 	public boolean reconnectBT() {
 		Log.e(TAG, "++ reconnectBT ++");
-		
+
 		Ref.btState = Ref.STATE_CONNECTING;
 		boolean discovering;
 
 		if (btAdapter == null) {
 			btAdapter = BluetoothAdapter.getDefaultAdapter();
 		}
-		
+
 		// The first check protects the next check against NullPointerException
 		if (btDevice != null && !btDevice.getName().equals(SMARTPARK_DEVICE)) {
 			if (!btDevice.getName().equals(SMARTPARK_DEVICE)) {
@@ -231,10 +234,6 @@ public class BlueController {
 			btDevice = getPairedDeviceByName(SMARTPARK_DEVICE);
 		}
 
-		
-		
-		
-		
 		if (btDevice == null) {
 			Log.i(TAG, "The device is not previously paired with this phone");
 			discovering = findNearbyDevices(Ref.activeActivity);
@@ -249,14 +248,9 @@ public class BlueController {
 							"SmartPark-device found", Toast.LENGTH_SHORT)
 							.show();
 				}
-				Log.i(TAG, "till here");
-				try {
-					BackgroundOperationThread.sleep(1200);
-				} catch (InterruptedException e) {
-					Log.e(TAG, "Interrupted Exception occured" + e);
-				}
 			}
 		}
+		Log.e(TAG, btDevice.toString());
 		if (btDevice != null) {
 			connect();
 			Log.e(TAG, "--> connected to " + btDevice.getAddress());
@@ -325,7 +319,7 @@ public class BlueController {
 					Ref.btState = Ref.STATE_NOT_CONNECTED;
 				}
 			}
-		};
+		}.start();
 	}
 
 	public int sendBytes(byte[] data) {
@@ -388,20 +382,21 @@ public class BlueController {
 		return btAdapter.isDiscovering();
 	}
 
-//	/**
-//	 * This method will unregister the BroadcastReceiver for ACTION_FOUND of the
-//	 * Bluetooth device. The registration happen in StartDiscovery().
-//	 * 
-//	 * @param invokerActivity
-//	 *            The reference to the invoking activity
-//	 */
-//	public void unRegister_DeviceFoundReceiver() {
-//		if (D)
-//			Log.i(TAG, "++ unRegister_DeviceFoundReceiver ++");
-//
-//			applicationContext.unregisterReceiver(bt_foundDeviceReceiver);
-//		}
-//	}
+	// /**
+	// * This method will unregister the BroadcastReceiver for ACTION_FOUND of
+	// the
+	// * Bluetooth device. The registration happen in StartDiscovery().
+	// *
+	// * @param invokerActivity
+	// * The reference to the invoking activity
+	// */
+	// public void unRegister_DeviceFoundReceiver() {
+	// if (D)
+	// Log.i(TAG, "++ unRegister_DeviceFoundReceiver ++");
+	//
+	// applicationContext.unregisterReceiver(bt_foundDeviceReceiver);
+	// }
+	// }
 
 	public int closeConnection() {
 		if (D)
@@ -422,22 +417,23 @@ public class BlueController {
 		}
 	}
 
-//	/**
-//	 * This method will unregister the BroadcastReceiver for ACTION_FOUND of the
-//	 * Bluetooth device. The registration happen in startDiscovery().
-//	 * 
-//	 * @param invokerActivity
-//	 *            The reference to the invoking activity
-//	 */
-//	public void unRegister_AdapterStateReceiver() {
-//		if (D)
-//			Log.i(TAG, "++ unRegister_AdapterStateReceiver ++");
-//
-//		if (btStateIntentIsRegistered) {
-//			applicationContext.unregisterReceiver(bt_foundDeviceReceiver);
-//			Ref.bt_stateIntentIsRegistered = false;
-//		}
-//	}
+	// /**
+	// * This method will unregister the BroadcastReceiver for ACTION_FOUND of
+	// the
+	// * Bluetooth device. The registration happen in startDiscovery().
+	// *
+	// * @param invokerActivity
+	// * The reference to the invoking activity
+	// */
+	// public void unRegister_AdapterStateReceiver() {
+	// if (D)
+	// Log.i(TAG, "++ unRegister_AdapterStateReceiver ++");
+	//
+	// if (btStateIntentIsRegistered) {
+	// applicationContext.unregisterReceiver(bt_foundDeviceReceiver);
+	// Ref.bt_stateIntentIsRegistered = false;
+	// }
+	// }
 
 	public boolean isBluetoothAdapterAvailable() {
 		return btAdapter != null;
@@ -467,17 +463,18 @@ public class BlueController {
 				Log.d(TAG, "enabling adapter");
 			Intent enableBtIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_ENABLE);
-			Ref.activeActivity.startActivityForResult(enableBtIntent,REQUEST_ENABLE_BT);
+			Ref.activeActivity.startActivityForResult(enableBtIntent,
+					REQUEST_ENABLE_BT);
 		}
 		int state = btAdapter.getState();
 		return state == BluetoothAdapter.STATE_TURNING_ON
 				|| state == BluetoothAdapter.STATE_ON;
 	}
 
-	public boolean isEnabled(){
+	public boolean isEnabled() {
 		return btAdapter.isEnabled();
 	}
-	
+
 	public boolean disableAdapter() {
 		if (D)
 			Log.i(TAG, "++ disableAdapter ++");
@@ -496,7 +493,7 @@ public class BlueController {
 			Log.i(TAG, "++ makeDiscoverable ++");
 		Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 		intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-		invokerActivity.startActivityForResult(intent,REQUEST_DISCOVERABLE_BT);
+		invokerActivity.startActivityForResult(intent, REQUEST_DISCOVERABLE_BT);
 	}
 
 	/**

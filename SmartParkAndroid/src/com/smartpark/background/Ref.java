@@ -41,11 +41,10 @@ public class Ref {
 	public final static int RESULT_UNKNOWN_HOST_EXCEPTION = -2;
 	public final static int RESULT_EXCEPTION = -3;
 	
+	// TODO
 	// Global control-flags
 	public static int tcpState = STATE_NOT_CONNECTED;
 	public static int btState = STATE_NOT_CONNECTED;
-	
-
 	
 	// Reference to the currently active activity
 	public static Activity activeActivity;
@@ -53,21 +52,20 @@ public class Ref {
 	// Global control-variable
 	public static boolean D = true;
 	
+	// TODO
 	// Objects used for Internet communication
 	public static TCPController tcpClient;
 	
 	// Reference to the background thread
 	public static BackgroundOperationThread bgThread;
-	public static boolean isBOTRunning = false;
+	public static boolean isBackgroundOperationThreadRunning = false;
 	
-	// Objects for use with the bluetooth adapter
-//	public static BluetoothAdapter btAdapter;
-	public static BlueController btController;
-	
+	// TODO remove
 	public static TextView gps_text;
 	
 	// ==================================================
 	
+	// TODO remove
 	// getters and setters for Internet state
 	public static boolean tcpIsConnected() {
 		return tcpState == STATE_CONNECTED;
@@ -81,6 +79,7 @@ public class Ref {
 		return tcpState;
 	}
 	
+	// TODO remove
 	// getters and setters for bluetooth state
 	public static boolean btIsConnected() {
 		return btState == STATE_CONNECTED;

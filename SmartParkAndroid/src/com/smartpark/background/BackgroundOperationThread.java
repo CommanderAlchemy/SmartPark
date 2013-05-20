@@ -87,10 +87,10 @@ public class BackgroundOperationThread extends Thread {
 
 	private boolean fixConnections() {
 		Log.e(TAG, "++ fixConnections ++");
-		
+
 		Ref.btState = Ref.STATE_CONNECTING;
 		boolean discovering;
-		
+
 		// Enable bluetooth if disabled by asking the user first
 		if (btController.isEnabled()) {
 			Log.d(TAG, "--> bluetooth is disabled");
@@ -113,53 +113,16 @@ public class BackgroundOperationThread extends Thread {
 			Toast.makeText(applicationContext, "Enabled", Toast.LENGTH_SHORT)
 					.show();
 		}
-		
+
 		if (btController == null) {
 			Log.e(TAG, "BlueController intance recreate");
 			btController = new BlueController(applicationContext);
 		}
-		
+
 		if (D)
 			Log.e(TAG, "isConnected? " + btController.isConnected());
 		btController.closeConnection();
-		btController.reconnectBT();
-		
-		
-		if (device == null) {
-			// The device is not previously paired with this phone
-			Log.i(TAG, "Find devices");
-			discovering = btController.findNearbyDevices(Ref.activeActivity);
-			for (int i = 0; i < 10; i++) {
-				device = btController.getFoundDeviceByName(SMARTPARK_DEVICE);
-				if (D)
-					Log.i(TAG,
-							"is discovering: " + btController.isDiscovering());
-
-				if (device != null && device.getName().equals(SMARTPARK_DEVICE)) {
-					Log.i(TAG, "in if sats");
-					// Toast.makeText(Ref.activeActivity,
-					// "SmartPark-device found", Toast.LENGTH_SHORT)
-					// .show();
-				}
-				if (D)
-					Log.i(TAG, "till here");
-				try {
-					BackgroundOperationThread.sleep(1200);
-				} catch (InterruptedException e) {
-					Log.e(TAG, "Interrupted Exception occured" + e);
-				}
-			}
-		}
-		if (device != null) {
-			BlueController.btDevice = device;
-			btController.connect();
-			if (D)
-				Log.e(TAG, "--> connected to " + device.getAddress());
-		} else {
-			if (D)
-				Log.w(TAG, "--> device is null, bluetooth not found");
-		}
-		return true;
+		return btController.reconnectBT();
 	}// ================================================================
 
 	@Override
@@ -207,7 +170,7 @@ public class BackgroundOperationThread extends Thread {
 			} else {
 				// Handle reconnection
 				Log.e(TAG, "BT disconnected");
-				reconnectBT();
+				fixConnections();
 			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
 			if (Ref.tcpState == Ref.STATE_CONNECTED) {

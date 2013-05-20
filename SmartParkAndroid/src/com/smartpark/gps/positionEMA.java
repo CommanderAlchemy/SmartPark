@@ -146,8 +146,8 @@ public class positionEMA {
 		double cosAng = (Math.cos(latA) * Math.cos(latB) * Math
 				.cos(lonB - lonA)) + (Math.sin(latA) * Math.sin(latB));
 		double ang = Math.acos(cosAng);
-		double dist = ang * 6371;
-		return dist; // Distance in
+		double dist = ang * 6371; // 6371 is radius of the earth in km
+		return dist; // Distance in km
 	}
 	
 	public float aha(Location user_location, double lat, double lng){
@@ -165,4 +165,49 @@ public class positionEMA {
 		locationList.clear();
 	}
 
+	/**
+	 * This script [in Javascript] calculates great-circle distances between the two points – that is, the shortest distance over the earth’s surface – using the ‘Haversine’ formula.
+	 * @return
+	 */
+
+//	public void getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+//	  var R = 6371; // Radius of the earth in km
+//	  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+//	  var dLon = deg2rad(lon2-lon1); 
+//	  var a = 
+//	    Math.sin(dLat/2) * Math.sin(dLat/2) +
+//	    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+//	    Math.sin(dLon/2) * Math.sin(dLon/2)
+//	    ; 
+//	  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+//	  var d = R * c; // Distance in km
+//	  return d;
+//	}
+//
+//	function deg2rad(deg) {
+//	  return deg * (Math.PI/180)
+//	}
+//	
+//	 /// <summary>
+//    /// Calculate the distance between two places.
+//    /// </summary>
+//    /// <param name="lon1"></param>
+//    /// <param name="lat1"></param>
+//    /// <param name="lon2"></param>
+//    /// <param name="lat2"></param>
+//    /// <returns></returns>
+//    public static double DistanceBetweenPlaces(
+//        double lon1,
+//        double lat1,
+//        double lon2,
+//        double lat2)
+//    {
+//        double dlon = Radians(lon2 - lon1);
+//        double dlat = Radians(lat2 - lat1);
+//
+//        double a = (Math.Sin(dlat / 2) * Math.Sin(dlat / 2)) + Math.Cos(Radians(lat1)) * Math.Cos(Radians(lat2)) * (Math.Sin(dlon / 2) * Math.Sin(dlon / 2));
+//        double angle = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+//        return angle * RADIUS;
+//    }
+//    
 }

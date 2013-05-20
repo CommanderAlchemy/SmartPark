@@ -92,7 +92,7 @@ public class Customer extends Database {
 					+ "Password				TEXT		NOT NULL,"
 					+ "SmartParkID			TEXT		NOT NULL,"
 					+ "Registered			TEXT		NOT NULL,"
-					+ "Balance		REAL)";
+					+ "Balance				REAL)";
 			/* @formatter:on */
 			statement = super.getConnection().createStatement();
 			statement.executeUpdate(sql);
@@ -156,17 +156,17 @@ public class Customer extends Database {
 			}
 				
 			while (result.next()) {
-				this.id = result.getInt("ID");
-				this.cont =	result.getLong("cont");
-				this.ssNbr = result.getString("ssNbr");
-				this.forname = result.getString("Forname");
-				this.lastname = result.getString("Lastname");
-				this.address = result.getString("Address");
-				this.phoneNbr = result.getString("PhoneNbr");
-				this.password = result.getString("Password");
-				this.smartParkID = result.getString("SmartParkID");
+				this.id 		= result.getInt("ID");
+				this.cont 		= result.getLong("cont");
+				this.ssNbr 		= result.getString("ssNbr");
+				this.forname 	= result.getString("Forname");
+				this.lastname 	= result.getString("Lastname");
+				this.address 	= result.getString("Address");
+				this.phoneNbr	= result.getString("PhoneNbr");
+				this.password 	= result.getString("Password");
+				this.smartParkID= result.getString("SmartParkID");
 				this.registered = result.getString("Registered");
-				this.balance = result.getLong("balance");
+				this.balance 	= result.getLong("balance");
 				System.out.println(this.toString());
 			}
 			result.close();
@@ -378,11 +378,11 @@ public class Customer extends Database {
 	public static void main(String[] args) {
 		Customer c = new Customer();
 //		c.CreateCustomerTable();
-//		c.InsertCustomerData(new Customer("910611-5778", "Artur", "Olech", "Snödroppsgatan3", "0762361910", "artur", "001First", "Today"));
-//		c.InsertCustomerData(new Customer("820620-1470", "Saeed", "Ghasemi", "Hyllie", "0763150074", "saeed", "002Second", "Tomorrow"));
-//		c.InsertCustomerData(new Customer("some id", "Truls", "Haraldsson", "Trelleborg", "some number", "truls", "003Third", "Never"));
+//		c.InsertCustomerData(new Customer(1,"910611", "Artur", "Olech", "Snödroppsgatan3", "0762361910", "artur", "001First", "Today"));
+//		c.InsertCustomerData(new Customer(0,"820620", "Saeed", "Ghasemi", "Hyllie", "0763150074", "saeed", "002Second", "Tomorrow"));
+//		c.InsertCustomerData(new Customer(0,"na", "Truls", "Haraldsson", "Trelleborg", "some number", "truls", "003Third", "Never"));
 		c.selectCustomer(null);
-		c.selectCustomer("910611-5778");
+		c.selectCustomer("910611");
 
 
 	}

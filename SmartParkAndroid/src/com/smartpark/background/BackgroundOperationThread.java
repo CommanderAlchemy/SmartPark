@@ -88,6 +88,9 @@ public class BackgroundOperationThread extends Thread {
 	private boolean fixConnections() {
 		Log.e(TAG, "++ fixConnections ++");
 		
+		Ref.btState = Ref.STATE_CONNECTING;
+		boolean discovering;
+		
 		// Enable bluetooth if disabled by asking the user first
 		if (btController.isEnabled()) {
 			Log.d(TAG, "--> bluetooth is disabled");
@@ -110,19 +113,16 @@ public class BackgroundOperationThread extends Thread {
 			Toast.makeText(applicationContext, "Enabled", Toast.LENGTH_SHORT)
 					.show();
 		}
-
-		Ref.btState = Ref.STATE_CONNECTING;
-		boolean discovering;
-
+		
 		if (btController == null) {
 			Log.e(TAG, "BlueController intance recreate");
 			btController = new BlueController(applicationContext);
 		}
-
+		
 		if (D)
 			Log.e(TAG, "isConnected? " + btController.isConnected());
 		btController.closeConnection();
-
+		
 		if (device == null) {
 			// The device is not previously paired with this phone
 			Log.i(TAG, "Find devices");

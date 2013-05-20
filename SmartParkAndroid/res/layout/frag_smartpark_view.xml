@@ -1,0 +1,228 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity$DummySectionFragment" >
+
+    <TextView
+        android:id="@+id/lblCurrentTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="18:24"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/lblGPS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/lblCurrentTime"
+        android:layout_alignBottom="@+id/lblCurrentTime"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@+id/lblCurrentTime"
+        android:text="GPS(on)"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/lblBT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/lblCurrentTime"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/lblGPS"
+        android:text="BT(on)"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/lblParkedSince"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/lblCurrentTime"
+        android:layout_alignRight="@+id/lblBT"
+        android:layout_below="@+id/lblCurrentTime"
+        android:layout_marginTop="30dp"
+        android:text="Parked since:"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/lblDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/lblParkedSince"
+        android:layout_alignRight="@+id/lblParkedSince"
+        android:layout_below="@+id/lblParkedSince"
+        android:text="Duration:"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/lblPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/lblDuration"
+        android:layout_alignRight="@+id/lblDuration"
+        android:layout_below="@+id/lblDuration"
+        android:text="Price:"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/lblHours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/lblPrice"
+        android:layout_alignRight="@+id/lblPrice"
+        android:layout_below="@+id/lblPrice"
+        android:text="Ticked Required:"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/lblFreeTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/lblHours"
+        android:layout_alignRight="@+id/lblHours"
+        android:layout_below="@+id/lblHours"
+        android:text="Free time:"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/lblPriceNow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/lblFreeTime"
+        android:layout_below="@+id/lblFreeTime"
+        android:layout_marginTop="20dp"
+        android:text="Price till now:"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/lblParkedSinceShow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/lblParkedSince"
+        android:layout_alignBottom="@+id/lblParkedSince"
+        android:layout_alignRight="@+id/progressBar1"
+        android:layout_toRightOf="@+id/lblParkedSince"
+        android:text="17:00"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/lblDurationShow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/lblDuration"
+        android:layout_alignBottom="@+id/lblDuration"
+        android:layout_alignLeft="@+id/lblParkedSinceShow"
+        android:layout_alignRight="@+id/lblParkedSinceShow"
+        android:text="02:31"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/lblPriceNowShow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/lblPriceNow"
+        android:layout_alignBottom="@+id/lblPriceNow"
+        android:layout_alignLeft="@+id/lblHoursShow"
+        android:layout_alignRight="@+id/lblFreeTimeShow"
+        android:text="21:-"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/lblFreeTimeShow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/lblPriceNow"
+        android:layout_alignRight="@+id/lblDurationShow"
+        android:layout_toRightOf="@+id/lblFreeTime"
+        android:text="first 3 hours"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/lblHoursShow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/lblFreeTimeShow"
+        android:layout_alignLeft="@+id/lblFreeTimeShow"
+        android:layout_alignRight="@+id/lblFreeTimeShow"
+        android:text="9-18"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/lblPriceShow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/lblHoursShow"
+        android:layout_alignLeft="@+id/lblDurationShow"
+        android:layout_alignRight="@+id/lblDurationShow"
+        android:text="20kr/h"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/lblTotalPriceShow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/lblTotalPrice"
+        android:layout_alignRight="@+id/lblPriceNowShow"
+        android:layout_toRightOf="@+id/lblFreeTime"
+        android:text="500:-"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/lblCurrentTime"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/lblCurrentTime"
+        android:progress="100" />
+
+    <ProgressBar
+        android:id="@+id/ProgressBar01"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/lblTotalPrice"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/lblPriceNow"
+        android:progress="100" />
+
+    <TextView
+        android:id="@+id/lblTotalPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/lblPriceNow"
+        android:layout_centerVertical="true"
+        android:text="Total this month:"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <AnalogClock
+        android:id="@+id/analogClock1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lblTotalPriceShow"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/btnTogglePark"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/analogClock1"
+        android:layout_alignRight="@+id/analogClock1"
+        android:layout_below="@+id/analogClock1"
+        android:text="Park" />
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/lblBT"
+        android:layout_alignTop="@+id/lblDuration" />
+
+</RelativeLayout>

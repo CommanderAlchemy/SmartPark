@@ -37,7 +37,7 @@ public class SmartParkFragment extends Fragment  {
 			Bundle savedInstanceState) {
 		Log.i(TAG, "++ onCreateView ++");
 
-		View rootView = inflater.inflate(R.layout.fragment_sp_view,
+		View rootView = inflater.inflate(R.layout.frag_smartpark_view,
 				container, false);
 		TextView dummyTextView = (TextView) rootView
 				.findViewById(R.id.section_label);

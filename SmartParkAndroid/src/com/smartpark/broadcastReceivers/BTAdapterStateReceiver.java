@@ -1,6 +1,7 @@
 package com.smartpark.broadcastReceivers;
 
 import com.smartpark.background.Ref;
+import com.smartpark.bluetooth.BlueController;
 
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -11,7 +12,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
-public class BT_StateReceiver extends BroadcastReceiver {
+public class BTAdapterStateReceiver extends BroadcastReceiver {
 
 	// Debugging and stuff
 	private static final String TAG = "BT_StateReceiver";
@@ -84,7 +85,7 @@ public class BT_StateReceiver extends BroadcastReceiver {
 		builder1.setPositiveButton(android.R.string.yes,
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						Ref.btController.enableAdapterNoUserInteraction();
+						BlueController.enableAdapterNoUserInteraction();
 					}
 				});
 		AlertDialog alert = builder1.create();

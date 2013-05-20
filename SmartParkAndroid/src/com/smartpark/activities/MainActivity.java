@@ -146,24 +146,24 @@ public class MainActivity extends FragmentActivity implements
 
 		// Ref will not be emptied since its references could be used by
 		// bgThread.
-		try {
-			if (Ref.bt_findIntentIsRegistered) {
-				Ref.btController.unRegister_DeviceFoundReceiver(this);
-				Ref.bt_findIntentIsRegistered = false;
-			}
-		} catch (Exception e) {
-			Log.e(TAG, "Something went poop in device");
-		}
-
-		try {
-			if (Ref.bt_stateIntentIsRegistered) {
-				Log.e(TAG, "true uuuuuuuuuuuuuuuu");
-				Ref.btController.unRegister_AdapterStateReceiver(this);
-				Ref.bt_stateIntentIsRegistered = false;
-			}
-		} catch (Exception e) {
-			Log.e(TAG, "Something went poop in adapter");
-		}
+//		try {
+//			if (Ref.bt_findIntentIsRegistered) {
+//				Ref.btController.unRegister_DeviceFoundReceiver(this);
+//				Ref.bt_findIntentIsRegistered = false;
+//			}
+//		} catch (Exception e) {
+//			Log.e(TAG, "Something went poop in device");
+//		}
+//
+//		try {
+//			if (Ref.bt_stateIntentIsRegistered) {
+//				Log.e(TAG, "true uuuuuuuuuuuuuuuu");
+//				Ref.btController.unRegister_AdapterStateReceiver(this);
+//				Ref.bt_stateIntentIsRegistered = false;
+//			}
+//		} catch (Exception e) {
+//			Log.e(TAG, "Something went poop in adapter");
+//		}
 
 	}// ------------------------------------------------------------------------
 
@@ -175,40 +175,18 @@ public class MainActivity extends FragmentActivity implements
 		Log.i(TAG, "++ onStart ++");
 
 		// Creates and starts the background-operation-thread
-		if (Ref.bgThread == null) {
-			Ref.bgThread = new BackgroundOperationThread();
-			Ref.bgThread.start();
-		} else if (!Ref.bgThread.isAlive()) {
-			Ref.bgThread.start();
-		}
+//		if (Ref.bgThread == null) {
+//			Ref.bgThread = new BackgroundOperationThread();
+//			Ref.bgThread.start();
+//		} else if (!Ref.bgThread.isAlive()) {
+//			Ref.bgThread.start();
+//		}
 		Ref.bgThread.activityMAIN = true;
 
-		// Check to see if bluetooth is available
-		if (Ref.btAdapter != null) {
-			AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-			builder1.setTitle("Problem");
-			builder1.setMessage("Your phone does not seem to have Bluetooth. This is needed to conenct with the SP-device!");
-			builder1.setCancelable(false);
-			builder1.setPositiveButton(android.R.string.ok,
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-						}
-					});
-			builder1.setNegativeButton("Exit",
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							finish();
-						}
-					});
-			AlertDialog alert = builder1.create();
-			alert.show();
-		} else {
-			Toast.makeText(this, "Bluetooth avaiable", Toast.LENGTH_SHORT)
-					.show();
-		}
+
 
 		// Enable bluetooth if disabled by asking the user first
-
+		// TODO
 		if (!Ref.btAdapter.isEnabled()) {
 			Log.d(TAG, "--> bluetooth is disabled");
 			/*
@@ -249,16 +227,7 @@ public class MainActivity extends FragmentActivity implements
 	public void onPause() {
 		super.onPause();
 		Log.i(TAG, "++ onPause ++");
-		// belong to GPSFragment
-		// try {
-		// if (Ref.gpsReceiverIsRegistered) {
-		// unregisterReceiver(gpsReceiver);
-		// Ref.gpsReceiverIsRegistered = false;
-		// }
-		// } catch (Exception e) {
-		// // TODO: handle exception
-		// }
-		// TODO
+		
 		// We have to save everything in this method for later use
 		Ref.bgThread.activityMAIN = false;
 
@@ -288,7 +257,7 @@ public class MainActivity extends FragmentActivity implements
 		Ref.bgThread.sendByBT("1");
 		Log.d(TAG, "wrote 1");
 	}
-
+	
 	public void isBTEnable(View view) {
 		Ref.bgThread.sendByBT("999950");
 		Log.d(TAG, "wrote 10");

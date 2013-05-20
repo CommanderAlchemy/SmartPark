@@ -1,7 +1,9 @@
 package com.smartpark.gps;
 
+import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
@@ -18,7 +20,7 @@ public class GPSService extends Service {
 
 	private LocationManager locationManager;
 
-	private static final int LOCATION_INTERVAL = 100; // milisekund
+	private static final int LOCATION_INTERVAL = 100; // Millisecond
 	private static final float LOCATION_DISTANCE = 1f; // meter
 
 	private static final boolean D = Ref.D;
@@ -68,7 +70,7 @@ public class GPSService extends Service {
 		} catch (IllegalArgumentException ex) {
 			Log.e(TAG, "gps provider does not exist " + ex);
 		}
-		
+
 		gpsReceiver = new GPSReceiver(Ref.gps_text);
 	}// ==========================================================
 
@@ -91,9 +93,13 @@ public class GPSService extends Service {
 				Log.i(TAG, "fail to remove location listners, ignore", ex);
 			}
 		}
-
-		unregisterReceiver(gpsReceiver);
-		Ref.gpsReceiverIsRegistered = false;
+		
+		try {
+			unregisterReceiver(gpsReceiver);
+		} catch (Exception e) {
+			Log.e(TAG, "unregistration failed", e);
+			Ref.gpsReceiverIsRegistered = false;
+		}
 	}
 
 	// ==========================================================
@@ -118,15 +124,21 @@ public class GPSService extends Service {
 		/*
 		 * Registers the receiver that is to receive broadcasts from this
 		 * service. It is unregistered in onDestroy of this service. This
-		 * service is started by the mainOperationService.
+		 * service is started by the BackOperationService.
 		 */
 		if (!Ref.gpsReceiverIsRegistered) {
-			registerReceiver(gpsReceiver, new IntentFilter(
-					"com.smartpark.gpsinfo"));
-			Ref.gpsReceiverIsRegistered = true;
+			try {
+				registerReceiver(gpsReceiver, new IntentFilter(
+						"com.smartpark.gpsinfo"));
+				Ref.gpsReceiverIsRegistered = true;
+			} catch (Exception e) {
+				Log.e(TAG, "registration failed", e);
+				Ref.gpsReceiverIsRegistered = false;
+			}
 		}
-
+		
 		Toast.makeText(this, "GPS-service started", Toast.LENGTH_SHORT).show();
+		Log.i(TAG, "GPS-service started");
 
 		/*
 		 * In case this service is stopped by the system due to lack of
@@ -154,32 +166,34 @@ public class GPSService extends Service {
 		Location mLastLocation;
 
 		// ==========================================================
-
+		
 		public OurLocationListener(String provider) {
 			// Log.e(TAG, "LocationListener " + provider);
 			mLastLocation = new Location(provider);
 		}// ==========================================================
-
+		
 		@Override
 		public void onLocationChanged(Location location) {
 			Log.i(TAG, "++ onLocationChanged ++: " + location);
 			if (isBetterLocation(location, mLastLocation)) {
 				mLastLocation.set(location);
 			}
+			
 			double latitude = mLastLocation.getLatitude();
 			double longitude = mLastLocation.getLongitude();
 			Intent gpsinfo = new Intent("com.smartpark.gpsinfo");
 
-			gpsinfo.putExtra("GPSCOORDINATES", "Latitide " + latitude
+			gpsinfo.putExtra("location", location);
+			
+			gpsinfo.putExtra("GPS_COORDINATES", "Latitide " + latitude
 					+ " Longitude " + longitude);
 			sendBroadcast(gpsinfo);
+			
 			Log.d(TAG, "Latitude: " + latitude + " Longitude: " + longitude);
-			String Text = "Latitude = " + latitude + "\nLongitud = "
-					+ longitude;
-
-			Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_SHORT)
+			
+			Toast.makeText(getApplicationContext(), "Latitude = " + latitude + "\nLongitud = "
+					+ longitude, Toast.LENGTH_SHORT)
 					.show();
-			Log.i(TAG, "++ onLocationChanged done ++: ");
 
 		}// ==========================================================
 
@@ -189,6 +203,24 @@ public class GPSService extends Service {
 			Toast.makeText(getApplicationContext(),
 					"++ onProviderDisabled ++ : " + provider,
 					Toast.LENGTH_SHORT).show();
+			/*
+			 * Alert the user that the GPS-provider is disabled and this should
+			 * be enabled.
+			 */
+			AlertDialog.Builder builder1 = new AlertDialog.Builder(
+					getApplicationContext());
+			builder1.setTitle("GPS Disabled!");
+			builder1.setMessage("PGS is disabled and this is vital for the operation of this application.\n"
+					+ "Please reenable it.");
+			builder1.setCancelable(false);
+			builder1.setPositiveButton(android.R.string.ok,
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							// TODO Add your code for the button here.
+						}
+					});
+			AlertDialog alert = builder1.create();
+			alert.show();
 		}// ==========================================================
 
 		@Override

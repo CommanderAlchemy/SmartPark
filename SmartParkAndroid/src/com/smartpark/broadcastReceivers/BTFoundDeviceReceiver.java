@@ -1,6 +1,7 @@
 package com.smartpark.broadcastReceivers;
 
 import com.smartpark.background.Ref;
+import com.smartpark.bluetooth.BlueController;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -8,7 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-public class BT_FoundDeviceReceiver extends BroadcastReceiver {
+public class BTFoundDeviceReceiver extends BroadcastReceiver {
 
 	private static final boolean D = Ref.D;
 	private static final String TAG = "BT_FoundDeviceReceiver";
@@ -24,7 +25,7 @@ public class BT_FoundDeviceReceiver extends BroadcastReceiver {
 					.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 			// Add the found device to the foundDevices ArrayList
 			Log.e(TAG, "insert" + device.getName());
-			Ref.btController.setFoundDevice(device);
+			BlueController.setFoundDevice(device);
 		}
 	}
 }

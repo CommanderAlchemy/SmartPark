@@ -1,15 +1,13 @@
 package com.smartpark.gps;
 
-import com.smartpark.background.Ref;
-
-import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.location.LocationManager;
+import android.location.Location;
 import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.smartpark.background.Ref;
 
 public class GPSReceiver extends BroadcastReceiver {
 
@@ -31,10 +29,10 @@ public class GPSReceiver extends BroadcastReceiver {
 		String action = intent.getAction();
 
 		gpsinfo = intent.getStringExtra("GPSCOORDINATES");
+		Location location = intent.getParcelableExtra("location");
+		
 		if (action.equals("com.smartpark.gpsinfo")) {
-			gpsinfo = intent.getStringExtra("GPSCOORDINATES");
-
-			Toast.makeText(context, gpsinfo, Toast.LENGTH_SHORT).show();
+			gpsinfo = intent.getStringExtra("GPS_COORDINATES");
 
 			if (gps_text != null) {
 				gps_text.setText(gpsinfo);

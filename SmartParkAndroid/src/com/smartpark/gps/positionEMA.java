@@ -1,4 +1,4 @@
-package com.smartpark;
+package com.smartpark.gps;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -99,13 +99,15 @@ public class positionEMA {
 	 */
 	public Location getPosition() {
 		Location averageLocation, lastLocation, secondToLastLocation;
-		
+
 		lastLocation = locationList.getLast();
-		secondToLastLocation = locationList.get(locationList.size()-2);
+		secondToLastLocation = locationList.get(locationList.size() - 2);
 		// Slightly averaging speed and bearings
-		float lastSpeed = (lastLocation.getSpeed() + secondToLastLocation.getSpeed()) / 2;
-		float bearing = (lastLocation.getBearing() + secondToLastLocation.getBearing()) / 2;
-		
+		float lastSpeed = (lastLocation.getSpeed() + secondToLastLocation
+				.getSpeed()) / 2;
+		float bearing = (lastLocation.getBearing() + secondToLastLocation
+				.getBearing()) / 2;
+
 		if (lastSpeed == 0.0f) {
 			if (D)
 				Log.w(TAG, "Device does not support speed measurement");
@@ -118,12 +120,42 @@ public class positionEMA {
 			 */
 			int samples = Math.round(maxMeasurements - lastSpeed);
 			averageLocation = calculateAverage((samples < 1) ? 1 : samples);
-			
+
 			// 90 degrees is East, 180 South, and 270 West and 0 in North
 			Math.cos(bearing); // work on this
 			Math.sin(bearing);
-			return null;
+			
+			return averageLocation;
 		}
+	}
+	
+	/**
+	 * This function returns the distance between two locations
+	 * 
+	 * @param lat1
+	 * @param lon1
+	 * @param lat2
+	 * @param lon2
+	 * @return
+	 */
+	public double calculatedistance(Location locationT1, Location locationT2) {
+		double latA = Math.toRadians(locationT1.getLatitude());
+		double lonA = Math.toRadians(locationT1.getLongitude());
+		double latB = Math.toRadians(locationT2.getLatitude());
+		double lonB = Math.toRadians(locationT2.getLongitude());
+		double cosAng = (Math.cos(latA) * Math.cos(latB) * Math
+				.cos(lonB - lonA)) + (Math.sin(latA) * Math.sin(latB));
+		double ang = Math.acos(cosAng);
+		double dist = ang * 6371;
+		return dist; // Distance in
+	}
+	
+	public float aha(Location user_location, double lat, double lng){
+		Location destination =new Location("gps");
+		destination.setLatitude(lat);
+		destination.setLongitude(lng);
+		float dist=user_location.distanceTo(destination);
+		return dist;
 	}
 
 	/**

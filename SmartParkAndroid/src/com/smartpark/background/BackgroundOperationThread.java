@@ -4,8 +4,11 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
 
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -31,60 +34,78 @@ public class BackgroundOperationThread extends Thread {
 	private static final String TAG = "bgThread";
 	private static final boolean D = Ref.D;
 
-	// Device to connect to
-	private final String SMARTPARK_DEVICE = "HC-06-SLAVE";
-
-	private BufferedReader bufferedReader;
-
+	private static Context applicationContext;
+	
 	private boolean run = true;
-
+	private BlueController btController;
+	
 	// =========== END OF CLASS VARIABLES ===============================
 
-	public BackgroundOperationThread() {
+	public BackgroundOperationThread(Context applicationContext) {
+		this.applicationContext = applicationContext;
 		Log.i(TAG, "++ bgThread Constructor ++");
+		
+		// Check to see if bluetooth is available
+		if (!btController.isBluetoothAdapterAvailable()) {
+			AlertDialog.Builder builder1 = new AlertDialog.Builder(applicationContext);
+			builder1.setTitle("Problem");
+			builder1.setMessage("Your phone does not seem to have Bluetooth. This is needed to conenct with the SP-device!");
+			builder1.setCancelable(false);
+			builder1.setPositiveButton(android.R.string.ok,
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					});
+			builder1.setNegativeButton("Exit",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							Ref.activeActivity.finish();
+						}
+					});
+			AlertDialog alert = builder1.create();
+			alert.show();
+		} else {
+			Toast.makeText(applicationContext, "Bluetooth avaiable", Toast.LENGTH_SHORT)
+					.show();
+		}
+		
 		// BT
 		Ref.btState = Ref.STATE_NOT_CONNECTED;
-		Ref.btController = new BlueController();
-
+		btController = new BlueController(applicationContext);
+		
 		// TCP
 		Ref.tcpState = Ref.STATE_NOT_CONNECTED;
 		Ref.tcpClient = null;
 		// TODO add more to this
 	}// ==================================================================
-
+	
 	public void powerDown() {
 		// When this flag gets set, the thread is told to shut it self down
 		run = false;
 	}// ==================================================================
-
+	
 	private boolean reconnectBT() {
 		Log.e(TAG, "++ reconnectBT ++");
 		Ref.btState = Ref.STATE_CONNECTING;
 		boolean discovering;
-		//
-		Log.e(TAG, "isConnected? " + Ref.btController.isConnected());
-		Ref.btController.closeConnection();
-
-		if (Ref.btController == null) {
+		
+		if (btController == null) {
 			Log.e(TAG, "BlueController intance recreate");
-			Ref.btController = new BlueController();
+			btController = new BlueController(applicationContext);
 		}
-		if (Ref.btAdapter == null) {
-			Ref.btAdapter = BluetoothAdapter.getDefaultAdapter();
-		}
-
-		BluetoothDevice device = Ref.btController
-				.getPairedDeviceByName(SMARTPARK_DEVICE);
+		
+		if(D)Log.e(TAG, "isConnected? " + btController.isConnected());
+		btController.closeConnection();
 
 		if (device == null) {
 			// The device is not previously paired with this phone
 			Log.i(TAG, "Find devices");
-			discovering = Ref.btController
+			discovering = btController
 					.findNearbyDevices(Ref.activeActivity);
 			for (int i = 0; i < 10; i++) {
-				device = Ref.btController
+				device = btController
 						.getFoundDeviceByName(SMARTPARK_DEVICE);
-				Log.i(TAG, "is discovering: " + Ref.btAdapter.isDiscovering());
+				if(D)Log.i(TAG, "is discovering: " + btController.isDiscovering());
 
 				if (device != null && device.getName().equals(SMARTPARK_DEVICE)) {
 					Log.i(TAG, "in if sats");
@@ -92,7 +113,7 @@ public class BackgroundOperationThread extends Thread {
 //							"SmartPark-device found", Toast.LENGTH_SHORT)
 //							.show();
 				}
-				Log.i(TAG, "till here");
+				if(D)Log.i(TAG, "till here");
 				try {
 					BackgroundOperationThread.sleep(1200);
 				} catch (InterruptedException e) {
@@ -102,12 +123,10 @@ public class BackgroundOperationThread extends Thread {
 		}
 		if (device != null) {
 			BlueController.btDevice = device;
-			Ref.btController.connect();
-			Log.e(TAG, "--> connected to " + device.getAddress());
-			bufferedReader = new BufferedReader(new InputStreamReader(
-					BlueController.btInStream));
+			btController.connect();
+			if(D)Log.e(TAG, "--> connected to " + device.getAddress());
 		} else {
-			Log.w(TAG, "--> device is null, bluetooth not found");
+			if(D)Log.w(TAG, "--> device is null, bluetooth not found");
 		}
 		return true;
 	}// ================================================================
@@ -116,7 +135,7 @@ public class BackgroundOperationThread extends Thread {
 	public void run() {
 		// TODO remember to check for the shutdownFlag
 
-		Log.i(TAG, "++ bgThread started ++");
+		if(D)Log.i(TAG, "++ bgThread started ++");
 		String btInData = null;
 		String tcpInData = null;
 		run = true;
@@ -127,7 +146,7 @@ public class BackgroundOperationThread extends Thread {
 				try {
 					Log.d(TAG, "--> reading started");
 
-					btInData = Ref.btController.receiveString();
+					btInData = btController.receiveString();
 					Log.i(TAG, "--> DATA read                  " + btInData);
 					if (btInData != null) {
 						Integer t = Integer.parseInt(btInData);
@@ -218,7 +237,7 @@ public class BackgroundOperationThread extends Thread {
 		Log.i(TAG, "++ btWrite ++");
 		if (Ref.btIsConnected()) {
 			byte[] data = btTransmitBuffer.removeFirst().getBytes();
-			Ref.btController.sendBytes(data);
+			btController.sendBytes(data);
 		}
 	}// ==================================================================
 
@@ -231,7 +250,7 @@ public class BackgroundOperationThread extends Thread {
 		Log.i(TAG, "++ btRead ++");
 		String inData = null;
 		if (Ref.btIsConnected()) {
-			inData = Ref.btController.receiveString();
+			inData = btController.receiveString();
 		}
 		return inData;
 	}// ==================================================================
@@ -242,7 +261,7 @@ public class BackgroundOperationThread extends Thread {
 		// Let the run method run out.
 		// this.shutdownThread(); wont work, just like suspend() and stop()
 
-		Ref.btController.closeConnection();
+		btController.closeConnection();
 		Ref.bgThread = null;
 	}// ==================================================================
 

@@ -3,21 +3,21 @@
     package="com.smartpark"
     android:versionCode="1"
     android:versionName="1.0" >
-	
+
     <uses-sdk
         android:minSdkVersion="11"
         android:targetSdkVersion="17" />
-	<uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.BLUETOOTH" />
-	<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-	<uses-permission android:name="android.permission.READ_SMS"/>
-	<uses-permission android:name="android.permission.RECEIVE_SMS"/>
-	<uses-permission android:name="android.permission.SEND_SMS"/>
-	<uses-permission android:name="android.permission.WRITE_SMS"/>
-	
-	
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.WRITE_SMS" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -41,7 +41,9 @@
             android:label="@string/title_activity_login"
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
+
         <service android:name="com.smartpark.gps.GPSService" />
         <service android:name="com.smartpark.background.BackOperationService" />
     </application>
+
 </manifest>

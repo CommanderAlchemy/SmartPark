@@ -10,7 +10,7 @@ public class Customer extends Database {
 	private String forname;
 	private String lastname;
 	private String phoneNbr;
-	private String adress;
+	private String address;
 	private String password;
 
 	private static String dbName = "test";
@@ -58,7 +58,7 @@ public class Customer extends Database {
 		this.ssNbr = ssNbr;
 		this.forname = forename;
 		this.lastname = lastname;
-		this.adress = adress;
+		this.address = adress;
 		this.phoneNbr = phoneNbr;
 
 		/*
@@ -92,7 +92,7 @@ public class Customer extends Database {
 		System.out.println(tblName + " table successfully created in " + dbName);
 	}
 
-	public void InsertCustomerTable(Customer c) {
+	public void InsertCustomerData(Customer c) {
 		try {
 			sql = "INSERT INTO Customer "
 					+ "(ID,ssNbr,ForName,Lastname,Adress,PhoneNbr,Password,Balance) "
@@ -100,12 +100,12 @@ public class Customer extends Database {
 					c.ssNbr + "," + 
 					"'" + c.forname + "'," + 
 					"'" + c.lastname + "'," + 
-					"'" + c.adress + "'," + 
+					"'" + c.address + "'," + 
 					"'" + c.phoneNbr + "'," + 
 					// TODO fix this part here
 					c.balance + "," +
 					"'" + c.password + "');";
-
+			
 			super.getConnection().setAutoCommit(false);
 			statement = super.getConnection().createStatement();
 			statement.executeUpdate(sql);
@@ -124,14 +124,15 @@ public class Customer extends Database {
 			statement = super.getConnection().createStatement();
 //			result = statement.executeQuery("SELECT * FROM Customer;");
 			//TODO insert password statement.
-			result = statement.executeQuery("SELECT ID,ssNbr,Forname,Lastname,Adress,PhoneNbr,balance FROM Customer WHERE ID = 3");
+			result = statement.executeQuery(
+					"SELECT ID,ssNbr,Forname,Lastname,Adress,PhoneNbr,balance FROM Customer WHERE ID = 3");
 			while (result.next()){
 				System.out.println(result.getRow());
 				this.id = result.getInt("ID");
 				this.ssNbr = result.getLong("ssNbr");
 				this.forname = result.getString("Forname");
 				this.lastname = result.getString("Lastname");
-				this.adress = result.getString("Adress");
+				this.address = result.getString("Adress");
 				this.phoneNbr = result.getString("PhoneNbr");
 //				this.password = result.getString("Password);
 				this.balance = result.getLong("balance");
@@ -288,7 +289,7 @@ public class Customer extends Database {
 	public String toString() {
 		String string = "ID:" + this.id + " ssNbr:" + this.ssNbr + " Name:"
 				+ this.forname + " Lastname:" + this.lastname + " Adress:"
-				+ this.adress + " PhoneNbr:" + this.phoneNbr + " Balance:"
+				+ this.address + " PhoneNbr:" + this.phoneNbr + " Balance:"
 				+ this.balance;
 		return string;
 	}

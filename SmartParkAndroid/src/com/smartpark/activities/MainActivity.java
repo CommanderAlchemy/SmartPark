@@ -20,13 +20,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.smartpark.R;
-<<<<<<< HEAD
-=======
+
 import com.smartpark.activities.LoginActivity;
 import com.smartpark.activities.SettingsActivity;
 import com.smartpark.background.BackOperationService;
 import com.smartpark.background.BackgroundOperationThread;
->>>>>>> refs/remotes/origin/master
+
 import com.smartpark.background.Ref;
 import com.smartpark.bluetooth.BlueController;
 import com.smartpark.fragments.BluetoothFragment;

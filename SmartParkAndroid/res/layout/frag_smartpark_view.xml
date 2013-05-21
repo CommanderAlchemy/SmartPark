@@ -217,7 +217,8 @@
         android:layout_alignLeft="@+id/analogClock1"
         android:layout_alignRight="@+id/analogClock1"
         android:layout_below="@+id/analogClock1"
-        android:text="Park" />
+        android:text="Park"
+        android:onClick="onClickBtnPark" />
 
     <Space
         android:layout_width="wrap_content"

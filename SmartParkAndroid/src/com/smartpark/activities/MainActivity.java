@@ -65,6 +65,10 @@ public class MainActivity extends FragmentActivity implements
 	DatePickerFragment datePickerFromDate = new DatePickerFragment();
 	DatePickerFragment datePickerToDate = new DatePickerFragment();
 
+	// CODES
+	public static final int BUTTON_FROM_DATE = 1;
+	public static final int BUTTON_TO_DATE = 2;
+
 	// Debugging and stuff
 	private static final String TAG = "MainActivity";
 	private static final boolean D = Ref.D;
@@ -258,7 +262,7 @@ public class MainActivity extends FragmentActivity implements
 	/*
 	 * Fragment SmartPark
 	 */
-	public void onClickBtnPark(View view){
+	public void onClickBtnPark(View view) {
 		Toast.makeText(this, "Parking...", Toast.LENGTH_SHORT).show();
 	}
 
@@ -279,23 +283,23 @@ public class MainActivity extends FragmentActivity implements
 
 		/* @formatter:off */
 		switch (newDate[1]) {
-		case 1:		monthStr = "Jan"; 	break;
-		case 2:		monthStr = "Feb";	break;
-		case 3:		monthStr = "Mar";	break;
-		case 4:		monthStr = "Apr";	break;
-		case 5:		monthStr = "Maj";	break;
-		case 6:		monthStr = "Jun";	break;
-		case 7:		monthStr = "Jul";	break;
-		case 8: 	monthStr = "Aug";	break;
-		case 9: 	monthStr = "Sep";	break;
-		case 10:	monthStr = "Okt";	break;
-		case 11:	monthStr = "Nov";	break;
-		case 12:	monthStr = "Dec";	break;
+			case 1:		monthStr = "Jan"; 	break;
+			case 2:		monthStr = "Feb";	break;
+			case 3:		monthStr = "Mar";	break;
+			case 4:		monthStr = "Apr";	break;
+			case 5:		monthStr = "Maj";	break;
+			case 6:		monthStr = "Jun";	break;
+			case 7:		monthStr = "Jul";	break;
+			case 8: 	monthStr = "Aug";	break;
+			case 9: 	monthStr = "Sep";	break;
+			case 10:	monthStr = "Okt";	break;
+			case 11:	monthStr = "Nov";	break;
+			case 12:	monthStr = "Dec";	break;
 		}
 		/* @formatter:on */
 
 		switch (tag) {
-		case 1:
+		case BUTTON_FROM_DATE:
 			int[] toDate = datePickerToDate.getDate();
 			if (toDate[2] != 0)
 				if (newDate[2] <= toDate[2])
@@ -305,14 +309,13 @@ public class MainActivity extends FragmentActivity implements
 									.setText(monthStr);
 							error = false;
 						}
-
 			if (error)
 				Toast.makeText(this, "From date > To date", Toast.LENGTH_LONG)
 						.show();
 
 			break;
 
-		case 2:
+		case BUTTON_TO_DATE:
 			int[] fromDate = datePickerFromDate.getDate();
 			if (fromDate[2] != 0)
 				if (newDate[2] >= fromDate[2])
@@ -338,8 +341,6 @@ public class MainActivity extends FragmentActivity implements
 	/*
 	 * Fragment Demo
 	 */
-
-	
 	public void onclickBtnParkRolf(View view) {
 		Toast.makeText(this, "Parked Rolf", Toast.LENGTH_SHORT).show();
 	}
@@ -404,7 +405,6 @@ public class MainActivity extends FragmentActivity implements
 		Log.i(TAG, "++ startGPS ++");
 
 		// These belong to GPSFragment
-		
 
 		startService(new Intent(getBaseContext(), GPSService.class));
 		startService(new Intent(getBaseContext(), BackOperationService.class));
@@ -447,7 +447,7 @@ public class MainActivity extends FragmentActivity implements
 			Log.i(TAG, "++ connect ++");
 		Toast.makeText(this, "connecting to server", Toast.LENGTH_LONG).show();
 		// new ConnectTask().execute("");
-//		Ref.tcpClient = new TCPController();
+		// Ref.tcpClient = new TCPController();
 	}
 
 	/**
@@ -458,10 +458,11 @@ public class MainActivity extends FragmentActivity implements
 	public void disconnect(View view) {
 		if (D)
 			Log.i(TAG, "++ disconnect ++");
-//		if (Ref.tcpClient != null) {
-			Toast.makeText(this, "this button no longer works", Toast.LENGTH_LONG).show();
-//			Ref.tcpClient.disconnect();
-//		}
+		// if (Ref.tcpClient != null) {
+		Toast.makeText(this, "this button no longer works", Toast.LENGTH_LONG)
+				.show();
+		// Ref.tcpClient.disconnect();
+		// }
 	}
 
 	// =================================

@@ -17,6 +17,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.view.ViewDebug.FlagToString;
 import android.widget.Toast;
 
 import com.smartpark.activities.MainActivity;
@@ -30,13 +31,13 @@ public class BlueController {
 	 * all private to this class. All public class-variables are moved to
 	 * Ref.java to avoid code duplication.
 	 */
-	
-	//CONNECTION STATE-FLAG
+
+	// CONNECTION STATE-FLAG
 	public static int connectionState = Ref.STATE_NOT_CONNECTED;
-	
+
 	// Device to connect to
 	private final static String SMARTPARK_DEVICE = "HC-06-SLAVE";
-		
+
 	// Flags
 	private static boolean BroacastReceiverIsRegistered = false;
 
@@ -59,11 +60,11 @@ public class BlueController {
 	public static OutputStream btOutStream;
 
 	private BufferedReader bufferedReader;
-	
-	//change to private
+
+	// change to private
 	public static BluetoothAdapter btAdapter;
 
-	//change to private
+	// change to private
 	public static Context applicationContext;
 
 	// Debugging and stuff
@@ -82,7 +83,7 @@ public class BlueController {
 		if (btAdapter == null) {
 			btAdapter = BluetoothAdapter.getDefaultAdapter();
 		}
-		
+
 	}// -------------------------------------------------------------------------------
 
 	public void cleanUp(Context applicationContext) {
@@ -468,14 +469,15 @@ public class BlueController {
 	public boolean enableAdapter() {
 		if (D)
 			Log.i(TAG, "++ enableAdapter ++");
-		if(btAdapter != null)
+		if (btAdapter != null)
 			Log.e(TAG, "btAdapter != null");
 		if (!btAdapter.isEnabled()) {
 			if (D)
 				Log.d(TAG, "enabling adapter");
 			Intent enableBtIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_ENABLE);
-			Ref.activeActivity.startActivityForResult(enableBtIntent,REQUEST_ENABLE_BT);
+			Ref.activeActivity.startActivityForResult(enableBtIntent,
+					REQUEST_ENABLE_BT);
 		}
 		int state = btAdapter.getState();
 		return state == BluetoothAdapter.STATE_TURNING_ON
@@ -514,17 +516,35 @@ public class BlueController {
 	 * @param device
 	 */
 	public static void setFoundDevice(BluetoothDevice device) {
-		// if (!foundDevices.contains(device)) {
-		foundDevices.add(device);
-		// }
+		if (!foundDevices.contains(device)) {
+			foundDevices.add(device);
+		}
 	}
+
+	// CONNECTION STATE SETTERS AND GETTERS
 
 	public boolean isConnected() {
 		if (btSocket != null) {
-			return btSocket.isConnected();
+			if (btSocket.isConnected()) {
+				connectionState = Ref.STATE_CONNECTED;
+				return true;
+			} else {
+				connectionState = Ref.STATE_NOT_CONNECTED;
+				return false;
+			}
 		}
 		return false;
 	}
 	
 	
+
+	public void setStateConnecting() {
+		connectionState = Ref.STATE_CONNECTING;
+	}
+
+	public void setStateConnected() {
+		connectionState = Ref.STATE_CONNECTED;
+	}
+
+	// ===================================
 }

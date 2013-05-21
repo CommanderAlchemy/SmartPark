@@ -32,7 +32,7 @@ public class Ref {
 	 * our program. However, with great power come great responsibility, since
 	 * everything invoked with this will not automatically be removed and will
 	 * lead to leaking if not manually removed. This is the task of the
-	 * BackOperationService.
+	 * BackOperationService. In our design the BackOperationService takes care of the entire application lifecycle and is the last to exit 
 	 */
 	// public static Context applicationContext;
 
@@ -85,19 +85,5 @@ public class Ref {
 
 	public static int getTcpState() {
 		return flagTcpState;
-	}
-
-	// TODO remove
-	// getters and setters for bluetooth state
-	public static boolean btIsConnected() {
-		return flagBtState == STATE_CONNECTED;
-	}
-
-	public static void setbtState(int state) {
-		flagBtState = state;
-	}
-
-	public static int getbtState() {
-		return flagBtState;
 	}
 }

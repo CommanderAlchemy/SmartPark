@@ -79,9 +79,9 @@ public class BackgroundOperationThread extends Thread {
 	private boolean fixConnections() {
 		Log.e(TAG, "++ fixConnections ++");
 
-		Ref.flagBtState = Ref.STATE_CONNECTING;
+		btController.setStateConnecting();
 		boolean discovering;
-
+		
 		// Enable bluetooth if disabled by asking the user first
 		if (!btController.isEnabled()) {
 			Log.d(TAG, "--> bluetooth is disabled");
@@ -128,7 +128,7 @@ public class BackgroundOperationThread extends Thread {
 		run = true;
 
 		while (run) {
-			if (isBTConnected()) {
+			if (btController.isConnected()) {
 				// Code to process
 				try {
 					Log.d(TAG, "--> reading started");
@@ -151,12 +151,11 @@ public class BackgroundOperationThread extends Thread {
 				} catch (NumberFormatException e) {
 					Log.e(TAG, "NumberFormatException");
 				}
-
+				
 				while (btTransmitBuffer.size() > 0
 						&& Ref.getbtState() == Ref.STATE_CONNECTED) {
 					Log.d(TAG, "BT sending data");
 					btWrite();
-
 				}
 				// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 			} else {
@@ -175,7 +174,7 @@ public class BackgroundOperationThread extends Thread {
 			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
 			Log.i(TAG, "Connection state: "
-					+ (Ref.flagBtState == Ref.STATE_CONNECTED));
+					+ (btController.isConnected()));
 
 			// -----------------------------------------------------
 			// -----------------------------------------------------

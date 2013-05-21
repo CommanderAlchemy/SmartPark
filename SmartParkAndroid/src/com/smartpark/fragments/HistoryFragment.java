@@ -35,16 +35,7 @@ public class HistoryFragment extends Fragment {
 	public HistoryFragment() {
 		if (D)
 			Log.i(TAG, "++ Fragment: " + this.toString() + " Loaded ++");
-
-	}
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		Log.i(TAG, "++ onCreateView ++");
-
-		View rootView = inflater.inflate(R.layout.frag_history_view, container,
-				false);
+		
 		
 		final Calendar cal = Calendar.getInstance();
 		day = cal.get(Calendar.DAY_OF_MONTH);
@@ -67,12 +58,19 @@ public class HistoryFragment extends Fragment {
 		}
 		/* @formatter:on */
 		date = day + " " + month + " " + year;
+
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		Log.i(TAG, "++ onCreateView ++");
+
+		View rootView = inflater.inflate(R.layout.frag_history_view, container,
+				false);
 		
-		
-		Button btnFromDate = ((Button) rootView.findViewById(R.id.btnFromDate));
-		Button btnToDate = ((Button) rootView.findViewById(R.id.btnToDate));
-		btnFromDate.setText(date);
-		btnToDate.setTag(date);
+		((Button) rootView.findViewById(R.id.btnFromDate)).setText(date);
+		((Button) rootView.findViewById(R.id.btnToDate)).setText(date);
 
 		// DELETE THIS LATER
 		// TextView dummyTextView = (TextView) rootView

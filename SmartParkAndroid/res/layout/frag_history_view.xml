@@ -58,6 +58,15 @@
             android:text="From:"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
+        <ProgressBar
+            android:id="@+id/progressBar1"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true" />
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -78,7 +87,7 @@
                 android:orientation="vertical" >
 
                 <ListView
-                    android:id="@+id/listView1"
+                    android:id="@+id/listView_history"
                     android:layout_width="fill_parent"
                     android:layout_height="397dp" >
                 </ListView>

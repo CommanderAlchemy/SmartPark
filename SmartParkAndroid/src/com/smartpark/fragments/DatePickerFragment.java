@@ -2,21 +2,28 @@ package com.smartpark.fragments;
 
 import java.util.Calendar;
 
-import com.smartpark.activities.MainActivity;
-import com.smartpark.background.Ref;
-
-import android.R;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.DatePicker;
+
+import com.smartpark.activities.MainActivity;
+import com.smartpark.background.Ref;
 
 public class DatePickerFragment extends DialogFragment implements
 		DatePickerDialog.OnDateSetListener {
 
+	// Debug stuff
+		private static final boolean D = Ref.D;
+		private static final String TAG = "DatePickerFragment";
+		
+	// Latest date picked
 	int year = 0, month = 0, day = 0;
-
+	
+	/////////////////////////////////////////////////////
+	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -34,6 +41,7 @@ public class DatePickerFragment extends DialogFragment implements
 	}
 
 	public void onDateSet(DatePicker view, int year, int month, int day) {
+		Log.i(TAG , "++ onDateSet ++");
 		/*
 		 * we are saving the date to use this as the default next time the user
 		 * pushes the button.

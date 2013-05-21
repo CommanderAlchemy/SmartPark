@@ -31,8 +31,12 @@ public class BlueController {
 	 * all private to this class.
 	 */
 
+	// Debugging and stuff
+	private static final String TAG = "BlueController";
+	private static final boolean D = Ref.D;
+
 	// CONNECTION STATE-FLAG
-	public static int connectionState = Ref.STATE_NOT_CONNECTED;
+	private static int connectionState = Ref.STATE_NOT_CONNECTED;
 
 	// Device to connect to
 	private final static String SMARTPARK_DEVICE = "HC-06-SLAVE";
@@ -65,10 +69,6 @@ public class BlueController {
 
 	// change to private
 	public static Context applicationContext;
-
-	// Debugging and stuff
-	private static final String TAG = "BlueController";
-	private static final boolean D = Ref.D;
 
 	// -------------------------------------------------------------------------------
 	// public BlueController(Context instantiatorClass) {
@@ -109,14 +109,13 @@ public class BlueController {
 	 * discovery started successfully. After this method returns, the found
 	 * devices can be received by invoking getFoundDevices().
 	 */
-	public boolean findNearbyDevices(Activity invokerActivity) {
+	public void findNearbyDevices() {
 		if (D)
 			Log.e(TAG, "++ findNearbyDevices ++");
 
 		if (!btAdapter.isDiscovering()) {
 			btAdapter.startDiscovery();
 		}
-		return btAdapter.isDiscovering();
 	}
 
 	public Set<BluetoothDevice> getPairedDevicesList() {
@@ -221,114 +220,114 @@ public class BlueController {
 
 	// ================================================================
 
-	public boolean reconnectBT() {
-		Log.e(TAG, "++ reconnectBT ++");
+	public boolean connectBT() {
+		new Thread() {
+			public void run() {
 
-		setStateConnecting();
-		boolean discovering;
+				Log.e(TAG, "++ reconnectBT ++");
 
-		if (btAdapter == null) {
-			btAdapter = BluetoothAdapter.getDefaultAdapter();
-		}
+				setConnecting();
 
-		// The first check protects the next check against NullPointerException
-		if (btDevice != null && !btDevice.getName().equals(SMARTPARK_DEVICE)) {
-			if (!btDevice.getName().equals(SMARTPARK_DEVICE)) {
-				btDevice = getPairedDeviceByName(SMARTPARK_DEVICE);
-			}
-		} else {
-			btDevice = getPairedDeviceByName(SMARTPARK_DEVICE);
-		}
+				// if (btAdapter == null) {
+				// btAdapter = BluetoothAdapter.getDefaultAdapter();
+				// }TODO remove carefully test everything
 
-		if (btDevice == null) {
-			Log.i(TAG, "The device is not previously paired with"
-					+ " this phone or bluetooth is disabled.");
-			discovering = findNearbyDevices(Ref.activeActivity);
-			for (int i = 0; i < 10; i++) {
-				btDevice = getFoundDeviceByName(SMARTPARK_DEVICE);
-				Log.i(TAG, "Discovering? " + btAdapter.isDiscovering());
+				if (btDevice == null) {
+					btDevice = getPairedDeviceByName(SMARTPARK_DEVICE);
+					if (btDevice == null) {
+						Log.i(TAG, "The device is not previously paired with"
+								+ " this phone or bluetooth is disabled.");
+						findNearbyDevices();
+						// The adapter will only search for 12 seconds
+						for (int i = 0; i < 15; i++) {
+							Log.i(TAG,
+									"Discovering? " + btAdapter.isDiscovering());
+							try {
+								Thread.sleep(1200);
+							} catch (InterruptedException e) {
+								Log.e(TAG, "--> Thread.sleep was interrupted!");
+							}
+							btDevice = getFoundDeviceByName(SMARTPARK_DEVICE);
 
-				if (btDevice != null
-						&& btDevice.getName().equals(SMARTPARK_DEVICE)) {
-					Log.i(TAG, "Found SP-Device");
-					Toast.makeText(applicationContext,
-							"SmartPark-device found", Toast.LENGTH_SHORT)
-							.show();
+							if (btDevice != null) {
+								stopDiscovery();
+								Log.i(TAG, "Found SP-Device");
+								Toast.makeText(applicationContext,
+										"SmartPark-device found",
+										Toast.LENGTH_SHORT).show();
+								break;
+							}
+						}
+					}
+				}
+
+				if (btDevice != null) {
+					Log.e(TAG, "--> Connecting to: " + btDevice.toString());
+					// This connect will start a new thread.
+					connect();
+					Log.e(TAG, "--> connected to " + btDevice.getAddress());
+				} else {
+					Log.w(TAG, "--> device is null, bluetooth not found");
 				}
 			}
-		}
-
-		if (btDevice != null) {
-			Log.e(TAG, btDevice.toString());
-			connect();
-			Log.e(TAG, "--> connected to " + btDevice.getAddress());
-		} else {
-			Log.w(TAG, "--> device is null, bluetooth not found");
-		}
+		}.start();
 		return true;
 	}
 
 	// ================================================================
 
 	/**
-	 * This method aims at connecting to the device in a separate thread. This
-	 * method returns immediately.
+	 * This method aims at connecting to the device and is private to the class.
 	 */
-	public void connect() {
+	private void connect() {
 		if (D)
 			Log.e(TAG, "++ connect ++");
 
-		connectionState = Ref.STATE_CONNECTING;
-
-		new Thread() {
-			public void run() {
+		try {
+			btSocket = btDevice.createRfcommSocketToServiceRecord(SerialPort);
+			try {
+				/*
+				 * This method blocks till it connects or returns an exception.
+				 * 
+				 * Always stop discovery before connect for good measure. (Tip
+				 * from google developer)
+				 */
+				stopDiscovery();
+				btSocket.connect();
+				/*
+				 * We are changing state to connected since we have a
+				 * BroadcastReceiver for it and it's more reliable.
+				 */
+			} catch (Exception e) {
+				// Close the socket upon error
 				try {
-					btSocket = btDevice
-							.createRfcommSocketToServiceRecord(SerialPort);
-					try {
-						/*
-						 * This will only return on a successful connection or
-						 * an exception.
-						 */
-						stopDiscovery();
-						btSocket.connect();
-						/*
-						 * Next line not needed after implementing
-						 * BroadcastReceiver for it. TODO
-						 */
-						setStateConnected();
-					} catch (Exception e) {
-						// Close the socket upon error
-						try {
-							if (D)
-								Log.e(TAG, "Connection Exception: ", e);
-							btSocket.close();
-							setDisconnected();
-						} catch (Exception e2) {
-							if (D)
-								Log.e(TAG, "Socket Close Exception: " + e2);
-						}
-					}
-				} catch (Exception e) {
 					if (D)
-						Log.e(TAG, "Socket init Exception: " + e);
+						Log.e(TAG, "Connection Exception: ", e);
+					btSocket.close();
 					setDisconnected();
-				}
-
-				try {
-					if (isConnected()) {
-						if (D)
-							Log.d(TAG, "--> Init btSocket I/O Streams");
-						btInStream = btSocket.getInputStream();
-						btOutStream = btSocket.getOutputStream();
-					}
-				} catch (Exception e) {
+				} catch (Exception e2) {
 					if (D)
-						Log.e(TAG, "Socket I/O Streams Exception" + e);
-					setDisconnected();
+						Log.e(TAG, "Socket Close Exception: " + e2);
 				}
 			}
-		}.start();
+		} catch (Exception e) {
+			if (D)
+				Log.e(TAG, "Socket init Exception: " + e);
+			setDisconnected();
+		}
+
+		try {
+			if (isConnected()) {
+				if (D)
+					Log.d(TAG, "--> Init btSocket I/O Streams");
+				btInStream = btSocket.getInputStream();
+				btOutStream = btSocket.getOutputStream();
+			}
+		} catch (Exception e) {
+			if (D)
+				Log.e(TAG, "Socket I/O Streams Exception" + e);
+			setDisconnected();
+		}
 	}
 
 	public int sendBytes(byte[] data) {
@@ -340,7 +339,7 @@ public class BlueController {
 		} catch (IOException e1) {
 			if (D)
 				Log.e(TAG, "Sending of data with bt failed" + e1);
-			connectionState = Ref.STATE_NOT_CONNECTED;
+			setDisconnected();
 			return Ref.RESULT_IO_EXCEPTION;
 		} catch (Exception e1) {
 			Log.e(TAG, "ggggggggggggggggggg" + e1);
@@ -524,10 +523,10 @@ public class BlueController {
 	public boolean isConnected() {
 		if (btSocket != null) {
 			if (btSocket.isConnected()) {
-				connectionState = Ref.STATE_CONNECTED;
+				setConnected();
 				return true;
 			} else {
-				connectionState = Ref.STATE_NOT_CONNECTED;
+				setDisconnected();
 				return false;
 			}
 		}
@@ -538,11 +537,11 @@ public class BlueController {
 		return connectionState == Ref.STATE_CONNECTING;
 	}
 
-	public void setStateConnecting() {
+	public void setConnecting() {
 		connectionState = Ref.STATE_CONNECTING;
 	}
 
-	public void setStateConnected() {
+	public void setConnected() {
 		connectionState = Ref.STATE_CONNECTED;
 	}
 

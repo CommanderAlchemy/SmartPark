@@ -84,7 +84,7 @@ public class BackgroundOperationThread extends Thread {
 	private boolean fixConnections() {
 		Log.e(TAG, "++ fixConnections ++");
 
-		btController.setStateConnecting();
+		btController.setConnecting();
 		boolean discovering;
 
 		// Enable bluetooth if disabled by asking the user first (only once)
@@ -111,15 +111,15 @@ public class BackgroundOperationThread extends Thread {
 			// .show();
 		}
 		
-		if (btController == null) {
-			Log.e(TAG, "BlueController was == null");
-			btController = new BlueController(applicationContext);
-		}
+//		if (btController == null) {
+//			Log.e(TAG, "BlueController was == null");
+//			btController = new BlueController(applicationContext);
+//		}TODO
 		
 		if (D)
 			Log.e(TAG, "isConnected? " + btController.isConnected());
 		btController.closeConnection();
-		return btController.reconnectBT();
+		return btController.connectBT();
 	}// ================================================================
 
 	@Override

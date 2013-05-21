@@ -35,6 +35,7 @@ public class GPSFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		Log.i(TAG, "++ onCreateView ++");
 		View rootView = inflater.inflate(R.layout.frag_history_view, container,
 				false);
 		// DELETE THIS LATER

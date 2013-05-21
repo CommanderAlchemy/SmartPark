@@ -61,11 +61,11 @@ public class BTAdapterStateReceiver extends BroadcastReceiver {
 				if(D) Log.d(TAG, "--> BT - STATE_NOT_CONNECTED");
 				break;
 			case BluetoothAdapter.STATE_CONNECTED:
-				btController.setStateConnected();
+				btController.setConnected();
 				if(D) Log.d(TAG, "--> BT - STATE_CONNECTED");
 				break;
 			case BluetoothAdapter.STATE_CONNECTING:
-				btController.setStateConnecting();
+				btController.setConnecting();
 				if(D) Log.d(TAG, "--> BT - STATE_CONNECTING");
 				break;
 			case BluetoothAdapter.STATE_DISCONNECTING:

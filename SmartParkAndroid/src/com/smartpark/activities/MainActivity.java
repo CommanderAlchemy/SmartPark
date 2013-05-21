@@ -275,8 +275,43 @@ public class MainActivity extends FragmentActivity implements
 		newFragment.show(getFragmentManager(), "To Date");
 	}
 	
-	public void OnClickBtnDateEvent(String date, int tag){
-		((Button) findViewById(R.id.btnFromDate)).setText(date);
+	public void OnClickBtnDateEvent(int[] date, int tag){
+		int FromDate = 0;
+		int ToDate = 0;
+		String monthStr;
+		
+		switch (tag) {
+		case 1:
+			ToDate = FromDate;
+			
+			break;
+			
+		case 2:
+			
+			break;
+		}
+		
+		switch (date[1]) {
+		case 1:monthStr = "Jan"; break;
+		case 2:monthStr = "Feb"; break;
+		case 3:monthStr = "Mar"; break;
+		case 4:monthStr = "Apr"; break;
+		case 5:monthStr = "Maj"; break;
+		case 6:monthStr = "Jun"; break;
+		case 7:monthStr = "Jul"; break;
+		case 8:monthStr = "Aug"; break;
+		case 9:monthStr = "Sep"; break;
+		case 10:monthStr = "Okt";break;
+		case 11:monthStr = "Nov";break;
+		case 12:monthStr = "Dec";break;
+		default:monthStr = "Unknown"; break;
+		}
+		
+		
+		if (FromDate > ToDate)
+			System.out.println("Error From bigger than To");
+		
+//		((Button) findViewById(R.id.btnFromDate)).setText(date);
 	}
 	
 	

@@ -37,7 +37,7 @@ public class UserHistoryFragment extends Fragment {
 			Log.i(TAG, "++ Fragment: " + this.toString() + " Loaded ++");
 		
 		
-		final Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance();
 		day = cal.get(Calendar.DAY_OF_MONTH);
 		year = cal.get(Calendar.YEAR);
 		

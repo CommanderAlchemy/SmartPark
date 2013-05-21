@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.smartpark.bluetooth.BlueController;
 import com.smartpark.broadcastReceivers.BTAdapterStateReceiver;
 import com.smartpark.broadcastReceivers.BTFoundDeviceReceiver;
+import com.smartpark.gps.GPSService;
 import com.smartpark.tcp.TCPController;
 
 public class BackOperationService extends Service {
@@ -60,10 +61,12 @@ public class BackOperationService extends Service {
 		super.onCreate(); // Not needed
 		Log.i(TAG, "++ onCreate ++");
 
+		startService(new Intent(getBaseContext(), GPSService.class));
+		
 		applicationContext = getApplicationContext();
 		Toast.makeText(applicationContext, "Service started",
 				Toast.LENGTH_SHORT).show();
-		
+		// -----------
 		BlueController btController = new BlueController(applicationContext);
 		TCPController tcpController = new TCPController();
 
@@ -73,6 +76,7 @@ public class BackOperationService extends Service {
 		Ref.bgThread = new BackgroundOperationThread(applicationContext,
 				btController, tcpController);
 		Ref.bgThread.start();
+		// -----------
 	}
 
 	@Override
@@ -84,20 +88,21 @@ public class BackOperationService extends Service {
 		// exist
 		// We then clean this Service-resources if any
 		// We set everything in Ref.java to null
+		
+		Ref.bgThread.powerDown();
 
 		// Unregister all BroadcastReceivers that are registered
 		if (btFindIntentIsRegistered) {
 			unregisterReceiver(btFoundDeviceReceiver);
 			btFindIntentIsRegistered = false;
 		}
-		if (btStateIntentIsRegistered) {
+		if (btStateIntentIsRegistered || btConnectionStateIntentIsRegistered) {
 			unregisterReceiver(btAdapterStateReceiver);
 			btStateIntentIsRegistered = false;
-		}
-		if (btConnectionStateIntentIsRegistered) {
-			unregisterReceiver(btAdapterStateReceiver);
 			btConnectionStateIntentIsRegistered = false;
 		}
+		
+		stopService(new Intent(getBaseContext(), GPSService.class));
 	}
 
 	@Override
@@ -133,8 +138,6 @@ public class BackOperationService extends Service {
 
 	}
 
-	public void onActivityResult() {
-
-	}
+	
 
 }

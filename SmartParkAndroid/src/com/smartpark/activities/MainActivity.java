@@ -61,6 +61,9 @@ public class MainActivity extends FragmentActivity implements
 
 	private TextView gps_text;
 
+	DatePickerFragment datePickerFromDate = new DatePickerFragment();
+	DatePickerFragment datePickerToDate = new DatePickerFragment();
+
 	// Debugging and stuff
 	private static final String TAG = "MainActivity";
 	private static final boolean D = Ref.D;
@@ -144,8 +147,8 @@ public class MainActivity extends FragmentActivity implements
 		 * by it and not here. This method is only responsible for resources
 		 * taken by this activity.
 		 */
-		
-		 Ref.flagMainActivityInFront = false;
+
+		Ref.flagMainActivityInFront = false;
 
 		// Ref will not be emptied since its references could be used by
 		// bgThread.
@@ -169,9 +172,10 @@ public class MainActivity extends FragmentActivity implements
 		// }
 
 	}// ------------------------------------------------------------------------
-	// ============================================================
-	// onStart and onStop must go hand in hand
-	// (onRestart can also be used before onStart is invoked)
+		// ============================================================
+		// onStart and onStop must go hand in hand
+		// (onRestart can also be used before onStart is invoked)
+
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -213,6 +217,7 @@ public class MainActivity extends FragmentActivity implements
 		Log.i(TAG, "++ onStop ++");
 
 	}
+
 	// ============================================================
 	// onResume and onPause must go hand in hand
 	@Override
@@ -244,79 +249,115 @@ public class MainActivity extends FragmentActivity implements
 		super.onSaveInstanceState(outState);
 		Log.i(TAG, "++ onSaveInstanceState ++");
 	}// ------------------------------------------------------------
-	// ======= END OF LIFECYCLE METHODS ===========================
+		// ======= END OF LIFECYCLE METHODS ===========================
 
-	/* =======================
-	 * onCLICK-METHODS SECTION
-	 * =======================
-	 * Use onClick Method
-	 * Prefix to have consistency!
-	 */
-	
-	
-	
-	
-	
-	
 	/*
-	 * Fragment SmartPark 
+	 * ======================= onCLICK-METHODS SECTION =======================
+	 * Use onClick Method Prefix to have consistency!
 	 */
-	
+
+	/*
+	 * Fragment SmartPark
+	 */
+
 	/*
 	 * Fragment History
 	 */
-	public void onClickBtnFromDate(View view){
-		DialogFragment newFragment = new DatePickerFragment();
-		newFragment.show(getFragmentManager(), "From Date");
+	public void onClickBtnFromDate(View view) {
+		datePickerFromDate.show(getFragmentManager(), "From Date");
 	}
-	
-	public void onClickBtnToDate(View view){
-		DialogFragment newFragment = new DatePickerFragment();
-		newFragment.show(getFragmentManager(), "To Date");
+
+	public void onClickBtnToDate(View view) {
+		datePickerToDate.show(getFragmentManager(), "To Date");
 	}
-	
-	public void OnClickBtnDateEvent(int[] date, int tag){
+
+	public void OnClickBtnDateEvent(int[] newDate, int tag) {
 		int fromDate = 0;
-		int toDate = 0;
+
 		String monthStr;
-		
-		
-		switch (date[1]) {
-		case 1:monthStr = "Jan"; break;
-		case 2:monthStr = "Feb"; break;
-		case 3:monthStr = "Mar"; break;
-		case 4:monthStr = "Apr"; break;
-		case 5:monthStr = "Maj"; break;
-		case 6:monthStr = "Jun"; break;
-		case 7:monthStr = "Jul"; break;
-		case 8:monthStr = "Aug"; break;
-		case 9:monthStr = "Sep"; break;
-		case 10:monthStr = "Okt";break;
-		case 11:monthStr = "Nov";break;
-		case 12:monthStr = "Dec";break;
-		default:monthStr = "Unknown"; break;
+		//@formatter:off
+		switch (newDate[1]) {
+		case 1:
+			monthStr = "Jan";
+			break;
+		case 2:
+			monthStr = "Feb";
+			break;
+		case 3:
+			monthStr = "Mar";
+			break;
+		case 4:
+			monthStr = "Apr";
+			break;
+		case 5:
+			monthStr = "Maj";
+			break;
+		case 6:
+			monthStr = "Jun";
+			break;
+		case 7:
+			monthStr = "Jul";
+			break;
+		case 8:
+			monthStr = "Aug";
+			break;
+		case 9:
+			monthStr = "Sep";
+			break;
+		case 10:
+			monthStr = "Okt";
+			break;
+		case 11:
+			monthStr = "Nov";
+			break;
+		case 12:
+			monthStr = "Dec";
+			break;
+		default:
+			monthStr = "Unknown";
+			break;
 		}
-		
+		//@formatter:on
+		boolean error = false;
+
 		switch (tag) {
 		case 1:
-			fromDate = date[2]+date[1]+date[0];
+			int[] toDate = datePickerToDate.getDate();
+			if (toDate[2] != 0) {
+				if (newDate[2] <= toDate[2]) {
+					if (newDate[1] <= toDate[1]) {
+						if (newDate[0] <= toDate[0]) {
+							((Button) findViewById(R.id.btnFromDate)).setText(monthStr);
+						} else {
+							error = true;
+						}
+					} else {
+						error = true;
+					}
+				} else {
+					error = true;
+				}
+			}
+			if (error) {
+				
+			}
+
 			break;
-			
+
 		case 2:
-			toDate = date[0]+date[1]+date[2];
+			
 			break;
 		}
-//		((Button) findViewById(R.id.btnFromDate)).setText(date);
+		
+		// Query the server for the period TODO
 	}
-	
-	
-	/*	TODO Rename fragment
-	 *  Fragment Bluetooth
-	 *   
+
+	/*
+	 * TODO Rename fragment Fragment Bluetooth
 	 */
 	public void pairedDevicesCount(View view) {
 		Log.i(TAG, "++ pairedDevicesCount ++");
-		
+
 		String str = Ref.activeActivity != null ? "activeActivity OK "
 				: "activeActivity null ";
 		str += Ref.bgThread != null ? "bgThread OK " : "bgThread null ";
@@ -337,17 +378,17 @@ public class MainActivity extends FragmentActivity implements
 		Log.e(TAG, str);
 
 	}
-	
+
 	public void isBTavailable(View view) {
 		Ref.bgThread.sendByBT("1");
 		Log.d(TAG, "wrote 1");
 	}
-	
+
 	public void isBTEnable(View view) {
 		Ref.bgThread.sendByBT("999950");
 		Log.d(TAG, "wrote 10");
 	}
-	
+
 	public void startGPS(View view) {
 		Log.i(TAG, "++ startGPS ++");
 
@@ -363,8 +404,6 @@ public class MainActivity extends FragmentActivity implements
 		stopService(new Intent(getBaseContext(), GPSService.class));
 	}
 
-	
-	
 	@Override
 	public void onTabSelected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
@@ -392,7 +431,8 @@ public class MainActivity extends FragmentActivity implements
 	 * @param view
 	 */
 	public void connect(View view) {
-		if (D)Log.i(TAG, "++ connect ++");
+		if (D)
+			Log.i(TAG, "++ connect ++");
 		Toast.makeText(this, "connecting to server", Toast.LENGTH_LONG).show();
 		// new ConnectTask().execute("");
 		Ref.tcpClient = new TCPController();
@@ -404,7 +444,8 @@ public class MainActivity extends FragmentActivity implements
 	 * @param view
 	 */
 	public void disconnect(View view) {
-		if (D)Log.i(TAG, "++ disconnect ++");
+		if (D)
+			Log.i(TAG, "++ disconnect ++");
 		if (Ref.tcpClient != null) {
 			Toast.makeText(this, "disconnecting...", Toast.LENGTH_LONG).show();
 			Ref.tcpClient.disconnect();
@@ -451,7 +492,8 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		if (D)Log.i(TAG, "++ onCreateOptionsMenu ++");
+		if (D)
+			Log.i(TAG, "++ onCreateOptionsMenu ++");
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		CreateMenu(menu);
@@ -490,15 +532,16 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (D) Log.i(TAG, "++ onOptionsItemSelected ++");
-		
+		if (D)
+			Log.i(TAG, "++ onOptionsItemSelected ++");
+
 		if (D) {
 			Log.d(TAG, "Item: " + item.toString() + "\nID: " + item.getItemId()
 					+ "\nIntent: " + item.getIntent());
 		}
-		
+
 		// TODO Cleanup!
-		
+
 		// On select
 		switch (item.getItemId()) {
 		case 0:

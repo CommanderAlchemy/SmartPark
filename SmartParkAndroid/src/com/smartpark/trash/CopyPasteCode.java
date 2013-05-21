@@ -8,6 +8,7 @@ public class CopyPasteCode extends Activity {
 	
 
 	public void weNeedThisToCopyPasteWhereWeWantToHaveAButton() {
+		// ======== ALERTDIALOG START =========================
 		AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
 		builder1.setTitle("Title");
 		builder1.setMessage("my message");
@@ -32,6 +33,7 @@ public class CopyPasteCode extends Activity {
 				});
 		AlertDialog alert = builder1.create();
 		alert.show();
+		// ======== ALERTDIALOG END =========================
 	}
 
 	

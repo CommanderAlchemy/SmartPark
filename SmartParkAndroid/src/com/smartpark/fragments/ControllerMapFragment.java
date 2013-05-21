@@ -18,7 +18,7 @@ import com.smartpark.background.Ref;
  * @author commander
  * 
  */
-public class DummySectionFragment extends Fragment {
+public class ControllerMapFragment extends Fragment {
 
 	// Debug Information, the boolean should be stored in a common settings file
 	// in the future!
@@ -28,7 +28,7 @@ public class DummySectionFragment extends Fragment {
 	// This needs some fixing for code cleanup
 	public static final String ARG_SECTION_NUMBER = "section_number";
 
-	public DummySectionFragment() {
+	public ControllerMapFragment() {
 		if (D)
 			Log.d(TAG, "Fragment: " + this.toString() + " Loaded");
 	}

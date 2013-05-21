@@ -21,7 +21,7 @@ import com.smartpark.background.Ref;
  * @author commander
  * 
  */
-public class HistoryFragment extends Fragment {
+public class UserHistoryFragment extends Fragment {
 
 	// Debug Information, the boolean should be stored in a common settings file
 	// in the future!
@@ -32,7 +32,7 @@ public class HistoryFragment extends Fragment {
 	private String month;
 //	Button btnFromDate;
 	// This needs some fixing for code cleanup
-	public HistoryFragment() {
+	public UserHistoryFragment() {
 		if (D)
 			Log.i(TAG, "++ Fragment: " + this.toString() + " Loaded ++");
 		

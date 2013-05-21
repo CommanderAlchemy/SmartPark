@@ -29,12 +29,12 @@ import com.smartpark.R;
 import com.smartpark.background.BackOperationService;
 import com.smartpark.background.Ref;
 import com.smartpark.bluetooth.BlueController;
-import com.smartpark.fragments.DemoFragment;
+import com.smartpark.fragments.UserDemoFragment;
 import com.smartpark.fragments.DatePickerFragment;
-import com.smartpark.fragments.DebugFragment;
-import com.smartpark.fragments.DummySectionFragment;
-import com.smartpark.fragments.HistoryFragment;
-import com.smartpark.fragments.SmartParkFragment;
+import com.smartpark.fragments.ControllerListFragment;
+import com.smartpark.fragments.ControllerMapFragment;
+import com.smartpark.fragments.UserHistoryFragment;
+import com.smartpark.fragments.UserSmartParkFragment;
 import com.smartpark.gps.GPSService;
 import com.smartpark.tcp.TCPController;
 
@@ -651,32 +651,32 @@ public class MainActivity extends FragmentActivity implements
 			switch (position) {
 
 			case 0:
-				fragment = new SmartParkFragment();
-				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
+				fragment = new UserSmartParkFragment();
+				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER, position + 1);
 				fragment.setArguments(args);
 				break;
 
 			case 1:
-				fragment = new HistoryFragment();
-				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
+				fragment = new UserHistoryFragment();
+				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER, position + 1);
 				fragment.setArguments(args);
 				break;
 
 			case 2:
-				fragment = new DemoFragment();
-				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
+				fragment = new UserDemoFragment();
+				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER, position + 1);
 				fragment.setArguments(args);
 				break;
 
 			case 3:
-				fragment = new DebugFragment();
-				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
+				fragment = new ControllerListFragment();
+				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER, position + 1);
 				fragment.setArguments(args);
 				break;
 
 			case 4:
-				fragment = new DummySectionFragment();
-				args.putInt(DummySectionFragment.ARG_SECTION_NUMBER,
+				fragment = new ControllerMapFragment();
+				args.putInt(ControllerMapFragment.ARG_SECTION_NUMBER,
 						position + 1);
 				fragment.setArguments(args);
 				break;

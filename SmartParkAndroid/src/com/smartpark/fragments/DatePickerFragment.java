@@ -27,46 +27,30 @@ public class DatePickerFragment extends DialogFragment implements
 			this.month = c.get(Calendar.MONTH);
 			this.day = c.get(Calendar.DAY_OF_MONTH);
 		}
-		
+
 		// Create a new instance of DatePickerDialog and return it
 		return new DatePickerDialog(getActivity(), this, this.year, this.month,
 				this.day);
 	}
 
 	public void onDateSet(DatePicker view, int year, int month, int day) {
+		/*
+		 * we are saving the date to use this as the default next time the user
+		 * pushes the button.
+		 */
 		this.year = year;
 		this.month = month;
 		this.day = day;
-		
-		String monthStr;
-		
-		switch (month) {
-		case 1:monthStr = "Jan"; break;
-		case 2:monthStr = "Feb"; break;
-		case 3:monthStr = "Mar"; break;
-		case 4:monthStr = "Apr"; break;
-		case 5:monthStr = "Maj"; break;
-		case 6:monthStr = "Jun"; break;
-		case 7:monthStr = "Jul"; break;
-		case 8:monthStr = "Aug"; break;
-		case 9:monthStr = "Sep"; break;
-		case 10:monthStr = "Okt";break;
-		case 11:monthStr = "Nov";break;
-		case 12:monthStr = "Dec";break;
-		default:monthStr = "Unknown"; break;
-		}
-		
-		String date = day + ". " + monthStr + " " + year;
-		
-		if(getTag().equals("From Date")){
-			((MainActivity)Ref.activeActivity).OnClickBtnDateEvent(date, 1);
-		}else if(getTag().equals("To Date")){
-			((MainActivity)Ref.activeActivity).OnClickBtnDateEvent(date, 2);
-		}
-		
-		
-	}
 
+		if (getTag().equals("From Date")) {
+			((MainActivity) Ref.activeActivity).OnClickBtnDateEvent(getDate(),
+					1);
+		} else if (getTag().equals("To Date")) {
+			((MainActivity) Ref.activeActivity).OnClickBtnDateEvent(getDate(),
+					2);
+		}
+	}
+	
 	public int[] getDate() {
 		int date[] = new int[3];
 		date[0] = this.day;
@@ -74,5 +58,4 @@ public class DatePickerFragment extends DialogFragment implements
 		date[2] = this.year;
 		return date;
 	}
-
 }

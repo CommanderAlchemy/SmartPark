@@ -26,7 +26,7 @@ public class BackgroundOperationThread extends Thread {
 	private static Context applicationContext;
 
 	// USED WHEN INITIATING SOFT SHUTDOWN (RECOMMENDED ON THE INTERNET)
-	private boolean run = true;
+	private boolean keepRunning = true;
 	
 	// CONTROL FLAGS
 	private boolean userIsAlreadyAsked = false;
@@ -78,7 +78,7 @@ public class BackgroundOperationThread extends Thread {
 
 	public void powerDown() {
 		// When this flag gets set, the thread is told to shut it self down
-		run = false;
+		keepRunning = false;
 	}// ==================================================================
 
 	private boolean fixConnections() {
@@ -130,9 +130,9 @@ public class BackgroundOperationThread extends Thread {
 			Log.e(TAG, "++  run  ++");
 		String btInData = null;
 		String tcpInData = null;
-		run = true;
+		keepRunning = true;
 
-		while (run) {
+		while (keepRunning) {
 			if (btController.isConnected()) {
 				// Code to process
 				try {
@@ -202,7 +202,7 @@ public class BackgroundOperationThread extends Thread {
 					shutdownTime = System.currentTimeMillis();
 				} else if (System.currentTimeMillis() - shutdownTime > 30000) {
 					shutdownThread();
-					run = false;
+					keepRunning = false;
 					Log.i(TAG, "--> Shutting down thread");
 				}
 				if (D)
@@ -221,7 +221,7 @@ public class BackgroundOperationThread extends Thread {
 		 * In case the thread-instance is reused this will avoid a problem for
 		 * us.
 		 */
-		run = true;
+		keepRunning = true;
 	}// ==================================================================
 
 	private void btWrite() {

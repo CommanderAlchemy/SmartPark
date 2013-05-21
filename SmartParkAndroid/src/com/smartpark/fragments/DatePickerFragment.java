@@ -16,24 +16,24 @@ public class DatePickerFragment extends DialogFragment implements
 		DatePickerDialog.OnDateSetListener {
 
 	// Debug stuff
-		private static final boolean D = Ref.D;
-		private static final String TAG = "DatePickerFragment";
-		
+	private static final boolean D = Ref.D;
+	private static final String TAG = "DatePickerFragment";
+
 	// Latest date picked
 	int year = 0, month = 0, day = 0;
-	
-	/////////////////////////////////////////////////////
-	
+
+	// ///////////////////////////////////////////////////
+
+	public DatePickerFragment() {
+		super();
+		Calendar c = Calendar.getInstance();
+		this.year = c.get(Calendar.YEAR);
+		this.month = c.get(Calendar.MONTH);
+		this.day = c.get(Calendar.DAY_OF_MONTH);
+	}
+
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-		if (year == 0) {
-			// Use the current date as the default date in the picker
-			final Calendar c = Calendar.getInstance();
-			this.year = c.get(Calendar.YEAR);
-			this.month = c.get(Calendar.MONTH);
-			this.day = c.get(Calendar.DAY_OF_MONTH);
-		}
 
 		// Create a new instance of DatePickerDialog and return it
 		return new DatePickerDialog(getActivity(), this, this.year, this.month,
@@ -41,7 +41,7 @@ public class DatePickerFragment extends DialogFragment implements
 	}
 
 	public void onDateSet(DatePicker view, int year, int month, int day) {
-		Log.i(TAG , "++ onDateSet ++");
+		Log.i(TAG, "++ onDateSet ++");
 		/*
 		 * we are saving the date to use this as the default next time the user
 		 * pushes the button.

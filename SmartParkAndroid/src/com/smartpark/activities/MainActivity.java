@@ -10,6 +10,7 @@ import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Vibrator;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -68,6 +69,9 @@ public class MainActivity extends FragmentActivity implements
 	DatePickerFragment datePickerFromDate = new DatePickerFragment();
 	DatePickerFragment datePickerToDate = new DatePickerFragment();
 
+	// This is used for vibration
+	private Vibrator myVib;
+
 	// CODES
 	public static final int BUTTON_FROM_DATE = 1;
 	public static final int BUTTON_TO_DATE = 2;
@@ -84,6 +88,9 @@ public class MainActivity extends FragmentActivity implements
 		Log.i(TAG, "++ onCreate ++");
 
 		setContentView(R.layout.activity_main);
+
+		myVib = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+		myVib.vibrate(50);
 
 		Ref.activeActivity = this;
 
@@ -230,7 +237,7 @@ public class MainActivity extends FragmentActivity implements
 	public void onResume() {
 		super.onResume();
 		Log.i(TAG, "++ onResume ++");
-		
+
 		// Ref.activeActivity = this;
 		// Ref.bgThread.activityMAIN = true;
 	}
@@ -255,13 +262,23 @@ public class MainActivity extends FragmentActivity implements
 		super.onSaveInstanceState(outState);
 		Log.i(TAG, "++ onSaveInstanceState ++");
 	}// ------------------------------------------------------------
-		// ======= END OF LIFECYCLE METHODS ===========================
+	// ======= END OF LIFECYCLE METHODS ===========================
 
-	/*
-	 * ======================= onCLICK-METHODS SECTION =======================
-	 * Use onClick Method Prefix to have consistency!
-	 */
+	// =======================
+	// onCLICK-METHODS SECTION
+	// =======================
 
+	@Override
+	public void onBackPressed() {
+		Log.e(TAG, "++ onBackPressed ++");
+		myVib.vibrate(20);
+		stopService(new Intent(getBaseContext(), BackOperationService.class));
+		finish();
+
+	}
+
+	
+	
 	/*
 	 * Fragment SmartPark
 	 */
@@ -273,10 +290,12 @@ public class MainActivity extends FragmentActivity implements
 	 * Fragment History
 	 */
 	public void onClickBtnFromDate(View view) {
+		myVib.vibrate(50);
 		datePickerFromDate.show(getFragmentManager(), "From Date");
 	}
 
 	public void onClickBtnToDate(View view) {
+		myVib.vibrate(50);
 		datePickerToDate.show(getFragmentManager(), "To Date");
 	}
 
@@ -305,7 +324,7 @@ public class MainActivity extends FragmentActivity implements
 		switch (tag) {
 		case BUTTON_FROM_DATE:
 			int[] toDate = datePickerToDate.getDate();
-			if (toDate[2] != 0){
+			if (toDate[2] != 0) {
 				if (newDate[2] <= toDate[2])
 					if (newDate[1] <= toDate[1])
 						if (newDate[0] <= toDate[0]) {
@@ -313,9 +332,9 @@ public class MainActivity extends FragmentActivity implements
 									.setText(pickedDate);
 							error = false;
 						}
-			}else{
-				((Button) findViewById(R.id.btnFromDate))
-				.setText(pickedDate);
+			} else {
+
+				((Button) findViewById(R.id.btnFromDate)).setText(pickedDate);
 				error = false;
 			}
 			if (error)
@@ -326,7 +345,7 @@ public class MainActivity extends FragmentActivity implements
 
 		case BUTTON_TO_DATE:
 			int[] fromDate = datePickerFromDate.getDate();
-			if (fromDate[2] != 0){
+			if (fromDate[2] != 0) {
 				if (newDate[2] >= fromDate[2])
 					if (newDate[1] >= fromDate[1])
 						if (newDate[0] >= fromDate[0]) {
@@ -334,16 +353,14 @@ public class MainActivity extends FragmentActivity implements
 									.setText(pickedDate);
 							error = false;
 						}
-		}else{
-			((Button) findViewById(R.id.btnToDate))
-			.setText(pickedDate);
-			error = false;
-		}
-		
+			} else {
+				((Button) findViewById(R.id.btnToDate)).setText(pickedDate);
+				error = false;
+			}
 
-		if (error)
-			Toast.makeText(this, "From date > To date", Toast.LENGTH_LONG)
-					.show();
+			if (error)
+				Toast.makeText(this, "From date > To date", Toast.LENGTH_LONG)
+						.show();
 
 			break;
 		}
@@ -359,40 +376,49 @@ public class MainActivity extends FragmentActivity implements
 	 */
 
 	public void onClickBtnParkRolf(View view) {
+		myVib.vibrate(20);
 		Toast.makeText(this, "Parked Rolf", Toast.LENGTH_SHORT).show();
 	}
 
 	public void onClickBtnParkKristina(View view) {
+		myVib.vibrate(20);
 		Toast.makeText(this, "Parked Kristina", Toast.LENGTH_SHORT).show();
 	}
 
 	public void onClickBtnParkTommy(View view) {
+		myVib.vibrate(20);
 		Toast.makeText(this, "Parked Tommy", Toast.LENGTH_SHORT).show();
 	}
 
 	public void onClickBtnStopParkRolf(View view) {
+		myVib.vibrate(20);
 		Toast.makeText(this, "Stopped Parking Rolf", Toast.LENGTH_SHORT).show();
 	}
 
 	public void onClickBtnStopParkKristina(View view) {
+		myVib.vibrate(20);
 		Toast.makeText(this, "Stopped Parking Kristina", Toast.LENGTH_SHORT)
 				.show();
 	}
 
 	public void onClickBtnStopParkTommy(View view) {
+		myVib.vibrate(20);
 		Toast.makeText(this, "Stopped Parking Tommy", Toast.LENGTH_SHORT)
 				.show();
 	}
 
 	public void onClickBtnLogin(View view) {
+		myVib.vibrate(20);
 		Toast.makeText(this, "Logging into Server", Toast.LENGTH_SHORT).show();
 	}
 
-	public void onClickBtnSencLocation(View view) {
+	public void onClickBtnSendLocation(View view) {
+		myVib.vibrate(20);
 		Toast.makeText(this, "Sending GPS Location", Toast.LENGTH_SHORT).show();
 	}
 
-	public void onClickBtnpairedDevicesCount(View view) {
+	public void onClickBtnPairedDevicesCount(View view) {
+		myVib.vibrate(20);
 		Log.i(TAG, "++ pairedDevicesCount ++");
 
 		/* @formatter:off */
@@ -408,27 +434,25 @@ public class MainActivity extends FragmentActivity implements
 		/* @formatter:on */
 	}
 
-	public void onClickBtnisBTavailable(View view) {
+	public void onClickBtnIsBTavailable(View view) {
+		myVib.vibrate(20);
 		Ref.bgThread.sendByBT("1");
 		Log.d(TAG, "wrote 1");
 	}
 
-	public void onClickBtnisBTEnable(View view) {
+	public void onClickBtnIsBTEnable(View view) {
+		myVib.vibrate(20);
 		Ref.bgThread.sendByBT("999950");
 		Log.d(TAG, "wrote 10");
 	}
 
-	public void onClickBtnstartGPS(View view) {
+	public void onClickBtnStartGPS(View view) {
+		myVib.vibrate(20);
 		Log.i(TAG, "++ startGPS ++");
-
-		// These belong to GPSFragment
-
-		startService(new Intent(getBaseContext(), GPSService.class));
-		startService(new Intent(getBaseContext(), BackOperationService.class));
 
 	}
 
-	public void onClickBtnendGPS(View view) {
+	public void onClickBtnEndGPS(View view) {
 		stopService(new Intent(getBaseContext(), GPSService.class));
 	}
 
@@ -652,25 +676,29 @@ public class MainActivity extends FragmentActivity implements
 
 			case 0:
 				fragment = new UserSmartParkFragment();
-				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER, position + 1);
+				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
+						position + 1);
 				fragment.setArguments(args);
 				break;
 
 			case 1:
 				fragment = new UserHistoryFragment();
-				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER, position + 1);
+				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
+						position + 1);
 				fragment.setArguments(args);
 				break;
 
 			case 2:
 				fragment = new UserDemoFragment();
-				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER, position + 1);
+				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
+						position + 1);
 				fragment.setArguments(args);
 				break;
 
 			case 3:
 				fragment = new ControllerListFragment();
-				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER, position + 1);
+				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
+						position + 1);
 				fragment.setArguments(args);
 				break;
 

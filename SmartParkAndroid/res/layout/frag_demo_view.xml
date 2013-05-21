@@ -17,7 +17,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignRight="@+id/isBTEnable"
         android:minHeight="10dip"
-        android:onClick="pairedDevicesCount"
+        android:onClick="onClickBtnPairedDevicesCount"
         android:text="#Paired" />
 
     <Button
@@ -29,7 +29,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignRight="@+id/isBTavailable"
         android:minHeight="10dip"
-        android:onClick="isBTEnable"
+        android:onClick="onClickBtnIsBTEnable"
         android:text="isEnabled" />
 
     <Button
@@ -40,7 +40,7 @@
         android:layout_above="@+id/isBTEnable"
         android:layout_alignParentLeft="true"
         android:minHeight="10dip"
-        android:onClick="isBTavailable"
+        android:onClick="onClickBtnIsBTavailable"
         android:text="isAvailable" />
 
     <Button

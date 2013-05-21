@@ -23,7 +23,7 @@ public class UserDemoFragment extends Fragment {
 	// Debug Information, the boolean should be stored in a common settings file
 	// in the future!
 	private static boolean D = Ref.D;
-	private static final String TAG = "BluetoothFragment";
+	private static final String TAG = "DemoFragment";
 
 	// This needs some fixing for code cleanup
 	public static final String ARG_SECTION_NUMBER = "section_number";
@@ -43,16 +43,5 @@ public class UserDemoFragment extends Fragment {
 		return rootView;
 	}
 
-	public void pairedDevicesCount() {
-
-	}
-
-	public void isBTavailable() {
-
-	}
-
-	public void isBTEnable() {
-
-	}
 
 }// ============================================================================

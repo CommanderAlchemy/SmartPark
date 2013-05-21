@@ -362,8 +362,6 @@ public class BlueController {
 						Log.e(TAG, "bufferedReader was = null");
 					bufferedReader = new BufferedReader(new InputStreamReader(
 							btInStream));
-					Log.e(TAG, "bufferedReader was = null");
-
 				}
 				if (bufferedReader.ready()) {
 					if (D)

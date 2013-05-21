@@ -34,12 +34,7 @@ public class GPSReceiver extends BroadcastReceiver {
 		if (action.equals("com.smartpark.gpsinfo")) {
 			gpsinfo = intent.getStringExtra("GPS_COORDINATES");
 
-			// Not used TODO
-			if (gps_text != null) {
-				gps_text.setText(gpsinfo);
-			} else {
-				Log.e(TAG, "gpsinfo == null");
-			}
+		
 		}
 		Log.e(TAG, "" + invoke);
 		invoke++;

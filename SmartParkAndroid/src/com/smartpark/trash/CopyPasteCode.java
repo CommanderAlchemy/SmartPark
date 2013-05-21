@@ -7,11 +7,18 @@ import com.smartpark.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.View;
 
 public class CopyPasteCode extends Activity {
 	
-
+	public void onClickGoHome(){
+		Intent setIntent = new Intent(Intent.ACTION_MAIN);
+		setIntent.addCategory(Intent.CATEGORY_HOME);
+		setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(setIntent);
+	}
+	
 	public void weNeedThisToCopyPasteWhereWeWantToHaveAButton() {
 		//@formatter:off
 		//@formatter:on

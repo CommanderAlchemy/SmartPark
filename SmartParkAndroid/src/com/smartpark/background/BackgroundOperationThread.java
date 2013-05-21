@@ -31,10 +31,12 @@ public class BackgroundOperationThread extends Thread {
 	private static final boolean D = Ref.D;
 
 	private static Context applicationContext;
-
+	
 	private boolean run = true;
+	private boolean userIsAlreadyAsked = false;
+	
 	private BlueController btController;
-
+	
 	// =========== END OF CLASS VARIABLES ===============================
 
 	public BackgroundOperationThread(Context applicationContext) {
@@ -90,7 +92,7 @@ public class BackgroundOperationThread extends Thread {
 		boolean discovering;
 
 		// Enable bluetooth if disabled by asking the user first
-		if (btController.isEnabled()) {
+		if (!btController.isEnabled()) {
 			Log.d(TAG, "--> bluetooth is disabled");
 			/*
 			 * Certain methods need to invoke methods of an Activity-class. But
@@ -107,6 +109,7 @@ public class BackgroundOperationThread extends Thread {
 			 * methods.
 			 */
 			btController.enableAdapter();
+			userIsAlreadyAsked = true;
 			Log.d(TAG, "--> Enabling done");
 //			Toast.makeText(applicationContext, "Enabled", Toast.LENGTH_SHORT)
 //					.show();

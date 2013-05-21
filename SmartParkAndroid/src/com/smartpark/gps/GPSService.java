@@ -213,12 +213,17 @@ public class GPSService extends Service {
 					Ref.activeActivity);
 			builder1.setTitle("GPS Disabled!");
 			builder1.setMessage("GPS is disabled and this is vital for the operation of this application.\n"
-					+ "Please reenable it.");
+					+ "Do you wish to enable it now?");
 			builder1.setCancelable(false);
-			builder1.setPositiveButton(android.R.string.ok,
+			builder1.setNegativeButton(android.R.string.no,
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
-							// TODO Add your code for the button here.
+						}
+					});
+			builder1.setPositiveButton(android.R.string.yes,
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 						}
 					});
 			AlertDialog alert = builder1.create();

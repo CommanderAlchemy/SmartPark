@@ -74,9 +74,8 @@ public class MainActivity extends FragmentActivity implements
 		gps_text = (TextView) findViewById(R.id.GPSInfo);
 
 		Ref.activeActivity = this;
-		
+
 		startService(new Intent(getBaseContext(), BackOperationService.class));
-		
 
 		if (D)
 			Log.d(TAG,
@@ -100,9 +99,11 @@ public class MainActivity extends FragmentActivity implements
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 
-		// When swiping between different sections, select the corresponding
-		// tab. We can also use ActionBar.Tab#select() to do this if we have
-		// a reference to the Tab.
+		/*
+		 * When swiping between different sections, select the corresponding
+		 * tab. We can also use ActionBar.Tab#select() to do this if we have a
+		 * reference to the Tab.
+		 */
 		mViewPager
 				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 					@Override
@@ -130,7 +131,7 @@ public class MainActivity extends FragmentActivity implements
 		if (savedInstanceState != null) {
 		}
 	}
-
+	// ============================================================
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -140,28 +141,28 @@ public class MainActivity extends FragmentActivity implements
 		 * by it and not here. This method is only responsible for resources
 		 * taken by this activity.
 		 */
-//		Ref.bgThread.activityMAIN = false;
+		// Ref.bgThread.activityMAIN = false;
 
 		// Ref will not be emptied since its references could be used by
 		// bgThread.
-//		try {
-//			if (Ref.bt_findIntentIsRegistered) {
-//				Ref.btController.unRegister_DeviceFoundReceiver(this);
-//				Ref.bt_findIntentIsRegistered = false;
-//			}
-//		} catch (Exception e) {
-//			Log.e(TAG, "Something went poop in device");
-//		}
-//
-//		try {
-//			if (Ref.bt_stateIntentIsRegistered) {
-//				Log.e(TAG, "true uuuuuuuuuuuuuuuu");
-//				Ref.btController.unRegister_AdapterStateReceiver(this);
-//				Ref.bt_stateIntentIsRegistered = false;
-//			}
-//		} catch (Exception e) {
-//			Log.e(TAG, "Something went poop in adapter");
-//		}
+		// try {
+		// if (Ref.bt_findIntentIsRegistered) {
+		// Ref.btController.unRegister_DeviceFoundReceiver(this);
+		// Ref.bt_findIntentIsRegistered = false;
+		// }
+		// } catch (Exception e) {
+		// Log.e(TAG, "Something went poop in device");
+		// }
+		//
+		// try {
+		// if (Ref.bt_stateIntentIsRegistered) {
+		// Log.e(TAG, "true uuuuuuuuuuuuuuuu");
+		// Ref.btController.unRegister_AdapterStateReceiver(this);
+		// Ref.bt_stateIntentIsRegistered = false;
+		// }
+		// } catch (Exception e) {
+		// Log.e(TAG, "Something went poop in adapter");
+		// }
 
 	}// ------------------------------------------------------------------------
 
@@ -173,27 +174,26 @@ public class MainActivity extends FragmentActivity implements
 		Log.i(TAG, "++ onStart ++");
 
 		// Creates and starts the background-operation-thread
-//		if (Ref.bgThread == null) {
-//			Ref.bgThread = new BackgroundOperationThread();
-//			Ref.bgThread.start();
-//		} else if (!Ref.bgThread.isAlive()) {
-//			Ref.bgThread.start();
-//		}
+		// if (Ref.bgThread == null) {
+		// Ref.bgThread = new BackgroundOperationThread();
+		// Ref.bgThread.start();
+		// } else if (!Ref.bgThread.isAlive()) {
+		// Ref.bgThread.start();
+		// }
 
-
-//
-//		// Enable bluetooth if disabled by asking the user first
-//		if (!Ref.btController.isEnabled()) {
-//			Log.d(TAG, "--> bluetooth is disabled");
-//			/*
-//			 * the "this" is required so that the method can start another
-//			 * activity. Only the activity currently running in thread can start
-//			 * other activities.
-//			 */
-//			Ref.btController.enableAdapter();
-//			Log.d(TAG, "--> Enabling done");
-//			Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
-//		}
+		//
+		// // Enable bluetooth if disabled by asking the user first
+		// if (!Ref.btController.isEnabled()) {
+		// Log.d(TAG, "--> bluetooth is disabled");
+		// /*
+		// * the "this" is required so that the method can start another
+		// * activity. Only the activity currently running in thread can start
+		// * other activities.
+		// */
+		// Ref.btController.enableAdapter();
+		// Log.d(TAG, "--> Enabling done");
+		// Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
+		// }
 
 	}// -------------------------------------------------------------------------------------
 
@@ -216,17 +216,17 @@ public class MainActivity extends FragmentActivity implements
 		super.onResume();
 		Log.i(TAG, "++ onResume ++");
 
-//		Ref.activeActivity = this;
-//		Ref.bgThread.activityMAIN = true;
+		// Ref.activeActivity = this;
+		// Ref.bgThread.activityMAIN = true;
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
 		Log.i(TAG, "++ onPause ++");
-		
+
 		// We have to save everything in this method for later use
-//		Ref.bgThread.activityMAIN = false;
+		// Ref.bgThread.activityMAIN = false;
 
 	}// ------------------------------------------------------------
 
@@ -248,13 +248,28 @@ public class MainActivity extends FragmentActivity implements
 
 	public void pairedDevicesCount(View view) {
 		Log.i(TAG, "++ pairedDevicesCount ++");
+		
+		String str = Ref.activeActivity != null?"activeActivity OK ":"activeActivity null ";
+			   str += Ref.bgThread != null?"bgThread OK ":"bgThread null ";
+			   str += Ref.gps_text != null?"gps_text OK ":"gps_text null ";
+			   str += Ref.tcpClient != null?"tcpClient OK ":"tcpClient null ";
+			   str += BlueController.applicationContext != null?"applicationContext OK ":"applicationContext null ";
+			   str += BlueController.btAdapter != null?"btAdapter OK ":"btAdapter null ";
+			   str += BlueController.btDevice != null?"btDevice OK ":"btDevice null ";
+			   str += BlueController.btInStream != null?"btInStream OK ":"btInStream null ";
+			   str += BlueController.btOutStream != null?"btOutStream OK ":"btOutStream null ";
+			   str += BlueController.btSocket != null?"btSocket OK ":"btSocket null ";
+		
+		
+		Log.e(TAG, str);
+	
 	}
 
 	public void isBTavailable(View view) {
 		Ref.bgThread.sendByBT("1");
 		Log.d(TAG, "wrote 1");
 	}
-	
+
 	public void isBTEnable(View view) {
 		Ref.bgThread.sendByBT("999950");
 		Log.d(TAG, "wrote 10");
@@ -262,13 +277,13 @@ public class MainActivity extends FragmentActivity implements
 
 	public void startGPS(View view) {
 		Log.i(TAG, "++ startGPS ++");
-		
+
 		// These belong to GPSFragment
 		Ref.gps_text = (TextView) findViewById(R.id.GPSInfo);
-		
+
 		startService(new Intent(getBaseContext(), GPSService.class));
 		startService(new Intent(getBaseContext(), BackOperationService.class));
-		
+
 	}
 
 	public void endGPS(View view) {

@@ -30,7 +30,10 @@ public class BlueController {
 	 * all private to this class. All public class-variables are moved to
 	 * Ref.java to avoid code duplication.
 	 */
-
+	
+	// Device to connect to
+	private final static String SMARTPARK_DEVICE = "HC-06-SLAVE";
+		
 	// Flags
 	private static boolean BroacastReceiverIsRegistered = false;
 
@@ -39,26 +42,26 @@ public class BlueController {
 	public static final int REQUEST_DISCOVERABLE_BT = 2;
 
 	private static ArrayList<BluetoothDevice> foundDevices = new ArrayList<BluetoothDevice>();
-	private static Set<BluetoothDevice> pairedDevices = null;
+	private static Set<BluetoothDevice> pairedDevices;
 
 	// Constants used locally
 	private static final UUID SerialPort = UUID
 			.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
 	// Device, Socket and IO-Streams
+	// remove static
 	public static BluetoothDevice btDevice;
 	public static BluetoothSocket btSocket;
 	public static InputStream btInStream;
 	public static OutputStream btOutStream;
 
 	private BufferedReader bufferedReader;
+	
+	//change to private
+	public static BluetoothAdapter btAdapter;
 
-	private static BluetoothAdapter btAdapter;
-
-	// Device to connect to
-	private final String SMARTPARK_DEVICE = "HC-06-SLAVE";
-
-	private Context applicationContext;
+	//change to private
+	public static Context applicationContext;
 
 	// Debugging and stuff
 	private static final String TAG = "BlueController";
@@ -76,7 +79,7 @@ public class BlueController {
 		if (btAdapter == null) {
 			btAdapter = BluetoothAdapter.getDefaultAdapter();
 		}
-
+		
 	}// -------------------------------------------------------------------------------
 
 	public void cleanUp(Context applicationContext) {
@@ -143,8 +146,9 @@ public class BlueController {
 
 		BluetoothDevice device;
 		Set<BluetoothDevice> h = getPairedDevicesList();
-		Log.e(TAG, h.toString());
+
 		if (h != null) {
+			Log.e(TAG, h.toString());
 			Iterator<BluetoothDevice> iter = h.iterator();
 			while (iter.hasNext()) {
 				device = iter.next();
@@ -196,6 +200,8 @@ public class BlueController {
 		return foundDevices;
 	}
 
+	// ================================================================
+
 	public int disconnect() {
 		if (D)
 			Log.i(TAG, "++ disconnect ++");
@@ -234,7 +240,8 @@ public class BlueController {
 		}
 
 		if (btDevice == null) {
-			Log.i(TAG, "The device is not previously paired with this phone");
+			Log.i(TAG, "The device is not previously paired with"
+					+ " this phone or bluetooth is disabled.");
 			discovering = findNearbyDevices(Ref.activeActivity);
 			for (int i = 0; i < 10; i++) {
 				btDevice = getFoundDeviceByName(SMARTPARK_DEVICE);
@@ -249,8 +256,9 @@ public class BlueController {
 				}
 			}
 		}
-		Log.e(TAG, btDevice.toString());
+
 		if (btDevice != null) {
+			Log.e(TAG, btDevice.toString());
 			connect();
 			Log.e(TAG, "--> connected to " + btDevice.getAddress());
 		} else {
@@ -457,13 +465,14 @@ public class BlueController {
 	public boolean enableAdapter() {
 		if (D)
 			Log.i(TAG, "++ enableAdapter ++");
+		if(btAdapter != null)
+			Log.e(TAG, "btAdapter != null");
 		if (!btAdapter.isEnabled()) {
 			if (D)
 				Log.d(TAG, "enabling adapter");
 			Intent enableBtIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_ENABLE);
-			Ref.activeActivity.startActivityForResult(enableBtIntent,
-					REQUEST_ENABLE_BT);
+			Ref.activeActivity.startActivityForResult(enableBtIntent,REQUEST_ENABLE_BT);
 		}
 		int state = btAdapter.getState();
 		return state == BluetoothAdapter.STATE_TURNING_ON

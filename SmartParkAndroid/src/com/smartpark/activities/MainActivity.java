@@ -131,7 +131,7 @@ public class MainActivity extends FragmentActivity implements
 		if (savedInstanceState != null) {
 		}
 	}
-	// ============================================================
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -141,7 +141,8 @@ public class MainActivity extends FragmentActivity implements
 		 * by it and not here. This method is only responsible for resources
 		 * taken by this activity.
 		 */
-		// Ref.bgThread.activityMAIN = false;
+		
+		 Ref.flagMainActivityInFront = false;
 
 		// Ref will not be emptied since its references could be used by
 		// bgThread.
@@ -165,7 +166,7 @@ public class MainActivity extends FragmentActivity implements
 		// }
 
 	}// ------------------------------------------------------------------------
-
+	// ============================================================
 	// onStart and onStop must go hand in hand
 	// (onRestart can also be used before onStart is invoked)
 	@Override
@@ -209,7 +210,7 @@ public class MainActivity extends FragmentActivity implements
 		Log.i(TAG, "++ onStop ++");
 
 	}
-
+	// ============================================================
 	// onResume and onPause must go hand in hand
 	@Override
 	public void onResume() {
@@ -240,7 +241,7 @@ public class MainActivity extends FragmentActivity implements
 		super.onSaveInstanceState(outState);
 		Log.i(TAG, "++ onSaveInstanceState ++");
 	}// ------------------------------------------------------------
-		// ======= END OF LIFECYCLE METHODS ===========================
+	// ======= END OF LIFECYCLE METHODS ===========================
 
 	/* =======================
 	 * onCLICK-METHODS SECTION
@@ -256,20 +257,25 @@ public class MainActivity extends FragmentActivity implements
 	public void pairedDevicesCount(View view) {
 		Log.i(TAG, "++ pairedDevicesCount ++");
 		
-		String str = Ref.activeActivity != null?"activeActivity OK ":"activeActivity null ";
-			   str += Ref.bgThread != null?"bgThread OK ":"bgThread null ";
-			   str += Ref.gps_text != null?"gps_text OK ":"gps_text null ";
-			   str += Ref.tcpClient != null?"tcpClient OK ":"tcpClient null ";
-			   str += BlueController.applicationContext != null?"applicationContext OK ":"applicationContext null ";
-			   str += BlueController.btAdapter != null?"btAdapter OK ":"btAdapter null ";
-			   str += BlueController.btDevice != null?"btDevice OK ":"btDevice null ";
-			   str += BlueController.btInStream != null?"btInStream OK ":"btInStream null ";
-			   str += BlueController.btOutStream != null?"btOutStream OK ":"btOutStream null ";
-			   str += BlueController.btSocket != null?"btSocket OK ":"btSocket null ";
-		
-		
+		String str = Ref.activeActivity != null ? "activeActivity OK "
+				: "activeActivity null ";
+		str += Ref.bgThread != null ? "bgThread OK " : "bgThread null ";
+		str += Ref.gps_text != null ? "gps_text OK " : "gps_text null ";
+		str += Ref.tcpClient != null ? "tcpClient OK " : "tcpClient null ";
+		str += BlueController.applicationContext != null ? "applicationContext OK "
+				: "applicationContext null ";
+		str += BlueController.btAdapter != null ? "btAdapter OK "
+				: "btAdapter null ";
+		str += BlueController.btDevice != null ? "btDevice OK "
+				: "btDevice null ";
+		str += BlueController.btInStream != null ? "btInStream OK "
+				: "btInStream null ";
+		str += BlueController.btOutStream != null ? "btOutStream OK "
+				: "btOutStream null ";
+		str += BlueController.btSocket != null ? "btSocket OK "
+				: "btSocket null ";
 		Log.e(TAG, str);
-	
+
 	}
 
 	public void isBTavailable(View view) {

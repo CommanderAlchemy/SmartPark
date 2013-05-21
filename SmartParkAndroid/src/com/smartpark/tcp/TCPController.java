@@ -75,7 +75,7 @@ public class TCPController {
 		new Thread(){
 			public void run(){
 				try {
-					Ref.tcpState = Ref.STATE_CONNECTING;
+					Ref.flagTcpState = Ref.STATE_CONNECTING;
 					InetAddress serverAddr = InetAddress.getByName(Settings.Server_IP);
 					// create a socket to make the connection with the server
 					tcpSocket = new Socket(serverAddr, Settings.Server_Port);
@@ -86,16 +86,16 @@ public class TCPController {
 								true);
 						mBufferIn = new BufferedReader(new InputStreamReader(
 								tcpSocket.getInputStream()));
-						Ref.tcpState = Ref.STATE_CONNECTED;
+						Ref.flagTcpState = Ref.STATE_CONNECTED;
 					} else {
-						Ref.tcpState = Ref.STATE_NOT_CONNECTED;
+						Ref.flagTcpState = Ref.STATE_NOT_CONNECTED;
 					}
 				} catch (UnknownHostException e) {
 					Log.e(TAG, "UnknownHostException: ", e);
-					Ref.tcpState = Ref.STATE_NOT_CONNECTED;
+					Ref.flagTcpState = Ref.STATE_NOT_CONNECTED;
 				} catch (IOException e) {
 					Log.e(TAG, "IOException: ", e);
-					Ref.tcpState = Ref.STATE_NOT_CONNECTED;
+					Ref.flagTcpState = Ref.STATE_NOT_CONNECTED;
 				}
 			}
 		}.start();		

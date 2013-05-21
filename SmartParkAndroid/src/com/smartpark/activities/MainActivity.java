@@ -270,17 +270,17 @@ public class MainActivity extends FragmentActivity implements
 		Log.e(TAG, str);
 
 	}
-
+	
 	public void isBTavailable(View view) {
 		Ref.bgThread.sendByBT("1");
 		Log.d(TAG, "wrote 1");
 	}
-
+	
 	public void isBTEnable(View view) {
 		Ref.bgThread.sendByBT("999950");
 		Log.d(TAG, "wrote 10");
 	}
-
+	
 	public void startGPS(View view) {
 		Log.i(TAG, "++ startGPS ++");
 

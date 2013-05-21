@@ -12,13 +12,8 @@ import com.smartpark.bluetooth.BlueController;
 
 public class BackgroundOperationThread extends Thread {
 
-	/*
-	 * keeps a list of booleans to determine if all activities have been
-	 * destroyed so that the thread wont continue running for ever.
-	 */
-	public boolean activityMAIN = false;
-	public boolean activitySettings = false;
-	public boolean activityLOGIN = false;
+
+
 
 	private static long shutdownTime = 0; // 0 = never
 

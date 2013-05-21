@@ -1,6 +1,7 @@
 package com.smartpark.activities;
 
 import java.util.Locale;
+import java.util.zip.Inflater;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -76,8 +77,6 @@ public class MainActivity extends FragmentActivity implements
 		Log.i(TAG, "++ onCreate ++");
 
 		setContentView(R.layout.activity_main);
-
-		gps_text = (TextView) findViewById(R.id.GPSInfo);
 
 		Ref.activeActivity = this;
 
@@ -340,6 +339,7 @@ public class MainActivity extends FragmentActivity implements
 	 * Fragment Demo
 	 */
 
+	
 	public void onclickBtnParkRolf(View view) {
 		Toast.makeText(this, "Parked Rolf", Toast.LENGTH_SHORT).show();
 	}
@@ -380,8 +380,6 @@ public class MainActivity extends FragmentActivity implements
 		/* @formatter:off */
 		String str = Ref.activeActivity 			!= null ? "\nactiveActivity OK "		: "\nactiveActivity null ";
 		str += Ref.bgThread 						!= null ? "\nbgThread OK " 			: "\nbgThread null ";
-		str += Ref.gps_text 						!= null ? "\ngps_text OK " 			: "\ngps_text null ";
-		str += Ref.tcpClient 						!= null ? "\ntcpClient OK " 		: "\ntcpClient null ";
 		str += BlueController.applicationContext	!= null ? "\napplicationContext OK ": "\napplicationContext null ";
 		str += BlueController.btAdapter 			!= null ? "\nbtAdapter OK "			: "\nbtAdapter null ";
 		str += BlueController.btDevice 				!= null ? "\nbtDevice OK "			: "\nbtDevice null ";
@@ -406,7 +404,7 @@ public class MainActivity extends FragmentActivity implements
 		Log.i(TAG, "++ startGPS ++");
 
 		// These belong to GPSFragment
-		Ref.gps_text = (TextView) findViewById(R.id.GPSInfo);
+		
 
 		startService(new Intent(getBaseContext(), GPSService.class));
 		startService(new Intent(getBaseContext(), BackOperationService.class));
@@ -449,7 +447,7 @@ public class MainActivity extends FragmentActivity implements
 			Log.i(TAG, "++ connect ++");
 		Toast.makeText(this, "connecting to server", Toast.LENGTH_LONG).show();
 		// new ConnectTask().execute("");
-		Ref.tcpClient = new TCPController();
+//		Ref.tcpClient = new TCPController();
 	}
 
 	/**
@@ -460,10 +458,10 @@ public class MainActivity extends FragmentActivity implements
 	public void disconnect(View view) {
 		if (D)
 			Log.i(TAG, "++ disconnect ++");
-		if (Ref.tcpClient != null) {
-			Toast.makeText(this, "disconnecting...", Toast.LENGTH_LONG).show();
-			Ref.tcpClient.disconnect();
-		}
+//		if (Ref.tcpClient != null) {
+			Toast.makeText(this, "this button no longer works", Toast.LENGTH_LONG).show();
+//			Ref.tcpClient.disconnect();
+//		}
 	}
 
 	// =================================

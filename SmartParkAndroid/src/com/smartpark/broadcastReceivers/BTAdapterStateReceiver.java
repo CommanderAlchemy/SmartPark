@@ -17,6 +17,13 @@ public class BTAdapterStateReceiver extends BroadcastReceiver {
 	// Debugging and stuff
 	private static final String TAG = "BT_StateReceiver";
 	private static final boolean D = Ref.D;
+	
+	BlueController btController;
+	
+	public BTAdapterStateReceiver(BlueController btController){
+		super();
+		this.btController = btController;
+	}
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -40,30 +47,33 @@ public class BTAdapterStateReceiver extends BroadcastReceiver {
 				break;
 			default:
 			}
+			
 		} else 
+			
 			if (action.equals(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED)) {
+				Log.i(TAG, "BT State changed!");
 			// getIntExtra(int state, default int)
 			event = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE, BluetoothAdapter.ERROR);
 			
 			switch (event) {
 			case BluetoothAdapter.STATE_DISCONNECTED:
-				Ref.flagBtState = Ref.STATE_NOT_CONNECTED;
+				btController.setDisconnected();
 				if(D) Log.d(TAG, "--> BT - STATE_NOT_CONNECTED");
 				break;
 			case BluetoothAdapter.STATE_CONNECTED:
-				Ref.flagBtState = Ref.STATE_CONNECTED;
+				btController.setStateConnected();
 				if(D) Log.d(TAG, "--> BT - STATE_CONNECTED");
 				break;
 			case BluetoothAdapter.STATE_CONNECTING:
-				Ref.flagBtState = Ref.STATE_CONNECTING;
+				btController.setStateConnecting();
 				if(D) Log.d(TAG, "--> BT - STATE_CONNECTING");
 				break;
 			case BluetoothAdapter.STATE_DISCONNECTING:
-				Ref.flagBtState = Ref.STATE_DISCONNECTING;
+				btController.setDisconnected();
 				if(D) Log.d(TAG, "--> BT - STATE_DISCONNECTING");
 				break;
 			default:
-				Ref.flagBtState = Ref.STATE_NOT_CONNECTED;
+				btController.setDisconnected();
 				if(D) Log.e(TAG, "--> BT - STATE_DISCONNECTING (default case = inconclusive)");
 			}
 		}

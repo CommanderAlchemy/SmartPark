@@ -25,11 +25,10 @@ import com.smartpark.background.Ref;
 
 public class BlueController {
 	/*
-	 * Since there is only one bluetooth adapter in every handheld device, the
+	 * Since there is only one bluetooth adapter in every handheld device, some
 	 * variables are defined using the static modifier, because they only
 	 * represent settings and findings of the same adapter. However, they are
-	 * all private to this class. All public class-variables are moved to
-	 * Ref.java to avoid code duplication.
+	 * all private to this class.
 	 */
 
 	// CONNECTION STATE-FLAG
@@ -304,27 +303,29 @@ public class BlueController {
 							if (D)
 								Log.e(TAG, "Connection Exception: ", e);
 							btSocket.close();
+							setDisconnected();
 						} catch (Exception e2) {
 							if (D)
 								Log.e(TAG, "Socket Close Exception: " + e2);
 						}
-						connectionState = Ref.STATE_NOT_CONNECTED;
 					}
 				} catch (Exception e) {
 					if (D)
 						Log.e(TAG, "Socket init Exception: " + e);
-					connectionState = Ref.STATE_NOT_CONNECTED;
+					setDisconnected();
 				}
 
 				try {
-					if (D)
-						Log.d(TAG, "--> Init btSocket I/O Streams");
-					btInStream = btSocket.getInputStream();
-					btOutStream = btSocket.getOutputStream();
+					if (isConnected()) {
+						if (D)
+							Log.d(TAG, "--> Init btSocket I/O Streams");
+						btInStream = btSocket.getInputStream();
+						btOutStream = btSocket.getOutputStream();
+					}
 				} catch (Exception e) {
 					if (D)
 						Log.e(TAG, "Socket I/O Streams Exception" + e);
-					connectionState = Ref.STATE_NOT_CONNECTED;
+					setDisconnected();
 				}
 			}
 		}.start();

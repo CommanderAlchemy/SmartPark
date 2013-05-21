@@ -1,8 +1,13 @@
 package com.smartpark.trash;
 
+import java.util.zip.Inflater;
+
+import com.smartpark.R;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.view.View;
 
 public class CopyPasteCode extends Activity {
 	
@@ -37,8 +42,12 @@ public class CopyPasteCode extends Activity {
 		alert.show();
 		// ======== ALERTDIALOG END =========================
 	}
-
 	
+	
+	// == START ====================================================
+//	View v = Inflater.inflate(R.layout.****);
+//	View innerView = v.findViewById(id_number_of_view_inside_v);
+	// == END ======================================================
 	
 	
 	// ===============================

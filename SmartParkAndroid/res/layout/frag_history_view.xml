@@ -12,7 +12,7 @@
         tools:context=".MainActivity$DummySectionFragment" >
 
         <Button
-            android:id="@+id/btnDateFrom"
+            android:id="@+id/btnFromDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/txtFromDate"
@@ -21,18 +21,21 @@
             android:layout_marginLeft="34dp"
             android:layout_toRightOf="@+id/txtFromDate"
             android:background="?android:attr/selectableItemBackground"
-            android:hint="31. Maj 2013" />
+            android:hint="31. Maj 2013"
+            android:onClick="onClickBtnFromDate"
+            android:hapticFeedbackEnabled="true" />
 
         <Button
-            android:id="@+id/btnDateTo"
+            android:id="@+id/btnToDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/txtToDate"
-            android:layout_alignLeft="@id/btnDateFrom"
+            android:layout_alignLeft="@id/btnFromDate"
             android:layout_alignParentRight="true"
             android:layout_alignTop="@+id/txtToDate"
             android:background="?android:attr/selectableItemBackground"
-            android:hint="31. Maj 2013" />
+            android:hint="31. Maj 2013"
+            android:onClick="onClickBtnToDate" />
 
         <TextView
             android:id="@+id/txtToDate"
@@ -40,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@id/txtFromDate"
             android:layout_alignRight="@+id/txtFromDate"
-            android:layout_below="@id/btnDateFrom"
+            android:layout_below="@id/btnFromDate"
             android:text="To:"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 

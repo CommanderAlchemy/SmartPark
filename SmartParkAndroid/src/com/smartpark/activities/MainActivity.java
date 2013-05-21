@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +26,7 @@ import com.smartpark.background.BackOperationService;
 import com.smartpark.background.Ref;
 import com.smartpark.bluetooth.BlueController;
 import com.smartpark.fragments.BluetoothFragment;
+import com.smartpark.fragments.DatePickerFragment;
 import com.smartpark.fragments.DebugFragment;
 import com.smartpark.fragments.DummySectionFragment;
 import com.smartpark.fragments.GPSFragment;
@@ -246,13 +249,42 @@ public class MainActivity extends FragmentActivity implements
 	/* =======================
 	 * onCLICK-METHODS SECTION
 	 * =======================
-	 * Use OnClick Method
+	 * Use onClick Method
 	 * Prefix to have consistency!
 	 */
 	
 	
+	
+	
+	
+	
 	/*
-	 * Bluetooth Fragment 
+	 * Fragment SmartPark 
+	 */
+	
+	/*
+	 * Fragment History
+	 */
+	public void onClickBtnFromDate(View view){
+		DialogFragment newFragment = new DatePickerFragment();
+		newFragment.show(getFragmentManager(), "DatePickerFromDate");
+//		((Button) findViewById(R.id.btnFromDate)).setText("Fuuuuuuuuuuuuu");
+	}
+	
+	public void onClickBtnToDate(View view){
+		DialogFragment newFragment = new DatePickerFragment();
+		newFragment.show(getFragmentManager(), "DatePickerToDate");
+	}
+	
+	public void OnClickBtnDateEvent(String date){
+		
+	}
+	
+	
+	
+	/*	TODO Rename fragment
+	 *  Fragment Bluetooth
+	 *   
 	 */
 	public void pairedDevicesCount(View view) {
 		Log.i(TAG, "++ pairedDevicesCount ++");

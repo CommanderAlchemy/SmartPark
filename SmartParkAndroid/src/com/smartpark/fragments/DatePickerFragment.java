@@ -44,10 +44,10 @@ public class DatePickerFragment extends DialogFragment implements
 
 		if (getTag().equals("From Date")) {
 			((MainActivity) Ref.activeActivity).OnClickBtnDateEvent(getDate(),
-					1);
+					MainActivity.BUTTON_FROM_DATE);
 		} else if (getTag().equals("To Date")) {
 			((MainActivity) Ref.activeActivity).OnClickBtnDateEvent(getDate(),
-					2);
+					MainActivity.BUTTON_TO_DATE);
 		}
 	}
 

@@ -39,7 +39,7 @@ public class BackgroundOperationThread extends Thread {
 
 	public BackgroundOperationThread(Context applicationContext,
 			BlueController btController, TCPController tcpController) {
-		Log.i(TAG, "++ bgThread Constructor ++");
+		Log.e(TAG, "++ bgThread Constructor ++");
 
 		this.applicationContext = applicationContext;
 
@@ -112,10 +112,10 @@ public class BackgroundOperationThread extends Thread {
 		}
 		
 		if (btController == null) {
-			Log.e(TAG, "BlueController intance recreate");
+			Log.e(TAG, "BlueController was == null");
 			btController = new BlueController(applicationContext);
 		}
-
+		
 		if (D)
 			Log.e(TAG, "isConnected? " + btController.isConnected());
 		btController.closeConnection();
@@ -125,9 +125,9 @@ public class BackgroundOperationThread extends Thread {
 	@Override
 	public void run() {
 		// TODO remember to check for the shutdownFlag
-
+		
 		if (D)
-			Log.i(TAG, "++ bgThread started ++");
+			Log.e(TAG, "++  run  ++");
 		String btInData = null;
 		String tcpInData = null;
 		run = true;
@@ -225,7 +225,7 @@ public class BackgroundOperationThread extends Thread {
 	}// ==================================================================
 
 	private void btWrite() {
-		Log.i(TAG, "++ btWrite ++");
+		Log.e(TAG, "++ btWrite ++");
 		if (btController.isConnected()) {
 			byte[] data = btTransmitBuffer.removeFirst().getBytes();
 			btController.sendBytes(data);
@@ -238,7 +238,7 @@ public class BackgroundOperationThread extends Thread {
 	 * @return inData null if not connected or buffer not ready
 	 */
 	private String btRead() {
-		Log.i(TAG, "++ btRead ++");
+		Log.e(TAG, "++ btRead ++");
 		String inData = null;
 		if (btController.isConnected()) {
 			inData = btController.receiveString();
@@ -247,7 +247,7 @@ public class BackgroundOperationThread extends Thread {
 	}// ==================================================================
 
 	private void shutdownThread() {
-		Log.i(TAG, "++ shutdownThread ++");
+		Log.e(TAG, "++ shutdownThread ++");
 		// Do not invoke method that forcefully shut a thread down.
 		// Let the run method run out.
 		// this.shutdownThread(); wont work, just like suspend() and stop()
@@ -258,12 +258,12 @@ public class BackgroundOperationThread extends Thread {
 
 	// The next two methods put strings in transmitbuffer
 	public void sendByBT(String data) {
-		Log.i(TAG, "++ sendByBT ++");
+		Log.e(TAG, "++ sendByBT ++");
 		btTransmitBuffer.addLast(data + "\r\n");
 	}// ==================================================================
 
 	public void sendByTCP(String data) {
-		Log.i(TAG, "++ sendByTCP ++");
+		Log.e(TAG, "++ sendByTCP ++");
 		tcpTransmitBuffer.addLast(data);
 	}// ==================================================================
 

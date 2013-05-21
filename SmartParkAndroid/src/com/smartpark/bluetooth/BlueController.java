@@ -75,7 +75,7 @@ public class BlueController {
 	public BlueController(Context applicationContext) {
 		this.applicationContext = applicationContext;
 		if (D)
-			Log.i(TAG, "++ Constructor: BlueController ++");
+			Log.e(TAG, "++ Constructor: BlueController ++");
 
 		// Get the adapter and store it in a static variable
 		// This initializes the class
@@ -111,7 +111,7 @@ public class BlueController {
 	 */
 	public boolean findNearbyDevices(Activity invokerActivity) {
 		if (D)
-			Log.i(TAG, "++ findNearbyDevices ++");
+			Log.e(TAG, "++ findNearbyDevices ++");
 
 		if (!btAdapter.isDiscovering()) {
 			btAdapter.startDiscovery();
@@ -121,7 +121,7 @@ public class BlueController {
 
 	public Set<BluetoothDevice> getPairedDevicesList() {
 		if (D)
-			Log.i(TAG, "++ getPairedDevicesList ++");
+			Log.e(TAG, "++ getPairedDevicesList ++");
 
 		if (!btAdapter.isEnabled()) {
 			if (D)
@@ -142,7 +142,7 @@ public class BlueController {
 	 */
 	public BluetoothDevice getPairedDeviceByName(String name) {
 		if (D)
-			Log.i(TAG, "++ getPairedDeviceByName ++");
+			Log.e(TAG, "++ getPairedDeviceByName ++");
 
 		if (D)
 			Log.d(TAG, "--> Getting BluetoothDevice for: " + name);
@@ -173,7 +173,7 @@ public class BlueController {
 	 */
 	public BluetoothDevice getFoundDeviceByName(String name) {
 		if (D)
-			Log.i(TAG, "++ getFoundDeviceByName ++");
+			Log.e(TAG, "++ getFoundDeviceByName ++");
 
 		BluetoothDevice device;
 		Iterator<BluetoothDevice> iter;
@@ -199,7 +199,7 @@ public class BlueController {
 	 */
 	public ArrayList<BluetoothDevice> getFoundDevicesList() {
 		if (D)
-			Log.i(TAG, "++ getFoundDevices ++");
+			Log.e(TAG, "++ getFoundDevices ++");
 		return foundDevices;
 	}
 
@@ -207,7 +207,7 @@ public class BlueController {
 
 	public int disconnect() {
 		if (D)
-			Log.i(TAG, "++ disconnect ++");
+			Log.e(TAG, "++ disconnect ++");
 		setDisconnected();
 		try {
 			btSocket.close();
@@ -276,7 +276,7 @@ public class BlueController {
 	 */
 	public void connect() {
 		if (D)
-			Log.i(TAG, "++ connect ++");
+			Log.e(TAG, "++ connect ++");
 
 		connectionState = Ref.STATE_CONNECTING;
 
@@ -333,7 +333,7 @@ public class BlueController {
 
 	public int sendBytes(byte[] data) {
 		if (D)
-			Log.i(TAG, "++ sendString ++");
+			Log.e(TAG, "++ sendString ++");
 		try {
 			btOutStream.write(data);
 			return Ref.RESULT_OK;
@@ -352,7 +352,7 @@ public class BlueController {
 
 	public String receiveString() {
 		if (D)
-			Log.i(TAG, "++ receiveString ++");
+			Log.e(TAG, "++ receiveString ++");
 		if (btInStream != null) {
 			if (D)
 				Log.d(TAG, "iStream good");
@@ -363,6 +363,8 @@ public class BlueController {
 						Log.e(TAG, "bufferedReader was = null");
 					bufferedReader = new BufferedReader(new InputStreamReader(
 							btInStream));
+					Log.e(TAG, "bufferedReader was = null");
+
 				}
 				if (bufferedReader.ready()) {
 					if (D)
@@ -385,7 +387,7 @@ public class BlueController {
 
 	public boolean isDiscovering() {
 		if (D)
-			Log.d(TAG, "++ isDiscovering ++");
+			Log.e(TAG, "++ isDiscovering ++");
 		return btAdapter.isDiscovering();
 	}
 
@@ -399,7 +401,7 @@ public class BlueController {
 	// */
 	// public void unRegister_DeviceFoundReceiver() {
 	// if (D)
-	// Log.i(TAG, "++ unRegister_DeviceFoundReceiver ++");
+	// Log.e(TAG, "++ unRegister_DeviceFoundReceiver ++");
 	//
 	// applicationContext.unregisterReceiver(bt_foundDeviceReceiver);
 	// }
@@ -407,7 +409,7 @@ public class BlueController {
 
 	public int closeConnection() {
 		if (D)
-			Log.i(TAG, "++ closeConnection ++");
+			Log.e(TAG, "++ closeConnection ++");
 		try {
 			/*
 			 * The use of && prohibits isConnected() to be invoked if btSocket
@@ -434,7 +436,7 @@ public class BlueController {
 	// */
 	// public void unRegister_AdapterStateReceiver() {
 	// if (D)
-	// Log.i(TAG, "++ unRegister_AdapterStateReceiver ++");
+	// Log.e(TAG, "++ unRegister_AdapterStateReceiver ++");
 	//
 	// if (btStateIntentIsRegistered) {
 	// applicationContext.unregisterReceiver(bt_foundDeviceReceiver);
@@ -448,7 +450,7 @@ public class BlueController {
 
 	public void stopDiscovery() {
 		if (D)
-			Log.i(TAG, "++ cancelDiscovery ++");
+			Log.e(TAG, "++ cancelDiscovery ++");
 
 		// cancel any prior BT device discovery
 		if (btAdapter.isDiscovering()) {
@@ -458,13 +460,13 @@ public class BlueController {
 
 	public static void enableAdapterNoUserInteraction() {
 		if (D)
-			Log.i(TAG, "++ enableAdapterNoUserInteraction ++");
+			Log.e(TAG, "++ enableAdapterNoUserInteraction ++");
 		btAdapter.enable();
 	}
 
 	public boolean enableAdapter() {
 		if (D)
-			Log.i(TAG, "++ enableAdapter ++");
+			Log.e(TAG, "++ enableAdapter ++");
 		if (btAdapter != null)
 			Log.e(TAG, "btAdapter != null");
 		if (!btAdapter.isEnabled()) {
@@ -486,7 +488,7 @@ public class BlueController {
 
 	public boolean disableAdapter() {
 		if (D)
-			Log.i(TAG, "++ disableAdapter ++");
+			Log.e(TAG, "++ disableAdapter ++");
 		if (btAdapter.getState() == BluetoothAdapter.STATE_OFF) {
 			return true;
 		} else {
@@ -499,7 +501,7 @@ public class BlueController {
 
 	public void makeDiscoverable(MainActivity invokerActivity) {
 		if (D)
-			Log.i(TAG, "++ makeDiscoverable ++");
+			Log.e(TAG, "++ makeDiscoverable ++");
 		Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 		intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
 		invokerActivity.startActivityForResult(intent, REQUEST_DISCOVERABLE_BT);

@@ -30,14 +30,21 @@ public class HistoryFragment extends Fragment {
 	private String date = null;
 	private int day, year;
 	private String month;
-	
 	Button btnFromDate;
 	// This needs some fixing for code cleanup
-	public static final String ARG_SECTION_NUMBER = "section_number";
-
 	public HistoryFragment() {
 		if (D)
 			Log.i(TAG, "++ Fragment: " + this.toString() + " Loaded ++");
+
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View rootView = inflater.inflate(R.layout.frag_history_view, container,
+				false);
+		
+		
 		
 		final Calendar cal = Calendar.getInstance();
 		day = cal.get(Calendar.DAY_OF_MONTH);
@@ -60,13 +67,7 @@ public class HistoryFragment extends Fragment {
 		}
 		/* @formatter:on */
 		date = day + " " + month + " " + year;
-	}
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.frag_history_view, container,
-				false);
+		
 		
 		((Button) rootView.findViewById(R.id.btnFromDate)).setText(date);
 		((Button) rootView.findViewById(R.id.btnToDate)).setText(date);

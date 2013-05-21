@@ -1,5 +1,6 @@
 package com.smartpark.activities;
 
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.zip.Inflater;
 
@@ -9,11 +10,13 @@ import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,7 +33,7 @@ import com.smartpark.fragments.DemoFragment;
 import com.smartpark.fragments.DatePickerFragment;
 import com.smartpark.fragments.DebugFragment;
 import com.smartpark.fragments.DummySectionFragment;
-import com.smartpark.fragments.GPSFragment;
+import com.smartpark.fragments.HistoryFragment;
 import com.smartpark.fragments.SmartParkFragment;
 import com.smartpark.gps.GPSService;
 import com.smartpark.tcp.TCPController;
@@ -223,7 +226,7 @@ public class MainActivity extends FragmentActivity implements
 	public void onResume() {
 		super.onResume();
 		Log.i(TAG, "++ onResume ++");
-
+		
 		// Ref.activeActivity = this;
 		// Ref.bgThread.activityMAIN = true;
 	}
@@ -274,37 +277,44 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	public void OnClickBtnDateEvent(int[] newDate, int tag) {
-		String monthStr = null;
+		String month = null, pickedDate;
 		boolean error = true;
 
 		/* @formatter:off */
 		switch (newDate[1]) {
-		case 1:		monthStr = "Jan"; 	break;
-		case 2:		monthStr = "Feb";	break;
-		case 3:		monthStr = "Mar";	break;
-		case 4:		monthStr = "Apr";	break;
-		case 5:		monthStr = "Maj";	break;
-		case 6:		monthStr = "Jun";	break;
-		case 7:		monthStr = "Jul";	break;
-		case 8: 	monthStr = "Aug";	break;
-		case 9: 	monthStr = "Sep";	break;
-		case 10:	monthStr = "Okt";	break;
-		case 11:	monthStr = "Nov";	break;
-		case 12:	monthStr = "Dec";	break;
+		case 0:		month = "Jan"; 	break;
+		case 1:		month = "Feb";	break;
+		case 2:		month = "Mar";	break;
+		case 3:		month = "Apr";	break;
+		case 4:		month = "Maj";	break;
+		case 5:		month = "Jun";	break;
+		case 6:		month = "Jul";	break;
+		case 7: 	month = "Aug";	break;
+		case 8: 	month = "Sep";	break;
+		case 9:		month = "Okt";	break;
+		case 10:	month = "Nov";	break;
+		case 11:	month = "Dec";	break;
 		}
 		/* @formatter:on */
+		pickedDate = newDate[0] + " " + month + " " + newDate[2];
 
 		switch (tag) {
 		case 1:
 			int[] toDate = datePickerToDate.getDate();
-			if (toDate[2] != 0)
+			if (toDate[2] != 0){
 				if (newDate[2] <= toDate[2])
 					if (newDate[1] <= toDate[1])
 						if (newDate[0] <= toDate[0]) {
 							((Button) findViewById(R.id.btnFromDate))
-									.setText(monthStr);
+									.setText(pickedDate);
 							error = false;
 						}
+			}else{
+				((Button) findViewById(R.id.btnFromDate))
+				.setText(pickedDate);
+				error = false;
+			}
+			
 
 			if (error)
 				Toast.makeText(this, "From date > To date", Toast.LENGTH_LONG)
@@ -314,17 +324,24 @@ public class MainActivity extends FragmentActivity implements
 
 		case 2:
 			int[] fromDate = datePickerFromDate.getDate();
-			if (fromDate[2] != 0)
+			if (fromDate[2] != 0){
 				if (newDate[2] >= fromDate[2])
 					if (newDate[1] >= fromDate[1])
 						if (newDate[0] >= fromDate[0]) {
 							((Button) findViewById(R.id.btnToDate))
-									.setText(monthStr);
+									.setText(pickedDate);
 							error = false;
 						}
-			if (error)
-				Toast.makeText(this, "From date > To date", Toast.LENGTH_LONG)
-						.show();
+		}else{
+			((Button) findViewById(R.id.btnToDate))
+			.setText(pickedDate);
+			error = false;
+		}
+		
+
+		if (error)
+			Toast.makeText(this, "From date > To date", Toast.LENGTH_LONG)
+					.show();
 
 			break;
 		}
@@ -340,37 +357,37 @@ public class MainActivity extends FragmentActivity implements
 	 */
 
 	
-	public void onclickBtnParkRolf(View view) {
+	public void onClickBtnParkRolf(View view) {
 		Toast.makeText(this, "Parked Rolf", Toast.LENGTH_SHORT).show();
 	}
 
-	public void onclickBtnParkKristina(View view) {
+	public void onClickBtnParkKristina(View view) {
 		Toast.makeText(this, "Parked Kristina", Toast.LENGTH_SHORT).show();
 	}
 
-	public void onclickBtnParkTommy(View view) {
+	public void onClickBtnParkTommy(View view) {
 		Toast.makeText(this, "Parked Tommy", Toast.LENGTH_SHORT).show();
 	}
 
-	public void onclickBtnStopParkRolf(View view) {
+	public void onClickBtnStopParkRolf(View view) {
 		Toast.makeText(this, "Stopped Parking Rolf", Toast.LENGTH_SHORT).show();
 	}
 
-	public void onclickBtnStopParkKristina(View view) {
+	public void onClickBtnStopParkKristina(View view) {
 		Toast.makeText(this, "Stopped Parking Kristina", Toast.LENGTH_SHORT)
 				.show();
 	}
 
-	public void onclickBtnStopParkTommy(View view) {
+	public void onClickBtnStopParkTommy(View view) {
 		Toast.makeText(this, "Stopped Parking Tommy", Toast.LENGTH_SHORT)
 				.show();
 	}
 
-	public void onclickBtnLogin(View view) {
+	public void onClickBtnLogin(View view) {
 		Toast.makeText(this, "Logging into Server", Toast.LENGTH_SHORT).show();
 	}
 
-	public void onclickBtnSencLocation(View view) {
+	public void onClickBtnSencLocation(View view) {
 		Toast.makeText(this, "Sending GPS Location", Toast.LENGTH_SHORT).show();
 	}
 
@@ -639,7 +656,7 @@ public class MainActivity extends FragmentActivity implements
 				break;
 
 			case 1:
-				fragment = new GPSFragment();
+				fragment = new HistoryFragment();
 				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
 				fragment.setArguments(args);
 				break;

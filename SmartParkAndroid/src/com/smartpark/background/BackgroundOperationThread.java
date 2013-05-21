@@ -37,7 +37,6 @@ public class BackgroundOperationThread extends Thread {
 		this.applicationContext = applicationContext;
 
 		// BT
-		Ref.flagBtState = Ref.STATE_NOT_CONNECTED;
 		btController = new BlueController(applicationContext);
 
 		// TCP
@@ -129,7 +128,7 @@ public class BackgroundOperationThread extends Thread {
 		run = true;
 
 		while (run) {
-			if (Ref.flagBtState == Ref.STATE_CONNECTED) {
+			if (isBTConnected()) {
 				// Code to process
 				try {
 					Log.d(TAG, "--> reading started");

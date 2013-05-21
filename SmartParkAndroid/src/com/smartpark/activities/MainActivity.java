@@ -267,17 +267,16 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	public void onClickBtnFromDate(View view){
 		DialogFragment newFragment = new DatePickerFragment();
-		newFragment.show(getFragmentManager(), "DatePickerFromDate");
-//		((Button) findViewById(R.id.btnFromDate)).setText("Fuuuuuuuuuuuuu");
+		newFragment.show(getFragmentManager(), "From Date");
 	}
 	
 	public void onClickBtnToDate(View view){
 		DialogFragment newFragment = new DatePickerFragment();
-		newFragment.show(getFragmentManager(), "DatePickerToDate");
+		newFragment.show(getFragmentManager(), "To Date");
 	}
 	
-	public void OnClickBtnDateEvent(String date){
-		
+	public void OnClickBtnDateEvent(String date, int tag){
+		((Button) findViewById(R.id.btnFromDate)).setText(date);
 	}
 	
 	

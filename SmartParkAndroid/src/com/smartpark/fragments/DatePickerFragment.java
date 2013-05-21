@@ -27,7 +27,7 @@ public class DatePickerFragment extends DialogFragment implements
 			this.month = c.get(Calendar.MONTH);
 			this.day = c.get(Calendar.DAY_OF_MONTH);
 		}
-
+		
 		// Create a new instance of DatePickerDialog and return it
 		return new DatePickerDialog(getActivity(), this, this.year, this.month,
 				this.day);
@@ -58,7 +58,13 @@ public class DatePickerFragment extends DialogFragment implements
 		
 		String date = day + ". " + monthStr + " " + year;
 		
-		MainActivity g = ((MainActivity)Ref.activeActivity);
+		if(getTag().equals("From Date")){
+			((MainActivity)Ref.activeActivity).OnClickBtnDateEvent(date, 1);
+		}else if(getTag().equals("To Date")){
+			((MainActivity)Ref.activeActivity).OnClickBtnDateEvent(date, 2);
+		}
+		
+		
 	}
 
 	public int[] getDate() {

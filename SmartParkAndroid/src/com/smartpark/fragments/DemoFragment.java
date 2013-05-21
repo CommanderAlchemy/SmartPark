@@ -36,28 +36,22 @@ public class DemoFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.frag_demo_view,
-				container, false);
-		TextView dummyTextView = (TextView) rootView
-				.findViewById(R.id.section_label);
-		dummyTextView.setText(Integer.toString(getArguments().getInt(
-				ARG_SECTION_NUMBER)));
+		View rootView = inflater.inflate(R.layout.frag_demo_view, container,
+				false);
+
 		return rootView;
 	}
-	
-	public void pairedDevicesCount(){
-		
+
+	public void pairedDevicesCount() {
+
 	}
-	public void isBTavailable(){
-		
+
+	public void isBTavailable() {
+
 	}
-	public void isBTEnable(){
-		
+
+	public void isBTEnable() {
+
 	}
-	
-	
-	
-	
-	
-	
+
 }// ============================================================================

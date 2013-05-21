@@ -8,44 +8,176 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity$DummySectionFragment" >
 
-    <TextView
-        android:id="@+id/section_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    
-    <TextView android:id="@+id/textOutput"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        />
-
     <Button
-        android:id="@+id/queryPairedDevices"
+        android:id="@+id/GPS_Stop"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/textOutput"
-        android:layout_alignTop="@+id/textOutput"
-        android:onClick="pairedDevicesCount"
-        android:text="how many paired" />
+        android:layout_above="@+id/GPS_Start"
+        android:layout_alignLeft="@+id/GPS_Start"
+        android:layout_alignRight="@+id/GPS_Start"
+        android:minHeight="10dip"
+        android:onClick="endGPS"
+        android:text="Stop" />
+
+    <ProgressBar
+        android:id="@+id/LowerLineSeperator"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/isBTavailable"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/btnLogin"
+        android:progress="100" />
+
+    <Button
+        android:id="@+id/btnSendLocation"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/queryPairedDevices"
+        android:layout_alignBottom="@+id/queryPairedDevices"
+        android:layout_alignParentRight="true"
+        android:minHeight="10dp"
+        android:onClick="onClickBtnSendLocation"
+        android:text="SendLocation" />
+
+    <Button
+        android:id="@+id/btnLogin"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/btnSendLocation"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/isBTavailable"
+        android:minHeight="10dp"
+        android:onClick="onClickBtnLogin"
+        android:text="Login" />
+
+    <AnalogClock
+        android:id="@+id/analogClock1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/LowerLineSeperator"
+        android:layout_alignTop="@+id/btnStopParkRolf"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/GPS_Start"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:minHeight="10dip"
+        android:onClick="startGPS"
+        android:text="Start" />
 
     <Button
         android:id="@+id/isBTEnable"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignTop="@+id/section_label"
+        android:layout_above="@+id/queryPairedDevices"
+        android:layout_alignLeft="@+id/queryPairedDevices"
+        android:layout_alignRight="@+id/queryPairedDevices"
+        android:minHeight="10dip"
         android:onClick="isBTEnable"
-        android:text="is BT enable" />
+        android:text="isEnabled" />
+
+    <Button
+        android:id="@+id/queryPairedDevices"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/GPS_Start"
+        android:layout_alignBottom="@+id/GPS_Start"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="48dp"
+        android:layout_toLeftOf="@+id/analogClock1"
+        android:minHeight="10dip"
+        android:onClick="pairedDevicesCount"
+        android:text="#Paired" />
+
+    <Button
+        android:id="@+id/btnParkKristina"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnParkTommy"
+        android:layout_alignLeft="@+id/btnParkTommy"
+        android:layout_alignRight="@+id/btnParkTommy"
+        android:minHeight="10dp"
+        android:onClick="onClickBtnParkKristina"
+        android:text="Park Kristina" />
+
+    <Button
+        android:id="@+id/btnParkTommy"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/LowerLineSeperator"
+        android:layout_alignLeft="@+id/LowerLineSeperator"
+        android:layout_alignRight="@+id/isBTavailable"
+        android:minHeight="10dp"
+        android:onClick="onClickBtnParkTommy"
+        android:text="Park Tommy" />
+
+    <Button
+        android:id="@+id/btnParkRolf"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnParkKristina"
+        android:layout_alignLeft="@+id/btnParkKristina"
+        android:layout_alignRight="@+id/btnParkKristina"
+        android:minHeight="10dp"
+        android:onClick="onClickBtnParkRolf"
+        android:text="Park Rolf" />
 
     <Button
         android:id="@+id/isBTavailable"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/textOutput"
-        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/isBTEnable"
+        android:layout_alignLeft="@+id/isBTEnable"
+        android:layout_alignRight="@+id/isBTEnable"
+        android:minHeight="10dip"
         android:onClick="isBTavailable"
-        android:text="isBTavailable" />
+        android:text="isAvailable" />
+
+    <Button
+        android:id="@+id/btnStopParkTommy"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/LowerLineSeperator"
+        android:layout_alignLeft="@+id/btnLogin"
+        android:minHeight="10dp"
+        android:onClick="onClickBtnStopParkTommy"
+        android:text="Stop Parking" />
+
+    <Button
+        android:id="@+id/btnStopParkKristina"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnStopParkTommy"
+        android:layout_alignLeft="@+id/btnStopParkTommy"
+        android:minHeight="10dp"
+        android:onClick="onClickBtnStopParkKristina"
+        android:text="Stop Parking" />
+
+    <Button
+        android:id="@+id/btnStopParkRolf"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnStopParkKristina"
+        android:layout_alignLeft="@+id/btnStopParkKristina"
+        android:minHeight="10dp"
+        android:onClick="onClickBtnStopParkRolf"
+        android:text="Stop Parking" />
 
 </RelativeLayout>

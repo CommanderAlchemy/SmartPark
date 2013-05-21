@@ -56,9 +56,9 @@ public class Ref {
 	public final static int RESULT_EXCEPTION = -3;
 
 	// TODO move to the classes
-	// Global control-flags
+	// Global State-flags
 	public static int flagTcpState = STATE_NOT_CONNECTED;
-	public static int flagBtState = STATE_NOT_CONNECTED;
+	
 
 	// TODO remove entirely
 	// Objects used for Internet communication

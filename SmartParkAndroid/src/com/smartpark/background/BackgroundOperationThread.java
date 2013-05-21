@@ -12,9 +12,6 @@ import com.smartpark.bluetooth.BlueController;
 
 public class BackgroundOperationThread extends Thread {
 
-
-
-
 	private static long shutdownTime = 0; // 0 = never
 
 	// TRANSMITBUFFERS
@@ -26,12 +23,12 @@ public class BackgroundOperationThread extends Thread {
 	private static final boolean D = Ref.D;
 
 	private static Context applicationContext;
-	
+
 	private boolean run = true;
 	private boolean userIsAlreadyAsked = false;
-	
+
 	private BlueController btController;
-	
+
 	// =========== END OF CLASS VARIABLES ===============================
 
 	public BackgroundOperationThread(Context applicationContext) {
@@ -106,8 +103,8 @@ public class BackgroundOperationThread extends Thread {
 			btController.enableAdapter();
 			userIsAlreadyAsked = true;
 			Log.d(TAG, "--> Enabling done");
-//			Toast.makeText(applicationContext, "Enabled", Toast.LENGTH_SHORT)
-//					.show();
+			// Toast.makeText(applicationContext, "Enabled", Toast.LENGTH_SHORT)
+			// .show();
 		}
 
 		if (btController == null) {
@@ -195,7 +192,8 @@ public class BackgroundOperationThread extends Thread {
 			} catch (InterruptedException e) {
 				Log.e(TAG, "InterruptedException: ", e);
 			}
-			if (activityMAIN || activitySettings || activityLOGIN) {
+			if (Ref.flagMainActivityInFront || Ref.flagSettingsActivityInFront
+					|| Ref.flagLoginActivityInFront) {
 				shutdownTime = 0;
 			} else {
 				if (shutdownTime == 0) {

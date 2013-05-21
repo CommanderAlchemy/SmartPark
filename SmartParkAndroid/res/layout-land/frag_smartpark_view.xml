@@ -236,7 +236,8 @@
             android:layout_alignRight="@+id/analogClock1"
             android:layout_below="@+id/analogClock1"
             android:layout_marginTop="14dp"
-            android:text="Park" />
+            android:text="Park"
+            android:onClick="onClickBtnPark" />
 
     </RelativeLayout>
 

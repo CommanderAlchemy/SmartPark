@@ -25,7 +25,7 @@ import com.smartpark.R;
 import com.smartpark.background.BackOperationService;
 import com.smartpark.background.Ref;
 import com.smartpark.bluetooth.BlueController;
-import com.smartpark.fragments.BluetoothFragment;
+import com.smartpark.fragments.DemoFragment;
 import com.smartpark.fragments.DatePickerFragment;
 import com.smartpark.fragments.DebugFragment;
 import com.smartpark.fragments.DummySectionFragment;
@@ -259,6 +259,9 @@ public class MainActivity extends FragmentActivity implements
 	/*
 	 * Fragment SmartPark
 	 */
+	public void onClickBtnPark(View view){
+		Toast.makeText(this, "Parking...", Toast.LENGTH_SHORT).show();
+	}
 
 	/*
 	 * Fragment History
@@ -272,124 +275,134 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	public void OnClickBtnDateEvent(int[] newDate, int tag) {
-		int fromDate = 0;
+		String monthStr = null;
+		boolean error = true;
 
-		String monthStr;
-		//@formatter:off
+		/* @formatter:off */
 		switch (newDate[1]) {
-		case 1:
-			monthStr = "Jan";
-			break;
-		case 2:
-			monthStr = "Feb";
-			break;
-		case 3:
-			monthStr = "Mar";
-			break;
-		case 4:
-			monthStr = "Apr";
-			break;
-		case 5:
-			monthStr = "Maj";
-			break;
-		case 6:
-			monthStr = "Jun";
-			break;
-		case 7:
-			monthStr = "Jul";
-			break;
-		case 8:
-			monthStr = "Aug";
-			break;
-		case 9:
-			monthStr = "Sep";
-			break;
-		case 10:
-			monthStr = "Okt";
-			break;
-		case 11:
-			monthStr = "Nov";
-			break;
-		case 12:
-			monthStr = "Dec";
-			break;
-		default:
-			monthStr = "Unknown";
-			break;
+		case 1:		monthStr = "Jan"; 	break;
+		case 2:		monthStr = "Feb";	break;
+		case 3:		monthStr = "Mar";	break;
+		case 4:		monthStr = "Apr";	break;
+		case 5:		monthStr = "Maj";	break;
+		case 6:		monthStr = "Jun";	break;
+		case 7:		monthStr = "Jul";	break;
+		case 8: 	monthStr = "Aug";	break;
+		case 9: 	monthStr = "Sep";	break;
+		case 10:	monthStr = "Okt";	break;
+		case 11:	monthStr = "Nov";	break;
+		case 12:	monthStr = "Dec";	break;
 		}
-		//@formatter:on
-		boolean error = false;
+		/* @formatter:on */
 
 		switch (tag) {
 		case 1:
 			int[] toDate = datePickerToDate.getDate();
-			if (toDate[2] != 0) {
-				if (newDate[2] <= toDate[2]) {
-					if (newDate[1] <= toDate[1]) {
+			if (toDate[2] != 0)
+				if (newDate[2] <= toDate[2])
+					if (newDate[1] <= toDate[1])
 						if (newDate[0] <= toDate[0]) {
-							((Button) findViewById(R.id.btnFromDate)).setText(monthStr);
-						} else {
-							error = true;
+							((Button) findViewById(R.id.btnFromDate))
+									.setText(monthStr);
+							error = false;
 						}
-					} else {
-						error = true;
-					}
-				} else {
-					error = true;
-				}
-			}
-			if (error) {
-				
-			}
+
+			if (error)
+				Toast.makeText(this, "From date > To date", Toast.LENGTH_LONG)
+						.show();
 
 			break;
 
 		case 2:
-			
+			int[] fromDate = datePickerFromDate.getDate();
+			if (fromDate[2] != 0)
+				if (newDate[2] >= fromDate[2])
+					if (newDate[1] >= fromDate[1])
+						if (newDate[0] >= fromDate[0]) {
+							((Button) findViewById(R.id.btnToDate))
+									.setText(monthStr);
+							error = false;
+						}
+			if (error)
+				Toast.makeText(this, "From date > To date", Toast.LENGTH_LONG)
+						.show();
+
 			break;
 		}
-		
-		// Query the server for the period TODO
+
+		/*
+		 * TODO Fix Server Database for parking logs! Query the server for
+		 * Parking Data!
+		 */
 	}
 
 	/*
-	 * TODO Rename fragment Fragment Bluetooth
+	 * Fragment Demo
 	 */
-	public void pairedDevicesCount(View view) {
-		Log.i(TAG, "++ pairedDevicesCount ++");
 
-		String str = Ref.activeActivity != null ? "activeActivity OK "
-				: "activeActivity null ";
-		str += Ref.bgThread != null ? "bgThread OK " : "bgThread null ";
-		str += Ref.gps_text != null ? "gps_text OK " : "gps_text null ";
-		str += Ref.tcpClient != null ? "tcpClient OK " : "tcpClient null ";
-		str += BlueController.applicationContext != null ? "applicationContext OK "
-				: "applicationContext null ";
-		str += BlueController.btAdapter != null ? "btAdapter OK "
-				: "btAdapter null ";
-		str += BlueController.btDevice != null ? "btDevice OK "
-				: "btDevice null ";
-		str += BlueController.btInStream != null ? "btInStream OK "
-				: "btInStream null ";
-		str += BlueController.btOutStream != null ? "btOutStream OK "
-				: "btOutStream null ";
-		str += BlueController.btSocket != null ? "btSocket OK "
-				: "btSocket null ";
-		Log.e(TAG, str);
-
+	public void onclickBtnParkRolf(View view) {
+		Toast.makeText(this, "Parked Rolf", Toast.LENGTH_SHORT).show();
 	}
 
-	public void isBTavailable(View view) {
+	public void onclickBtnParkKristina(View view) {
+		Toast.makeText(this, "Parked Kristina", Toast.LENGTH_SHORT).show();
+	}
+
+	public void onclickBtnParkTommy(View view) {
+		Toast.makeText(this, "Parked Tommy", Toast.LENGTH_SHORT).show();
+	}
+
+	public void onclickBtnStopParkRolf(View view) {
+		Toast.makeText(this, "Stopped Parking Rolf", Toast.LENGTH_SHORT).show();
+	}
+
+	public void onclickBtnStopParkKristina(View view) {
+		Toast.makeText(this, "Stopped Parking Kristina", Toast.LENGTH_SHORT)
+				.show();
+	}
+
+	public void onclickBtnStopParkTommy(View view) {
+		Toast.makeText(this, "Stopped Parking Tommy", Toast.LENGTH_SHORT)
+				.show();
+	}
+
+	public void onclickBtnLogin(View view) {
+		Toast.makeText(this, "Logging into Server", Toast.LENGTH_SHORT).show();
+	}
+
+	public void onclickBtnSencLocation(View view) {
+		Toast.makeText(this, "Sending GPS Location", Toast.LENGTH_SHORT).show();
+	}
+
+	public void onClickBtnpairedDevicesCount(View view) {
+		Log.i(TAG, "++ pairedDevicesCount ++");
+
+		/* @formatter:off */
+		String str = Ref.activeActivity 			!= null ? "\nactiveActivity OK "		: "\nactiveActivity null ";
+		str += Ref.bgThread 						!= null ? "\nbgThread OK " 			: "\nbgThread null ";
+		str += Ref.gps_text 						!= null ? "\ngps_text OK " 			: "\ngps_text null ";
+		str += Ref.tcpClient 						!= null ? "\ntcpClient OK " 		: "\ntcpClient null ";
+		str += BlueController.applicationContext	!= null ? "\napplicationContext OK ": "\napplicationContext null ";
+		str += BlueController.btAdapter 			!= null ? "\nbtAdapter OK "			: "\nbtAdapter null ";
+		str += BlueController.btDevice 				!= null ? "\nbtDevice OK "			: "\nbtDevice null ";
+		str += BlueController.btInStream 			!= null ? "\nbtInStream OK "		: "\nbtInStream null ";
+		str += BlueController.btOutStream			!= null ? "\nbtOutStream OK "		: "\nbtOutStream null ";
+		str += BlueController.btSocket				!= null ? "\nbtSocket OK "			: "\nbtSocket null ";
+		Log.e(TAG, str);
+		/* @formatter:on */
+	}
+
+	public void onClickBtnisBTavailable(View view) {
 		Ref.bgThread.sendByBT("1");
 		Log.d(TAG, "wrote 1");
 	}
 
-	public void isBTEnable(View view) {
+	public void onClickBtnisBTEnable(View view) {
 		Ref.bgThread.sendByBT("999950");
 		Log.d(TAG, "wrote 10");
 	}
 
-	public void startGPS(View view) {
+	public void onClickBtnstartGPS(View view) {
 		Log.i(TAG, "++ startGPS ++");
 
 		// These belong to GPSFragment
@@ -400,7 +413,7 @@ public class MainActivity extends FragmentActivity implements
 
 	}
 
-	public void endGPS(View view) {
+	public void onClickBtnendGPS(View view) {
 		stopService(new Intent(getBaseContext(), GPSService.class));
 	}
 
@@ -425,6 +438,7 @@ public class MainActivity extends FragmentActivity implements
 	/*
 	 * debugFragment Button Events
 	 */
+
 	/**
 	 * Connect to server onClick-method.
 	 * 
@@ -633,7 +647,7 @@ public class MainActivity extends FragmentActivity implements
 				break;
 
 			case 2:
-				fragment = new BluetoothFragment();
+				fragment = new DemoFragment();
 				args.putInt(DebugFragment.ARG_SECTION_NUMBER, position + 1);
 				fragment.setArguments(args);
 				break;

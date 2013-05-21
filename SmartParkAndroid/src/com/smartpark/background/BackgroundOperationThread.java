@@ -169,15 +169,15 @@ public class BackgroundOperationThread extends Thread {
 				fixConnections();
 			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
-			if (Ref.flagTcpState == Ref.STATE_CONNECTED) {
+			if (tcpController.isConnected()) {
 				// Code to process
-
+				
 				// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 			} else {
 				// Handle reconnection
-
+				
 			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-
+			
 			Log.i(TAG, "Connection state: " + (btController.isConnected()));
 
 			// -----------------------------------------------------

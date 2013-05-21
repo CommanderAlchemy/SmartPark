@@ -77,7 +77,7 @@ public class TCPController {
 		new Thread() {
 			public void run() {
 				try {
-					Ref.flagTcpState = Ref.STATE_CONNECTING;
+					setConnecting();
 					InetAddress serverAddr = InetAddress
 							.getByName(Settings.Server_IP);
 					// create a socket to make the connection with the server
@@ -89,21 +89,22 @@ public class TCPController {
 										tcpSocket.getOutputStream())), true);
 						mBufferIn = new BufferedReader(new InputStreamReader(
 								tcpSocket.getInputStream()));
-						Ref.flagTcpState = Ref.STATE_CONNECTED;
+						setConnected();
 					} else {
-						Ref.flagTcpState = Ref.STATE_NOT_CONNECTED;
+						setDisconnected();
 					}
 				} catch (UnknownHostException e) {
 					Log.e(TAG, "UnknownHostException: ", e);
-					Ref.flagTcpState = Ref.STATE_NOT_CONNECTED;
+					setDisconnected();
 				} catch (IOException e) {
 					Log.e(TAG, "IOException: ", e);
-					Ref.flagTcpState = Ref.STATE_NOT_CONNECTED;
+					setDisconnected();
 				}
 			}
 		}.start();
-	}// ===================================================================
-		// ===================================================================
+	}
+
+	// ===================================================================
 
 	/**
 	 * Sends the message entered by client to the server
@@ -168,10 +169,10 @@ public class TCPController {
 						mMessageListener.messageReceived(mServerMessage);
 					}
 				}
-
+				
 				Log.d(TAG + "RESPONSE FROM SERVER", "S: Received Message: '"
 						+ mServerMessage + "'");
-
+				
 			} catch (Exception e) {
 				Log.e(TAG, "Error", e);
 			} finally {
@@ -185,38 +186,37 @@ public class TCPController {
 			Log.e(TAG + " TCP", "C: Error", e);
 		}
 	}// ===========================================================================
-	
+
 	// CONNECTION STATE SETTERS AND GETTERS
 
-		public boolean isConnected() {
-			if (tcpSocket != null) {
-				if (tcpSocket.isConnected()) {
-					connectionState = Ref.STATE_CONNECTED;
-					return true;
-				} else {
-					connectionState = Ref.STATE_NOT_CONNECTED;
-					return false;
-				}
+	public boolean isConnected() {
+		if (tcpSocket != null) {
+			if (tcpSocket.isConnected()) {
+				connectionState = Ref.STATE_CONNECTED;
+				return true;
+			} else {
+				connectionState = Ref.STATE_NOT_CONNECTED;
+				return false;
 			}
-			return false;
 		}
-
-		public boolean isConnecting() {
-			return connectionState == Ref.STATE_CONNECTING;
-		}
-
-		public void setStateConnecting() {
-			connectionState = Ref.STATE_CONNECTING;
-		}
-
-		public void setStateConnected() {
-			connectionState = Ref.STATE_CONNECTED;
-		}
-
-		public void setDisconnected() {
-			connectionState = Ref.STATE_NOT_CONNECTED;
-
-		}
-
-		// ===================================
+		return false;
+	}
+	
+	public boolean isConnecting() {
+		return connectionState == Ref.STATE_CONNECTING;
+	}
+	
+	public void setConnecting() {
+		connectionState = Ref.STATE_CONNECTING;
+	}
+	
+	public void setConnected() {
+		connectionState = Ref.STATE_CONNECTED;
+	}
+	
+	public void setDisconnected() {
+		connectionState = Ref.STATE_NOT_CONNECTED;
+	}
+	
+	// ===================================
 }

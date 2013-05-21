@@ -52,7 +52,7 @@
         android:layout_alignLeft="@+id/GPS_Start"
         android:layout_alignRight="@+id/GPS_Start"
         android:minHeight="10dip"
-        android:onClick="onClickBtnendGPS"
+        android:onClick="onClickBtnEndGPS"
         android:text="Stop" />
 
     <Button
@@ -64,7 +64,7 @@
         android:layout_alignBottom="@+id/queryPairedDevices"
         android:layout_centerHorizontal="true"
         android:minHeight="10dip"
-        android:onClick="onClickBtnstartGPS"
+        android:onClick="onClickBtnStartGPS"
         android:text="Start" />
 
     <Button

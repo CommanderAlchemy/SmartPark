@@ -17,7 +17,7 @@
         android:layout_alignLeft="@+id/GPS_Start"
         android:layout_alignRight="@+id/GPS_Start"
         android:minHeight="10dip"
-        android:onClick="endGPS"
+        android:onClick="onClickBtnEndGPS"
         android:text="Stop" />
 
     <ProgressBar
@@ -70,7 +70,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:minHeight="10dip"
-        android:onClick="startGPS"
+        android:onClick="onClickBtnStartGPS"
         android:text="Start" />
 
     <Button

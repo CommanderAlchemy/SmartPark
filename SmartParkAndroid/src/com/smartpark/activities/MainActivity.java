@@ -276,20 +276,10 @@ public class MainActivity extends FragmentActivity implements
 	}
 	
 	public void OnClickBtnDateEvent(int[] date, int tag){
-		int FromDate = 0;
-		int ToDate = 0;
+		int fromDate = 0;
+		int toDate = 0;
 		String monthStr;
 		
-		switch (tag) {
-		case 1:
-			ToDate = FromDate;
-			
-			break;
-			
-		case 2:
-			
-			break;
-		}
 		
 		switch (date[1]) {
 		case 1:monthStr = "Jan"; break;
@@ -307,13 +297,17 @@ public class MainActivity extends FragmentActivity implements
 		default:monthStr = "Unknown"; break;
 		}
 		
-		
-		if (FromDate > ToDate)
-			System.out.println("Error From bigger than To");
-		
+		switch (tag) {
+		case 1:
+			fromDate = date[2]+date[1]+date[0];
+			break;
+			
+		case 2:
+			toDate = date[0]+date[1]+date[2];
+			break;
+		}
 //		((Button) findViewById(R.id.btnFromDate)).setText(date);
 	}
-	
 	
 	
 	/*	TODO Rename fragment

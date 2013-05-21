@@ -11,14 +11,17 @@ import android.preference.PreferenceManager.OnActivityResultListener;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.smartpark.bluetooth.BlueController;
 import com.smartpark.broadcastReceivers.BTAdapterStateReceiver;
 import com.smartpark.broadcastReceivers.BTFoundDeviceReceiver;
+import com.smartpark.tcp.TCPController;
 
 public class BackOperationService extends Service {
 
 	// Create a BroadcastReceiver for ACTION_FOUND
-	private static BTFoundDeviceReceiver btFoundDeviceReceiver = new BTFoundDeviceReceiver();
-	private static BTAdapterStateReceiver btAdapterStateReceiver = new BTAdapterStateReceiver();
+	private static BTFoundDeviceReceiver btFoundDeviceReceiver;
+	private static BTAdapterStateReceiver btAdapterStateReceiver;
+
 	/*
 	 * Create a filter so that we only receive intent for events that we are
 	 * interested in.
@@ -60,7 +63,15 @@ public class BackOperationService extends Service {
 		applicationContext = getApplicationContext();
 		Toast.makeText(applicationContext, "Service started",
 				Toast.LENGTH_SHORT).show();
-		Ref.bgThread = new BackgroundOperationThread(applicationContext);
+		
+		BlueController btController = new BlueController(applicationContext);
+		TCPController tcpController = new TCPController();
+
+		btFoundDeviceReceiver = new BTFoundDeviceReceiver(btController);
+		btAdapterStateReceiver = new BTAdapterStateReceiver(btController);
+
+		Ref.bgThread = new BackgroundOperationThread(applicationContext,
+				btController, tcpController);
 		Ref.bgThread.start();
 	}
 

@@ -14,6 +14,13 @@ public class BTFoundDeviceReceiver extends BroadcastReceiver {
 	private static final boolean D = Ref.D;
 	private static final String TAG = "BT_FoundDeviceReceiver";
 
+	BlueController btController;
+
+	public BTFoundDeviceReceiver(BlueController btController) {
+		super();
+		this.btController = btController;
+	}
+
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		// may need to chain this to a recognizing function

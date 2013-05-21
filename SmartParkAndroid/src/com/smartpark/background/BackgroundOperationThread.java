@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.smartpark.bluetooth.BlueController;
+import com.smartpark.tcp.TCPController;
 
 public class BackgroundOperationThread extends Thread {
 
@@ -24,25 +25,29 @@ public class BackgroundOperationThread extends Thread {
 
 	private static Context applicationContext;
 
+	// USED WHEN INITIATING SOFT SHUTDOWN (RECOMMENDED ON THE INTERNET)
 	private boolean run = true;
+	
+	// CONTROL FLAGS
 	private boolean userIsAlreadyAsked = false;
 
+	// REFERENCES TO CONTROL-CLASSES
 	private BlueController btController;
+	private TCPController tcpController;
 
 	// =========== END OF CLASS VARIABLES ===============================
 
-	public BackgroundOperationThread(Context applicationContext) {
+	public BackgroundOperationThread(Context applicationContext,
+			BlueController btController, TCPController tcpController) {
 		Log.i(TAG, "++ bgThread Constructor ++");
 
 		this.applicationContext = applicationContext;
 
 		// BT
-		btController = new BlueController(applicationContext);
+		this.btController = btController;
 
 		// TCP
-		Ref.flagTcpState = Ref.STATE_NOT_CONNECTED;
-		Ref.tcpClient = null;
-		// TODO add more to this
+		this.tcpController = tcpController;
 
 		// Check to see if bluetooth is available
 		if (!btController.isBluetoothAdapterAvailable()) {
@@ -81,9 +86,9 @@ public class BackgroundOperationThread extends Thread {
 
 		btController.setStateConnecting();
 		boolean discovering;
-		
-		// Enable bluetooth if disabled by asking the user first
-		if (!btController.isEnabled()) {
+
+		// Enable bluetooth if disabled by asking the user first (only once)
+		if (!userIsAlreadyAsked && !btController.isEnabled()) {
 			Log.d(TAG, "--> bluetooth is disabled");
 			/*
 			 * Certain methods need to invoke methods of an Activity-class. But
@@ -105,7 +110,7 @@ public class BackgroundOperationThread extends Thread {
 			// Toast.makeText(applicationContext, "Enabled", Toast.LENGTH_SHORT)
 			// .show();
 		}
-
+		
 		if (btController == null) {
 			Log.e(TAG, "BlueController intance recreate");
 			btController = new BlueController(applicationContext);
@@ -151,9 +156,9 @@ public class BackgroundOperationThread extends Thread {
 				} catch (NumberFormatException e) {
 					Log.e(TAG, "NumberFormatException");
 				}
-				
+
 				while (btTransmitBuffer.size() > 0
-						&& Ref.getbtState() == Ref.STATE_CONNECTED) {
+						&& btController.isConnected()) {
 					Log.d(TAG, "BT sending data");
 					btWrite();
 				}
@@ -173,8 +178,7 @@ public class BackgroundOperationThread extends Thread {
 
 			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
-			Log.i(TAG, "Connection state: "
-					+ (btController.isConnected()));
+			Log.i(TAG, "Connection state: " + (btController.isConnected()));
 
 			// -----------------------------------------------------
 			// -----------------------------------------------------
@@ -222,7 +226,7 @@ public class BackgroundOperationThread extends Thread {
 
 	private void btWrite() {
 		Log.i(TAG, "++ btWrite ++");
-		if (Ref.btIsConnected()) {
+		if (btController.isConnected()) {
 			byte[] data = btTransmitBuffer.removeFirst().getBytes();
 			btController.sendBytes(data);
 		}
@@ -236,7 +240,7 @@ public class BackgroundOperationThread extends Thread {
 	private String btRead() {
 		Log.i(TAG, "++ btRead ++");
 		String inData = null;
-		if (Ref.btIsConnected()) {
+		if (btController.isConnected()) {
 			inData = btController.receiveString();
 		}
 		return inData;

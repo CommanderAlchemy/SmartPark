@@ -25,14 +25,15 @@ public class Ref {
 	public static boolean flagMainActivityInFront = false;
 	public static boolean flagSettingsActivityInFront = false;
 	public static boolean flagLoginActivityInFront = false;
-
+	
 	/*
 	 * This will hold a reference to the applicationContext. This is the main
 	 * context the application is running in. This gives great flexibility in
 	 * our program. However, with great power come great responsibility, since
 	 * everything invoked with this will not automatically be removed and will
 	 * lead to leaking if not manually removed. This is the task of the
-	 * BackOperationService. In our design the BackOperationService takes care of the entire application lifecycle and is the last to exit 
+	 * BackOperationService. In our design the BackOperationService takes care
+	 * of the entire application lifecycle and is the last to exit
 	 */
 	// public static Context applicationContext;
 
@@ -43,6 +44,8 @@ public class Ref {
 	// Reference to the currently active activity
 	public static Activity activeActivity;
 
+	// =====================================================================
+	
 	// CONNECTION STATE INTEGERS
 	public final static int STATE_NOT_CONNECTED = -1;
 	public final static int STATE_DISCONNECTING = 0;
@@ -58,32 +61,19 @@ public class Ref {
 	// TODO move to the classes
 	// Global State-flags
 	public static int flagTcpState = STATE_NOT_CONNECTED;
-	
 
 	// TODO remove entirely
 	// Objects used for Internet communication
-	public static TCPController tcpClient;
+	// public static TCPController tcpClient;
 
 	// Reference to the background thread (needed for sending data)
 	public static BackgroundOperationThread bgThread;
-	public static boolean isBackgroundOperationThreadRunning = false;
+	// Not needed. Thread send info to service
+//	public static boolean isBackgroundOperationThreadRunning = false;
 
 	// TODO remove entirely
-	public static TextView gps_text;
+//	public static TextView gps_text;
 
 	// ==================================================
 
-	// TODO remove
-	// getters and setters for Internet state
-	public static boolean tcpIsConnected() {
-		return flagTcpState == STATE_CONNECTED;
-	}
-
-	public static void setTcpState(int state) {
-		flagTcpState = state;
-	}
-
-	public static int getTcpState() {
-		return flagTcpState;
-	}
 }

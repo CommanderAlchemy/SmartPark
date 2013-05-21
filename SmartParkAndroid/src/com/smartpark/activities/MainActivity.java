@@ -1,6 +1,7 @@
 package com.smartpark.activities;
 
 import java.util.Locale;
+import java.util.zip.Inflater;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -76,8 +77,6 @@ public class MainActivity extends FragmentActivity implements
 		Log.i(TAG, "++ onCreate ++");
 
 		setContentView(R.layout.activity_main);
-
-		gps_text = (TextView) findViewById(R.id.GPSInfo);
 
 		Ref.activeActivity = this;
 
@@ -361,8 +360,6 @@ public class MainActivity extends FragmentActivity implements
 		String str = Ref.activeActivity != null ? "activeActivity OK "
 				: "activeActivity null ";
 		str += Ref.bgThread != null ? "bgThread OK " : "bgThread null ";
-		str += Ref.gps_text != null ? "gps_text OK " : "gps_text null ";
-		str += Ref.tcpClient != null ? "tcpClient OK " : "tcpClient null ";
 		str += BlueController.applicationContext != null ? "applicationContext OK "
 				: "applicationContext null ";
 		str += BlueController.btAdapter != null ? "btAdapter OK "
@@ -393,7 +390,7 @@ public class MainActivity extends FragmentActivity implements
 		Log.i(TAG, "++ startGPS ++");
 
 		// These belong to GPSFragment
-		Ref.gps_text = (TextView) findViewById(R.id.GPSInfo);
+		
 
 		startService(new Intent(getBaseContext(), GPSService.class));
 		startService(new Intent(getBaseContext(), BackOperationService.class));
@@ -435,7 +432,7 @@ public class MainActivity extends FragmentActivity implements
 			Log.i(TAG, "++ connect ++");
 		Toast.makeText(this, "connecting to server", Toast.LENGTH_LONG).show();
 		// new ConnectTask().execute("");
-		Ref.tcpClient = new TCPController();
+//		Ref.tcpClient = new TCPController();
 	}
 
 	/**
@@ -446,10 +443,10 @@ public class MainActivity extends FragmentActivity implements
 	public void disconnect(View view) {
 		if (D)
 			Log.i(TAG, "++ disconnect ++");
-		if (Ref.tcpClient != null) {
-			Toast.makeText(this, "disconnecting...", Toast.LENGTH_LONG).show();
-			Ref.tcpClient.disconnect();
-		}
+//		if (Ref.tcpClient != null) {
+			Toast.makeText(this, "this button no longer works", Toast.LENGTH_LONG).show();
+//			Ref.tcpClient.disconnect();
+//		}
 	}
 
 	// =================================

@@ -29,6 +29,9 @@ public class TCPController {
 	private static final String TAG = "TCPClient";
 	private static boolean D = Ref.D;
 
+	// CONNECTION STATE-FLAG
+	public static int connectionState = Ref.STATE_NOT_CONNECTED;
+
 	// message to send to the server
 	private String mServerMessage;
 
@@ -68,22 +71,22 @@ public class TCPController {
 			}
 		};
 	}// ==================================================================
-	
 
 	// ===================================================================
 	public void connect() {
-		new Thread(){
-			public void run(){
+		new Thread() {
+			public void run() {
 				try {
 					Ref.flagTcpState = Ref.STATE_CONNECTING;
-					InetAddress serverAddr = InetAddress.getByName(Settings.Server_IP);
+					InetAddress serverAddr = InetAddress
+							.getByName(Settings.Server_IP);
 					// create a socket to make the connection with the server
 					tcpSocket = new Socket(serverAddr, Settings.Server_Port);
 					tcpSocket.setKeepAlive(true);
-					if (tcpSocket.isConnected()){
+					if (tcpSocket.isConnected()) {
 						mBufferOut = new PrintWriter(new BufferedWriter(
-								new OutputStreamWriter(tcpSocket.getOutputStream())),
-								true);
+								new OutputStreamWriter(
+										tcpSocket.getOutputStream())), true);
 						mBufferIn = new BufferedReader(new InputStreamReader(
 								tcpSocket.getInputStream()));
 						Ref.flagTcpState = Ref.STATE_CONNECTED;
@@ -98,9 +101,10 @@ public class TCPController {
 					Ref.flagTcpState = Ref.STATE_NOT_CONNECTED;
 				}
 			}
-		}.start();		
+		}.start();
 	}// ===================================================================
-	// ===================================================================
+		// ===================================================================
+
 	/**
 	 * Sends the message entered by client to the server
 	 * 
@@ -116,7 +120,8 @@ public class TCPController {
 			mBufferOut.flush();
 		}
 	}// ===================================================================
-	// ===================================================================
+		// ===================================================================
+
 	/**
 	 * Close the connection and release the members
 	 */
@@ -138,7 +143,8 @@ public class TCPController {
 			}
 		}
 	}// ===================================================================
-	// ===================================================================
+		// ===================================================================
+
 	public void run() {
 		mRun = true;
 		try {
@@ -179,4 +185,38 @@ public class TCPController {
 			Log.e(TAG + " TCP", "C: Error", e);
 		}
 	}// ===========================================================================
+	
+	// CONNECTION STATE SETTERS AND GETTERS
+
+		public boolean isConnected() {
+			if (tcpSocket != null) {
+				if (tcpSocket.isConnected()) {
+					connectionState = Ref.STATE_CONNECTED;
+					return true;
+				} else {
+					connectionState = Ref.STATE_NOT_CONNECTED;
+					return false;
+				}
+			}
+			return false;
+		}
+
+		public boolean isConnecting() {
+			return connectionState == Ref.STATE_CONNECTING;
+		}
+
+		public void setStateConnecting() {
+			connectionState = Ref.STATE_CONNECTING;
+		}
+
+		public void setStateConnected() {
+			connectionState = Ref.STATE_CONNECTED;
+		}
+
+		public void setDisconnected() {
+			connectionState = Ref.STATE_NOT_CONNECTED;
+
+		}
+
+		// ===================================
 }

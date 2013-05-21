@@ -72,7 +72,7 @@ public class GPSService extends Service {
 			Log.e(TAG, "gps provider does not exist " + ex);
 		}
 
-		gpsReceiver = new GPSReceiver(Ref.gps_text);
+		gpsReceiver = new GPSReceiver(null);
 	}// ==========================================================
 
 	/**
@@ -212,18 +212,18 @@ public class GPSService extends Service {
 			AlertDialog.Builder builder1 = new AlertDialog.Builder(
 					Ref.activeActivity);
 			builder1.setTitle("GPS Disabled!");
-			builder1.setMessage("GPS is disabled and this is vital for the operation of this application.\n"
+			builder1.setMessage("GPS is disabled and this is vital for the operation of this application.\n\n"
 					+ "Do you wish to enable it now?");
 			builder1.setCancelable(false);
-			builder1.setNegativeButton(android.R.string.no,
+			builder1.setNegativeButton("No",
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 						}
 					});
-			builder1.setPositiveButton(android.R.string.yes,
+			builder1.setPositiveButton("Yes",
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
-							startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+							Ref.activeActivity.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 						}
 					});
 			AlertDialog alert = builder1.create();

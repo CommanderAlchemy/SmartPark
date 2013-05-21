@@ -132,7 +132,6 @@ public class MainActivity extends FragmentActivity implements
 		}
 	}
 
-	// ============================================================
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -143,7 +142,7 @@ public class MainActivity extends FragmentActivity implements
 		 * taken by this activity.
 		 */
 		
-		 Ref.mainActivityInFront = false;
+		 Ref.flagMainActivityInFront = false;
 
 		// Ref will not be emptied since its references could be used by
 		// bgThread.
@@ -167,7 +166,7 @@ public class MainActivity extends FragmentActivity implements
 		// }
 
 	}// ------------------------------------------------------------------------
-
+	// ============================================================
 	// onStart and onStop must go hand in hand
 	// (onRestart can also be used before onStart is invoked)
 	@Override
@@ -211,7 +210,7 @@ public class MainActivity extends FragmentActivity implements
 		Log.i(TAG, "++ onStop ++");
 
 	}
-
+	// ============================================================
 	// onResume and onPause must go hand in hand
 	@Override
 	public void onResume() {
@@ -242,7 +241,7 @@ public class MainActivity extends FragmentActivity implements
 		super.onSaveInstanceState(outState);
 		Log.i(TAG, "++ onSaveInstanceState ++");
 	}// ------------------------------------------------------------
-		// ======= END OF LIFECYCLE METHODS ===========================
+	// ======= END OF LIFECYCLE METHODS ===========================
 
 	// =======================
 	// onCLICK-METHODS SECTION
@@ -250,7 +249,7 @@ public class MainActivity extends FragmentActivity implements
 
 	public void pairedDevicesCount(View view) {
 		Log.i(TAG, "++ pairedDevicesCount ++");
-
+		
 		String str = Ref.activeActivity != null ? "activeActivity OK "
 				: "activeActivity null ";
 		str += Ref.bgThread != null ? "bgThread OK " : "bgThread null ";
@@ -268,7 +267,6 @@ public class MainActivity extends FragmentActivity implements
 				: "btOutStream null ";
 		str += BlueController.btSocket != null ? "btSocket OK "
 				: "btSocket null ";
-
 		Log.e(TAG, str);
 
 	}

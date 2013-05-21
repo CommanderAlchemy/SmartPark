@@ -205,15 +205,15 @@ public class BlueController {
 	public int disconnect() {
 		if (D)
 			Log.i(TAG, "++ disconnect ++");
-		Ref.btState = Ref.STATE_DISCONNECTING;
+		Ref.flagBtState = Ref.STATE_DISCONNECTING;
 		try {
 			btSocket.close();
-			Ref.btState = Ref.STATE_NOT_CONNECTED;
+			Ref.flagBtState = Ref.STATE_NOT_CONNECTED;
 			return Ref.RESULT_OK;
 		} catch (Exception e) {
 			if (D)
 				Log.e(TAG, "IO Exception: ", e);
-			Ref.btState = Ref.STATE_NOT_CONNECTED;
+			Ref.flagBtState = Ref.STATE_NOT_CONNECTED;
 			return Ref.RESULT_IO_EXCEPTION;
 		}
 	}
@@ -223,7 +223,7 @@ public class BlueController {
 	public boolean reconnectBT() {
 		Log.e(TAG, "++ reconnectBT ++");
 
-		Ref.btState = Ref.STATE_CONNECTING;
+		Ref.flagBtState = Ref.STATE_CONNECTING;
 		boolean discovering;
 
 		if (btAdapter == null) {
@@ -277,7 +277,7 @@ public class BlueController {
 		if (D)
 			Log.i(TAG, "++ connect ++");
 
-		Ref.btState = Ref.STATE_CONNECTING;
+		Ref.flagBtState = Ref.STATE_CONNECTING;
 
 		new Thread() {
 			public void run() {
@@ -291,12 +291,12 @@ public class BlueController {
 						 */
 						stopDiscovery();
 						btSocket.connect();
-						Ref.btState = Ref.STATE_CONNECTED;
+						Ref.flagBtState = Ref.STATE_CONNECTED;
 						/*
 						 * Next line not needed after implementing
 						 * BroadcastReceiver for it.
 						 */
-						Ref.btState = Ref.STATE_CONNECTED;
+						Ref.flagBtState = Ref.STATE_CONNECTED;
 					} catch (Exception e) {
 						// Close the socket upon error
 						try {
@@ -307,12 +307,12 @@ public class BlueController {
 							if (D)
 								Log.e(TAG, "Socket Close Exception: " + e2);
 						}
-						Ref.btState = Ref.STATE_NOT_CONNECTED;
+						Ref.flagBtState = Ref.STATE_NOT_CONNECTED;
 					}
 				} catch (Exception e) {
 					if (D)
 						Log.e(TAG, "Socket init Exception: " + e);
-					Ref.btState = Ref.STATE_NOT_CONNECTED;
+					Ref.flagBtState = Ref.STATE_NOT_CONNECTED;
 				}
 
 				try {
@@ -323,7 +323,7 @@ public class BlueController {
 				} catch (Exception e) {
 					if (D)
 						Log.e(TAG, "Socket I/O Streams Exception" + e);
-					Ref.btState = Ref.STATE_NOT_CONNECTED;
+					Ref.flagBtState = Ref.STATE_NOT_CONNECTED;
 				}
 			}
 		}.start();
@@ -338,7 +338,7 @@ public class BlueController {
 		} catch (IOException e1) {
 			if (D)
 				Log.e(TAG, "Sending of data with bt failed" + e1);
-			Ref.btState = Ref.STATE_NOT_CONNECTED;
+			Ref.flagBtState = Ref.STATE_NOT_CONNECTED;
 			return Ref.RESULT_IO_EXCEPTION;
 		} catch (Exception e1) {
 			Log.e(TAG, "ggggggggggggggggggg" + e1);
@@ -378,7 +378,7 @@ public class BlueController {
 				}
 			}
 		} else {
-			Ref.btState = Ref.STATE_NOT_CONNECTED;
+			Ref.flagBtState = Ref.STATE_NOT_CONNECTED;
 		}
 		return null;
 	}

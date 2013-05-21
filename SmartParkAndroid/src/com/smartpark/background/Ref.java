@@ -6,22 +6,22 @@ import android.widget.TextView;
 import com.smartpark.tcp.TCPController;
 
 public class Ref {
-
+	
 	/*
 	 * A COLLECTION OF REFERENCES THAT MOST OF THE CLASSES NEED TO OPERATE. THIS
 	 * IS INSPIERED BY THE ANDROID R.CLASS THAT HOUSES ALL REFERENCES FOR THE
 	 * COMPONENTS ON THE DIFFERENT LAYOUTS. THE ALTERNATIVE WAS TO ALWAYS PASS
 	 * REFERENCES TO OTHER CLASSES.
 	 */
-
+	
 	// Global control-variable
 	public static boolean D = true;
-
+	
 	// GLOBAL APPLICATION STATE FLAGS
 	public static boolean flagMainActivityInFront = false;
 	public static boolean flagSettingsActivityInFront = false;
 	public static boolean flagLoginActivityInFront = false;
-
+	
 	/*
 	 * This will hold a reference to the applicationContext. This is the main
 	 * context the application is running in. This gives great flexibility in

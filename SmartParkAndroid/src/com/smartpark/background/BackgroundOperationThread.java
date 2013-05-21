@@ -45,11 +45,11 @@ public class BackgroundOperationThread extends Thread {
 		this.applicationContext = applicationContext;
 
 		// BT
-		Ref.btState = Ref.STATE_NOT_CONNECTED;
+		Ref.flagBtState = Ref.STATE_NOT_CONNECTED;
 		btController = new BlueController(applicationContext);
 
 		// TCP
-		Ref.tcpState = Ref.STATE_NOT_CONNECTED;
+		Ref.flagTcpState = Ref.STATE_NOT_CONNECTED;
 		Ref.tcpClient = null;
 		// TODO add more to this
 
@@ -88,7 +88,7 @@ public class BackgroundOperationThread extends Thread {
 	private boolean fixConnections() {
 		Log.e(TAG, "++ fixConnections ++");
 
-		Ref.btState = Ref.STATE_CONNECTING;
+		Ref.flagBtState = Ref.STATE_CONNECTING;
 		boolean discovering;
 
 		// Enable bluetooth if disabled by asking the user first
@@ -137,7 +137,7 @@ public class BackgroundOperationThread extends Thread {
 		run = true;
 
 		while (run) {
-			if (Ref.btState == Ref.STATE_CONNECTED) {
+			if (Ref.flagBtState == Ref.STATE_CONNECTED) {
 				// Code to process
 				try {
 					Log.d(TAG, "--> reading started");
@@ -174,7 +174,7 @@ public class BackgroundOperationThread extends Thread {
 				fixConnections();
 			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
-			if (Ref.tcpState == Ref.STATE_CONNECTED) {
+			if (Ref.flagTcpState == Ref.STATE_CONNECTED) {
 				// Code to process
 
 				// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
@@ -184,7 +184,7 @@ public class BackgroundOperationThread extends Thread {
 			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
 			Log.i(TAG, "Connection state: "
-					+ (Ref.btState == Ref.STATE_CONNECTED));
+					+ (Ref.flagBtState == Ref.STATE_CONNECTED));
 
 			// -----------------------------------------------------
 			// -----------------------------------------------------

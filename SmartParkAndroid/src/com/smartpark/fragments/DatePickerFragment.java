@@ -41,7 +41,7 @@ public class DatePickerFragment extends DialogFragment implements
 		this.year = year;
 		this.month = month;
 		this.day = day;
-
+		
 		if (getTag().equals("From Date")) {
 			((MainActivity) Ref.activeActivity).OnClickBtnDateEvent(getDate(),
 					1);
@@ -50,7 +50,7 @@ public class DatePickerFragment extends DialogFragment implements
 					2);
 		}
 	}
-	
+
 	public int[] getDate() {
 		int date[] = new int[3];
 		date[0] = this.day;

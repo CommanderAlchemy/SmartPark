@@ -209,15 +209,13 @@ public class BlueController {
 	public int disconnect() {
 		if (D)
 			Log.i(TAG, "++ disconnect ++");
-		connectionState = Ref.STATE_DISCONNECTING;
+		setDisconnected();
 		try {
 			btSocket.close();
-			connectionState = Ref.STATE_NOT_CONNECTED;
 			return Ref.RESULT_OK;
 		} catch (Exception e) {
 			if (D)
 				Log.e(TAG, "IO Exception: ", e);
-			connectionState = Ref.STATE_NOT_CONNECTED;
 			return Ref.RESULT_IO_EXCEPTION;
 		}
 	}
@@ -227,7 +225,7 @@ public class BlueController {
 	public boolean reconnectBT() {
 		Log.e(TAG, "++ reconnectBT ++");
 
-		connectionState = Ref.STATE_CONNECTING;
+		setStateConnecting();
 		boolean discovering;
 
 		if (btAdapter == null) {
@@ -295,12 +293,11 @@ public class BlueController {
 						 */
 						stopDiscovery();
 						btSocket.connect();
-						connectionState = Ref.STATE_CONNECTED;
 						/*
 						 * Next line not needed after implementing
-						 * BroadcastReceiver for it.
+						 * BroadcastReceiver for it. TODO
 						 */
-						connectionState = Ref.STATE_CONNECTED;
+						setStateConnected();
 					} catch (Exception e) {
 						// Close the socket upon error
 						try {
@@ -375,14 +372,12 @@ public class BlueController {
 					return inData;
 				}
 			} catch (Exception e1) {
-				if (Ref.getbtState() != Ref.STATE_CONNECTED) {
-					Ref.setbtState(Ref.STATE_NOT_CONNECTED);
-					if (D)
-						Log.e(TAG, "btSocket not connected");
-				}
+				setDisconnected();
+				if (D)
+					Log.e(TAG, "btSocket not connected");
 			}
 		} else {
-			connectionState = Ref.STATE_NOT_CONNECTED;
+			setDisconnected();
 		}
 		return null;
 	}
@@ -535,8 +530,10 @@ public class BlueController {
 		}
 		return false;
 	}
-	
-	
+
+	public boolean isConnecting() {
+		return connectionState == Ref.STATE_CONNECTING;
+	}
 
 	public void setStateConnecting() {
 		connectionState = Ref.STATE_CONNECTING;
@@ -544,6 +541,11 @@ public class BlueController {
 
 	public void setStateConnected() {
 		connectionState = Ref.STATE_CONNECTED;
+	}
+
+	public void setDisconnected() {
+		connectionState = Ref.STATE_NOT_CONNECTED;
+
 	}
 
 	// ===================================

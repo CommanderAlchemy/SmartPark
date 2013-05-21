@@ -243,10 +243,17 @@ public class MainActivity extends FragmentActivity implements
 	}// ------------------------------------------------------------
 	// ======= END OF LIFECYCLE METHODS ===========================
 
-	// =======================
-	// onCLICK-METHODS SECTION
-	// =======================
-
+	/* =======================
+	 * onCLICK-METHODS SECTION
+	 * =======================
+	 * Use OnClick Method
+	 * Prefix to have consistency!
+	 */
+	
+	
+	/*
+	 * Bluetooth Fragment 
+	 */
 	public void pairedDevicesCount(View view) {
 		Log.i(TAG, "++ pairedDevicesCount ++");
 		
@@ -296,8 +303,8 @@ public class MainActivity extends FragmentActivity implements
 		stopService(new Intent(getBaseContext(), GPSService.class));
 	}
 
-	// ------------------------------
-
+	
+	
 	@Override
 	public void onTabSelected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
@@ -325,8 +332,7 @@ public class MainActivity extends FragmentActivity implements
 	 * @param view
 	 */
 	public void connect(View view) {
-		if (D)
-			Log.i(TAG, "++ connect ++");
+		if (D)Log.i(TAG, "++ connect ++");
 		Toast.makeText(this, "connecting to server", Toast.LENGTH_LONG).show();
 		// new ConnectTask().execute("");
 		Ref.tcpClient = new TCPController();
@@ -338,8 +344,7 @@ public class MainActivity extends FragmentActivity implements
 	 * @param view
 	 */
 	public void disconnect(View view) {
-		if (D)
-			Log.i(TAG, "++ disconnect ++");
+		if (D)Log.i(TAG, "++ disconnect ++");
 		if (Ref.tcpClient != null) {
 			Toast.makeText(this, "disconnecting...", Toast.LENGTH_LONG).show();
 			Ref.tcpClient.disconnect();
@@ -386,8 +391,7 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		if (D)
-			Log.i(TAG, "++ onCreateOptionsMenu ++");
+		if (D)Log.i(TAG, "++ onCreateOptionsMenu ++");
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		CreateMenu(menu);
@@ -426,13 +430,15 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (D) {
-			Log.i(TAG, "++ onOptionsItemSelected ++");
-		}
+		if (D) Log.i(TAG, "++ onOptionsItemSelected ++");
+		
 		if (D) {
 			Log.d(TAG, "Item: " + item.toString() + "\nID: " + item.getItemId()
 					+ "\nIntent: " + item.getIntent());
 		}
+		
+		// TODO Cleanup!
+		
 		// On select
 		switch (item.getItemId()) {
 		case 0:

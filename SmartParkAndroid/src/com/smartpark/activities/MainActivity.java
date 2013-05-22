@@ -1,31 +1,22 @@
 package com.smartpark.activities;
 
-import java.util.Calendar;
 import java.util.Locale;
-import java.util.zip.Inflater;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.Layout;
-
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,14 +25,13 @@ import com.smartpark.R;
 import com.smartpark.background.BackOperationService;
 import com.smartpark.background.Ref;
 import com.smartpark.bluetooth.BlueController;
-import com.smartpark.fragments.UserDemoFragment;
-import com.smartpark.fragments.DatePickerFragment;
 import com.smartpark.fragments.ControllerListFragment;
 import com.smartpark.fragments.ControllerMapFragment;
+import com.smartpark.fragments.DatePickerFragment;
+import com.smartpark.fragments.UserDemoFragment;
 import com.smartpark.fragments.UserHistoryFragment;
 import com.smartpark.fragments.UserSmartParkFragment;
 import com.smartpark.gps.GPSService;
-import com.smartpark.tcp.TCPController;
 
 public class MainActivity extends FragmentActivity implements
 		ActionBar.TabListener {
@@ -70,20 +60,11 @@ public class MainActivity extends FragmentActivity implements
 
 	private TextView gps_text;
 
-	// Views of the History fragment
 	private DatePickerFragment datePickerFromDate;
 	private DatePickerFragment datePickerToDate;
 
-	private Button btnFromDate;
-	private Button btnToDate;
-	// ////////////////////////////////////////
-
 	// This is used for vibration
 	private Vibrator myVib;
-
-	// CODES
-	public static final int BUTTON_FROM_DATE = 1;
-	public static final int BUTTON_TO_DATE = 2;
 
 	// Debugging and stuff
 	private static final String TAG = "MainActivity";
@@ -96,26 +77,7 @@ public class MainActivity extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		Log.i(TAG, "++ onCreate ++");
 
-		
-		
-		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View firstView = inflater.inflate(R.layout.frag_history_view, null); 
-		this.btnFromDate = (Button) firstView.findViewById(R.id.btnFromDate);
-		this.btnToDate = (Button) firstView.findViewById(R.id.btnToDate);
-
-		
-		
-		
-		
-//		setContentView(R.layout.frag_history_view);
-//
-//		btnFromDate = (Button) findViewById(R.id.btnFromDate);
-//		btnToDate = (Button) findViewById(R.id.btnToDate);
-
 		setContentView(R.layout.activity_main);
-
-		datePickerFromDate = new DatePickerFragment();
-		datePickerToDate = new DatePickerFragment();
 
 		int[] tempDate = new int[3];
 		if (savedInstanceState != null) {
@@ -177,13 +139,6 @@ public class MainActivity extends FragmentActivity implements
 						if (D)
 							Log.d(TAG, "position " + position);
 						actionBar.setSelectedNavigationItem(position);
-
-						if (position == 1) {
-							OnClickBtnDateEvent(datePickerFromDate.getDate(),
-									BUTTON_FROM_DATE);
-							OnClickBtnDateEvent(datePickerToDate.getDate(),
-									BUTTON_TO_DATE);
-						}
 					}
 				});
 		// For each of the sections in the app, add a tab to the action bar.
@@ -252,8 +207,6 @@ public class MainActivity extends FragmentActivity implements
 		// Ref.activeActivity = this;
 		// Ref.bgThread.activityMAIN = true;
 
-		OnClickBtnDateEvent(datePickerFromDate.getDate(), BUTTON_FROM_DATE);
-		OnClickBtnDateEvent(datePickerToDate.getDate(), BUTTON_TO_DATE);
 	}
 
 	@Override
@@ -318,102 +271,103 @@ public class MainActivity extends FragmentActivity implements
 	/*
 	 * Fragment History
 	 */
-	public void onClickBtnFromDate(View view) {
-		myVib.vibrate(50);
-		datePickerFromDate.show(getFragmentManager(), "From Date");
-	}
+	// public void onClickBtnFromDate(View view) {
+	// myVib.vibrate(50);
+	// datePickerFromDate.show(getFragmentManager(), "From Date");
+	// }
 
-	public void onClickBtnToDate(View view) {
-		myVib.vibrate(50);
-		datePickerToDate.show(getFragmentManager(), "To Date");
-	}
-
-	public void OnClickBtnDateEvent(int[] newDate, int tag) {
-		Log.i(TAG, "++ OnClickBtnDateEvent ++");
-		String month = null, pickedDate;
-		boolean error = true;
-
-		/* @formatter:off */
-		switch (newDate[1]) {
-		case 0:		month = "Jan"; 	break;
-		case 1:		month = "Feb";	break;
-		case 2:		month = "Mar";	break;
-		case 3:		month = "Apr";	break;
-		case 4:		month = "Maj";	break;
-		case 5:		month = "Jun";	break;
-		case 6:		month = "Jul";	break;
-		case 7: 	month = "Aug";	break;
-		case 8: 	month = "Sep";	break;
-		case 9:		month = "Okt";	break;
-		case 10:	month = "Nov";	break;
-		case 11:	month = "Dec";	break;
-		}
-		/* @formatter:on */
-		pickedDate = newDate[0] + " " + month + " " + newDate[2];
-		Log.e(TAG, "" + pickedDate);
-		// View v = getLayoutInflater().inflate(R.layout.frag_history_view,
-		// mViewPager);
-		// Button btnFromDate = (Button)v.findViewById(R.id.btnFromDate);
-
-		Log.e(TAG, "newDate: " + newDate[0] + " " + newDate[1] + " "
-				+ newDate[2]);
-
-		switch (tag) {
-		case BUTTON_FROM_DATE:
-			int[] toDate = datePickerToDate.getDate();
-			Log.e(TAG, "toDate: " + toDate[0] + " " + toDate[1] + " "
-					+ toDate[2]);
-			if (toDate[2] != 0) {
-				if (newDate[2] <= toDate[2]) {
-					if (newDate[1] <= toDate[1]) {
-						if (newDate[0] <= toDate[0]) {
-							Log.e(TAG, "" + btnFromDate.toString() + " " + pickedDate);
-							this.btnFromDate.setText(pickedDate);
-							
-//							((Button) findViewById(R.id.btnFromDate))
-//									.setText(pickedDate);
-
-							error = false;
-						}
-					}
-				}
-			}
-			if (error)
-				Toast.makeText(this, "From date > To date", Toast.LENGTH_LONG)
-						.show();
-			break;
-
-		case BUTTON_TO_DATE:
-			int[] fromDate = datePickerFromDate.getDate();
-
-			Log.e(TAG, "fromDate: " + fromDate[0] + " " + fromDate[1] + " "
-					+ fromDate[2]);
-
-			if (fromDate[2] != 0) {
-				if (newDate[2] >= fromDate[2]) {
-					if (newDate[1] >= fromDate[1]) {
-						if (newDate[0] >= fromDate[0]) {
-							
-							btnToDate.setText(pickedDate);
-//							((Button) findViewById(R.id.btnToDate))
-//									.setText(pickedDate);
-
-							error = false;
-						}
-					}
-				}
-			}
-			if (error)
-				Toast.makeText(this, "From date > To date", Toast.LENGTH_LONG)
-						.show();
-			break;
-		}
-
-		/*
-		 * TODO Fix Server Database for parking logs! Query the server for
-		 * Parking Data!
-		 */
-	}
+	// public void onClickBtnToDate(View view) {
+	// myVib.vibrate(50);
+	// datePickerToDate.show(getFragmentManager(), "To Date");
+	// }
+//
+//	public void OnClickBtnDateEvent(int[] newDate, int tag) {
+//		Log.i(TAG, "++ OnClickBtnDateEvent ++");
+//		String month = null, pickedDate;
+//		boolean error = true;
+//
+//		/* @formatter:off */
+//		switch (newDate[1]) {
+//		case 0:		month = "Jan"; 	break;
+//		case 1:		month = "Feb";	break;
+//		case 2:		month = "Mar";	break;
+//		case 3:		month = "Apr";	break;
+//		case 4:		month = "Maj";	break;
+//		case 5:		month = "Jun";	break;
+//		case 6:		month = "Jul";	break;
+//		case 7: 	month = "Aug";	break;
+//		case 8: 	month = "Sep";	break;
+//		case 9:		month = "Okt";	break;
+//		case 10:	month = "Nov";	break;
+//		case 11:	month = "Dec";	break;
+//		}
+//		/* @formatter:on */
+//		pickedDate = newDate[0] + " " + month + " " + newDate[2];
+//		Log.e(TAG, "" + pickedDate);
+//		// View v = getLayoutInflater().inflate(R.layout.frag_history_view,
+//		// mViewPager);
+//		// Button btnFromDate = (Button)v.findViewById(R.id.btnFromDate);
+//
+//		Log.e(TAG, "newDate: " + newDate[0] + " " + newDate[1] + " "
+//				+ newDate[2]);
+//
+//		switch (tag) {
+//		case UserHistoryFragment.BUTTON_FROM_DATE:
+//			int[] toDate = datePickerToDate.getDate();
+//			Log.e(TAG, "toDate: " + toDate[0] + " " + toDate[1] + " "
+//					+ toDate[2]);
+//			if (toDate[2] != 0) {
+//				if (newDate[2] <= toDate[2]) {
+//					if (newDate[1] <= toDate[1]) {
+//						if (newDate[0] <= toDate[0]) {
+//							Log.e(TAG, "" + btnFromDate.toString() + " "
+//									+ pickedDate);
+//							this.btnFromDate.setText(pickedDate);
+//
+//							// ((Button) findViewById(R.id.btnFromDate))
+//							// .setText(pickedDate);
+//
+//							error = false;
+//						}
+//					}
+//				}
+//			}
+//			if (error)
+//				Toast.makeText(this, "From date > To date", Toast.LENGTH_LONG)
+//						.show();
+//			break;
+//
+//		case UserHistoryFragment.BUTTON_TO_DATE:
+//			int[] fromDate = datePickerFromDate.getDate();
+//
+//			Log.e(TAG, "fromDate: " + fromDate[0] + " " + fromDate[1] + " "
+//					+ fromDate[2]);
+//
+//			if (fromDate[2] != 0) {
+//				if (newDate[2] >= fromDate[2]) {
+//					if (newDate[1] >= fromDate[1]) {
+//						if (newDate[0] >= fromDate[0]) {
+//
+//							btnToDate.setText(pickedDate);
+//							// ((Button) findViewById(R.id.btnToDate))
+//							// .setText(pickedDate);
+//
+//							error = false;
+//						}
+//					}
+//				}
+//			}
+//			if (error)
+//				Toast.makeText(this, "From date > To date", Toast.LENGTH_LONG)
+//						.show();
+//			break;
+//		}
+//
+//		/*
+//		 * TODO Fix Server Database for parking logs! Query the server for
+//		 * Parking Data!
+//		 */
+//	}
 
 	/*
 	 * Fragment Demo

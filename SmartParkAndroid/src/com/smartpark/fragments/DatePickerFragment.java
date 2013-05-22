@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.DatePicker;
 
-import com.smartpark.activities.MainActivity;
 import com.smartpark.background.Ref;
 
 public class DatePickerFragment extends DialogFragment implements
@@ -21,17 +20,18 @@ public class DatePickerFragment extends DialogFragment implements
 
 	// Latest date picked
 	int year = 0, month = 0, day = 0;
+	private UserHistoryFragment fragment;
 
-	// ///////////////////////////////////////////////////
+	// ------------------------------------------------------
 
-	public DatePickerFragment() {
-		super();
+	public DatePickerFragment(UserHistoryFragment userHistoryFragment) {
+		this.fragment = userHistoryFragment;
 		Calendar c = Calendar.getInstance();
 		this.year = c.get(Calendar.YEAR);
 		this.month = c.get(Calendar.MONTH);
 		this.day = c.get(Calendar.DAY_OF_MONTH);
 	}
-
+	// ------------------------------------------------------
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -39,9 +39,11 @@ public class DatePickerFragment extends DialogFragment implements
 		return new DatePickerDialog(getActivity(), this, this.year, this.month,
 				this.day);
 	}
-
+	// ------------------------------------------------------
+	@Override
 	public void onDateSet(DatePicker view, int year, int month, int day) {
 		Log.i(TAG, "++ onDateSet ++");
+		
 		/*
 		 * we are saving the date to use this as the default next time the user
 		 * pushes the button.
@@ -51,14 +53,14 @@ public class DatePickerFragment extends DialogFragment implements
 		this.day = day;
 
 		if (getTag().equals("From Date")) {
-			((MainActivity) Ref.activeActivity).OnClickBtnDateEvent(getDate(),
-					MainActivity.BUTTON_FROM_DATE);
+			this.fragment.OnClickBtnDateEvent(getDate(),
+					UserHistoryFragment.BUTTON_FROM_DATE);
 		} else if (getTag().equals("To Date")) {
-			((MainActivity) Ref.activeActivity).OnClickBtnDateEvent(getDate(),
-					MainActivity.BUTTON_TO_DATE);
+			this.fragment.OnClickBtnDateEvent(getDate(),
+					UserHistoryFragment.BUTTON_TO_DATE);
 		}
 	}
-
+	// ------------------------------------------------------
 	public int[] getDate() {
 		int date[] = new int[3];
 		date[0] = this.day;
@@ -66,11 +68,11 @@ public class DatePickerFragment extends DialogFragment implements
 		date[2] = this.year;
 		return date;
 	}
-	
+	// ------------------------------------------------------
 	public void setDate(int[] date) {
 		this.day = date[0];
 		this.month = date[1];
 		this.year = date[2];
 	}
-	
+
 }

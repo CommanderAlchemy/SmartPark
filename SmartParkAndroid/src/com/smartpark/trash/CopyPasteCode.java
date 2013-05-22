@@ -6,9 +6,12 @@ import com.smartpark.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 
 public class CopyPasteCode extends Activity {
 	
@@ -18,6 +21,10 @@ public class CopyPasteCode extends Activity {
 		setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(setIntent);
 	}
+	
+//    android:onClick="onClickBtnFromDate"
+
+	
 	
 	public void weNeedThisToCopyPasteWhereWeWantToHaveAButton() {
 		//@formatter:off
@@ -49,6 +56,14 @@ public class CopyPasteCode extends Activity {
 		alert.show();
 		// ======== ALERTDIALOG END =========================
 	}
+	
+
+//	LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//	View firstView = inflater.inflate(R.layout.frag_history_view, null); 
+//	this.btnFromDate = (Button) firstView.findViewById(R.id.btnFromDate);
+//	this.btnToDate = (Button) firstView.findViewById(R.id.btnToDate);
+
+	
 	
 	
 	// == START ====================================================

@@ -205,7 +205,6 @@ public class BackgroundOperationThread extends Thread {
 			// -----------------------------------------------------
 			// -----------------------------------------------------
 
-			Log.d(TAG, "BT buffer size: " + btTransmitBuffer.size());
 
 			// Check to see if the thread needs to start shutting down
 			// Log.d(TAG, "--> thread running");

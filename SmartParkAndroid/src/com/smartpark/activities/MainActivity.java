@@ -65,7 +65,10 @@ public class MainActivity extends FragmentActivity implements
 
 	// This is used for vibration
 	private Vibrator myVib;
-
+	
+	// Boolean ControllerApplication
+	private boolean isController;
+	
 	// Debugging and stuff
 	private static final String TAG = "MainActivity";
 	private static final boolean D = Ref.D;
@@ -718,6 +721,10 @@ public class MainActivity extends FragmentActivity implements
 		@Override
 		public int getCount() {
 			// Show 5 total pages.
+			
+			if(isController)
+				return 4;
+			
 			return 5;
 		}
 
@@ -741,6 +748,6 @@ public class MainActivity extends FragmentActivity implements
 				return getString(R.string.title_section5).toUpperCase(l);
 			}
 			return null;
-		}
+		} 
 	}
 }

@@ -373,10 +373,10 @@ public class Customer extends Database {
 
 	public static void main(String[] args) {
 		Customer c = new Customer();
-		c.CreateCustomerTable();
-		c.InsertCustomerData(new Customer(1, "910611", "Artur", "Olech","Snödroppsgatan3", "0762361910", "artur", "001First", "Today"));
+//		c.CreateCustomerTable();
+//		c.InsertCustomerData(new Customer(1, "910611", "Artur", "Olech","Snödroppsgatan3", "0762361910", "artur", "001First", "Today"));
 		c.InsertCustomerData(new Customer(0, "820620", "Saeed", "Ghasemi","Hyllie", "0763150074", "saeed", "002Second", "Tomorrow"));
-		c.InsertCustomerData(new Customer(0, "na", "Truls", "Haraldsson","Trelleborg", "some number", "truls", "003Third", "Never"));
+//		c.InsertCustomerData(new Customer(0, "na", "Truls", "Haraldsson","Trelleborg", "some number", "truls", "003Third", "Never"));
 		c.selectCustomer(null);
 		c.selectCustomer("910611");
 

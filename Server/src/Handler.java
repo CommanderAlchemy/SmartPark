@@ -1,4 +1,5 @@
 import database.*;
+import database.SmartPark.Col;
 
 public class Handler {
 
@@ -7,10 +8,17 @@ public class Handler {
 	private ClientThread clientThread;
 
 	// Login
+	private String ssNbr;
 	private boolean passwordAccepted = false;
 	private boolean controller = false;
+	
 	// Customer Table
 	private Customer customer;
+	
+	// SmartParkDevice Table
+	private SmartPark smartpark;
+	
+	private String[] inputParam;
 
 	// private LinkedList<String> buffer = new LinkedList<String>();
 
@@ -35,18 +43,23 @@ public class Handler {
 
 		switch (command) {
 		case "Login":
-			System.out.println("command: " + command);
-			System.out.println("Parameters: " + commandParameters);
+
 			this.passwordAccepted = login(commandParameters);
 
 			if (passwordAccepted)
-				clientThread.sendMessage("Login;Accepted;Controller"+controller);
+				clientThread.sendMessage("Login;Accepted;Controller"
+						+ controller);
 
 			break;
 		case "Close Connection":
-			System.out.println("command: " + command);
-			System.out.println("Parameters: " + commandParameters);
 			clientThread.closeConnecton();
+			break;
+
+		case "Query":
+
+			if (passwordAccepted)
+				query(message);
+
 			break;
 		default:
 			break;
@@ -63,17 +76,27 @@ public class Handler {
 
 	// Login;
 	public boolean login(String param) {
-		String[] inputParam = param.split(":");
+		inputParam = param.split(":");
 		this.customer = new Customer(inputParam[0]);
 
 		if (customer.getPassword() != null)
 			if (inputParam.equals(customer.getPassword())) {
+				this.ssNbr = inputParam[0];
+				
 				if (customer.getCont() == 1)
 					this.controller = true;
 				return true;
 			}
 
 		return false;
+	}
+
+	public String query(String param) {
+		inputParam = param.split(":");
+		this.smartpark = new SmartPark(customer.getSmartParkID());
+		smartpark.selectSmartPark(this.smartpark, Col.StopStamp,param,true);
+		
+		return null;
 	}
 
 	// public boolean login(String commandoParameters){

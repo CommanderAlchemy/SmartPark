@@ -3,6 +3,8 @@ package database;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import javax.management.Query;
+
 public class SmartPark extends Database {
 	private long id;
 	private static String deviceID; // The Device ID
@@ -97,24 +99,39 @@ public class SmartPark extends Database {
 
 		} catch (Exception e) {
 			System.out
-					.println("[ERROR] During Insert New Customer Into SmartPark Table:");
+					.println("[ERROR] During Insert New Device Into SmartPark Table:");
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 		}
 		System.out.println(this.deviceID + " sucessfully inserted into " + dbName
 				+ "." + tblName);
 	}
 
-	private void selectSmartPark(SmartPark sp, Col c, String searchValue) {
+	public void selectSmartPark(SmartPark sp, Col c, String searchValue, boolean rangeSelection) {
 		try {
 //			super.getConnection().setAutoCommit(false);
 			statement = super.getConnection().createStatement();
 
 			// result = statement.executeQuery("SELECT * FROM Customer;");
+			
 			if (searchValue != null){
-				result = statement
-					.executeQuery("SELECT ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel FROM SmartPark_" + sp.deviceID + " WHERE " + c  + " = '"
-							+ searchValue + "';" );
+				if(!rangeSelection){
+					result = statement
+							.executeQuery("SELECT ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel FROM SmartPark_" 
+									+ sp.deviceID + " WHERE " + c  + " = '"	+ searchValue + "';" );
+				}else{
+					String[] query = null;
+					try{
+						query = searchValue.split(":");
+					}catch(Exception e){
+						System.out.println("[ERROR] During query split");
+						System.err.println(e.getClass().getName() + ": " + e.getMessage());
+					}
+					result = statement.executeQuery("SELECT ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel FROM SmartPark_" 
+							+ sp.deviceID + " WHERE " + c + " BETWEEN " + query[0] + " AND " + query[1] + ";");
+				}
+				
 			}
+			
 			else{
 				result = statement
 						.executeQuery("SELECT * FROM SmartPark_" + sp.deviceID + ";");
@@ -331,11 +348,11 @@ public class SmartPark extends Database {
 		return string;
 	}
 	public static void main(String[] args) {
-		SmartPark sp = new SmartPark("001First");
-		sp.CreateSmartParkTable();
-		sp.InsertSmartParkData(new SmartPark("910611", "Long/Lat", "StartTime", "StopTime", "OPH500", "Nissan"));
-		sp.selectSmartPark(null, null, null);
-		sp.selectSmartPark(sp, Col.LicensePlate, "MRO519");
+//		SmartPark sp = new SmartPark("001First");
+//		sp.CreateSmartParkTable();
+//		sp.InsertSmartParkData(new SmartPark("910611", "Long/Lat", "StartTime", "StopTime", "OPH500", "Nissan"));
+//		sp.selectSmartPark(null, null, null);
+//		sp.selectSmartPark(sp, Col.LicensePlate, "MRO519");
 	}
 
 }

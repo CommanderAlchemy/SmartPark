@@ -2,10 +2,22 @@
 
     <CheckBoxPreference
         android:defaultValue="true"
-        android:key="example_checkbox"
-        android:summary="@string/pref_description_social_recommendations"
-        android:title="@string/pref_title_social_recommendations" />
-
+        android:key="autopark"
+        android:summary="Automatically buys a ticket whenever the engine goes off"
+        android:title="AutoPark" />
+    
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="hide_user_info"
+        android:summary="Hides your personal information in the application"
+        android:title="Hide My Credentials" />
+    
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="debug"
+        android:summary="Enables debugging logs"
+        android:title="Debug" />
+    
     <!-- NOTE: EditTextPreference accepts EditText attributes. -->
     <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
     <EditTextPreference
@@ -25,6 +37,7 @@
     <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
     <ListPreference
         android:defaultValue="-1"
+        android:dialogTitle="gfh"
         android:entries="@array/pref_example_list_titles"
         android:entryValues="@array/pref_example_list_values"
         android:key="example_list"

@@ -18,6 +18,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.smartpark.R;
 
@@ -40,12 +41,14 @@ public class SettingsActivity extends PreferenceActivity {
 	 * shown on tablets.
 	 */
 	private static final boolean ALWAYS_SIMPLE_PREFS = false;
+	private static final String TAG = "SettingsActivity";
 
 	// ============================================================================
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
+		Log.e(TAG , "++ onPostCreate ++");
 
 		setupSimplePreferencesScreen();
 	}// ============================================================================
@@ -56,6 +59,7 @@ public class SettingsActivity extends PreferenceActivity {
 	 * shown.
 	 */
 	private void setupSimplePreferencesScreen() {
+		Log.e(TAG , "++ setupSimplePreferencesScreen ++");
 		if (!isSimplePreferences(this)) {
 			return;
 		}
@@ -90,6 +94,7 @@ public class SettingsActivity extends PreferenceActivity {
 	/** {@inheritDoc} */
 	@Override
 	public boolean onIsMultiPane() {
+		Log.e(TAG , "++ onIsMultiPane ++");
 		return isXLargeTablet(this) && !isSimplePreferences(this);
 	}// ============================================================================
 
@@ -98,6 +103,7 @@ public class SettingsActivity extends PreferenceActivity {
 	 * example, 10" tablets are extra-large.
 	 */
 	private static boolean isXLargeTablet(Context context) {
+		Log.e(TAG , "++ isXLargeTablet ++");
 		return (context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
 	}// ============================================================================
 
@@ -109,6 +115,7 @@ public class SettingsActivity extends PreferenceActivity {
 	 * "simplified" settings UI should be shown.
 	 */
 	private static boolean isSimplePreferences(Context context) {
+		Log.e(TAG , "++ isSimplePreferences ++");
 		return ALWAYS_SIMPLE_PREFS
 				|| Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
 				|| !isXLargeTablet(context);
@@ -118,6 +125,7 @@ public class SettingsActivity extends PreferenceActivity {
 	@Override
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void onBuildHeaders(List<Header> target) {
+		Log.e(TAG , "++ onBuildHeaders ++");
 		if (!isSimplePreferences(this)) {
 			loadHeadersFromResource(R.xml.pref_headers, target);
 		}
@@ -128,11 +136,16 @@ public class SettingsActivity extends PreferenceActivity {
 	 * to reflect its new value.
 	 */
 	private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
+		private final String TAG = "OnPreferenceChangeListener";
+
 		@Override
 		public boolean onPreferenceChange(Preference preference, Object value) {
 			String stringValue = value.toString();
-
+			Log.e(TAG , "++ onPreferenceChange ++");
+			Log.e(TAG , "value: " + value.toString() + " key: " + preference.getKey() + " ----: " + preference.getSummary());
+			
 			if (preference instanceof ListPreference) {
+				Log.e(TAG , "ListPreference");
 				// For list preferences, look up the correct display value in
 				// the preference's 'entries' list.
 				ListPreference listPreference = (ListPreference) preference;
@@ -144,6 +157,7 @@ public class SettingsActivity extends PreferenceActivity {
 								: null);
 
 			} else if (preference instanceof RingtonePreference) {
+				Log.e(TAG , "RingtonePreference");
 				// For ringtone preferences, look up the correct display value
 				// using RingtoneManager.
 				if (TextUtils.isEmpty(stringValue)) {
@@ -151,6 +165,7 @@ public class SettingsActivity extends PreferenceActivity {
 					preference.setSummary(R.string.pref_ringtone_silent);
 
 				} else {
+					
 					Ringtone ringtone = RingtoneManager.getRingtone(
 							preference.getContext(), Uri.parse(stringValue));
 
@@ -185,6 +200,7 @@ public class SettingsActivity extends PreferenceActivity {
 	 * @see #sBindPreferenceSummaryToValueListener
 	 */
 	private static void bindPreferenceSummaryToValue(Preference preference) {
+		Log.e(TAG , "++ bindPreferenceSummaryToValue ++");
 		// Set the listener to watch for value changes.
 		preference
 				.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
@@ -204,17 +220,21 @@ public class SettingsActivity extends PreferenceActivity {
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public static class GeneralPreferenceFragment extends PreferenceFragment {
+		
+		private static final String TAG = "DataSyncPreferenceFragment";
+		
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
+			Log.e(TAG , "++ onCreate ++");
 			addPreferencesFromResource(R.xml.pref_general);
 
 			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
 			// to their values. When their values change, their summaries are
 			// updated to reflect the new value, per the Android Design
 			// guidelines.
-			bindPreferenceSummaryToValue(findPreference("example_text"));
-			bindPreferenceSummaryToValue(findPreference("example_list"));
+//			bindPreferenceSummaryToValue(findPreference("example_text"));
+//			bindPreferenceSummaryToValue(findPreference("example_list"));
 		}// ============================================================================
 	}// ============================================================================
 
@@ -225,9 +245,13 @@ public class SettingsActivity extends PreferenceActivity {
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public static class NotificationPreferenceFragment extends
 			PreferenceFragment {
+		
+		private static final String TAG = "DataSyncPreferenceFragment";
+		
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
+			Log.e(TAG , "++ onCreate ++");
 			addPreferencesFromResource(R.xml.pref_notification);
 
 			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
@@ -244,8 +268,12 @@ public class SettingsActivity extends PreferenceActivity {
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public static class DataSyncPreferenceFragment extends PreferenceFragment {
+		
+		private static final String TAG = "DataSyncPreferenceFragment";
+		
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
+			Log.e(TAG , "++ onCreate ++");
 			super.onCreate(savedInstanceState);
 			addPreferencesFromResource(R.xml.pref_data_sync);
 

@@ -3,13 +3,13 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="com.smartpark.bluetoothandroid.SettingsActivity$GeneralPreferenceFragment"
+        android:fragment="com.smartpark.activities.SettingsActivity$GeneralPreferenceFragment"
         android:title="@string/pref_header_general" />
     <header
-        android:fragment="com.smartpark.bluetoothandroid.SettingsActivity$NotificationPreferenceFragment"
+        android:fragment="com.smartpark.activities.SettingsActivity$NotificationPreferenceFragment"
         android:title="@string/pref_header_notifications" />
     <header
-        android:fragment="com.smartpark.bluetoothandroid.SettingsActivity$DataSyncPreferenceFragment"
+        android:fragment="com.smartpark.activities.SettingsActivity$DataSyncPreferenceFragment"
         android:title="@string/pref_header_data_sync" />
 
 </preference-headers>

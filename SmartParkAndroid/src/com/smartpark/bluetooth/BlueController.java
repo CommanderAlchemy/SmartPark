@@ -293,17 +293,23 @@ public class BlueController {
 				 * from google developer)
 				 */
 				stopDiscovery();
+				Log.e(TAG, "-------1-------");
+				btSocket.close();
+				Log.e(TAG, "-------1a-------");
 				btSocket.connect();
+				Log.e(TAG, "-------2-------");
 				/*
 				 * We are changing state to connected since we have a
 				 * BroadcastReceiver for it and it's more reliable.
 				 */
 			} catch (Exception e) {
+				Log.e(TAG, "-------3-------");
 				// Close the socket upon error
 				try {
 					if (D)
 						Log.e(TAG, "Connection Exception: ", e);
 					btSocket.close();
+					Log.e(TAG, "-------4-------");
 					setDisconnected();
 				} catch (Exception e2) {
 					if (D)
@@ -447,7 +453,7 @@ public class BlueController {
 
 	public void stopDiscovery() {
 		if (D)
-			Log.e(TAG, "++ cancelDiscovery ++");
+			Log.e(TAG, "++ stopDiscovery ++");
 
 		// cancel any prior BT device discovery
 		if (btAdapter.isDiscovering()) {

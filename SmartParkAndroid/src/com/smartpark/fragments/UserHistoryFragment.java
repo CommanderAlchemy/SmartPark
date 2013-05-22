@@ -35,7 +35,7 @@ public class UserHistoryFragment extends Fragment {
 
 	private HashMap<String, View> viewReferences = new HashMap<String, View>(20);
 
-	private Vibrator myVib = (Vibrator) getActivity().getSystemService(Activity.VIBRATOR_SERVICE);
+	private Vibrator myVib;
 
 	private DatePickerFragment datePickerFromDate;
 	private DatePickerFragment datePickerToDate;
@@ -48,7 +48,8 @@ public class UserHistoryFragment extends Fragment {
 
 	public UserHistoryFragment() {
 		if (D)
-			Log.i(TAG, "++ Fragment: " + this.toString() + " Loaded ++");
+			Log.e(TAG, "++ Fragment: " + this.toString() + " Loaded ++");
+//		myVib = (Vibrator) getActivity().getSystemService(Activity.VIBRATOR_SERVICE);
 	}
 
 	// ----------------------------------------------------------------
@@ -93,12 +94,12 @@ public class UserHistoryFragment extends Fragment {
 			if (v instanceof Button) {
 				switch (v.getId()) {
 				case R.id.btnFromDate:
-					 myVib.vibrate(50);
+//					 myVib.vibrate(50);
 					datePickerFromDate.show(getActivity().getFragmentManager(),
 							"From Date");
 					break;
 				case R.id.btnToDate:
-					 myVib.vibrate(50);
+//					 myVib.vibrate(50);
 					datePickerToDate.show(getActivity().getFragmentManager(),
 							"To Date");
 					break;

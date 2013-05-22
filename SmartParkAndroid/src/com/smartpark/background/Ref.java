@@ -17,7 +17,7 @@ public class Ref {
 	// :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 	
 	// Global control-variable
-	public static boolean D = true;
+	public static boolean D = false;
 
 	/*
 	 * keeps a list of booleans to determine if all activities have been

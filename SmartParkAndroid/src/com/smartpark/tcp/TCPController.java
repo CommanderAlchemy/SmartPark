@@ -28,7 +28,7 @@ import com.smartpark.interfaces.OnMessageReceivedListener;
 public class TCPController {
 
 	// Debug
-	private static final String TAG = "TCPClient";
+	private static final String TAG = "TCPController";
 	private static boolean D = Ref.D;
 
 	// CONNECTION STATE-FLAG
@@ -58,9 +58,6 @@ public class TCPController {
 	 * received from server
 	 */
 	public TCPController() {
-		// This will take care of connection and update the tcpState in Ref
-		connect(); // We are not error handling here
-
 		// Instantiating listener
 		mMessageListener = new OnMessageReceivedListener() {
 			// messageReceived method is implemented. It is a listener

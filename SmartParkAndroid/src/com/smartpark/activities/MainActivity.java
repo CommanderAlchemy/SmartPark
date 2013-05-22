@@ -65,10 +65,10 @@ public class MainActivity extends FragmentActivity implements
 
 	// This is used for vibration
 	private Vibrator myVib;
-	
+
 	// Boolean ControllerApplication
 	private boolean isController;
-	
+
 	// Debugging and stuff
 	private static final String TAG = "MainActivity";
 	private static final boolean D = Ref.D;
@@ -102,11 +102,10 @@ public class MainActivity extends FragmentActivity implements
 
 		myVib = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 		myVib.vibrate(50);
-		
-		Ref.activeActivity = this;
 
-		// startService(new Intent(getBaseContext(),
-		// BackOperationService.class));
+		Ref.activeActivity = this;
+		Log.e(TAG, "---------- in onCreate");
+		startService(new Intent(getBaseContext(), BackOperationService.class));
 
 		if (D)
 			Log.d(TAG,
@@ -310,6 +309,8 @@ public class MainActivity extends FragmentActivity implements
 	public void onClickBtnLogin(View view) {
 		myVib.vibrate(20);
 		Toast.makeText(this, "Logging into Server", Toast.LENGTH_SHORT).show();
+
+		Ref.bgThread.sendByTCP("Login;saeed:asd");
 	}
 
 	public void onClickBtnSendLocation(View view) {
@@ -614,10 +615,10 @@ public class MainActivity extends FragmentActivity implements
 		@Override
 		public int getCount() {
 			// Show 5 total pages.
-			
-			if(isController)
+
+			if (isController)
 				return 4;
-			
+
 			return 5;
 		}
 
@@ -641,6 +642,6 @@ public class MainActivity extends FragmentActivity implements
 				return getString(R.string.title_section5).toUpperCase(l);
 			}
 			return null;
-		} 
+		}
 	}
 }

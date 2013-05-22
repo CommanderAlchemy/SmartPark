@@ -43,11 +43,9 @@ public class BackOperationService extends Service {
 
 	private String TAG = "BackOperationService";
 	private boolean D = Ref.D;
-	
+
 	BlueController btController;
 	TCPController tcpController;
-	
-	
 
 	// ============ END OF CLASS-VARIABLES ===========================
 
@@ -63,7 +61,7 @@ public class BackOperationService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate(); // Not needed
-		Log.i(TAG, "++ onCreate ++");
+		Log.e(TAG, "++ onCreate ++");
 
 		startService(new Intent(getBaseContext(), GPSService.class));
 
@@ -71,22 +69,19 @@ public class BackOperationService extends Service {
 		Toast.makeText(applicationContext, "Service started",
 				Toast.LENGTH_SHORT).show();
 		// -----------
-		BlueController btController = new BlueController(applicationContext);
-		TCPController tcpController = new TCPController();
+		btController = new BlueController(applicationContext);
+		tcpController = new TCPController();
 
 		btFoundDeviceReceiver = new BTFoundDeviceReceiver(btController);
 		btAdapterStateReceiver = new BTAdapterStateReceiver(btController);
 
-		
-		
-		
 		// -----------
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy(); // this is not needed in service
-		Log.i(TAG, "++ onDestroy ++");
+		Log.e(TAG, "++ onDestroy ++");
 		// We first stop the thread
 		// We invoke all the cleanUp()-method of the different classes if they
 		// exist
@@ -112,7 +107,7 @@ public class BackOperationService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
-		Log.i(TAG, "++ onStartCommand ++");
+		Log.e(TAG, "++ onStartCommand ++");
 
 		if (!btFindIntentIsRegistered) {
 			// These are all unregistered in onDestroy
@@ -130,22 +125,34 @@ public class BackOperationService extends Service {
 			registerReceiver(btAdapterStateReceiver, btConnectionStateFilter);
 			btConnectionStateIntentIsRegistered = true;
 		}
-		
-		
-		if(Ref.bgThread == null){
+
+		Log.e(TAG, "----- 1");
+		if (Ref.bgThread == null) {
+			Log.e(TAG, "----- 2");
+
 			Ref.bgThread = new BackgroundOperationThread(applicationContext,
 					btController, tcpController);
+			Log.e(TAG, "----- 3");
+
 			Ref.bgThread.start();
-			}else{
-				if(!Ref.bgThread.isAlive()){
-					Ref.bgThread.start();
-				}
+			Log.e(TAG, "----- 4");
+
+		} else {
+			Log.e(TAG, "----- 5");
+
+			if (!Ref.bgThread.isAlive()) {
+				Log.e(TAG, "----- 6");
+
+				Ref.bgThread.start();
+				Log.e(TAG, "----- 7");
+
 			}
-			
+		}
+
 		Log.i(TAG, "Service action= " + intent.getAction());
-		
+
 		String message = intent.getStringExtra("message to Service");
-		
+
 		// TODO do something with the message
 
 		return START_STICKY;

@@ -45,12 +45,16 @@ public class BackgroundOperationThread extends Thread {
 
 		// BT
 		this.btController = btController;
-
+		if(btController == null)
+			Log.e(TAG, " nuuuuuuuuuuuuulllllll");
 		// TCP
 		this.tcpController = tcpController;
 
+		Log.e(TAG, "-------- 0 bgThread");
+		
 		// Check to see if bluetooth is available
 		if (!btController.isBluetoothAdapterAvailable()) {
+			Log.e(TAG, "-------- 1 bgThread");
 			AlertDialog.Builder builder1 = new AlertDialog.Builder(
 					applicationContext);
 			builder1.setTitle("Problem");
@@ -70,10 +74,11 @@ public class BackgroundOperationThread extends Thread {
 			AlertDialog alert = builder1.create();
 			alert.show();
 		} else {
+			Log.e(TAG, "-------- 3 bgThread");
 			Toast.makeText(applicationContext, "Bluetooth avaiable",
 					Toast.LENGTH_SHORT).show();
 		}
-
+		Log.e(TAG, "-------- 2 bgThread");
 	}// ==================================================================
 
 	public void powerDown() {

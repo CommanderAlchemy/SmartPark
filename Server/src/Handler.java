@@ -32,23 +32,23 @@ public class Handler {
 	// }
 
 	public void checkCommand(String message) {
-		command = message.substring(0, message.indexOf(';'));
-
-		// if(message.length() != message.indexOf(";")+1){
-		commandParameters = message.substring(message.indexOf(';') + 1);
-		// }
-
+		String m[] = message.split(";");
+		command = m[0];
+		commandParameters = m[1];
+		
 		System.out.println(command);
 		System.out.println(commandParameters);
-
+		
 		switch (command) {
 		case "Login":
 
 			this.passwordAccepted = login(commandParameters);
 
-			if (passwordAccepted)
-				clientThread.sendMessage("Login;Accepted;Controller"
-						+ controller);
+			if (passwordAccepted){
+				clientThread.sendMessage("LoginACK;Accepted:" + controller);
+			}else{
+				clientThread.sendMessage("LoginACK;Denied:false");
+			}
 
 			break;
 		case "Close Connection":
@@ -78,9 +78,9 @@ public class Handler {
 	public boolean login(String param) {
 		inputParam = param.split(":");
 		this.customer = new Customer(inputParam[0]);
-
+		
 		if (customer.getPassword() != null)
-			if (inputParam.equals(customer.getPassword())) {
+			if (inputParam[1].equals(customer.getPassword())) {
 				this.ssNbr = inputParam[0];
 				
 				if (customer.getCont() == 1)

@@ -3,14 +3,9 @@ public class Controller {
 	
 	private String commando = "";
 	private String commandoParameters = "";
-	private User u1 = new User("Truls", "12345");
-	private User u2 = new User("Mario", "1337");
-	private Database db = new Database();
 	private ClientThread clientThread;
 	
 	public Controller(ClientThread clientThread){
-		db.addUser(u1);
-		db.addUser(u2);
 		this.clientThread = clientThread;
 	}
 	
@@ -43,15 +38,15 @@ public class Controller {
 	
 	public boolean login(String commandoParameters){
 //		System.out.println("Login: " + commandoParameters);
-		String[] information = commandoParameters.split(":");
+//		String[] information = commandoParameters.split(":");
 //		System.out.println(information[0] + " " + information[1]);
-		if(db.checkUsername(information[0])){
-//			System.out.println("Username OK");
-			if(db.checkPassword(information[1])){
-//				System.out.println("Login Succes");
-				return true;
-			}
-		} //Skickar userName
+//		if(db.checkUsername(information[0])){
+////			System.out.println("Username OK");
+//			if(db.checkPassword(information[1])){
+////				System.out.println("Login Succes");
+//				return true;
+//			}
+//		} //Skickar userName
 		return false;
 	}
 }

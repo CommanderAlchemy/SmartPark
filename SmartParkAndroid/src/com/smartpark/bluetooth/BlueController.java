@@ -57,18 +57,18 @@ public class BlueController {
 
 	// Device, Socket and IO-Streams
 	// remove static
-	public static BluetoothDevice btDevice;
-	public static BluetoothSocket btSocket;
-	public static InputStream btInStream;
-	public static OutputStream btOutStream;
+	private static BluetoothDevice btDevice;
+	private static BluetoothSocket btSocket;
+	private static InputStream btInStream;
+	private static OutputStream btOutStream;
 
 	private BufferedReader bufferedReader;
 
 	// change to private
-	public static BluetoothAdapter btAdapter;
+	private static BluetoothAdapter btAdapter;
 
 	// change to private
-	public static Context applicationContext;
+	private static Context applicationContext;
 
 	// -------------------------------------------------------------------------------
 	// public BlueController(Context instantiatorClass) {
@@ -359,8 +359,10 @@ public class BlueController {
 		if (D)
 			Log.e(TAG, "++ sendString ++");
 		try {
-			btOutStream.write(data);
-			return Ref.RESULT_OK;
+			if (btSocket.isConnected()) {
+				btOutStream.write(data);
+				return Ref.RESULT_OK;
+			}
 		} catch (IOException e1) {
 			if (D)
 				Log.e(TAG, "Sending of data with bt failed" + e1);
@@ -370,6 +372,7 @@ public class BlueController {
 			Log.e(TAG, "ggggggggggggggggggg" + e1);
 			return Ref.RESULT_EXCEPTION;
 		}
+		return Ref.RESULT_IO_EXCEPTION;
 	}
 
 	// ================================================================
@@ -408,7 +411,7 @@ public class BlueController {
 	}
 
 	// ================================================================
-	
+
 	public boolean isDiscovering() {
 		if (D)
 			Log.e(TAG, "++ isDiscovering ++");
@@ -416,7 +419,7 @@ public class BlueController {
 	}
 
 	// ================================================================
-	
+
 	// /**
 	// * This method will unregister the BroadcastReceiver for ACTION_FOUND of
 	// the

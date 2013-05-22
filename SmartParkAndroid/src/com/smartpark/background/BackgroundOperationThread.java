@@ -131,10 +131,11 @@ public class BackgroundOperationThread extends Thread {
 	public void run() {
 		if (D)
 			Log.e(TAG, "++  run  ++");
-		String inData = null;
-
+		
 		keepRunning = true;
-
+		int iterations = 0;
+		String inData = null;
+		
 		while (keepRunning) {
 			if (btController.isConnected()) {
 				// Code to process
@@ -186,7 +187,7 @@ public class BackgroundOperationThread extends Thread {
 				}
 
 				while (tcpTransmitBuffer.size() > 0
-						&& btController.isConnected()) {
+						&& tcpController.isConnected()) {
 					Log.d(TAG, "TCP sending data");
 					tcpWrite();
 				}
@@ -197,8 +198,7 @@ public class BackgroundOperationThread extends Thread {
 				fixConnections();
 			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
-			Log.i(TAG, "BT Connection state: " + (btController.isConnected()));
-			Log.i(TAG, "TCP Connection state: " + (tcpController.isConnected()));
+			
 
 			// -----------------------------------------------------
 			// -----------------------------------------------------
@@ -213,33 +213,21 @@ public class BackgroundOperationThread extends Thread {
 			} catch (InterruptedException e) {
 				Log.e(TAG, "InterruptedException: ", e);
 			}
-			// if (Ref.flagMainActivityInFront ||
-			// Ref.flagSettingsActivityInFront
-			// || Ref.flagLoginActivityInFront) {
-			// shutdownTime = 0;
-			// } else {
-			// if (shutdownTime == 0) {
-			// shutdownTime = System.currentTimeMillis();
-			// } else if (System.currentTimeMillis() - shutdownTime > 30000) {
-			// cleanUp();
-			// keepRunning = false;
-			// Log.i(TAG, "--> Shutting down thread");
-			// }
-			// if (D)
-			// Log.d("BackThread",
-			// "thread is shutting down"
-			// + (System.currentTimeMillis() - shutdownTime));
-			// try {
-			// Thread.sleep(3000);
-			// } catch (InterruptedException e) {
-			// Log.e(TAG, "InterruptedException: ", e);
-			// }
-			// }
+			
+			
+			if(iterations  == 12){
+				// TODO
+				Log.i(TAG, "BT Connection state: " + (btController.isConnected()));
+				Log.i(TAG, "TCP Connection state: " + (tcpController.isConnected()));
+			}else{
+				iterations++;
+			}
+			
+			
 		}
-		Log.d(TAG, "--> Thread is shutdown");
-
+		
 		cleanUp();
-
+		Log.d(TAG, "--> Thread is shutdown");
 	}// ==================================================================
 
 	private void btWrite() {
@@ -249,8 +237,6 @@ public class BackgroundOperationThread extends Thread {
 				btController.sendBytes(btTransmitBuffer.removeFirst()
 						.getBytes());
 			}
-		} else {
-			btController.setDisconnected();
 		}
 	}// ==================================================================
 

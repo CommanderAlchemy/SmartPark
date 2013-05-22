@@ -182,6 +182,9 @@ public class UserHistoryFragment extends Fragment {
 		/*
 		 * TODO Fix Server Database for parking logs! Query the server for
 		 * Parking Data!
+		 * 
+		 * Query;date:date
+		 * 
 		 */
 	}
 

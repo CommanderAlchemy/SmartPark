@@ -35,7 +35,7 @@ public class Handler {
 		command = message.substring(0, message.indexOf(';'));
 
 		// if(message.length() != message.indexOf(";")+1){
-		commandParameters = message.substring(message.indexOf(';') + 1);
+		commandParameters = message.substring(message.indexOf(':') + 1);
 		// }
 
 		System.out.println(command);

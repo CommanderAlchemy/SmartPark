@@ -67,7 +67,7 @@ public class Server extends Thread {
 	 * @param args
 	 */
 	public static void main(String args[]) {
-		int port = 25565;
+		int port = 44344;
 
 		try {
 			new Server(port).start();

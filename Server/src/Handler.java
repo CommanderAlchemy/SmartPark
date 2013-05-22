@@ -5,9 +5,10 @@ public class Handler {
 	private String command = "";
 	private String commandParameters = "";
 	private ClientThread clientThread;
-	
+
 	// Login
-	private boolean loggedIn = false;
+	private boolean passwordAccepted = false;
+	private boolean controller = false;
 	// Customer Table
 	private Customer customer;
 
@@ -15,7 +16,7 @@ public class Handler {
 
 	public Handler(ClientThread clientThread) {
 		this.clientThread = clientThread;
-//		this.customer = new Customer();
+		// this.customer = new Customer();
 	}
 
 	// private void setTask(String task){
@@ -36,7 +37,11 @@ public class Handler {
 		case "Login":
 			System.out.println("command: " + command);
 			System.out.println("Parameters: " + commandParameters);
-			this.loggedIn = login(commandParameters);
+			this.passwordAccepted = login(commandParameters);
+
+			if (passwordAccepted)
+				clientThread.sendMessage("Login;Accepted;Controller"+controller);
+
 			break;
 		case "Close Connection":
 			System.out.println("command: " + command);
@@ -48,23 +53,26 @@ public class Handler {
 		}
 	}
 
-	public void setLoggedIn(boolean loggedIn) {
-		this.loggedIn = loggedIn;
+	public void setPasswordAccepted(boolean passwordAccepted) {
+		this.passwordAccepted = passwordAccepted;
 	}
 
-	public boolean getLoggedIn() {
-		return this.loggedIn;
+	public boolean getPasswordAccepted() {
+		return this.passwordAccepted;
 	}
 
 	// Login;
 	public boolean login(String param) {
 		String[] inputParam = param.split(":");
 		this.customer = new Customer(inputParam[0]);
-		
-		if(customer.getPassword() != null)
-			if(inputParam.equals(customer.getPassword()))
-					return true;
-			
+
+		if (customer.getPassword() != null)
+			if (inputParam.equals(customer.getPassword())) {
+				if (customer.getCont() == 1)
+					this.controller = true;
+				return true;
+			}
+
 		return false;
 	}
 

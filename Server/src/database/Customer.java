@@ -47,6 +47,10 @@ public class Customer extends Database {
 		super(dbName);
 
 	}
+	public Customer(String ssNbr){
+		this();
+		selectCustomer(ssNbr);
+	}
 
 	/**
 	 * Constuctor to read and write customer data to the database
@@ -129,7 +133,7 @@ public class Customer extends Database {
 				+ "." + tblName);
 	}
 
-	private void selectCustomer(String searchValue) {
+	public void selectCustomer(String searchValue) {
 		try {
 			// super.getConnection().setAutoCommit(false);
 			statement = super.getConnection().createStatement();
@@ -374,7 +378,7 @@ public class Customer extends Database {
 		c.InsertCustomerData(new Customer(0, "820620", "Saeed", "Ghasemi","Hyllie", "0763150074", "saeed", "002Second", "Tomorrow"));
 		c.InsertCustomerData(new Customer(0, "na", "Truls", "Haraldsson","Trelleborg", "some number", "truls", "003Third", "Never"));
 		c.selectCustomer(null);
-		c.selectCustomer("9-10611");
+		c.selectCustomer("910611");
 
 	}
 }

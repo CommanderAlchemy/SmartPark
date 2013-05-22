@@ -80,7 +80,6 @@ public class UserHistoryFragment extends Fragment {
 			}
 			viewReferences.put(viewKeys[i], view);
 		}
-
 		return rootView;
 	}
 

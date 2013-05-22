@@ -1,3 +1,4 @@
+package com.smartpark.trash;
 
 import java.util.ArrayList;
 

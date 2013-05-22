@@ -32,8 +32,8 @@ public class BackOperationService extends Service {
 	private static IntentFilter btAdapterStateFilter = new IntentFilter(
 			BluetoothAdapter.ACTION_STATE_CHANGED);
 	private static IntentFilter btConnectionStateFilter = new IntentFilter(
-			BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
-
+			BluetoothDevice.ACTION_ACL_DISCONNECTED);
+	
 	// GLOBAL APPLICATION STATE FLAGS
 	private static boolean btFindIntentIsRegistered;
 	private static boolean btStateIntentIsRegistered;
@@ -120,24 +120,7 @@ public class BackOperationService extends Service {
 		// Register a receiver for BT-connection changes
 		registerReceiver(btAdapterStateReceiver, btConnectionStateFilter);
 		btConnectionStateIntentIsRegistered = true;
-
+				
 		return START_STICKY;
 	}
-
-	public class ty implements OnActivityResultListener {
-
-		@Override
-		public boolean onActivityResult(int requestCode, int resultCode,
-				Intent data) {
-			Log.e(TAG,
-					"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-	}
-
-	
-
 }

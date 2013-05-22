@@ -25,7 +25,8 @@ public class BTFoundDeviceReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		// may need to chain this to a recognizing function
 		String action = intent.getAction();
-		Log.e(TAG, "-----------------------------");
+		Log.e(TAG, "++ BTFoundDeviceReceiver ++ onReceive ++ " + action);
+		
 		if (BluetoothDevice.ACTION_FOUND.equals(action)) {
 			// Get the BluetoothDevice object from the Intent
 			BluetoothDevice device = intent

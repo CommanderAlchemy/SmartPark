@@ -85,7 +85,7 @@ public class BlueController {
 
 	}// -------------------------------------------------------------------------------
 
-	public void cleanUp(Context applicationContext) {
+	public void cleanUp() {
 		/*
 		 * This method will close and unregister and set everything to null to
 		 * make ready for a clean transition for shutdown.
@@ -95,6 +95,11 @@ public class BlueController {
 		 * to be the last class to exit and should not be invoked like in
 		 * orientation changes.
 		 */
+		try {
+			btSocket.close();
+		} catch (IOException e) {
+			Log.e(TAG, "IOException: ", e);
+		}
 		btInStream = null;
 		btOutStream = null;
 		btSocket = null;
@@ -220,7 +225,7 @@ public class BlueController {
 
 	// ================================================================
 
-	public boolean connectBT() {
+	public void connectBT() {
 		new Thread() {
 			public void run() {
 
@@ -228,34 +233,39 @@ public class BlueController {
 
 				setConnecting();
 
-				// if (btAdapter == null) {
-				// btAdapter = BluetoothAdapter.getDefaultAdapter();
-				// }TODO remove carefully test everything
+				if (btAdapter == null) {
+					btAdapter = BluetoothAdapter.getDefaultAdapter();
+				}// TODO remove carefully test everything
 
 				if (btDevice == null) {
 					btDevice = getPairedDeviceByName(SMARTPARK_DEVICE);
 					if (btDevice == null) {
-						Log.i(TAG, "The device is not previously paired with"
-								+ " this phone or bluetooth is disabled.");
-						findNearbyDevices();
-						// The adapter will only search for 12 seconds
-						for (int i = 0; i < 15; i++) {
+						if (isEnabled()) {
 							Log.i(TAG,
-									"Discovering? " + btAdapter.isDiscovering());
-							try {
-								Thread.sleep(1200);
-							} catch (InterruptedException e) {
-								Log.e(TAG, "--> Thread.sleep was interrupted!");
-							}
-							btDevice = getFoundDeviceByName(SMARTPARK_DEVICE);
+									"The device is not previously paired with"
+											+ " this phone or bluetooth is disabled.");
+							findNearbyDevices();
+							// The adapter will only search for 12 seconds
+							for (int i = 0; i < 15; i++) {
+								Log.i(TAG,
+										"Discovering? "
+												+ btAdapter.isDiscovering());
+								try {
+									Thread.sleep(1200);
+								} catch (InterruptedException e) {
+									Log.e(TAG,
+											"--> Thread.sleep was interrupted!");
+								}
+								btDevice = getFoundDeviceByName(SMARTPARK_DEVICE);
 
-							if (btDevice != null) {
-								stopDiscovery();
-								Log.i(TAG, "Found SP-Device");
-								Toast.makeText(applicationContext,
-										"SmartPark-device found",
-										Toast.LENGTH_SHORT).show();
-								break;
+								if (btDevice != null) {
+									stopDiscovery();
+									Log.i(TAG, "Found SP-Device");
+									Toast.makeText(applicationContext,
+											"SmartPark-device found",
+											Toast.LENGTH_SHORT).show();
+									break;
+								}
 							}
 						}
 					}
@@ -264,24 +274,32 @@ public class BlueController {
 				if (btDevice != null) {
 					Log.e(TAG, "--> Connecting to: " + btDevice.toString());
 					// This connect will start a new thread.
-					connect();
-					Log.e(TAG, "--> connected to " + btDevice.getAddress());
+					if (connect()) {
+						Log.e(TAG, "--> connected to: " + btDevice.getName());
+					} else {
+						Log.e(TAG,
+								"--> did not connected to: "
+										+ btDevice.getName());
+					}
+
 				} else {
 					Log.w(TAG, "--> device is null, bluetooth not found");
 				}
 			}
 		}.start();
-		return true;
 	}
 
 	// ================================================================
 
 	/**
 	 * This method aims at connecting to the device and is private to the class.
+	 * 
+	 * @return
 	 */
-	private void connect() {
+	private boolean connect() {
 		if (D)
 			Log.e(TAG, "++ connect ++");
+		boolean isConnected = false;
 
 		try {
 			btSocket = btDevice.createRfcommSocketToServiceRecord(SerialPort);
@@ -293,10 +311,10 @@ public class BlueController {
 				 * from google developer)
 				 */
 				stopDiscovery();
-				Log.e(TAG, "-------1-------");
-				btSocket.close();
 				Log.e(TAG, "-------1a-------");
 				btSocket.connect();
+				isConnected = true;
+				setConnected();
 				Log.e(TAG, "-------2-------");
 				/*
 				 * We are changing state to connected since we have a
@@ -308,9 +326,9 @@ public class BlueController {
 				try {
 					if (D)
 						Log.e(TAG, "Connection Exception: ", e);
+					setDisconnected();
 					btSocket.close();
 					Log.e(TAG, "-------4-------");
-					setDisconnected();
 				} catch (Exception e2) {
 					if (D)
 						Log.e(TAG, "Socket Close Exception: " + e2);
@@ -334,6 +352,7 @@ public class BlueController {
 				Log.e(TAG, "Socket I/O Streams Exception" + e);
 			setDisconnected();
 		}
+		return isConnected;
 	}
 
 	public int sendBytes(byte[] data) {
@@ -418,7 +437,7 @@ public class BlueController {
 			 * The use of && prohibits isConnected() to be invoked if btSocket
 			 * is null.
 			 */
-			if (btSocket != null && btSocket.isConnected()) {
+			if (btSocket != null) {
 				btSocket.close();
 			}
 			return Ref.RESULT_OK;
@@ -525,16 +544,7 @@ public class BlueController {
 	// CONNECTION STATE SETTERS AND GETTERS
 
 	public boolean isConnected() {
-		if (btSocket != null) {
-			if (btSocket.isConnected()) {
-				setConnected();
-				return true;
-			} else {
-				setDisconnected();
-				return false;
-			}
-		}
-		return false;
+		return connectionState == Ref.STATE_CONNECTED;
 	}
 
 	public boolean isConnecting() {
@@ -546,6 +556,7 @@ public class BlueController {
 	}
 
 	public void setConnected() {
+		Log.e(TAG, "++ setConnected ++");
 		connectionState = Ref.STATE_CONNECTED;
 	}
 

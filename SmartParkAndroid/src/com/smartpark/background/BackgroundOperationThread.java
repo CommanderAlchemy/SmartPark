@@ -27,7 +27,7 @@ public class BackgroundOperationThread extends Thread {
 
 	// USED WHEN INITIATING SOFT SHUTDOWN (RECOMMENDED ON THE INTERNET)
 	private boolean keepRunning = true;
-	
+
 	// CONTROL FLAGS
 	private boolean userIsAlreadyAsked = false;
 
@@ -81,55 +81,51 @@ public class BackgroundOperationThread extends Thread {
 		keepRunning = false;
 	}// ==================================================================
 
-	private boolean fixConnections() {
+	private void fixConnections() {
 		Log.e(TAG, "++ fixConnections ++");
+		if (!btController.isConnecting() || !btController.isConnected()) {
+			btController.setConnecting();
+			boolean discovering;
 
-		btController.setConnecting();
-		boolean discovering;
-
-		// Enable bluetooth if disabled by asking the user first (only once)
-		if (!userIsAlreadyAsked && !btController.isEnabled()) {
-			Log.d(TAG, "--> bluetooth is disabled");
-			/*
-			 * Certain methods need to invoke methods of an Activity-class. But
-			 * in order to Categorize and keep method for certain functions in a
-			 * single class, we let those method get the reference for the
-			 * currently active Activity so to invoke their methods. Methods
-			 * will get this reference from Ref, where it is maintained by the
-			 * different activities. Only the activity currently running in
-			 * thread can start other activities. Therefore, they provide their
-			 * reference in Ref for other methods to ask them to invoke certain
-			 * method. This is a wildly used method on the Internet beside using
-			 * getApplicationContext() which is used by us for creating Toasts
-			 * and others. enableAdapter() in BlueController is one of those
-			 * methods.
-			 */
-			btController.enableAdapter();
-			userIsAlreadyAsked = true;
-			Log.d(TAG, "--> Enabling done");
-			// Toast.makeText(applicationContext, "Enabled", Toast.LENGTH_SHORT)
-			// .show();
+			// Enable bluetooth if disabled by asking the user first (only once)
+			if (!userIsAlreadyAsked && !btController.isEnabled()) {
+				Log.d(TAG, "--> bluetooth is disabled");
+				/*
+				 * Certain methods need to invoke methods of an Activity-class.
+				 * But in order to Categorize and keep method for certain
+				 * functions in a single class, we let those method get the
+				 * reference for the currently active Activity so to invoke
+				 * their methods. Methods will get this reference from Ref,
+				 * where it is maintained by the different activities. Only the
+				 * activity currently running in thread can start other
+				 * activities. Therefore, they provide their reference in Ref
+				 * for other methods to ask them to invoke certain method. This
+				 * is a wildly used method on the Internet beside using
+				 * getApplicationContext() which is used by us for creating
+				 * Toasts and others. enableAdapter() in BlueController is one
+				 * of those methods.
+				 */
+				btController.enableAdapter();
+				userIsAlreadyAsked = true;
+				Log.d(TAG, "--> Enabling done");
+				// Toast.makeText(applicationContext, "Enabled",
+				// Toast.LENGTH_SHORT)
+				// .show();
+			}
+			if (D)
+				Log.e(TAG, "isConnected? " + btController.isConnected());
+			btController.closeConnection();
+			btController.connectBT();
 		}
-		
-//		if (btController == null) {
-//			Log.e(TAG, "BlueController was == null");
-//			btController = new BlueController(applicationContext);
-//		}TODO
-		
-		if (D)
-			Log.e(TAG, "isConnected? " + btController.isConnected());
-		btController.closeConnection();
-		return btController.connectBT();
 	}// ================================================================
 
 	@Override
 	public void run() {
-		// TODO remember to check for the shutdownFlag
-		
 		if (D)
 			Log.e(TAG, "++  run  ++");
 		String btInData = null;
 		String tcpInData = null;
+
 		keepRunning = true;
 
 		while (keepRunning) {
@@ -137,9 +133,9 @@ public class BackgroundOperationThread extends Thread {
 				// Code to process
 				try {
 					Log.d(TAG, "--> reading started");
-
-					btInData = btController.receiveString();
-					Log.i(TAG, "--> DATA read                  " + btInData);
+					// TODO
+					btInData = btRead();
+					Log.i(TAG, "--> DATA read     " + btInData);
 					if (btInData != null) {
 						Integer t = Integer.parseInt(btInData);
 						if (t != 1000000) {
@@ -171,13 +167,13 @@ public class BackgroundOperationThread extends Thread {
 
 			if (tcpController.isConnected()) {
 				// Code to process
-				
+
 				// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 			} else {
 				// Handle reconnection
-				
+
 			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-			
+
 			Log.i(TAG, "Connection state: " + (btController.isConnected()));
 
 			// -----------------------------------------------------
@@ -185,7 +181,7 @@ public class BackgroundOperationThread extends Thread {
 			// -----------------------------------------------------
 			// -----------------------------------------------------
 
-			// Log.d(TAG, "BT buffer size: " + btTransmitBuffer.size());
+			Log.d(TAG, "BT buffer size: " + btTransmitBuffer.size());
 
 			// Check to see if the thread needs to start shutting down
 			// Log.d(TAG, "--> thread running");
@@ -194,34 +190,33 @@ public class BackgroundOperationThread extends Thread {
 			} catch (InterruptedException e) {
 				Log.e(TAG, "InterruptedException: ", e);
 			}
-			if (Ref.flagMainActivityInFront || Ref.flagSettingsActivityInFront
-					|| Ref.flagLoginActivityInFront) {
-				shutdownTime = 0;
-			} else {
-				if (shutdownTime == 0) {
-					shutdownTime = System.currentTimeMillis();
-				} else if (System.currentTimeMillis() - shutdownTime > 30000) {
-					shutdownThread();
-					keepRunning = false;
-					Log.i(TAG, "--> Shutting down thread");
-				}
-				if (D)
-					Log.d("BackThread",
-							"thread is shutting down"
-									+ (System.currentTimeMillis() - shutdownTime));
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-					Log.e(TAG, "InterruptedException: ", e);
-				}
-			}
+			// if (Ref.flagMainActivityInFront ||
+			// Ref.flagSettingsActivityInFront
+			// || Ref.flagLoginActivityInFront) {
+			// shutdownTime = 0;
+			// } else {
+			// if (shutdownTime == 0) {
+			// shutdownTime = System.currentTimeMillis();
+			// } else if (System.currentTimeMillis() - shutdownTime > 30000) {
+			// cleanUp();
+			// keepRunning = false;
+			// Log.i(TAG, "--> Shutting down thread");
+			// }
+			// if (D)
+			// Log.d("BackThread",
+			// "thread is shutting down"
+			// + (System.currentTimeMillis() - shutdownTime));
+			// try {
+			// Thread.sleep(3000);
+			// } catch (InterruptedException e) {
+			// Log.e(TAG, "InterruptedException: ", e);
+			// }
+			// }
 		}
 		Log.d(TAG, "--> Thread is shutdown");
-		/*
-		 * In case the thread-instance is reused this will avoid a problem for
-		 * us.
-		 */
-		keepRunning = true;
+
+		cleanUp();
+
 	}// ==================================================================
 
 	private void btWrite() {
@@ -246,13 +241,20 @@ public class BackgroundOperationThread extends Thread {
 		return inData;
 	}// ==================================================================
 
-	private void shutdownThread() {
-		Log.e(TAG, "++ shutdownThread ++");
+	private void cleanUp() {
+		Log.e(TAG, "++ cleanUp ++");
 		// Do not invoke method that forcefully shut a thread down.
 		// Let the run method run out.
 		// this.shutdownThread(); wont work, just like suspend() and stop()
 
-		btController.closeConnection();
+		btController.cleanUp();
+		tcpController.disconnect();
+
+		btTransmitBuffer = null;
+		tcpTransmitBuffer = null;
+		applicationContext = null;
+		btController = null;
+		tcpController = null;
 
 	}// ==================================================================
 

@@ -5,6 +5,7 @@ import com.smartpark.bluetooth.BlueController;
 
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,10 +18,10 @@ public class BTAdapterStateReceiver extends BroadcastReceiver {
 	// Debugging and stuff
 	private static final String TAG = "BT_StateReceiver";
 	private static final boolean D = Ref.D;
-	
-	BlueController btController;
-	
-	public BTAdapterStateReceiver(BlueController btController){
+
+	private BlueController btController;
+
+	public BTAdapterStateReceiver(BlueController btController) {
 		super();
 		this.btController = btController;
 	}
@@ -29,12 +30,13 @@ public class BTAdapterStateReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		final String action = intent.getAction();
 		Log.e(TAG, "++ BTAdapterStateReceiver ++ onReceive ++ " + action);
-		
+
 		int event;
 		if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
 			// --> getIntExtra(int state, default int)
-			event = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
-			
+			event = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
+					BluetoothAdapter.ERROR);
+
 			switch (event) {
 			case BluetoothAdapter.STATE_OFF:
 				break;
@@ -47,34 +49,43 @@ public class BTAdapterStateReceiver extends BroadcastReceiver {
 				break;
 			default:
 			}
-			
-		} else 
-			
-			if (action.equals(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED)) {
-				Log.i(TAG, "BT State changed!");
+
+		} else
+			Log.e(TAG, " ------------- do something here");
+		if (action.equals(BluetoothDevice.ACTION_ACL_DISCONNECTED)
+				|| action
+						.equals(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED)) {
+			Log.e(TAG, "BT State changed!");
 			// getIntExtra(int state, default int)
-			event = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE, BluetoothAdapter.ERROR);
-			
+			event = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE,
+					BluetoothAdapter.ERROR);
+
 			switch (event) {
 			case BluetoothAdapter.STATE_DISCONNECTED:
 				btController.setDisconnected();
-				if(D) Log.d(TAG, "--> BT - STATE_NOT_CONNECTED");
+				if (D)
+					Log.e(TAG, "--> BT - STATE_NOT_CONNECTED");
 				break;
 			case BluetoothAdapter.STATE_CONNECTED:
 				btController.setConnected();
-				if(D) Log.d(TAG, "--> BT - STATE_CONNECTED");
+				if (D)
+					Log.d(TAG, "--> BT - STATE_CONNECTED");
 				break;
 			case BluetoothAdapter.STATE_CONNECTING:
 				btController.setConnecting();
-				if(D) Log.d(TAG, "--> BT - STATE_CONNECTING");
+				if (D)
+					Log.d(TAG, "--> BT - STATE_CONNECTING");
 				break;
 			case BluetoothAdapter.STATE_DISCONNECTING:
 				btController.setDisconnected();
-				if(D) Log.d(TAG, "--> BT - STATE_DISCONNECTING");
+				if (D)
+					Log.d(TAG, "--> BT - STATE_DISCONNECTING");
 				break;
 			default:
 				btController.setDisconnected();
-				if(D) Log.e(TAG, "--> BT - STATE_DISCONNECTING (default case = inconclusive)");
+				if (D)
+					Log.e(TAG,
+							"--> BT - STATE_DISCONNECTING (default case = inconclusive)");
 			}
 		}
 	}

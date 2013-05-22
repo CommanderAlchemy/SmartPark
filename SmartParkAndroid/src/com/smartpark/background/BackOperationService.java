@@ -33,17 +33,21 @@ public class BackOperationService extends Service {
 			BluetoothAdapter.ACTION_STATE_CHANGED);
 	private static IntentFilter btConnectionStateFilter = new IntentFilter(
 			BluetoothDevice.ACTION_ACL_DISCONNECTED);
-	
+
 	// GLOBAL APPLICATION STATE FLAGS
-	private static boolean btFindIntentIsRegistered;
-	private static boolean btStateIntentIsRegistered;
-	private static boolean btConnectionStateIntentIsRegistered;
-	private static boolean gpsReceiverIsRegistered;
+	private static boolean btFindIntentIsRegistered = false;
+	private static boolean btStateIntentIsRegistered = false;
+	private static boolean btConnectionStateIntentIsRegistered = false;
 
 	private Context applicationContext;
 
 	private String TAG = "BackOperationService";
 	private boolean D = Ref.D;
+	
+	BlueController btController;
+	TCPController tcpController;
+	
+	
 
 	// ============ END OF CLASS-VARIABLES ===========================
 
@@ -62,7 +66,7 @@ public class BackOperationService extends Service {
 		Log.i(TAG, "++ onCreate ++");
 
 		startService(new Intent(getBaseContext(), GPSService.class));
-		
+
 		applicationContext = getApplicationContext();
 		Toast.makeText(applicationContext, "Service started",
 				Toast.LENGTH_SHORT).show();
@@ -73,9 +77,9 @@ public class BackOperationService extends Service {
 		btFoundDeviceReceiver = new BTFoundDeviceReceiver(btController);
 		btAdapterStateReceiver = new BTAdapterStateReceiver(btController);
 
-		Ref.bgThread = new BackgroundOperationThread(applicationContext,
-				btController, tcpController);
-		Ref.bgThread.start();
+		
+		
+		
 		// -----------
 	}
 
@@ -88,7 +92,7 @@ public class BackOperationService extends Service {
 		// exist
 		// We then clean this Service-resources if any
 		// We set everything in Ref.java to null
-		
+
 		Ref.bgThread.powerDown();
 
 		// Unregister all BroadcastReceivers that are registered
@@ -101,7 +105,7 @@ public class BackOperationService extends Service {
 			btStateIntentIsRegistered = false;
 			btConnectionStateIntentIsRegistered = false;
 		}
-		
+
 		stopService(new Intent(getBaseContext(), GPSService.class));
 	}
 
@@ -110,17 +114,40 @@ public class BackOperationService extends Service {
 		super.onStartCommand(intent, flags, startId);
 		Log.i(TAG, "++ onStartCommand ++");
 
-		// These are all unregistered in onDestroy
-		// Register a receiver for found BT-devices
-		registerReceiver(btFoundDeviceReceiver, btFoundDeviceFilter);
-		btFindIntentIsRegistered = true;
-		// Register a receiver for BT-adapter state changes
-		registerReceiver(btAdapterStateReceiver, btAdapterStateFilter);
-		btStateIntentIsRegistered = true;
-		// Register a receiver for BT-connection changes
-		registerReceiver(btAdapterStateReceiver, btConnectionStateFilter);
-		btConnectionStateIntentIsRegistered = true;
-				
+		if (!btFindIntentIsRegistered) {
+			// These are all unregistered in onDestroy
+			// Register a receiver for found BT-devices
+			registerReceiver(btFoundDeviceReceiver, btFoundDeviceFilter);
+			btFindIntentIsRegistered = true;
+		}
+		if (!btStateIntentIsRegistered) {
+			// Register a receiver for BT-adapter state changes
+			registerReceiver(btAdapterStateReceiver, btAdapterStateFilter);
+			btStateIntentIsRegistered = true;
+		}
+		if (!btConnectionStateIntentIsRegistered) {
+			// Register a receiver for BT-connection changes
+			registerReceiver(btAdapterStateReceiver, btConnectionStateFilter);
+			btConnectionStateIntentIsRegistered = true;
+		}
+		
+		
+		if(Ref.bgThread == null){
+			Ref.bgThread = new BackgroundOperationThread(applicationContext,
+					btController, tcpController);
+			Ref.bgThread.start();
+			}else{
+				if(!Ref.bgThread.isAlive()){
+					Ref.bgThread.start();
+				}
+			}
+			
+		Log.i(TAG, "Service action= " + intent.getAction());
+		
+		String message = intent.getStringExtra("message to Service");
+		
+		// TODO do something with the message
+
 		return START_STICKY;
 	}
 }

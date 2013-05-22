@@ -3,6 +3,7 @@ package com.smartpark.fragments;
 import java.util.Calendar;
 import java.util.HashMap;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
@@ -34,7 +35,7 @@ public class UserHistoryFragment extends Fragment {
 
 	private HashMap<String, View> viewReferences = new HashMap<String, View>(20);
 
-	private Vibrator myVib;
+	private Vibrator myVib = (Vibrator) getActivity().getSystemService(Activity.VIBRATOR_SERVICE);
 
 	private DatePickerFragment datePickerFromDate;
 	private DatePickerFragment datePickerToDate;
@@ -92,12 +93,12 @@ public class UserHistoryFragment extends Fragment {
 			if (v instanceof Button) {
 				switch (v.getId()) {
 				case R.id.btnFromDate:
-					// myVib.vibrate(50);
+					 myVib.vibrate(50);
 					datePickerFromDate.show(getActivity().getFragmentManager(),
 							"From Date");
 					break;
 				case R.id.btnToDate:
-					// myVib.vibrate(50);
+					 myVib.vibrate(50);
 					datePickerToDate.show(getActivity().getFragmentManager(),
 							"To Date");
 					break;

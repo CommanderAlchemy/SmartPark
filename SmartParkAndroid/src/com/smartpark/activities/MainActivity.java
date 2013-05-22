@@ -102,7 +102,7 @@ public class MainActivity extends FragmentActivity implements
 
 		myVib = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 		myVib.vibrate(50);
-
+		
 		Ref.activeActivity = this;
 
 		// startService(new Intent(getBaseContext(),
@@ -272,107 +272,6 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	/*
-	 * Fragment History
-	 */
-	// public void onClickBtnFromDate(View view) {
-	// myVib.vibrate(50);
-	// datePickerFromDate.show(getFragmentManager(), "From Date");
-	// }
-
-	// public void onClickBtnToDate(View view) {
-	// myVib.vibrate(50);
-	// datePickerToDate.show(getFragmentManager(), "To Date");
-	// }
-//
-//	public void OnClickBtnDateEvent(int[] newDate, int tag) {
-//		Log.i(TAG, "++ OnClickBtnDateEvent ++");
-//		String month = null, pickedDate;
-//		boolean error = true;
-//
-//		/* @formatter:off */
-//		switch (newDate[1]) {
-//		case 0:		month = "Jan"; 	break;
-//		case 1:		month = "Feb";	break;
-//		case 2:		month = "Mar";	break;
-//		case 3:		month = "Apr";	break;
-//		case 4:		month = "Maj";	break;
-//		case 5:		month = "Jun";	break;
-//		case 6:		month = "Jul";	break;
-//		case 7: 	month = "Aug";	break;
-//		case 8: 	month = "Sep";	break;
-//		case 9:		month = "Okt";	break;
-//		case 10:	month = "Nov";	break;
-//		case 11:	month = "Dec";	break;
-//		}
-//		/* @formatter:on */
-//		pickedDate = newDate[0] + " " + month + " " + newDate[2];
-//		Log.e(TAG, "" + pickedDate);
-//		// View v = getLayoutInflater().inflate(R.layout.frag_history_view,
-//		// mViewPager);
-//		// Button btnFromDate = (Button)v.findViewById(R.id.btnFromDate);
-//
-//		Log.e(TAG, "newDate: " + newDate[0] + " " + newDate[1] + " "
-//				+ newDate[2]);
-//
-//		switch (tag) {
-//		case UserHistoryFragment.BUTTON_FROM_DATE:
-//			int[] toDate = datePickerToDate.getDate();
-//			Log.e(TAG, "toDate: " + toDate[0] + " " + toDate[1] + " "
-//					+ toDate[2]);
-//			if (toDate[2] != 0) {
-//				if (newDate[2] <= toDate[2]) {
-//					if (newDate[1] <= toDate[1]) {
-//						if (newDate[0] <= toDate[0]) {
-//							Log.e(TAG, "" + btnFromDate.toString() + " "
-//									+ pickedDate);
-//							this.btnFromDate.setText(pickedDate);
-//
-//							// ((Button) findViewById(R.id.btnFromDate))
-//							// .setText(pickedDate);
-//
-//							error = false;
-//						}
-//					}
-//				}
-//			}
-//			if (error)
-//				Toast.makeText(this, "From date > To date", Toast.LENGTH_LONG)
-//						.show();
-//			break;
-//
-//		case UserHistoryFragment.BUTTON_TO_DATE:
-//			int[] fromDate = datePickerFromDate.getDate();
-//
-//			Log.e(TAG, "fromDate: " + fromDate[0] + " " + fromDate[1] + " "
-//					+ fromDate[2]);
-//
-//			if (fromDate[2] != 0) {
-//				if (newDate[2] >= fromDate[2]) {
-//					if (newDate[1] >= fromDate[1]) {
-//						if (newDate[0] >= fromDate[0]) {
-//
-//							btnToDate.setText(pickedDate);
-//							// ((Button) findViewById(R.id.btnToDate))
-//							// .setText(pickedDate);
-//
-//							error = false;
-//						}
-//					}
-//				}
-//			}
-//			if (error)
-//				Toast.makeText(this, "From date > To date", Toast.LENGTH_LONG)
-//						.show();
-//			break;
-//		}
-//
-//		/*
-//		 * TODO Fix Server Database for parking logs! Query the server for
-//		 * Parking Data!
-//		 */
-//	}
-
-	/*
 	 * Fragment Demo
 	 */
 
@@ -425,12 +324,6 @@ public class MainActivity extends FragmentActivity implements
 		/* @formatter:off */
 		String str = Ref.activeActivity 			!= null ? "\nactiveActivity OK "		: "\nactiveActivity null ";
 		str += Ref.bgThread 						!= null ? "\nbgThread OK " 			: "\nbgThread null ";
-		str += BlueController.applicationContext	!= null ? "\napplicationContext OK ": "\napplicationContext null ";
-		str += BlueController.btAdapter 			!= null ? "\nbtAdapter OK "			: "\nbtAdapter null ";
-		str += BlueController.btDevice 				!= null ? "\nbtDevice OK "			: "\nbtDevice null ";
-		str += BlueController.btInStream 			!= null ? "\nbtInStream OK "		: "\nbtInStream null ";
-		str += BlueController.btOutStream			!= null ? "\nbtOutStream OK "		: "\nbtOutStream null ";
-		str += BlueController.btSocket				!= null ? "\nbtSocket OK "			: "\nbtSocket null ";
 		Log.e(TAG, str);
 		/* @formatter:on */
 	}

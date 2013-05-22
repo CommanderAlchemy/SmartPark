@@ -32,7 +32,7 @@ public class TCPController {
 	private static boolean D = Ref.D;
 
 	// CONNECTION STATE-FLAG
-	public static int connectionState = Ref.STATE_NOT_CONNECTED;
+	private static int connectionState = Ref.STATE_NOT_CONNECTED;
 
 	// message to send to the server
 	private String mServerMessage;
@@ -147,9 +147,11 @@ public class TCPController {
 		// you might want to remove !mBufferOut.checkError()
 		// if error occurs, messages will never be send TODO
 		// && !mBufferOut.checkError()
-		if (mBufferOut != null) {
-			mBufferOut.println(message);
-			mBufferOut.flush();
+		if (tcpSocket.isConnected()) {
+			if (mBufferOut != null) {
+				mBufferOut.println(message);
+				mBufferOut.flush();
+			}
 		}
 	}
 

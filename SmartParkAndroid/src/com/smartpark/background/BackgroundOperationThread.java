@@ -83,9 +83,9 @@ public class BackgroundOperationThread extends Thread {
 
 	private void fixConnections() {
 		Log.e(TAG, "++ fixConnections ++");
-		if (!btController.isConnecting() || !btController.isConnected()) {
+		// Fix Bluetooth Connection ===================================
+		if (!(btController.isConnecting() || btController.isConnected())) {
 			btController.setConnecting();
-			boolean discovering;
 
 			// Enable bluetooth if disabled by asking the user first (only once)
 			if (!userIsAlreadyAsked && !btController.isEnabled()) {
@@ -108,14 +108,22 @@ public class BackgroundOperationThread extends Thread {
 				btController.enableAdapter();
 				userIsAlreadyAsked = true;
 				Log.d(TAG, "--> Enabling done");
-				// Toast.makeText(applicationContext, "Enabled",
-				// Toast.LENGTH_SHORT)
-				// .show();
+				Toast.makeText(applicationContext, "Enabled",
+						Toast.LENGTH_SHORT).show();
 			}
 			if (D)
 				Log.e(TAG, "isConnected? " + btController.isConnected());
 			btController.closeConnection();
 			btController.connectBT();
+		}
+		// Fix TCP Connection =======================================
+		if (!(tcpController.isConnecting() || tcpController.isConnected())) {
+			tcpController.setConnecting();
+
+			if (D)
+				Log.e(TAG, "isConnected? " + tcpController.isConnected());
+			tcpController.closeConnection();
+			tcpController.connectTCP();
 		}
 	}// ================================================================
 
@@ -123,8 +131,7 @@ public class BackgroundOperationThread extends Thread {
 	public void run() {
 		if (D)
 			Log.e(TAG, "++  run  ++");
-		String btInData = null;
-		String tcpInData = null;
+		String inData = null;
 
 		keepRunning = true;
 
@@ -132,23 +139,17 @@ public class BackgroundOperationThread extends Thread {
 			if (btController.isConnected()) {
 				// Code to process
 				try {
-					Log.d(TAG, "--> reading started");
-					// TODO
-					btInData = btRead();
-					Log.i(TAG, "--> DATA read     " + btInData);
-					if (btInData != null) {
-						Integer t = Integer.parseInt(btInData);
-						if (t != 1000000) {
-							t++;
-							Log.d(TAG, "Will now send: " + t.toString());
-							sendByBT(t.toString());
-							Log.w(TAG, "Just send: " + t);
-						} else {
-							t = 0;
-							sendByBT(t.toString());
-						}
+					inData = btRead();
+					Log.d(TAG, "--> BT DATA read     " + inData);
+					if (inData != null) {
+						
+						
+						
+						// Send data to handler TODO
+						
+						
+						
 					}
-					Log.d(TAG, "--> reading ended");
 				} catch (NumberFormatException e) {
 					Log.e(TAG, "NumberFormatException");
 				}
@@ -167,14 +168,37 @@ public class BackgroundOperationThread extends Thread {
 
 			if (tcpController.isConnected()) {
 				// Code to process
+				try {
+					inData = tcpRead();
+					Log.d(TAG, "--> TCP DATA read     " + inData);
+					if (inData != null) {
+						
+						
+						
+						// Send data to handler TODO
+						
+						
+						
+					}
 
+				} catch (NumberFormatException e) {
+					Log.e(TAG, "NumberFormatException");
+				}
+
+				while (tcpTransmitBuffer.size() > 0
+						&& btController.isConnected()) {
+					Log.d(TAG, "TCP sending data");
+					tcpWrite();
+				}
 				// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 			} else {
 				// Handle reconnection
-
+				Log.e(TAG, "TCP disconnected");
+				fixConnections();
 			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
-			Log.i(TAG, "Connection state: " + (btController.isConnected()));
+			Log.i(TAG, "BT Connection state: " + (btController.isConnected()));
+			Log.i(TAG, "TCP Connection state: " + (tcpController.isConnected()));
 
 			// -----------------------------------------------------
 			// -----------------------------------------------------
@@ -222,8 +246,21 @@ public class BackgroundOperationThread extends Thread {
 	private void btWrite() {
 		Log.e(TAG, "++ btWrite ++");
 		if (btController.isConnected()) {
-			byte[] data = btTransmitBuffer.removeFirst().getBytes();
-			btController.sendBytes(data);
+			if (btTransmitBuffer.size() > 0) {
+				btController.sendBytes(btTransmitBuffer.removeFirst()
+						.getBytes());
+			}
+		} else {
+			btController.setDisconnected();
+		}
+	}// ==================================================================
+
+	private void tcpWrite() {
+		Log.e(TAG, "++ btWrite ++");
+		if (tcpController.isConnected()) {
+			if (tcpTransmitBuffer.size() > 0) {
+				tcpController.sendMessage(tcpTransmitBuffer.removeFirst());
+			}
 		}
 	}// ==================================================================
 
@@ -237,6 +274,20 @@ public class BackgroundOperationThread extends Thread {
 		String inData = null;
 		if (btController.isConnected()) {
 			inData = btController.receiveString();
+		}
+		return inData;
+	}// ==================================================================
+
+	/**
+	 * Returns a String from the receivebuffer of the bluetooth adapter.
+	 * 
+	 * @return inData null if not connected or buffer not ready
+	 */
+	private String tcpRead() {
+		Log.e(TAG, "++ btRead ++");
+		String inData = null;
+		if (tcpController.isConnected()) {
+			inData = tcpController.receiveString();
 		}
 		return inData;
 	}// ==================================================================

@@ -10,7 +10,9 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import android.bluetooth.BluetoothAdapter;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.smartpark.Settings;
 import com.smartpark.background.Ref;
@@ -72,36 +74,64 @@ public class TCPController {
 		};
 	}// ==================================================================
 
-	// ===================================================================
-	public void connect() {
+	public void connectTCP() {
 		new Thread() {
 			public void run() {
-				try {
-					setConnecting();
-					InetAddress serverAddr = InetAddress
-							.getByName(Settings.Server_IP);
-					// create a socket to make the connection with the server
-					tcpSocket = new Socket(serverAddr, Settings.Server_Port);
-					tcpSocket.setKeepAlive(true);
-					if (tcpSocket.isConnected()) {
-						mBufferOut = new PrintWriter(new BufferedWriter(
-								new OutputStreamWriter(
-										tcpSocket.getOutputStream())), true);
-						mBufferIn = new BufferedReader(new InputStreamReader(
-								tcpSocket.getInputStream()));
-						setConnected();
+
+				Log.e(TAG, "++ reconnectTCP ++");
+
+				setConnecting();
+
+				if (tcpSocket != null) {
+					Log.e(TAG, "--> Connecting to: " + tcpSocket.toString());
+					// This connect will start a new thread.
+					if (connect()) {
+						Log.e(TAG,
+								"--> connected to: "
+										+ tcpSocket.getInetAddress());
 					} else {
-						setDisconnected();
+						Log.e(TAG,
+								"--> did not connected to: "
+										+ tcpSocket.getInetAddress());
 					}
-				} catch (UnknownHostException e) {
-					Log.e(TAG, "UnknownHostException: ", e);
-					setDisconnected();
-				} catch (IOException e) {
-					Log.e(TAG, "IOException: ", e);
-					setDisconnected();
+				} else {
+					Log.w(TAG, "--> tcpSocket == null. NOT Connected");
 				}
 			}
 		}.start();
+	}
+
+	// ===================================================================
+	private boolean connect() {
+		if (D)
+			Log.e(TAG, "++ connect ++");
+		boolean isConnected = false;
+		try {
+			setConnecting();
+			InetAddress serverAddr = InetAddress.getByName(Settings.Server_IP);
+			// create a socket to make the connection with the server
+			tcpSocket = new Socket(serverAddr, Settings.Server_Port);
+			tcpSocket.setKeepAlive(true);
+			if (tcpSocket.isConnected()) {
+				isConnected = true;
+				setConnected();
+				mBufferOut = new PrintWriter(new BufferedWriter(
+						new OutputStreamWriter(tcpSocket.getOutputStream())),
+						true);
+				mBufferIn = new BufferedReader(new InputStreamReader(
+						tcpSocket.getInputStream()));
+
+			} else {
+				setDisconnected();
+			}
+		} catch (UnknownHostException e) {
+			Log.e(TAG, "UnknownHostException: ", e);
+			setDisconnected();
+		} catch (IOException e) {
+			Log.e(TAG, "IOException: ", e);
+			setDisconnected();
+		}
+		return isConnected;
 	}
 
 	// ===================================================================
@@ -116,12 +146,14 @@ public class TCPController {
 
 		// you might want to remove !mBufferOut.checkError()
 		// if error occurs, messages will never be send TODO
-		if (mBufferOut != null && !mBufferOut.checkError()) {
+		// && !mBufferOut.checkError()
+		if (mBufferOut != null) {
 			mBufferOut.println(message);
 			mBufferOut.flush();
 		}
-	}// ===================================================================
-		// ===================================================================
+	}
+
+	// ===================================================================
 
 	/**
 	 * Close the connection and release the members
@@ -136,15 +168,16 @@ public class TCPController {
 			mBufferOut.flush();
 			mBufferOut.close();
 			try {
-				mBufferIn.close(); // should this be added TODO
-				tcpSocket.close(); // should this be added
+				mBufferIn.close();
+				tcpSocket.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e(TAG, "Exception trying to close mBufferIn and tcpSocket",
+						e);
 			}
 		}
-	}// ===================================================================
-		// ===================================================================
+	}
+
+	// ===================================================================
 
 	public void run() {
 		mRun = true;
@@ -169,10 +202,10 @@ public class TCPController {
 						mMessageListener.messageReceived(mServerMessage);
 					}
 				}
-				
+
 				Log.d(TAG + "RESPONSE FROM SERVER", "S: Received Message: '"
 						+ mServerMessage + "'");
-				
+
 			} catch (Exception e) {
 				Log.e(TAG, "Error", e);
 			} finally {
@@ -185,7 +218,9 @@ public class TCPController {
 		} catch (Exception e) {
 			Log.e(TAG + " TCP", "C: Error", e);
 		}
-	}// ===========================================================================
+	}
+
+	// ===========================================================================
 
 	// CONNECTION STATE SETTERS AND GETTERS
 
@@ -201,22 +236,70 @@ public class TCPController {
 		}
 		return false;
 	}
-	
+
 	public boolean isConnecting() {
 		return connectionState == Ref.STATE_CONNECTING;
 	}
-	
+
 	public void setConnecting() {
 		connectionState = Ref.STATE_CONNECTING;
 	}
-	
+
 	public void setConnected() {
 		connectionState = Ref.STATE_CONNECTED;
 	}
-	
+
 	public void setDisconnected() {
 		connectionState = Ref.STATE_NOT_CONNECTED;
 	}
-	
+
+	public int closeConnection() {
+		if (D)
+			Log.e(TAG, "++ closeConnection ++");
+		try {
+			/*
+			 * The use of && prohibits isConnected() to be invoked if btSocket
+			 * is null.
+			 */
+			if (tcpSocket != null) {
+				tcpSocket.close();
+			}
+			return Ref.RESULT_OK;
+		} catch (Exception e) {
+			if (D)
+				Log.e(TAG, "Error closing btSocket: ", e);
+			return Ref.RESULT_IO_EXCEPTION;
+		}
+	}
+
+	// ===========================================================================
+
+	public String receiveString() {
+		if (D)
+			Log.e(TAG, "++ receiveString ++");
+		if (tcpSocket != null && tcpSocket.isConnected()) {
+			if (D)
+				Log.d(TAG, "iStream good");
+			String inData = null;
+			try {
+				if (mBufferIn.ready()) {
+					if (D)
+						Log.d(TAG, "reader ready");
+					inData = mBufferIn.readLine();
+					if (D)
+						Log.d(TAG, "DATA= " + inData);
+					return inData;
+				}
+			} catch (Exception e1) {
+				setDisconnected();
+				if (D)
+					Log.e(TAG, "btSocket not connected");
+			}
+		} else {
+			setDisconnected();
+		}
+		return null;
+	}
+
 	// ===================================
 }

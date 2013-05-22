@@ -407,12 +407,16 @@ public class BlueController {
 		return null;
 	}
 
+	// ================================================================
+	
 	public boolean isDiscovering() {
 		if (D)
 			Log.e(TAG, "++ isDiscovering ++");
 		return btAdapter.isDiscovering();
 	}
 
+	// ================================================================
+	
 	// /**
 	// * This method will unregister the BroadcastReceiver for ACTION_FOUND of
 	// the

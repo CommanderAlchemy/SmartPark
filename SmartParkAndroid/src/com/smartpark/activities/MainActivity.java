@@ -8,6 +8,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -17,11 +18,14 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.Layout;
 
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,8 +70,13 @@ public class MainActivity extends FragmentActivity implements
 
 	private TextView gps_text;
 
-	DatePickerFragment datePickerFromDate = new DatePickerFragment();
-	DatePickerFragment datePickerToDate = new DatePickerFragment();
+	// Views of the History fragment
+	private DatePickerFragment datePickerFromDate;
+	private DatePickerFragment datePickerToDate;
+
+	private Button btnFromDate;
+	private Button btnToDate;
+	// ////////////////////////////////////////
 
 	// This is used for vibration
 	private Vibrator myVib;
@@ -87,6 +96,43 @@ public class MainActivity extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		Log.i(TAG, "++ onCreate ++");
 
+		
+		
+		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View firstView = inflater.inflate(R.layout.frag_history_view, null); 
+		this.btnFromDate = (Button) firstView.findViewById(R.id.btnFromDate);
+		this.btnToDate = (Button) firstView.findViewById(R.id.btnToDate);
+
+		
+		
+		
+		
+//		setContentView(R.layout.frag_history_view);
+//
+//		btnFromDate = (Button) findViewById(R.id.btnFromDate);
+//		btnToDate = (Button) findViewById(R.id.btnToDate);
+
+		setContentView(R.layout.activity_main);
+
+		datePickerFromDate = new DatePickerFragment();
+		datePickerToDate = new DatePickerFragment();
+
+		int[] tempDate = new int[3];
+		if (savedInstanceState != null) {
+
+			tempDate[0] = savedInstanceState.getInt("fromDay");
+			tempDate[1] = savedInstanceState.getInt("fromMonth");
+			tempDate[2] = savedInstanceState.getInt("fromYear");
+			datePickerFromDate.setDate(tempDate);
+			tempDate[0] = savedInstanceState.getInt("toDay");
+			tempDate[1] = savedInstanceState.getInt("toMonth");
+			tempDate[2] = savedInstanceState.getInt("toYear");
+			datePickerToDate.setDate(tempDate);
+		}
+
+		Log.e(TAG, "array: " + tempDate[0] + " " + tempDate[1] + " "
+				+ tempDate[2]);
+
 		setContentView(R.layout.activity_main);
 
 		myVib = (Vibrator) getSystemService(VIBRATOR_SERVICE);
@@ -94,7 +140,8 @@ public class MainActivity extends FragmentActivity implements
 
 		Ref.activeActivity = this;
 
-		startService(new Intent(getBaseContext(), BackOperationService.class));
+		// startService(new Intent(getBaseContext(),
+		// BackOperationService.class));
 
 		if (D)
 			Log.d(TAG,
@@ -130,6 +177,13 @@ public class MainActivity extends FragmentActivity implements
 						if (D)
 							Log.d(TAG, "position " + position);
 						actionBar.setSelectedNavigationItem(position);
+
+						if (position == 1) {
+							OnClickBtnDateEvent(datePickerFromDate.getDate(),
+									BUTTON_FROM_DATE);
+							OnClickBtnDateEvent(datePickerToDate.getDate(),
+									BUTTON_TO_DATE);
+						}
 					}
 				});
 		// For each of the sections in the app, add a tab to the action bar.
@@ -163,27 +217,6 @@ public class MainActivity extends FragmentActivity implements
 
 		Ref.flagMainActivityInFront = false;
 
-		// Ref will not be emptied since its references could be used by
-		// bgThread.
-		// try {
-		// if (Ref.bt_findIntentIsRegistered) {
-		// Ref.btController.unRegister_DeviceFoundReceiver(this);
-		// Ref.bt_findIntentIsRegistered = false;
-		// }
-		// } catch (Exception e) {
-		// Log.e(TAG, "Something went poop in device");
-		// }
-		//
-		// try {
-		// if (Ref.bt_stateIntentIsRegistered) {
-		// Log.e(TAG, "true uuuuuuuuuuuuuuuu");
-		// Ref.btController.unRegister_AdapterStateReceiver(this);
-		// Ref.bt_stateIntentIsRegistered = false;
-		// }
-		// } catch (Exception e) {
-		// Log.e(TAG, "Something went poop in adapter");
-		// }
-
 	}// ------------------------------------------------------------------------
 		// ============================================================
 		// onStart and onStop must go hand in hand
@@ -193,28 +226,6 @@ public class MainActivity extends FragmentActivity implements
 	public void onStart() {
 		super.onStart();
 		Log.i(TAG, "++ onStart ++");
-
-		// Creates and starts the background-operation-thread
-		// if (Ref.bgThread == null) {
-		// Ref.bgThread = new BackgroundOperationThread();
-		// Ref.bgThread.start();
-		// } else if (!Ref.bgThread.isAlive()) {
-		// Ref.bgThread.start();
-		// }
-
-		//
-		// // Enable bluetooth if disabled by asking the user first
-		// if (!Ref.btController.isEnabled()) {
-		// Log.d(TAG, "--> bluetooth is disabled");
-		// /*
-		// * the "this" is required so that the method can start another
-		// * activity. Only the activity currently running in thread can start
-		// * other activities.
-		// */
-		// Ref.btController.enableAdapter();
-		// Log.d(TAG, "--> Enabling done");
-		// Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
-		// }
 
 	}// -------------------------------------------------------------------------------------
 
@@ -240,6 +251,9 @@ public class MainActivity extends FragmentActivity implements
 
 		// Ref.activeActivity = this;
 		// Ref.bgThread.activityMAIN = true;
+
+		OnClickBtnDateEvent(datePickerFromDate.getDate(), BUTTON_FROM_DATE);
+		OnClickBtnDateEvent(datePickerToDate.getDate(), BUTTON_TO_DATE);
 	}
 
 	@Override
@@ -261,8 +275,17 @@ public class MainActivity extends FragmentActivity implements
 	public void onSaveInstanceState(final Bundle outState) {
 		super.onSaveInstanceState(outState);
 		Log.i(TAG, "++ onSaveInstanceState ++");
+
+		outState.putInt("fromDay", datePickerFromDate.getDate()[0]);
+		outState.putInt("fromMonth", datePickerFromDate.getDate()[1]);
+		outState.putInt("fromYear", datePickerFromDate.getDate()[2]);
+
+		outState.putInt("toDay", datePickerToDate.getDate()[0]);
+		outState.putInt("toMonth", datePickerToDate.getDate()[1]);
+		outState.putInt("toYear", datePickerToDate.getDate()[2]);
+
 	}// ------------------------------------------------------------
-	// ======= END OF LIFECYCLE METHODS ===========================
+		// ======= END OF LIFECYCLE METHODS ===========================
 
 	// =======================
 	// onCLICK-METHODS SECTION
@@ -276,19 +299,19 @@ public class MainActivity extends FragmentActivity implements
 		finish();
 
 	}
-	
+
 	/*
 	 * Fragment SmartPark
 	 */
 	public void onClickBtnPark(View view) {
-		if( ((Button)findViewById(R.id.btnTogglePark)).getText().equals("Park")){
+		if (((Button) findViewById(R.id.btnTogglePark)).getText()
+				.equals("Park")) {
 			Toast.makeText(this, "Parking...", Toast.LENGTH_SHORT).show();
-			((Button)findViewById(R.id.btnTogglePark)).setText("Stop Parking");
+			((Button) findViewById(R.id.btnTogglePark)).setText("Stop Parking");
 			return;
-		}
-		else
-			((Button)findViewById(R.id.btnTogglePark)).setText("Park");
-			
+		} else
+			((Button) findViewById(R.id.btnTogglePark)).setText("Park");
+
 		Toast.makeText(this, "Stopped Parking...", Toast.LENGTH_SHORT).show();
 	}
 
@@ -306,6 +329,7 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	public void OnClickBtnDateEvent(int[] newDate, int tag) {
+		Log.i(TAG, "++ OnClickBtnDateEvent ++");
 		String month = null, pickedDate;
 		boolean error = true;
 
@@ -326,48 +350,62 @@ public class MainActivity extends FragmentActivity implements
 		}
 		/* @formatter:on */
 		pickedDate = newDate[0] + " " + month + " " + newDate[2];
+		Log.e(TAG, "" + pickedDate);
+		// View v = getLayoutInflater().inflate(R.layout.frag_history_view,
+		// mViewPager);
+		// Button btnFromDate = (Button)v.findViewById(R.id.btnFromDate);
+
+		Log.e(TAG, "newDate: " + newDate[0] + " " + newDate[1] + " "
+				+ newDate[2]);
 
 		switch (tag) {
 		case BUTTON_FROM_DATE:
 			int[] toDate = datePickerToDate.getDate();
+			Log.e(TAG, "toDate: " + toDate[0] + " " + toDate[1] + " "
+					+ toDate[2]);
 			if (toDate[2] != 0) {
-				if (newDate[2] <= toDate[2])
-					if (newDate[1] <= toDate[1])
+				if (newDate[2] <= toDate[2]) {
+					if (newDate[1] <= toDate[1]) {
 						if (newDate[0] <= toDate[0]) {
-							((Button) findViewById(R.id.btnFromDate))
-									.setText(pickedDate);
+							Log.e(TAG, "" + btnFromDate.toString() + " " + pickedDate);
+							this.btnFromDate.setText(pickedDate);
+							
+//							((Button) findViewById(R.id.btnFromDate))
+//									.setText(pickedDate);
+
 							error = false;
 						}
-			} else {
-
-				((Button) findViewById(R.id.btnFromDate)).setText(pickedDate);
-				error = false;
+					}
+				}
 			}
 			if (error)
 				Toast.makeText(this, "From date > To date", Toast.LENGTH_LONG)
 						.show();
-
 			break;
 
 		case BUTTON_TO_DATE:
 			int[] fromDate = datePickerFromDate.getDate();
+
+			Log.e(TAG, "fromDate: " + fromDate[0] + " " + fromDate[1] + " "
+					+ fromDate[2]);
+
 			if (fromDate[2] != 0) {
-				if (newDate[2] >= fromDate[2])
-					if (newDate[1] >= fromDate[1])
+				if (newDate[2] >= fromDate[2]) {
+					if (newDate[1] >= fromDate[1]) {
 						if (newDate[0] >= fromDate[0]) {
-							((Button) findViewById(R.id.btnToDate))
-									.setText(pickedDate);
+							
+							btnToDate.setText(pickedDate);
+//							((Button) findViewById(R.id.btnToDate))
+//									.setText(pickedDate);
+
 							error = false;
 						}
-			} else {
-				((Button) findViewById(R.id.btnToDate)).setText(pickedDate);
-				error = false;
+					}
+				}
 			}
-
 			if (error)
 				Toast.makeText(this, "From date > To date", Toast.LENGTH_LONG)
 						.show();
-
 			break;
 		}
 

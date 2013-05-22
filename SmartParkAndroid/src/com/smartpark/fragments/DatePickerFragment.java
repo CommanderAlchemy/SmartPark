@@ -66,4 +66,11 @@ public class DatePickerFragment extends DialogFragment implements
 		date[2] = this.year;
 		return date;
 	}
+	
+	public void setDate(int[] date) {
+		this.day = date[0];
+		this.month = date[1];
+		this.year = date[2];
+	}
+	
 }

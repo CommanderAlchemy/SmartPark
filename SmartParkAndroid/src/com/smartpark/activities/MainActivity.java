@@ -89,16 +89,17 @@ public class MainActivity extends FragmentActivity implements
 		myVib = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 		myVib.vibrate(50);
 
-		String username = getSharedPreferences("sdfsd", MODE_PRIVATE)
-				.getString("username", "");
-		String password = getSharedPreferences("sdfsd", MODE_PRIVATE)
-				.getString("password", "");
+		SharedPreferences loginSettings = getSharedPreferences("loginActivity", MODE_PRIVATE);
+		isController = loginSettings.getBoolean("controller", false);
+		isLoggedOn = loginSettings.getBoolean("login", false);
 
-		if (username.equals("")) {
+		if (!isLoggedOn) {
 			Intent i = new Intent(this, LoginActivity.class);
-			startActivityForResult(i, REQUEST_LOGIN); // TODO
+			startActivityForResult(i, REQUEST_LOGIN);
 		}
-
+		
+		// ==== USER LOGGED ON ===================================
+		
 		if (D)
 			Log.d(TAG,
 					"--> Getting the actionBar and setting its navigation mode");

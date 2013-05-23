@@ -230,12 +230,12 @@ public class BackgroundOperationThread extends Thread {
 			// Check to see if the thread needs to start shutting down
 			// Log.d(TAG, "--> thread running");
 			try {
-				Thread.sleep(1200);
+				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				Log.e(TAG, "InterruptedException: ", e);
 			}
 
-			if (iterations == 12) {
+			if (iterations == 60) {
 				iterations = 0;
 				// TODO
 				Log.i(TAG,

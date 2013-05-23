@@ -567,7 +567,7 @@ public class BlueController {
 
 	public boolean testBTConnection() {
 		Log.e(TAG, "++ testConnection ++");
-		byte[] echo = { 'e', 'c', 'h', 'o', ';', '\n' };
+		byte[] echo = { 'e', 'c', 'h', 'o', ';', 'e', 'c', 'h', 'o', '\n' };
 		try {
 			if (btSocket != null && btSocket.isConnected()) {
 				btSocket.getOutputStream().write(echo);

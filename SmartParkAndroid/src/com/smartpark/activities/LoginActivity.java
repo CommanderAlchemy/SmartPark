@@ -32,12 +32,6 @@ import com.smartpark.background.Ref;
  * well.
  */
 public class LoginActivity extends Activity {
-	/**
-	 * A dummy authentication store containing known user names and passwords.
-	 * TODO: remove after connecting to a real authentication system.
-	 */
-	private static final String[] DUMMY_CREDENTIALS = new String[] {
-			"foo@example.com:hello", "bar@example.com:world" };
 
 	/**
 	 * The default email to populate the email field with.
@@ -105,7 +99,7 @@ public class LoginActivity extends Activity {
 
 	@Override
 	public void onBackPressed() {
-		// TODO Auto-generated method stub
+
 		// ======== ALERTDIALOG START =========================
 		AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
 		builder1.setTitle("Login required");
@@ -171,7 +165,7 @@ public class LoginActivity extends Activity {
 			mEmailView.setError(getString(R.string.error_field_required));
 			focusView = mEmailView;
 			cancel = true;
-		} else if (!mEmail.contains("@")) {
+		} else if (mEmail.length() != 6) {
 			mEmailView.setError(getString(R.string.error_invalid_email));
 			focusView = mEmailView;
 			cancel = true;
@@ -233,6 +227,7 @@ public class LoginActivity extends Activity {
 	}
 
 	public static void setMessage(String data) {
+		Log.e(TAG, "++ setMessage ++ " + data);
 		messages.addLast(data);
 	}
 
@@ -258,17 +253,24 @@ public class LoginActivity extends Activity {
 			int iterations = 0;
 			while (!timeout) {
 				try {
-					wait(100);
-				} catch (InterruptedException e) {
+					Thread.currentThread();
+					Thread.sleep(100);
+				} catch (Exception e) {
+					Log.e("Therad sleep", "--> Sleep didn't work");
 				}
+
 				for (int i = 0; i < messages.size(); i++) {
-					String[] respons = messages.getFirst().split(";");
+					String line = messages.getFirst();
+					String[] respons = line.split(";");
+					Log.e(TAG, "Loop receives: " + respons[0] + " "
+							+ respons[1]);
+
 					if (respons[0].equals("LoginACK")) {
 						String[] data = respons[1].split(":");
 
-						if (data.equals("Accepted")) {
+						if (data[0].equals("Accepted")) {
 							return true;
-						} else if (data.equals("Denied")) {
+						} else if (data[0].equals("Denied")) {
 							return false;
 						} else {
 							messages.removeFirst();
@@ -280,6 +282,8 @@ public class LoginActivity extends Activity {
 				if (iterations == 100) {
 					timeout = true;
 				}
+				iterations++;
+				Log.e(TAG, "" + iterations);
 			}
 			return false;
 		}
@@ -296,18 +300,21 @@ public class LoginActivity extends Activity {
 
 			if (success) {
 				// Storing some data as shared preference
-				SharedPreferences loginPreferences = getSharedPreferences("loginActivity", MODE_PRIVATE);
+				SharedPreferences loginPreferences = getSharedPreferences(
+						"loginActivity", MODE_PRIVATE);
 				Editor edit = loginPreferences.edit();
-				edit.putBoolean("controller", messages.getFirst().split(";")[1].split(":")[1].equals("true"));
+				edit.putBoolean("controller", messages.getFirst().split(";")[1]
+						.split(":")[1].equals("true"));
 				edit.putBoolean("login", success);
 				edit.commit();
-				Toast.makeText(getBaseContext(), "Login successful", Toast.LENGTH_SHORT).show();
-				
+				Toast.makeText(getBaseContext(), "Login successful",
+						Toast.LENGTH_SHORT).show();
+
 				// Making ready to respond to onActivityResult()
 				Intent intent = new Intent();
 				setResult(RESULT_OK, intent);
 				finish();
-				
+
 			} else {
 				mPasswordView
 						.setError(getString(R.string.error_incorrect_password));

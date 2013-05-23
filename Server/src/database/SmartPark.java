@@ -1,9 +1,7 @@
 package database;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Collections;
 import java.util.LinkedList;
 
 public class SmartPark extends Database {
@@ -383,7 +381,6 @@ public class SmartPark extends Database {
 				spnull.CreateSmartParkTable();
 				spnull.InsertSmartParkData(new SmartPark("1987", "Long/Lat", "4", "10", "MRO519", "Toyota Celica"));
 
-
 				break;
 			case "Print":
 				System.out.println("Printing all SmartPark Tables in Database\n");
@@ -399,6 +396,7 @@ public class SmartPark extends Database {
 				break;
 			}
         }
+
 	}
 
 }

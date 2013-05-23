@@ -3,6 +3,7 @@ package database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.LinkedList;
 
 abstract public class Database {
@@ -17,7 +18,7 @@ abstract public class Database {
 	/**
 	 * Initialize a connection to the database
 	 */
-	public void initConnection() {
+	private void initConnection() {
 		try {
 			Class.forName("org.sqlite.JDBC");
 			c = DriverManager.getConnection("jdbc:sqlite:" + dbName + ".db");
@@ -66,14 +67,13 @@ abstract public class Database {
 	/**
 	 * Create table in the database
 	 */
-	public static void createTable(String tblName, String[] columns, String[] columnTypes, boolean[] notNull) {
+	public void createTable(String tblName, String[] columns, String[] columnTypes, boolean[] notNull) {
 		
 		// check for spaces in tablename
 		if(tblName.contains(" ")){
 			System.out.println("You may not use [space] in table name.");
 			return;
 		}
-		
 		// Check for equal string array sizes
 		if(columns.length != columnTypes.length || columnTypes.length != notNull.length){
 			System.out.println("The arrays are not equa in length");
@@ -89,13 +89,16 @@ abstract public class Database {
 				sql += ")";
 			}
 		}
-		System.out.println(sql);
-
-		
-		
-		
-		
-		
+		try {
+			Statement s = getConnection().createStatement();
+			s.executeUpdate(sql);
+			s.close();
+		} catch (SQLException e1) {
+			System.out.println("[ERROR] During Create New Customer Table:");
+			System.err.println(e1.getClass().getName() + ": " + e1.getMessage());
+		}finally{
+			closeConnection();
+		}
 	}
 
 	/**

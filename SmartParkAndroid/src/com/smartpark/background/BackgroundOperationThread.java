@@ -83,7 +83,7 @@ public class BackgroundOperationThread extends Thread {
 	private void fixConnections() {
 		Log.e(TAG, "++ fixConnections ++");
 		// Fix Bluetooth Connection ===================================
-		if (!btController.isConnected()) {
+		if (!(tcpController.isConnected() || tcpController.isConnecting())) {
 			Log.e(TAG, "Fixing TCP connection");
 			btController.setConnecting();
 
@@ -125,7 +125,7 @@ public class BackgroundOperationThread extends Thread {
 						+ " "
 						+ !(tcpController.isConnecting() || tcpController
 								.isConnected()));
-		if (!tcpController.isConnected()) {
+		if (!(tcpController.isConnected() || tcpController.isConnecting())) {
 			if (D)
 				Log.e(TAG, "Fixing TCP connection");
 			tcpController.setConnecting();
@@ -139,9 +139,9 @@ public class BackgroundOperationThread extends Thread {
 
 	@Override
 	public void run() {
-		
-		tcpController.testTCPConnection();
-		btController.testBTConnection();
+		tcpController.setDisconnected();
+		btController.setDisconnected();
+
 		if (D)
 			Log.e(TAG, "++  run  ++");
 

@@ -193,7 +193,8 @@ public class TCPController {
 	public boolean isConnected() {
 		if (tcpSocket != null) {
 			if (tcpSocket.isConnected()) {
-				return connectionState == Ref.STATE_CONNECTED;
+				setConnected();
+				return true;
 			} else {
 				setDisconnected();
 				return false;

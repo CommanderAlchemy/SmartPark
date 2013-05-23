@@ -61,6 +61,11 @@ public class Handler {
 				query(message);
 
 			break;
+		case "echo":
+
+			clientThread.sendMessage("echoACK");
+
+			break;
 		default:
 			break;
 		}

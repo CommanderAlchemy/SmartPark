@@ -126,6 +126,8 @@ public class SmartPark extends Database {
 						System.out.println("[ERROR] During query split");
 						System.err.println(e.getClass().getName() + ": " + e.getMessage());
 					}
+					System.out.println("SELECT ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel FROM SmartPark_" 
+							+ sp.deviceID + " WHERE " + c + " BETWEEN " + query[0] + " AND " + query[1] + ";");
 					result = statement.executeQuery("SELECT ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel FROM SmartPark_" 
 							+ sp.deviceID + " WHERE " + c + " BETWEEN " + query[0] + " AND " + query[1] + ";");
 				}

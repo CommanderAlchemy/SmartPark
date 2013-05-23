@@ -1,9 +1,6 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 
 /**
  * The Server class got one thread that connects clients and threads that keep
@@ -26,7 +23,7 @@ public class Server extends Thread {
 	 *            where the server is listening for connections
 	 * @throws IOException
 	 */
-	public Server(int port) throws IOException {
+	public Server(int port) {
 		this.port = port;
 	}
 
@@ -74,13 +71,7 @@ public class Server extends Thread {
 	public static void main(String args[]) {
 		int port = 25565;
 
-		try {
-			new Server(port).start();
-
-		} catch (IOException e) {
-			System.out.println("Exception in Server @ 79");
-			e.printStackTrace();
-		}
+		new Server(port).start();
 		System.out.println("Created Server");
 	}
 }

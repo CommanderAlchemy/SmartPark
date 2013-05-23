@@ -1,4 +1,5 @@
 package server;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -48,7 +49,7 @@ public class Server extends Thread {
 				System.out.println("New connection accepted "
 						+ clientSocket.getInetAddress() + ":"
 						+ clientSocket.getPort());
-				
+
 				Thread.sleep(1000);
 			}
 		} catch (Exception e) {

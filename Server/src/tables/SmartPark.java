@@ -1,8 +1,10 @@
-package database;
+package tables;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.LinkedList;
+
+import database.Database;
 
 public class SmartPark extends Database {
 	private long id;

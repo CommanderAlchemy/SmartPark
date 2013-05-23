@@ -1,7 +1,9 @@
-package database;
+package tables;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
+
+import database.Database;
 
 public class Customer extends Database {
 	private long id;

@@ -65,7 +65,7 @@ public class MainActivity extends FragmentActivity implements
 
 	// Boolean ControllerApplication
 	private boolean isController = false;
-	
+
 	// isLoggedOn
 	private boolean isLoggedOn = false;
 
@@ -89,17 +89,19 @@ public class MainActivity extends FragmentActivity implements
 		myVib = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 		myVib.vibrate(50);
 
-		SharedPreferences loginSettings = getSharedPreferences("loginActivity", MODE_PRIVATE);
-		isController = loginSettings.getBoolean("controller", false);
+		SharedPreferences loginSettings = getSharedPreferences("loginActivity",
+				MODE_PRIVATE);
+//		isController = loginSettings.getBoolean("controller", false);
+		isController = true;
 		isLoggedOn = loginSettings.getBoolean("login", false);
 
 		if (!isLoggedOn) {
 			Intent i = new Intent(this, LoginActivity.class);
 			startActivityForResult(i, REQUEST_LOGIN);
 		}
-		
+
 		// ==== USER LOGGED ON ===================================
-		
+
 		if (D)
 			Log.d(TAG,
 					"--> Getting the actionBar and setting its navigation mode");
@@ -136,8 +138,12 @@ public class MainActivity extends FragmentActivity implements
 						actionBar.setSelectedNavigationItem(position);
 					}
 				});
+		int offset = 0;
+		if(isController){
+			offset = 3;
+		}
 		// For each of the sections in the app, add a tab to the action bar.
-		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+		for (int i = 0 + offset ; i < mSectionsPagerAdapter.getCount(); i++) {
 			// Create a tab with text corresponding to the page title defined by
 			// the adapter. Also specify this Activity object, which implements
 			// the TabListener interface, as the callback (listener) for when
@@ -153,7 +159,7 @@ public class MainActivity extends FragmentActivity implements
 		// Restore additional variables and objects from last session
 		if (savedInstanceState != null) {
 		}
-		startService(new Intent(getBaseContext(), BackOperationService.class));
+//		startService(new Intent(getBaseContext(), BackOperationService.class));
 	}
 
 	@Override
@@ -418,10 +424,13 @@ public class MainActivity extends FragmentActivity implements
 						BackOperationService.class));
 				finish();
 			}
-			if(requestCode == RESULT_OK){
-				SharedPreferences loginPreferences = getSharedPreferences("loginActivity", MODE_PRIVATE);
-				isController = loginPreferences.getBoolean("controller", false);
-				isLoggedOn = loginPreferences.getBoolean("login", false);
+			if (requestCode == RESULT_OK) {
+				SharedPreferences loginPreferences = getSharedPreferences(
+						"loginActivity", MODE_PRIVATE);
+//				isController = loginPreferences.getBoolean("controller", false);
+//				isLoggedOn = loginPreferences.getBoolean("login", false);
+				isController = true;
+				isLoggedOn = true;
 			}
 			break;
 		default:
@@ -437,7 +446,7 @@ public class MainActivity extends FragmentActivity implements
 		if (D)
 			Log.i(TAG, "++ onCreateOptionsMenu ++");
 		// Inflate the menu; this adds items to the action bar if it is present.
-		//getMenuInflater().inflate(R.menu.main, menu);
+		// getMenuInflater().inflate(R.menu.main, menu);
 		CreateMenu(menu);
 		return true;
 	}
@@ -482,14 +491,13 @@ public class MainActivity extends FragmentActivity implements
 		// On select
 		switch (item.getItemId()) {
 		case 0:
-			Toast.makeText(this, "Login", Toast.LENGTH_SHORT)
-					.show();
+			
+			Toast.makeText(this, "Login", Toast.LENGTH_SHORT).show();
 			startActivity(new Intent(this, LoginActivity.class));
 			return true;
 
 		case 1:
-			Toast.makeText(this, "Logout", Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show();
 			return true;
 
 		case 2:
@@ -497,10 +505,11 @@ public class MainActivity extends FragmentActivity implements
 					.show();
 			return true;
 
-//		default:
-//			Toast.makeText(this, "You clicked on Settings", Toast.LENGTH_SHORT)
-//					.show();
-//			startActivity(new Intent(this, SettingsActivity.class));
+			// default:
+			// Toast.makeText(this, "You clicked on Settings",
+			// Toast.LENGTH_SHORT)
+			// .show();
+			// startActivity(new Intent(this, SettingsActivity.class));
 		}
 		return false;
 	}
@@ -548,44 +557,44 @@ public class MainActivity extends FragmentActivity implements
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
-			Bundle args = new Bundle();
+//			Bundle args = new Bundle();
 
 			switch (position) {
 
 			case 0:
 				fragment = new UserSmartParkFragment();
-				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
-						position + 1);
-				fragment.setArguments(args);
+//				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
+//						position + 1);
+//				fragment.setArguments(args);
 				break;
 
 			case 1:
 				fragment = new UserHistoryFragment();
-				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
-						position + 1);
-				fragment.setArguments(args);
+//				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
+//						position + 1);
+//				fragment.setArguments(args);
 				break;
 
-			case 2:
-				fragment = new UserDemoFragment();
-				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
-						position + 1);
-				fragment.setArguments(args);
-				break;
-
-			case 3:
-				fragment = new ControllerListFragment();
-				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
-						position + 1);
-				fragment.setArguments(args);
-				break;
-
-			case 4:
-				fragment = new ControllerMapFragment();
-				args.putInt(ControllerMapFragment.ARG_SECTION_NUMBER,
-						position + 1);
-				fragment.setArguments(args);
-				break;
+//			case 2:
+//				fragment = new UserDemoFragment();
+////				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
+////						position + 1);
+////				fragment.setArguments(args);
+//				break;
+//
+//			case 3:
+//				fragment = new ControllerListFragment();
+////				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
+////						position + 1);
+////				fragment.setArguments(args);
+//				break;
+//
+//			case 4:
+//				fragment = new ControllerMapFragment();
+////				args.putInt(ControllerMapFragment.ARG_SECTION_NUMBER,
+////						position + 1);
+////				fragment.setArguments(args);
+//				break;
 
 			}
 			return fragment;
@@ -598,10 +607,6 @@ public class MainActivity extends FragmentActivity implements
 		@Override
 		public int getCount() {
 			// Show 5 total pages.
-
-			if (isController)
-				return 4;
-
 			return 5;
 		}
 

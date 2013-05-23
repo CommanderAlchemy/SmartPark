@@ -252,9 +252,11 @@ public class LoginActivity extends Activity {
 
 			System.out.println(queryToServer);
 
-			if (queryToServer.equals("Login;666:")) {
-				if(mPassword.length() > 0)
+			if (queryToServer.contains("Login;666:")) {
+				if(mPassword.length() > 0){
 					isController = true;
+					Log.e(TAG, "LEMESSAGE!11111111111111");
+				}
 				
 				isBackdoorEnabled = true;
 				System.out.println("login Tr");

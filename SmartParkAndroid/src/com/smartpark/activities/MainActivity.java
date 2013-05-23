@@ -92,12 +92,14 @@ public class MainActivity extends FragmentActivity implements
 		SharedPreferences loginSettings = getSharedPreferences("loginActivity",
 				MODE_PRIVATE);
 //		isController = loginSettings.getBoolean("controller", false);
-		isController = true;
+		isController = false;
 		isLoggedOn = loginSettings.getBoolean("login", false);
-
+		
 		if (!isLoggedOn) {
 			Intent i = new Intent(this, LoginActivity.class);
 			startActivityForResult(i, REQUEST_LOGIN);
+		}else{
+			// Login the user by known username and password TODO
 		}
 
 		// ==== USER LOGGED ON ===================================
@@ -138,12 +140,8 @@ public class MainActivity extends FragmentActivity implements
 						actionBar.setSelectedNavigationItem(position);
 					}
 				});
-		int offset = 0;
-		if(isController){
-			offset = 3;
-		}
 		// For each of the sections in the app, add a tab to the action bar.
-		for (int i = 0 + offset ; i < mSectionsPagerAdapter.getCount(); i++) {
+		for (int i = 0 ; i < mSectionsPagerAdapter.getCount(); i++) {
 			// Create a tab with text corresponding to the page title defined by
 			// the adapter. Also specify this Activity object, which implements
 			// the TabListener interface, as the callback (listener) for when
@@ -152,7 +150,6 @@ public class MainActivity extends FragmentActivity implements
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
-
 		if (D)
 			Log.d(TAG, "--> loading from savedInstanceState");
 
@@ -558,8 +555,12 @@ public class MainActivity extends FragmentActivity implements
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
 //			Bundle args = new Bundle();
-
-			switch (position) {
+			int offset = 0;
+			if(isController){
+				offset = 3;
+			}
+			
+			switch (position + offset) {
 
 			case 0:
 				fragment = new UserSmartParkFragment();
@@ -575,26 +576,26 @@ public class MainActivity extends FragmentActivity implements
 //				fragment.setArguments(args);
 				break;
 
-//			case 2:
-//				fragment = new UserDemoFragment();
-////				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
-////						position + 1);
-////				fragment.setArguments(args);
-//				break;
-//
-//			case 3:
-//				fragment = new ControllerListFragment();
-////				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
-////						position + 1);
-////				fragment.setArguments(args);
-//				break;
-//
-//			case 4:
-//				fragment = new ControllerMapFragment();
-////				args.putInt(ControllerMapFragment.ARG_SECTION_NUMBER,
-////						position + 1);
-////				fragment.setArguments(args);
-//				break;
+			case 2:
+				fragment = new UserDemoFragment();
+//				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
+//						position + 1);
+//				fragment.setArguments(args);
+				break;
+
+			case 3:
+				fragment = new ControllerListFragment();
+//				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
+//						position + 1);
+//				fragment.setArguments(args);
+				break;
+
+			case 4:
+				fragment = new ControllerMapFragment();
+//				args.putInt(ControllerMapFragment.ARG_SECTION_NUMBER,
+//						position + 1);
+//				fragment.setArguments(args);
+				break;
 
 			}
 			return fragment;
@@ -606,8 +607,11 @@ public class MainActivity extends FragmentActivity implements
 		 */
 		@Override
 		public int getCount() {
-			// Show 5 total pages.
-			return 5;
+			
+			if(isController){
+				return 2;
+			}
+			return 3;
 		}
 
 		/**
@@ -617,7 +621,11 @@ public class MainActivity extends FragmentActivity implements
 		@Override
 		public CharSequence getPageTitle(int position) {
 			Locale l = Locale.getDefault();
-			switch (position) {
+			int offset = 0;
+			if(isController){
+				offset = 3;
+			}
+			switch (position + offset) {
 			case 0:
 				return getString(R.string.title_section1).toUpperCase(l);
 			case 1:

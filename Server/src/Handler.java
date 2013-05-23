@@ -32,18 +32,16 @@ public class Handler {
 	// }
 
 	public void checkCommand(String message) {
-		String m[] = new String[2];	
-		m = message.split(";");
-		command = m[0];
-		commandParameters = m[1];
+		String inData[] = message.split(";");
+		
 		System.out.println("Handler Got This Message:" + message);
 		System.out.println(command);
 		System.out.println(commandParameters);
 		
-		switch (command) {
+		switch (inData[0]) {
 		case "Login":
 
-			this.passwordAccepted = login(commandParameters);
+			this.passwordAccepted = login(inData[1]);
 
 			if (passwordAccepted){
 				clientThread.sendMessage("LoginACK;Accepted:" + controller);
@@ -53,19 +51,17 @@ public class Handler {
 
 			break;
 		case "Close Connection":
+			clientThread.sendMessage("CloseACK");
 			clientThread.closeConnecton();
 			break;
 
 		case "Query":
-
 			if (passwordAccepted)
 				query(message);
 
 			break;
 		case "echo":
-
 			clientThread.sendMessage("echoACK");
-
 			break;
 		default:
 			break;

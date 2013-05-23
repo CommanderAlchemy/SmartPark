@@ -86,17 +86,13 @@ public class Customer extends Database {
 
 	public void CreateCustomerTable() {
 		try {
-			/* @formatter:off */
-			sql = "CREATE TABLE " + tblName + " " + "(ID INTEGER PRIMARY KEY,"
-					+ "cont					INT			NOT NULL," + "ssNbr				TEXT		NOT NULL,"
-					+ "Forname				TEXT		NOT NULL,"
-					+ "Lastname				TEXT		NOT NULL,"
-					+ "Address         		TEXT		NOT NULL,"
-					+ "PhoneNbr       		TEXT		NOT NULL,"
-					+ "Password				TEXT		NOT NULL,"
-					+ "SmartParkID			TEXT		NOT NULL,"
-					+ "Registered			TEXT		NOT NULL," + "Balance				REAL)";
-			/* @formatter:on */
+			
+			String[] columns = {"cont","ssNbr","Forname","Lastname","Address","PhoneNbr","Password","SmartParkID","RegistrationDate","Balance"};
+			String[] columnTypes = {"INT","TEXT","TEXT","TEXT","TEXT","TEXT","TEXT","TEXT","TEXT","REAL"};
+			boolean[] notNull = {true,true,true,true,true,true,true,true,true,false};
+			
+			
+
 			statement = super.getConnection().createStatement();
 			statement.executeUpdate(sql);
 			statement.close();

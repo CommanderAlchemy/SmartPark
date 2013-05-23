@@ -3,8 +3,6 @@ package database;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import javax.management.Query;
-
 public class SmartPark extends Database {
 	private long id;
 	private static String deviceID; // The Device ID
@@ -81,7 +79,7 @@ public class SmartPark extends Database {
 	public void InsertSmartParkData(SmartPark sp) {
 		try {
 			/* @formatter:off */
-			sql = "INSERT INTO SmartPark_" + this.deviceID + " "
+			sql = "INSERT INTO SmartPark_" + SmartPark.deviceID + " "
 					+ "(ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel) "
 					+ "VALUES (" + "NULL"			+ ",'"
 								 + sp.ssNbr 		+ "','"
@@ -102,7 +100,7 @@ public class SmartPark extends Database {
 					.println("[ERROR] During Insert New Device Into SmartPark Table:");
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 		}
-		System.out.println(this.deviceID + " sucessfully inserted into " + dbName
+		System.out.println(SmartPark.deviceID + " sucessfully inserted into " + dbName
 				+ "." + tblName);
 	}
 
@@ -117,7 +115,7 @@ public class SmartPark extends Database {
 				if(!rangeSelection){
 					result = statement
 							.executeQuery("SELECT ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel FROM SmartPark_" 
-									+ sp.deviceID + " WHERE " + c  + " = '"	+ searchValue + "';" );
+									+ SmartPark.deviceID + " WHERE " + c  + " = '"	+ searchValue + "';" );
 				}else{
 					String[] query = null;
 					try{
@@ -127,14 +125,14 @@ public class SmartPark extends Database {
 						System.err.println(e.getClass().getName() + ": " + e.getMessage());
 					}
 					result = statement.executeQuery("SELECT ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel FROM SmartPark_" 
-							+ sp.deviceID + " WHERE " + c + " BETWEEN " + query[0] + " AND " + query[1] + ";");
+							+ SmartPark.deviceID + " WHERE " + c + " BETWEEN " + query[0] + " AND " + query[1] + ";");
 				}
 				
 			}
 			
 			else{
 				result = statement
-						.executeQuery("SELECT * FROM SmartPark_" + sp.deviceID + ";");
+						.executeQuery("SELECT * FROM SmartPark_" + SmartPark.deviceID + ";");
 			}
 				
 			while (result.next()) {
@@ -220,7 +218,7 @@ public class SmartPark extends Database {
 	 * @param deviceID
 	 */
 	public void setDeviceID(String deviceID) {
-		this.deviceID = deviceID;
+		SmartPark.deviceID = deviceID;
 	}
 
 	/**
@@ -337,7 +335,7 @@ public class SmartPark extends Database {
 	public String toString() {
 		/* @formatter:off */
 		String string = "ID: "		+ this.id
-				+ " deviceID: "		+ this.deviceID
+				+ " deviceID: "		+ SmartPark.deviceID
 				+ " ssNbr: "		+ this.ssNbr
 				+ " position: "		+ this.position 
 				+ " startStamp: " 	+ this.startStamp 

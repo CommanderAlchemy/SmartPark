@@ -96,7 +96,6 @@ public class Handler {
 		inputParam = param.split(":");
 		this.smartpark = new SmartPark(customer.getSmartParkID());
 		smartpark.selectSmartPark(this.smartpark, Col.StopStamp,param,true);
-		
 		return null;
 	}
 

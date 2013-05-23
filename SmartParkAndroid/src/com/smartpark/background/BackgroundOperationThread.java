@@ -21,24 +21,28 @@ public class BackgroundOperationThread extends Thread {
 	private static final String TAG = "bgThread";
 	private static final boolean D = Ref.D;
 
-	private static Context applicationContext;
+	
 
 	// USED WHEN INITIATING SOFT SHUTDOWN (RECOMMENDED ON THE INTERNET)
 	private boolean keepRunning = true;
 
 	// CONTROL FLAGS
 	private boolean userIsAlreadyAsked = false;
+	
+	// REFERENCE TO APLLICATIONCONTEXT
+	private static Context applicationContext;
 
 	// REFERENCES TO CONTROL-CLASSES
 	private BlueController btController;
 	private TCPController tcpController;
+	private Handler handler;
 
 	// =========== END OF CLASS VARIABLES ===============================
 
 	public BackgroundOperationThread(Context applicationContext,
-			BlueController btController, TCPController tcpController) {
+			BlueController btController, TCPController tcpController, Handler handler) {
 		Log.e(TAG, "++ bgThread Constructor ++");
-
+		
 		BackgroundOperationThread.applicationContext = applicationContext;
 
 		// BT
@@ -46,6 +50,8 @@ public class BackgroundOperationThread extends Thread {
 
 		// TCP
 		this.tcpController = tcpController;
+		
+		this.handler = handler;
 
 		// Check to see if bluetooth is available
 		if (!btController.isBluetoothAdapterAvailable()) {
@@ -80,7 +86,9 @@ public class BackgroundOperationThread extends Thread {
 
 	private void fixConnections() {
 		Log.e(TAG, "++ fixConnections ++");
+		
 		// Fix Bluetooth Connection ===================================
+		
 		if (!(tcpController.isConnected() || tcpController.isConnecting())) {
 			Log.e(TAG, "Fixing TCP connection");
 			btController.setConnecting();
@@ -115,14 +123,15 @@ public class BackgroundOperationThread extends Thread {
 			btController.connectBT();
 		}
 		// Fix TCP Connection =======================================
-		Log.e(TAG,
-				""
+		
+		Log.e(TAG,		""
 						+ tcpController.isConnecting()
 						+ " "
 						+ tcpController.isConnected()
 						+ " "
 						+ !(tcpController.isConnecting() || tcpController
 								.isConnected()));
+		
 		if (!(tcpController.isConnected() || tcpController.isConnecting())) {
 			if (D)
 				Log.e(TAG, "Fixing TCP connection");
@@ -158,7 +167,8 @@ public class BackgroundOperationThread extends Thread {
 						Log.e(TAG, "---  inData = " + inData);
 
 						// Send data to handler TODO
-
+						this.handler.getMessageFromBT(inData);
+						
 					}
 				} catch (NumberFormatException e) {
 					Log.e(TAG, "NumberFormatException");
@@ -184,12 +194,13 @@ public class BackgroundOperationThread extends Thread {
 					Log.d(TAG, "--> TCP DATA read     " + inData);
 					if (inData != null) {
 
-						Log.e(TAG,
-								"-----  inData = "
-										+ inData);
-
+						Log.e(TAG, "-----  inData = " + inData);
+						
+						
+						
 						// Send data to handler TODO
-
+						this.handler.getMessageFromTCP(inData);
+						
 					}
 
 				} catch (NumberFormatException e) {
@@ -207,9 +218,10 @@ public class BackgroundOperationThread extends Thread {
 				Log.e(TAG, "TCP disconnected");
 				fixConnections();
 			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-			
-			Log.i(TAG, "BT state: " + btController.isConnected() + " TCP state: " + tcpController.isConnected());
-			
+
+			Log.i(TAG, "BT state: " + btController.isConnected()
+					+ " TCP state: " + tcpController.isConnected());
+
 			// -----------------------------------------------------
 			// -----------------------------------------------------
 			// -----------------------------------------------------

@@ -44,8 +44,9 @@ public class BackOperationService extends Service {
 	private String TAG = "BackOperationService";
 	private boolean D = Ref.D;
 
-	BlueController btController;
-	TCPController tcpController;
+	private BlueController btController;
+	private TCPController tcpController;
+	private Handler handler;
 
 	// ============ END OF CLASS-VARIABLES ===========================
 
@@ -71,6 +72,7 @@ public class BackOperationService extends Service {
 		// -----------
 		btController = new BlueController(applicationContext);
 		tcpController = new TCPController();
+		handler = new Handler();
 
 		btFoundDeviceReceiver = new BTFoundDeviceReceiver(btController);
 		btAdapterStateReceiver = new BTAdapterStateReceiver(btController);
@@ -128,7 +130,7 @@ public class BackOperationService extends Service {
 
 		if (Ref.bgThread == null) {
 			Ref.bgThread = new BackgroundOperationThread(applicationContext,
-					btController, tcpController);
+					btController, tcpController, handler);
 
 			Ref.bgThread.start();
 		} else {

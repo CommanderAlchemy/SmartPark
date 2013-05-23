@@ -1,4 +1,4 @@
-package com.smartpark.interfaces;
+package com.smartpark.trash;
 
 /**
  * This is an interface used for passing data between classes.

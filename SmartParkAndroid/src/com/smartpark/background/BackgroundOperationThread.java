@@ -187,7 +187,7 @@ public class BackgroundOperationThread extends Thread {
 					if (inData != null) {
 
 						Log.e(TAG,
-								"-----------------------------------------  inData = "
+								"-----  inData = "
 										+ inData);
 
 						// Send data to handler TODO

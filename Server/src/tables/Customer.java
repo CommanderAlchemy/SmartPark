@@ -49,7 +49,8 @@ public class Customer extends Database {
 		super(dbName);
 
 	}
-	public Customer(String ssNbr){
+
+	public Customer(String ssNbr) {
 		this();
 		selectCustomer(ssNbr);
 	}
@@ -84,27 +85,23 @@ public class Customer extends Database {
 
 	}
 
+	// finished
 	public void CreateCustomerTable() {
-		try {
-			
-			String[] columns = {"cont","ssNbr","Forname","Lastname","Address","PhoneNbr","Password","SmartParkID","RegistrationDate","Balance"};
-			String[] columnTypes = {"INT","TEXT","TEXT","TEXT","TEXT","TEXT","TEXT","TEXT","TEXT","REAL"};
-			boolean[] notNull = {true,true,true,true,true,true,true,true,true,false};
-			
-			
-
-			statement = super.getConnection().createStatement();
-			statement.executeUpdate(sql);
-			statement.close();
-			super.closeConnection();
-		} catch (Exception e) {
-			System.out.println("[ERROR] During Create New Customer Table:");
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-		}
+		String[] columns = { "cont", "ssNbr", "Forname", "Lastname", "Address",
+				"PhoneNbr", "Password", "SmartParkID", "RegistrationDate",
+				"Balance" };
+		String[] columnTypes = { "INT", "TEXT", "TEXT", "TEXT", "TEXT", "TEXT",
+				"TEXT", "TEXT", "TEXT", "REAL" };
+		boolean[] notNull = { true, true, true, true, true, true, true, true,
+				true, false };
+		
+		createTable("Customer", columns, columnTypes, notNull);
+		
 		System.out
 				.println(tblName + " table successfully created in " + dbName);
 	}
-
+	
+	
 	public void InsertCustomerData(Customer c) {
 		try {
 			/* @formatter:off */
@@ -371,27 +368,35 @@ public class Customer extends Database {
 
 	public static void main(String[] args) {
 
-		for (String s: args) {
-            switch (s) {
+		for (String s : args) {
+			switch (s) {
 			case "CreateTable":
 				Customer c = new Customer();
 				c.CreateCustomerTable();
-				c.InsertCustomerData(new Customer(1, "910611", "Artur", "Olech","Snödroppsgatan3", "0762361910", "artur", "001First", "Today"));
-				c.InsertCustomerData(new Customer(0, "820620", "Saeed", "Ghasemi","Hyllie", "0763150074", "saeed", "002Second", "Tomorrow"));
-				c.InsertCustomerData(new Customer(0, "na", "Truls", "Haraldsson","Trelleborg", "some number", "truls", "003Third", "Never"));
+				c.InsertCustomerData(new Customer(1, "910611", "Artur",
+						"Olech", "Snödroppsgatan3", "0762361910", "artur",
+						"001First", "Today"));
+				c.InsertCustomerData(new Customer(0, "820620", "Saeed",
+						"Ghasemi", "Hyllie", "0763150074", "saeed",
+						"002Second", "Tomorrow"));
+				c.InsertCustomerData(new Customer(0, "na", "Truls",
+						"Haraldsson", "Trelleborg", "some number", "truls",
+						"003Third", "Never"));
 
 				break;
 			case "Print":
-				System.out.println("Printing all customer Tables in Database\n");
+				System.out
+						.println("Printing all customer Tables in Database\n");
 				c = new Customer();
 				c.selectCustomer(null);
 				break;
 
 			default:
-				System.out.println("Usage:\nCreateTable: To Create 3 customer default inserts\nPrint: to print all the created tables");
+				System.out
+						.println("Usage:\nCreateTable: To Create 3 customer default inserts\nPrint: to print all the created tables");
 				break;
 			}
-        }
+		}
 
 	}
 }

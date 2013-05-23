@@ -437,7 +437,7 @@ public class MainActivity extends FragmentActivity implements
 		if (D)
 			Log.i(TAG, "++ onCreateOptionsMenu ++");
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
+		//getMenuInflater().inflate(R.menu.main, menu);
 		CreateMenu(menu);
 		return true;
 	}
@@ -457,15 +457,11 @@ public class MainActivity extends FragmentActivity implements
 		MenuItem aMenu1 = menu.add(0, 0, 0, "Login");
 		aMenu1.setAlphabeticShortcut('a');
 
-		MenuItem aMenu2 = menu.add(0, 1, 1, "Item 2");
+		MenuItem aMenu2 = menu.add(0, 1, 1, "Logout");
 		aMenu2.setAlphabeticShortcut('b');
 
-		MenuItem aMenu3 = menu.add(0, 2, 2, "Item 3");
+		MenuItem aMenu3 = menu.add(0, 2, 2, "Exit Service");
 		aMenu3.setAlphabeticShortcut('c');
-
-		MenuItem aMenu4 = menu.add(0, 3, 3, "Item 4");
-		aMenu4.setAlphabeticShortcut('d');
-
 	}
 
 	/**
@@ -483,34 +479,28 @@ public class MainActivity extends FragmentActivity implements
 		}
 
 		// TODO Cleanup!
-
 		// On select
 		switch (item.getItemId()) {
 		case 0:
-			Toast.makeText(this, "You clicked on Login", Toast.LENGTH_SHORT)
+			Toast.makeText(this, "Login", Toast.LENGTH_SHORT)
 					.show();
 			startActivity(new Intent(this, LoginActivity.class));
 			return true;
 
 		case 1:
-			Toast.makeText(this, "You clicked on Item 2", Toast.LENGTH_SHORT)
+			Toast.makeText(this, "Logout", Toast.LENGTH_SHORT)
 					.show();
 			return true;
 
 		case 2:
-			Toast.makeText(this, "You clicked on Item 3", Toast.LENGTH_SHORT)
+			Toast.makeText(this, "Terminating Service", Toast.LENGTH_SHORT)
 					.show();
 			return true;
 
-		case 3:
-			Toast.makeText(this, "You clicked on Item 4", Toast.LENGTH_SHORT)
-					.show();
-			return true;
-
-		default:
-			Toast.makeText(this, "You clicked on Settings", Toast.LENGTH_SHORT)
-					.show();
-			startActivity(new Intent(this, SettingsActivity.class));
+//		default:
+//			Toast.makeText(this, "You clicked on Settings", Toast.LENGTH_SHORT)
+//					.show();
+//			startActivity(new Intent(this, SettingsActivity.class));
 		}
 		return false;
 	}

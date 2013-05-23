@@ -1,17 +1,9 @@
 package com.smartpark.trash;
 
-import java.util.zip.Inflater;
-
-import com.smartpark.R;
-
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Button;
 
 public class CopyPasteCode extends Activity {
 	
@@ -24,6 +16,9 @@ public class CopyPasteCode extends Activity {
 	
 //    android:onClick="onClickBtnFromDate"
 
+	
+//	TextView dummyTextView = (TextView) rootView.findViewById(R.id.section_label);
+//	dummyTextView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
 	
 	
 	public void weNeedThisToCopyPasteWhereWeWantToHaveAButton() {

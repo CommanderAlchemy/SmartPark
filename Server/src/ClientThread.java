@@ -62,12 +62,12 @@ public class ClientThread extends Thread {
 						handler.checkCommand(message);
 						message = null;
 					}
-					System.out.println(this.getName());
-					
 				} else
 					closeConnecton();
 				
 			}
+			
+			Thread.sleep(1000);
 		} catch (Exception e) {
 			System.out.println("Exception In ClientThread @ 72");
 			e.printStackTrace();
@@ -85,6 +85,7 @@ public class ClientThread extends Thread {
 	}
 
 	public void sendMessage(String message) {
+		System.out.println("Sending: " + message);
 		if (bufferOut != null && !bufferOut.checkError()) {
 			bufferOut.println(message);
 			bufferOut.flush();

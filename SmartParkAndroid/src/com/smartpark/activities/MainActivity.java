@@ -91,7 +91,7 @@ public class MainActivity extends FragmentActivity implements
 
 		SharedPreferences loginSettings = getSharedPreferences("loginActivity",
 				MODE_PRIVATE);
-//		isController = loginSettings.getBoolean("controller", false);
+		// isController = loginSettings.getBoolean("controller", false);
 		isController = true;
 		isLoggedOn = loginSettings.getBoolean("login", false);
 
@@ -134,16 +134,14 @@ public class MainActivity extends FragmentActivity implements
 					@Override
 					public void onPageSelected(int position) {
 						if (D)
-							Log.d(TAG, "position " + position);
+							Log.d(TAG, "position ");
+						System.out.println(position);
 						actionBar.setSelectedNavigationItem(position);
 					}
 				});
-		int offset = 0;
-		if(isController){
-			offset = 3;
-		}
+
 		// For each of the sections in the app, add a tab to the action bar.
-		for (int i = 0 + offset ; i < mSectionsPagerAdapter.getCount(); i++) {
+		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
 			// Create a tab with text corresponding to the page title defined by
 			// the adapter. Also specify this Activity object, which implements
 			// the TabListener interface, as the callback (listener) for when
@@ -159,7 +157,8 @@ public class MainActivity extends FragmentActivity implements
 		// Restore additional variables and objects from last session
 		if (savedInstanceState != null) {
 		}
-//		startService(new Intent(getBaseContext(), BackOperationService.class));
+		// startService(new Intent(getBaseContext(),
+		// BackOperationService.class));
 	}
 
 	@Override
@@ -427,9 +426,10 @@ public class MainActivity extends FragmentActivity implements
 			if (requestCode == RESULT_OK) {
 				SharedPreferences loginPreferences = getSharedPreferences(
 						"loginActivity", MODE_PRIVATE);
-//				isController = loginPreferences.getBoolean("controller", false);
-//				isLoggedOn = loginPreferences.getBoolean("login", false);
-				isController = true;
+				// isController = loginPreferences.getBoolean("controller",
+				// false);
+				// isLoggedOn = loginPreferences.getBoolean("login", false);
+				isController = false;
 				isLoggedOn = true;
 			}
 			break;
@@ -491,7 +491,7 @@ public class MainActivity extends FragmentActivity implements
 		// On select
 		switch (item.getItemId()) {
 		case 0:
-			
+
 			Toast.makeText(this, "Login", Toast.LENGTH_SHORT).show();
 			startActivity(new Intent(this, LoginActivity.class));
 			return true;
@@ -557,45 +557,44 @@ public class MainActivity extends FragmentActivity implements
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
-//			Bundle args = new Bundle();
+			// Bundle args = new Bundle();
 
 			switch (position) {
 
 			case 0:
 				fragment = new UserSmartParkFragment();
-//				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
-//						position + 1);
-//				fragment.setArguments(args);
+				// args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
+				// position + 1);
+				// fragment.setArguments(args);
 				break;
 
 			case 1:
 				fragment = new UserHistoryFragment();
-//				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
-//						position + 1);
-//				fragment.setArguments(args);
+				// args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
+				// position + 1);
+				// fragment.setArguments(args);
 				break;
 
-//			case 2:
-//				fragment = new UserDemoFragment();
-////				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
-////						position + 1);
-////				fragment.setArguments(args);
-//				break;
-//
-//			case 3:
-//				fragment = new ControllerListFragment();
-////				args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
-////						position + 1);
-////				fragment.setArguments(args);
-//				break;
-//
-//			case 4:
-//				fragment = new ControllerMapFragment();
-////				args.putInt(ControllerMapFragment.ARG_SECTION_NUMBER,
-////						position + 1);
-////				fragment.setArguments(args);
-//				break;
+			case 2:
+				fragment = new UserDemoFragment();
+				// args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
+				// position + 1);
+				// fragment.setArguments(args);
+				break;
 
+			case 3:
+				fragment = new ControllerListFragment();
+				// args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
+				// position + 1);
+				// fragment.setArguments(args);
+				break;
+
+			case 4:
+				fragment = new ControllerMapFragment();
+				// args.putInt(ControllerMapFragment.ARG_SECTION_NUMBER,
+				// position + 1);
+				// fragment.setArguments(args);
+				break;
 			}
 			return fragment;
 		}
@@ -607,7 +606,11 @@ public class MainActivity extends FragmentActivity implements
 		@Override
 		public int getCount() {
 			// Show 5 total pages.
-			return 5;
+
+			if (isController)
+				return 2;
+
+			return 3;
 		}
 
 		/**
@@ -617,18 +620,19 @@ public class MainActivity extends FragmentActivity implements
 		@Override
 		public CharSequence getPageTitle(int position) {
 			Locale l = Locale.getDefault();
-			switch (position) {
-			case 0:
-				return getString(R.string.title_section1).toUpperCase(l);
-			case 1:
-				return getString(R.string.title_section2).toUpperCase(l);
-			case 2:
-				return getString(R.string.title_section3).toUpperCase(l);
-			case 3:
-				return getString(R.string.title_section4).toUpperCase(l);
-			case 4:
-				return getString(R.string.title_section5).toUpperCase(l);
-			}
+
+				switch (position) {
+				case 0:
+					return getString(R.string.title_section1).toUpperCase(l);
+				case 1:
+					return getString(R.string.title_section2).toUpperCase(l);
+				case 2:
+					return getString(R.string.title_section3).toUpperCase(l);
+				case 3:
+					return getString(R.string.title_section4).toUpperCase(l);
+				case 4:
+					return getString(R.string.title_section5).toUpperCase(l);
+				}
 			return null;
 		}
 	}

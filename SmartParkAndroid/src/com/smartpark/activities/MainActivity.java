@@ -290,6 +290,7 @@ public class MainActivity extends FragmentActivity implements
 		Toast.makeText(this, "Logging into Server", Toast.LENGTH_SHORT).show();
 
 		Ref.bgThread.sendByTCP("Login;910611:artur");
+		Ref.bgThread.sendByTCP("Query;2:5");
 	}
 
 	public void onClickBtnSendLocation(View view) {

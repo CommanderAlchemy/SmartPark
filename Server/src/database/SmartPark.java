@@ -348,11 +348,11 @@ public class SmartPark extends Database {
 		return string;
 	}
 	public static void main(String[] args) {
-//		SmartPark sp = new SmartPark("001First");
-//		sp.CreateSmartParkTable();
-//		sp.InsertSmartParkData(new SmartPark("910611", "Long/Lat", "StartTime", "StopTime", "OPH500", "Nissan"));
-//		sp.selectSmartPark(null, null, null);
-//		sp.selectSmartPark(sp, Col.LicensePlate, "MRO519");
+		SmartPark sp = new SmartPark("001First");
+		sp.CreateSmartParkTable();
+		sp.InsertSmartParkData(new SmartPark("910611", "Long/Lat", "10", "20", "OPH500", "Nissan"));
+		sp.selectSmartPark(null, null, null, false);
+		sp.selectSmartPark(sp, Col.LicensePlate, "MRO519", false);
 	}
 
 }

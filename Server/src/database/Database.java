@@ -119,7 +119,7 @@ abstract public class Database {
 	 * @param rangeSelection
 	 *            select range of columns
 	 */
-	public void selectDataFromTable(Col searchCol, String searchValue,
+	public void selectDataFromTable(String searchCol, String searchValue,
 			boolean rangeSelection) {
 	}
 
@@ -135,7 +135,7 @@ abstract public class Database {
 	 * @param whatValue
 	 *            what new value
 	 */
-	public void updateTableData(Col searcCol, String searchValue, Col whatCol,
+	public void updateTableData(String searcCol, String searchValue, String whatCol,
 			String whatValue) {
 	}
 

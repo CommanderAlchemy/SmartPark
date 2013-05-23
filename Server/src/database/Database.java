@@ -7,56 +7,60 @@ import java.util.LinkedList;
 
 abstract public class Database {
 	private String dbName;
-	private Connection obj = null;
+	private Connection c = null;
 
 	// private static final String create = "CREATE TABLE";
-
 	public Database(String dbName) {
 		this.dbName = dbName;
+	}
+
+	/**
+	 * Initialize a connection to the database
+	 */
+	public void initConnection() {
 		try {
 			Class.forName("org.sqlite.JDBC");
-			obj = DriverManager.getConnection("jdbc:sqlite:" + dbName + ".db");
+			c = DriverManager.getConnection("jdbc:sqlite:" + dbName + ".db");
 			System.out.println("Opened database succsessfully");
 
 		} catch (Exception e) {
+			System.out.println("[ERROR] During initConnection():");
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 		}
-
 	}
 
-	public void closeConnection() {
+	/**
+	 * Close the connection to the database
+	 */
+	private void closeConnection() {
 		try {
-			this.obj.close();
-			obj = null;
+			this.c.close();
+			c = null;
 		} catch (SQLException e) {
+			System.out.println("[ERROR] During closeConnection():");
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 		}
 	}
 
-	public Connection getConnection() {
-		if (obj == null) {
+	/**
+	 * Get connection to the database
+	 * @return
+	 */
+	private Connection getConnection() {
+		if (c == null) {
 			System.out.println("Creating new connection to " + dbName);
 			initConnection();
 		}
 
-		return obj;
-	}
-
-	public void initConnection() {
-
-	}
-
-	public void setC(Connection c) {
-		this.obj = c;
+		return c;
 	}
 
 	/**
-	 * Available columns in the database.
-	 * 
-	 * @author commander
-	 * 
+	 * Set connection to the database
+	 * @param c
 	 */
-	public enum Col {
+	private void setConnection(Connection c) {
+		this.c = c;
 	}
 
 	/**

@@ -33,20 +33,9 @@ public class Handler {
 	// }
 
 	public void checkCommand(String message) {
-		String m[] = new String[2];	
-		try {
-			m = message.split(";");
-			command = m[0];
-			commandParameters = m[1];
-		} catch (Exception e) {
-			System.out.println("[ERROR] During Split message");
-			System.out.println(e);
-		}
 		String inData[] = message.split(";");
-
+		
 		System.out.println("Handler Got This Message:" + message);
-		System.out.println(command);
-		System.out.println(commandParameters);
 		
 		switch (inData[0]) {
 		case "Login":

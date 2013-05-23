@@ -45,16 +45,12 @@ public class BackgroundOperationThread extends Thread {
 
 		// BT
 		this.btController = btController;
-		if(btController == null)
-			Log.e(TAG, " nuuuuuuuuuuuuulllllll");
+		
 		// TCP
 		this.tcpController = tcpController;
 
-		Log.e(TAG, "-------- 0 bgThread");
-		
 		// Check to see if bluetooth is available
 		if (!btController.isBluetoothAdapterAvailable()) {
-			Log.e(TAG, "-------- 1 bgThread");
 			AlertDialog.Builder builder1 = new AlertDialog.Builder(
 					applicationContext);
 			builder1.setTitle("Problem");
@@ -74,11 +70,9 @@ public class BackgroundOperationThread extends Thread {
 			AlertDialog alert = builder1.create();
 			alert.show();
 		} else {
-			Log.e(TAG, "-------- 3 bgThread");
 			Toast.makeText(applicationContext, "Bluetooth avaiable",
 					Toast.LENGTH_SHORT).show();
 		}
-		Log.e(TAG, "-------- 2 bgThread");
 	}// ==================================================================
 
 	public void powerDown() {
@@ -90,6 +84,7 @@ public class BackgroundOperationThread extends Thread {
 		Log.e(TAG, "++ fixConnections ++");
 		// Fix Bluetooth Connection ===================================
 		if (!(btController.isConnecting() || btController.isConnected())) {
+			Log.e(TAG, "Fixing TCP connection");
 			btController.setConnecting();
 
 			// Enable bluetooth if disabled by asking the user first (only once)
@@ -122,7 +117,9 @@ public class BackgroundOperationThread extends Thread {
 			btController.connectBT();
 		}
 		// Fix TCP Connection =======================================
+		Log.e(TAG, "" + tcpController.isConnecting() + " " + tcpController.isConnected() + " " + !(tcpController.isConnecting() || tcpController.isConnected()));
 		if (!(tcpController.isConnecting() || tcpController.isConnected())) {
+			Log.e(TAG, "Fixing TCP connection");
 			tcpController.setConnecting();
 
 			if (D)
@@ -149,7 +146,7 @@ public class BackgroundOperationThread extends Thread {
 					Log.d(TAG, "--> BT DATA read     " + inData);
 					if (inData != null) {
 						
-						
+						Log.e(TAG, "---  inData = " + inData);
 						
 						// Send data to handler TODO
 						
@@ -174,12 +171,13 @@ public class BackgroundOperationThread extends Thread {
 
 			if (tcpController.isConnected()) {
 				// Code to process
+				
 				try {
 					inData = tcpRead();
 					Log.d(TAG, "--> TCP DATA read     " + inData);
 					if (inData != null) {
 						
-						
+						Log.e(TAG, "---  inData = " + inData);
 						
 						// Send data to handler TODO
 						
@@ -224,6 +222,7 @@ public class BackgroundOperationThread extends Thread {
 				// TODO
 				Log.i(TAG, "BT Connection state: " + (btController.isConnected()));
 				Log.i(TAG, "TCP Connection state: " + (tcpController.isConnected()));
+				tcpController.testConnection();
 			}else{
 				iterations++;
 			}
@@ -274,7 +273,7 @@ public class BackgroundOperationThread extends Thread {
 	 * @return inData null if not connected or buffer not ready
 	 */
 	private String tcpRead() {
-		Log.e(TAG, "++ btRead ++");
+		Log.e(TAG, "++ tcpRead ++");
 		String inData = null;
 		if (tcpController.isConnected()) {
 			inData = tcpController.receiveString();

@@ -74,25 +74,14 @@ public class TCPController {
 	public void connectTCP() {
 		new Thread() {
 			public void run() {
-
-				Log.e(TAG, "++ reconnectTCP ++");
-
-				setConnecting();
-
-				if (tcpSocket != null) {
-					Log.e(TAG, "--> Connecting to: " + tcpSocket.toString());
-					// This connect will start a new thread.
-					if (connect()) {
-						Log.e(TAG,
-								"--> connected to: "
-										+ tcpSocket.getInetAddress());
-					} else {
-						Log.e(TAG,
-								"--> did not connected to: "
-										+ tcpSocket.getInetAddress());
-					}
+				Log.e(TAG, "++ connectTCP ++");
+				if (connect()) {
+					Log.e(TAG,
+							"--> connected to: " + tcpSocket.getInetAddress());
 				} else {
-					Log.w(TAG, "--> tcpSocket == null. NOT Connected");
+					if (tcpSocket == null) {
+						Log.e(TAG,"--> did not connected to: ");
+					}
 				}
 			}
 		}.start();
@@ -104,28 +93,47 @@ public class TCPController {
 			Log.e(TAG, "++ connect ++");
 		boolean isConnected = false;
 		try {
-			setConnecting();
+			Log.e(TAG, "before connection 1");
 			InetAddress serverAddr = InetAddress.getByName(Settings.Server_IP);
-			// create a socket to make the connection with the server
-			tcpSocket = new Socket(serverAddr, Settings.Server_Port);
-			tcpSocket.setKeepAlive(true);
-			if (tcpSocket.isConnected()) {
-				isConnected = true;
-				setConnected();
-				mBufferOut = new PrintWriter(new BufferedWriter(
-						new OutputStreamWriter(tcpSocket.getOutputStream())),
-						true);
-				mBufferIn = new BufferedReader(new InputStreamReader(
-						tcpSocket.getInputStream()));
+			Log.e(TAG, "before connection 2");
 
-			} else {
-				setDisconnected();
+			// create a socket to make the connection with the server
+
+			try {
+				tcpSocket = new Socket(serverAddr, Settings.Server_Port);
+				tcpSocket.setKeepAlive(true);
+				if (tcpSocket.isConnected()) {
+					Log.e(TAG, "TCP Connected");
+					isConnected = true;
+					setConnected();
+					mBufferOut = new PrintWriter(
+							new BufferedWriter(new OutputStreamWriter(
+									tcpSocket.getOutputStream())), true);
+					mBufferIn = new BufferedReader(new InputStreamReader(
+							tcpSocket.getInputStream()));
+
+				} else {
+					setDisconnected();
+				}
+			} catch (Exception e) {
+				Log.e(TAG, "Connection failed !" + serverAddr.toString());
 			}
+			Log.e(TAG, "before connection 3");
+
 		} catch (UnknownHostException e) {
 			Log.e(TAG, "UnknownHostException: ", e);
 			setDisconnected();
 		} catch (IOException e) {
 			Log.e(TAG, "IOException: ", e);
+			setDisconnected();
+		} catch (Exception e) {
+			Log.e(TAG, "Exception: ", e);
+		}
+		if(tcpSocket!=null){
+			if(tcpSocket.isConnected()){
+				setConnected();
+			}
+		}else{
 			setDisconnected();
 		}
 		return isConnected;
@@ -158,6 +166,7 @@ public class TCPController {
 	 * Close the connection and release the members
 	 */
 	public void disconnect() {
+		Log.e(TAG, "++ disconnect ++");
 		if (D)
 			Log.d(TAG, "Closing Connection");
 		// send message that we are closing the connection
@@ -176,49 +185,6 @@ public class TCPController {
 		}
 	}
 
-	// ===================================================================
-
-	public void run() {
-		mRun = true;
-		try {
-			if (D)
-				Log.d(TAG + " TCP Client", "C: Connecting...");
-			try {
-				// send login name and password
-				sendMessage(Settings.Login_Name + "Commander" + " ; "
-						+ Settings.Password + "Password");
-
-				// in this while the client listens for the messages sent by the
-				// server
-				while (mRun) {
-					Log.d(TAG, "before readLine");
-					if (mBufferIn.ready()) {
-						mServerMessage = mBufferIn.readLine();
-					}
-					Log.d(TAG, "readLine done: " + mServerMessage);
-					if (mServerMessage != null && mMessageListener != null) {
-						// call the method messageReceived from MyActivity class
-						mMessageListener.messageReceived(mServerMessage);
-					}
-				}
-
-				Log.d(TAG + "RESPONSE FROM SERVER", "S: Received Message: '"
-						+ mServerMessage + "'");
-
-			} catch (Exception e) {
-				Log.e(TAG, "Error", e);
-			} finally {
-				// the socket must be closed. It is not possible to reconnect to
-				// this socket
-				// after it is closed, which means a new socket instance has to
-				// be created.
-				tcpSocket.close();
-			}
-		} catch (Exception e) {
-			Log.e(TAG + " TCP", "C: Error", e);
-		}
-	}
-
 	// ===========================================================================
 
 	// CONNECTION STATE SETTERS AND GETTERS
@@ -226,10 +192,9 @@ public class TCPController {
 	public boolean isConnected() {
 		if (tcpSocket != null) {
 			if (tcpSocket.isConnected()) {
-				connectionState = Ref.STATE_CONNECTED;
-				return true;
+				return connectionState == Ref.STATE_CONNECTED;
 			} else {
-				connectionState = Ref.STATE_NOT_CONNECTED;
+				setDisconnected();
 				return false;
 			}
 		}
@@ -298,6 +263,18 @@ public class TCPController {
 			setDisconnected();
 		}
 		return null;
+	}
+	
+	public boolean testConnection(){
+		byte[] echo = new byte[4];
+		try {
+			tcpSocket.getOutputStream().write(echo);
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
 	}
 
 	// ===================================

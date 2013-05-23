@@ -1,4 +1,4 @@
-package database;
+package com.smartpark.trash;
 
 import java.sql.*;
 

@@ -99,6 +99,7 @@ public class Handler {
 		LinkedList<String> resultList = new LinkedList<String>();
 
 		this.smartpark = new SmartPark(customer.getSmartParkID());
+
 		this.smartpark.selectSmartPark(Col.StopStamp, param, true);
 		resultList = smartpark.getResultList();
 		clientThread.sendMessage(resultList.toString());

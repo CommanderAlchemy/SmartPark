@@ -267,7 +267,7 @@ public class TCPController {
 	
 	public boolean testConnection(){
 		Log.e(TAG, "++ testConnection ++");
-		byte[] echo = {'e','c','h','o','\n'};
+		byte[] echo = {'e','c','h','o',';','\n'};
 		try {
 			tcpSocket.getOutputStream().write(echo);
 			setConnected();

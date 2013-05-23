@@ -1,3 +1,4 @@
+package server;
 import database.*;
 import database.SmartPark.Col;
 
@@ -41,15 +42,16 @@ public class Handler {
 			System.out.println("[ERROR] During Split message");
 			System.out.println(e);
 		}
+		String inData[] = message.split(";");
 
 		System.out.println("Handler Got This Message:" + message);
 		System.out.println(command);
 		System.out.println(commandParameters);
 		
-		switch (command) {
+		switch (inData[0]) {
 		case "Login":
 
-			this.passwordAccepted = login(commandParameters);
+			this.passwordAccepted = login(inData[1]);
 
 			if (passwordAccepted){
 				clientThread.sendMessage("LoginACK;Accepted:" + controller);
@@ -59,19 +61,17 @@ public class Handler {
 
 			break;
 		case "Close Connection":
+			clientThread.sendMessage("CloseACK");
 			clientThread.closeConnecton();
 			break;
 
 		case "Query":
-
 			if (passwordAccepted)
 				query(message);
 
 			break;
 		case "echo":
-
 			clientThread.sendMessage("echoACK");
-
 			break;
 		default:
 			break;

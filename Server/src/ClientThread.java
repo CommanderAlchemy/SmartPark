@@ -51,26 +51,31 @@ public class ClientThread extends Thread {
 			running = true;
 
 			while (running) {
-
 				if (socket.isConnected()) {
-					if (bufferIn.ready())
+					if (bufferIn.ready()){
+						System.out.println("Rec.. DATA");
 						message = bufferIn.readLine();
-
+						System.out.println(message);
+					}
+					
 					if (message != null) {
 						handler.checkCommand(message);
 						message = null;
 					}
 					System.out.println(this.getName());
+					
 				} else
 					closeConnecton();
-
+				
 			}
 		} catch (Exception e) {
+			System.out.println("Exception In ClientThread @ 72");
 			e.printStackTrace();
 		}
 	}
 
 	public void closeConnecton() {
+		System.out.println("Closing Connection");
 		try {
 			running = false;
 			socket.close();

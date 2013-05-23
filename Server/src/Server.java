@@ -44,18 +44,21 @@ public class Server extends Thread {
 			serverSocket = new ServerSocket(port);
 			while (runningConnectThread) {
 				clientSocket = serverSocket.accept();
-				// Starts ClientThread
-				new ClientThread(clientSocket).start();
+				System.out.println("Starts ClientThread");
+				clientThread = new ClientThread(clientSocket);
+				clientThread.start();
 				System.out.println("New connection accepted "
 						+ clientSocket.getInetAddress() + ":"
 						+ clientSocket.getPort());
 			}
 		} catch (Exception e) {
+			System.out.println("Exception in Server @ 55");
 			e.printStackTrace();
 		} finally {
 			try {
 				serverSocket.close();
 			} catch (IOException e) {
+				System.out.println("Exception: in Server @ 64");
 				e.printStackTrace();
 			}
 		}
@@ -73,6 +76,7 @@ public class Server extends Thread {
 			new Server(port).start();
 
 		} catch (IOException e) {
+			System.out.println("Exception in Server @ 79");
 			e.printStackTrace();
 		}
 		System.out.println("Created Server");

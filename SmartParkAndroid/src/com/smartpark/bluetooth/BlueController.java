@@ -551,7 +551,7 @@ public class BlueController {
 	// CONNECTION STATE SETTERS AND GETTERS
 
 	public boolean isConnected() {
-		return connectionState == Ref.STATE_CONNECTED;
+		return connectionState == Ref.STATE_CONNECTED && btSocket.isConnected(); 
 	}
 
 	public boolean isConnecting() {

@@ -10,14 +10,12 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.view.ViewDebug.FlagToString;
 import android.widget.Toast;
 
 import com.smartpark.activities.MainActivity;
@@ -40,9 +38,6 @@ public class BlueController {
 
 	// Device to connect to
 	private final static String SMARTPARK_DEVICE = "HC-06-SLAVE";
-
-	// Flags
-	private static boolean BroacastReceiverIsRegistered = false;
 
 	// RequestCodes for controlling the bluetooth
 	public static final int REQUEST_ENABLE_BT = 1;
@@ -73,7 +68,7 @@ public class BlueController {
 	// -------------------------------------------------------------------------------
 	// public BlueController(Context instantiatorClass) {
 	public BlueController(Context applicationContext) {
-		this.applicationContext = applicationContext;
+		BlueController.applicationContext = applicationContext;
 		if (D)
 			Log.e(TAG, "++ Constructor: BlueController ++");
 
@@ -232,10 +227,6 @@ public class BlueController {
 				Log.e(TAG, "++ reconnectBT ++");
 
 				setConnecting();
-
-				if (btAdapter == null) {
-					btAdapter = BluetoothAdapter.getDefaultAdapter();
-				}// TODO remove carefully test everything
 
 				if (btDevice == null) {
 					btDevice = getPairedDeviceByName(SMARTPARK_DEVICE);
@@ -546,6 +537,13 @@ public class BlueController {
 	// CONNECTION STATE SETTERS AND GETTERS
 
 	public boolean isConnected() {
+		
+		try {
+			Log.i(TAG, " btSocket state: " + btSocket.isConnected() + " boolean: " + (connectionState == Ref.STATE_CONNECTED));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return connectionState == Ref.STATE_CONNECTED && btSocket.isConnected(); 
 	}
 

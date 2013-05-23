@@ -1,21 +1,29 @@
 package com.smartpark.activities;
 
+import java.util.LinkedList;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.smartpark.R;
+import com.smartpark.background.Ref;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
@@ -50,6 +58,11 @@ public class LoginActivity extends Activity {
 	private View mLoginStatusView;
 	private TextView mLoginStatusMessageView;
 
+	private static LinkedList<String> messages = new LinkedList<String>();
+	private boolean timeout = false;
+
+	// ================================================================
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -58,7 +71,7 @@ public class LoginActivity extends Activity {
 
 		// Set up the login form.
 		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
-		mEmailView = (EditText) findViewById(R.id.email);
+		mEmailView = (EditText) findViewById(R.id.socialSecurityNumber);
 		mEmailView.setText(mEmail);
 
 		mPasswordView = (EditText) findViewById(R.id.password);
@@ -86,6 +99,30 @@ public class LoginActivity extends Activity {
 						attemptLogin();
 					}
 				});
+	}
+
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		// ======== ALERTDIALOG START =========================
+		AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+		builder1.setTitle("Login required");
+		builder1.setMessage("This will exit the application.\nWill you continue?");
+		builder1.setCancelable(true);
+		builder1.setNegativeButton("No", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+			}
+		});
+		builder1.setPositiveButton("Yes",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						setResult(MainActivity.RESULT_EXIT, new Intent());
+						finish();
+					}
+				});
+		AlertDialog alert = builder1.create();
+		alert.show();
+		// ======== ALERTDIALOG END =========================
 	}
 
 	@Override
@@ -193,6 +230,12 @@ public class LoginActivity extends Activity {
 		}
 	}
 
+	public static void setMessage(String data) {
+		messages.addLast(data);
+	}
+
+	private static final String TAG = "LoginActivity";
+
 	/**
 	 * Represents an asynchronous login/registration task used to authenticate
 	 * the user.
@@ -200,25 +243,43 @@ public class LoginActivity extends Activity {
 	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			// TODO: attempt authentication against a network service.
+			messages.clear();
 
-			try {
-				// Simulate network access.
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				return false;
-			}
+			String queryToServer = "Login;"
+					+ ((TextView) findViewById(R.id.socialSecurityNumber))
+							.getText() + ":"
+					+ ((TextView) findViewById(R.id.password)).getText();
 
-			for (String credential : DUMMY_CREDENTIALS) {
-				String[] pieces = credential.split(":");
-				if (pieces[0].equals(mEmail)) {
-					// Account exists, return true if the password matches.
-					return pieces[1].equals(mPassword);
+			Log.e(TAG, "Sending Login Request: " + queryToServer);
+			Ref.bgThread.sendByTCP(queryToServer);
+
+			int iterations = 0;
+			while (!timeout) {
+				try {
+					wait(100);
+				} catch (InterruptedException e) {
+				}
+				for (int i = 0; i < messages.size(); i++) {
+					String[] respons = messages.getFirst().split(";");
+					if (respons[0].equals("LoginACK")) {
+						String[] data = respons[1].split(":");
+
+						if (data.equals("Accepted")) {
+							return true;
+						} else if (data.equals("Denied")) {
+							return false;
+						} else {
+							messages.removeFirst();
+						}
+					} else {
+						messages.removeFirst();
+					}
+				}
+				if (iterations == 100) {
+					timeout = true;
 				}
 			}
-
-			// TODO: register the new account here.
-			return true;
+			return false;
 		}
 
 		@Override
@@ -226,7 +287,16 @@ public class LoginActivity extends Activity {
 			mAuthTask = null;
 			showProgress(false);
 
+			if (timeout) {
+				Toast.makeText(getBaseContext(), "Counld not reach the Server",
+						Toast.LENGTH_LONG).show();
+			}
+
 			if (success) {
+				
+				
+				
+				
 				finish();
 			} else {
 				mPasswordView

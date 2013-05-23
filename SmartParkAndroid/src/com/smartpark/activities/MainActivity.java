@@ -6,6 +6,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
@@ -60,7 +61,6 @@ public class MainActivity extends FragmentActivity implements
 
 	private TextView gps_text;
 
-
 	// This is used for vibration
 	private Vibrator myVib;
 
@@ -71,6 +71,10 @@ public class MainActivity extends FragmentActivity implements
 	private static final String TAG = "MainActivity";
 	private static final boolean D = Ref.D;
 
+	// RequestCodes
+	public static final int REQUEST_LOGIN = 3;
+	public static final int RESULT_EXIT = 2;
+
 	// ======== START OF LIFECYCLE METHODS =======================
 	// onCreate and onDestroy must go hand in hand
 	@Override
@@ -80,17 +84,18 @@ public class MainActivity extends FragmentActivity implements
 
 		setContentView(R.layout.activity_main);
 
-		
-
-
-		setContentView(R.layout.activity_main);
-
 		myVib = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 		myVib.vibrate(50);
 
-		Ref.activeActivity = this;
-		Log.e(TAG, "---------- in onCreate");
-		startService(new Intent(getBaseContext(), BackOperationService.class));
+		String username = getSharedPreferences("sdfsd", MODE_PRIVATE)
+				.getString("username", "");
+		String password = getSharedPreferences("sdfsd", MODE_PRIVATE)
+				.getString("password", "");
+
+		if (username.equals("")) {
+			Intent i = new Intent(this, LoginActivity.class);
+			startActivityForResult(i, REQUEST_LOGIN); // TODO
+		}
 
 		if (D)
 			Log.d(TAG,
@@ -145,6 +150,7 @@ public class MainActivity extends FragmentActivity implements
 		// Restore additional variables and objects from last session
 		if (savedInstanceState != null) {
 		}
+		startService(new Intent(getBaseContext(), BackOperationService.class));
 	}
 
 	@Override
@@ -156,19 +162,17 @@ public class MainActivity extends FragmentActivity implements
 		 * by it and not here. This method is only responsible for resources
 		 * taken by this activity.
 		 */
+	}
 
-		Ref.flagMainActivityInFront = false;
-
-	}// ------------------------------------------------------------------------
-		// ============================================================
-		// onStart and onStop must go hand in hand
-		// (onRestart can also be used before onStart is invoked)
+	// ------------------------------------------------------------------------
+	// ============================================================
+	// onStart and onStop must go hand in hand
+	// (onRestart can also be used before onStart)
 
 	@Override
 	public void onStart() {
 		super.onStart();
 		Log.i(TAG, "++ onStart ++");
-
 	}// -------------------------------------------------------------------------------------
 
 	@Override
@@ -181,7 +185,6 @@ public class MainActivity extends FragmentActivity implements
 	public void onStop() {
 		super.onStop();
 		Log.i(TAG, "++ onStop ++");
-
 	}
 
 	// ============================================================
@@ -191,9 +194,7 @@ public class MainActivity extends FragmentActivity implements
 		super.onResume();
 		Log.i(TAG, "++ onResume ++");
 
-		// Ref.activeActivity = this;
-		// Ref.bgThread.activityMAIN = true;
-
+		Ref.activeActivity = this;
 	}
 
 	@Override
@@ -202,9 +203,10 @@ public class MainActivity extends FragmentActivity implements
 		Log.i(TAG, "++ onPause ++");
 
 		// We have to save everything in this method for later use
-		// Ref.bgThread.activityMAIN = false;
 
-	}// ------------------------------------------------------------
+	}
+
+	// ------------------------------------------------------------
 
 	/**
 	 * This method will be invoked right before onPause() is invoked and is used
@@ -216,10 +218,11 @@ public class MainActivity extends FragmentActivity implements
 		super.onSaveInstanceState(outState);
 		Log.i(TAG, "++ onSaveInstanceState ++");
 
-	
+	}
 
-	}// ------------------------------------------------------------
-		// ======= END OF LIFECYCLE METHODS ===========================
+	// ------------------------------------------------------------
+
+	// ======= END OF LIFECYCLE METHODS ===========================
 
 	// =======================
 	// onCLICK-METHODS SECTION
@@ -230,8 +233,8 @@ public class MainActivity extends FragmentActivity implements
 		Log.e(TAG, "++ onBackPressed ++");
 		myVib.vibrate(20);
 		stopService(new Intent(getBaseContext(), BackOperationService.class));
+		super.onBackPressed();
 		finish();
-
 	}
 
 	/*
@@ -301,12 +304,6 @@ public class MainActivity extends FragmentActivity implements
 	public void onClickBtnPairedDevicesCount(View view) {
 		myVib.vibrate(20);
 		Log.i(TAG, "++ pairedDevicesCount ++");
-
-		/* @formatter:off */
-		String str = Ref.activeActivity 			!= null ? "\nactiveActivity OK "		: "\nactiveActivity null ";
-		str += Ref.bgThread 						!= null ? "\nbgThread OK " 			: "\nbgThread null ";
-		Log.e(TAG, str);
-		/* @formatter:on */
 	}
 
 	public void onClickBtnIsBTavailable(View view) {
@@ -409,6 +406,14 @@ public class MainActivity extends FragmentActivity implements
 			} else {
 				Toast.makeText(this, "Bluetooth not Discoverable",
 						Toast.LENGTH_SHORT).show();
+			}
+			break;
+		case REQUEST_LOGIN:
+			if (resultCode == RESULT_EXIT) {
+				Log.e(TAG, "++ Exit App ++");
+				stopService(new Intent(getBaseContext(),
+						BackOperationService.class));
+				finish();
 			}
 			break;
 		default:

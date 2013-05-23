@@ -5,7 +5,6 @@ import java.util.Locale;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -20,7 +19,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.smartpark.R;
@@ -29,7 +27,6 @@ import com.smartpark.background.Ref;
 import com.smartpark.bluetooth.BlueController;
 import com.smartpark.fragments.ControllerListFragment;
 import com.smartpark.fragments.ControllerMapFragment;
-import com.smartpark.fragments.DatePickerFragment;
 import com.smartpark.fragments.UserDemoFragment;
 import com.smartpark.fragments.UserHistoryFragment;
 import com.smartpark.fragments.UserSmartParkFragment;
@@ -91,13 +88,16 @@ public class MainActivity extends FragmentActivity implements
 
 		SharedPreferences loginSettings = getSharedPreferences("loginActivity",
 				MODE_PRIVATE);
-		// isController = loginSettings.getBoolean("controller", false);
+
+//		isController = loginSettings.getBoolean("controller", false);
 		isController = true;
 		isLoggedOn = loginSettings.getBoolean("login", false);
-
+		
 		if (!isLoggedOn) {
 			Intent i = new Intent(this, LoginActivity.class);
 			startActivityForResult(i, REQUEST_LOGIN);
+		}else{
+			// Login the user by known username and password TODO
 		}
 
 		// ==== USER LOGGED ON ===================================
@@ -150,7 +150,6 @@ public class MainActivity extends FragmentActivity implements
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
-
 		if (D)
 			Log.d(TAG, "--> loading from savedInstanceState");
 
@@ -557,9 +556,13 @@ public class MainActivity extends FragmentActivity implements
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
-			// Bundle args = new Bundle();
 
-			switch (position) {
+			// Bundle args = new Bundle();
+			int offset = 0;
+			if (isController) {
+				offset = 3;
+			}
+			switch (position + offset) {
 
 			case 0:
 				fragment = new UserSmartParkFragment();
@@ -577,6 +580,7 @@ public class MainActivity extends FragmentActivity implements
 
 			case 2:
 				fragment = new UserDemoFragment();
+
 				// args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
 				// position + 1);
 				// fragment.setArguments(args);
@@ -605,6 +609,7 @@ public class MainActivity extends FragmentActivity implements
 		 */
 		@Override
 		public int getCount() {
+
 			// Show 5 total pages.
 
 			if (isController)
@@ -621,18 +626,22 @@ public class MainActivity extends FragmentActivity implements
 		public CharSequence getPageTitle(int position) {
 			Locale l = Locale.getDefault();
 
-				switch (position) {
-				case 0:
-					return getString(R.string.title_section1).toUpperCase(l);
-				case 1:
-					return getString(R.string.title_section2).toUpperCase(l);
-				case 2:
-					return getString(R.string.title_section3).toUpperCase(l);
-				case 3:
-					return getString(R.string.title_section4).toUpperCase(l);
-				case 4:
-					return getString(R.string.title_section5).toUpperCase(l);
-				}
+			int offset = 0;
+			if (isController) {
+				offset = 3;
+			}
+			switch (position + offset) {
+			case 0:
+				return getString(R.string.title_section1).toUpperCase(l);
+			case 1:
+				return getString(R.string.title_section2).toUpperCase(l);
+			case 2:
+				return getString(R.string.title_section3).toUpperCase(l);
+			case 3:
+				return getString(R.string.title_section4).toUpperCase(l);
+			case 4:
+				return getString(R.string.title_section5).toUpperCase(l);
+			}
 			return null;
 		}
 	}

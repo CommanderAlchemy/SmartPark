@@ -9,6 +9,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -293,11 +295,19 @@ public class LoginActivity extends Activity {
 			}
 
 			if (success) {
+				// Storing some data as shared preference
+				SharedPreferences loginPreferences = getSharedPreferences("loginActivity", MODE_PRIVATE);
+				Editor edit = loginPreferences.edit();
+				edit.putBoolean("controller", messages.getFirst().split(";")[1].split(":")[1].equals("true"));
+				edit.putBoolean("login", success);
+				edit.commit();
+				Toast.makeText(getBaseContext(), "Login successful", Toast.LENGTH_SHORT).show();
 				
-				// comment 
-				
-				
+				// Making ready to respond to onActivityResult()
+				Intent intent = new Intent();
+				setResult(RESULT_OK, intent);
 				finish();
+				
 			} else {
 				mPasswordView
 						.setError(getString(R.string.error_incorrect_password));

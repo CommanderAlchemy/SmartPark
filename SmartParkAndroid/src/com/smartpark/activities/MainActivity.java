@@ -5,6 +5,7 @@ import java.util.Locale;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -59,13 +60,14 @@ public class MainActivity extends FragmentActivity implements
 
 	private ActionBar actionBar;
 
-	private TextView gps_text;
-
 	// This is used for vibration
 	private Vibrator myVib;
 
 	// Boolean ControllerApplication
-	private boolean isController;
+	private boolean isController = false;
+	
+	// isLoggedOn
+	private boolean isLoggedOn = false;
 
 	// Debugging and stuff
 	private static final String TAG = "MainActivity";
@@ -414,6 +416,11 @@ public class MainActivity extends FragmentActivity implements
 				stopService(new Intent(getBaseContext(),
 						BackOperationService.class));
 				finish();
+			}
+			if(requestCode == RESULT_OK){
+				SharedPreferences loginPreferences = getSharedPreferences("loginActivity", MODE_PRIVATE);
+				isController = loginPreferences.getBoolean("controller", false);
+				isLoggedOn = loginPreferences.getBoolean("login", false);
 			}
 			break;
 		default:

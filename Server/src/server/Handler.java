@@ -2,14 +2,11 @@ package server;
 
 import java.util.LinkedList;
 
-import database.*;
+import database.Customer;
+import database.SmartPark;
 import database.SmartPark.Col;
 
 public class Handler {
-
-	private String command = "";
-	private String commandParameters = "";
-	private ClientThread clientThread;
 
 	// Login
 	private String ssNbr;
@@ -22,19 +19,21 @@ public class Handler {
 	// SmartParkDevice Table
 	private SmartPark smartpark;
 
-	private String[] inputParam;
+	// Server Connection Thread to the client.
+	private ClientThread clientThread;
 
-	// private LinkedList<String> buffer = new LinkedList<String>();
-
+	/**
+	 * Constructor
+	 * @param clientThread
+	 */
 	public Handler(ClientThread clientThread) {
 		this.clientThread = clientThread;
-		// this.customer = new Customer();
 	}
 
-	// private void setTask(String task){
-	// buffer.addLast(task);
-	// }
-
+	/**
+	 * Command Handler
+	 * @param message
+	 */
 	public void checkCommand(String message) {
 		String inData[] = message.split(";");
 
@@ -70,17 +69,13 @@ public class Handler {
 		}
 	}
 
-	public void setPasswordAccepted(boolean passwordAccepted) {
-		this.passwordAccepted = passwordAccepted;
-	}
-
-	public boolean getPasswordAccepted() {
-		return this.passwordAccepted;
-	}
-
-	// Login;
+	/**
+	 * Login Method, checks user and if correct password is supplied.
+	 * @param param
+	 * @return
+	 */
 	public boolean login(String param) {
-		inputParam = param.split(":");
+		String[] inputParam = param.split(":");
 		this.customer = new Customer(inputParam[0]);
 
 		if (customer.getPassword() != null)
@@ -95,6 +90,10 @@ public class Handler {
 		return false;
 	}
 
+	/**
+	 * Queries the database for information.
+	 * @param param
+	 */
 	public void  query(String param) {
 		LinkedList<String> resultList = new LinkedList<String>();
 
@@ -105,18 +104,4 @@ public class Handler {
 		clientThread.sendMessage(resultList.toString());
 
 	}
-
-	// public boolean login(String commandoParameters){
-	// System.out.println("Login: " + commandoParameters);
-	// String[] information = commandoParameters.split(":");
-	// System.out.println(information[0] + " " + information[1]);
-	// if(db.checkUsername(information[0])){
-	// // System.out.println("Username OK");
-	// if(db.checkPassword(information[1])){
-	// // System.out.println("Login Succes");
-	// return true;
-	// }
-	// } //Skickar userName
-	// return false;
-	// }
 }

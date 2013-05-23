@@ -61,6 +61,17 @@ public class Handler {
 				query(inData[1]);
 
 			break;
+			
+		case "StartPark":
+				// TODO Fix StartPark That will query the database
+				// Possibly query the query() method
+			break;
+			
+		case "StopPark":
+				// TODO Fix StopPark That will query the database
+				// Possibly query the query() method
+			break;
+			
 		case "echo":
 			clientThread.sendMessage("echoACK");
 			break;
@@ -96,7 +107,6 @@ public class Handler {
 	 */
 	public void  query(String param) {
 		LinkedList<String> resultList = new LinkedList<String>();
-
 		this.smartpark = new SmartPark(customer.getSmartParkID());
 
 		this.smartpark.selectSmartPark(Col.StopStamp, param, true);

@@ -3,7 +3,6 @@ package com.smartpark.fragments;
 import java.util.Calendar;
 import java.util.HashMap;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
@@ -181,7 +180,7 @@ public class UserHistoryFragment extends Fragment {
 			Toast.makeText(getActivity(), "From date > To date",
 					Toast.LENGTH_LONG).show();
 		/*
-		 * TODO Fix Server Database for parking logs! Query the server for
+		 * TODO implement Query method from the database.
 		 * Parking Data!
 		 * 
 		 * Query;date:date

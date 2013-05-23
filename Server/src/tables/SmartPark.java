@@ -18,22 +18,22 @@ public class SmartPark extends Database {
 
 	private final static String dbName = "test";
 	private String tblName;
-	
+
 	private String sql;
 	private Statement statement = null;
 	private ResultSet result;
-	
+
 	private LinkedList<String> resultList;
-	
+
 	public enum Col {
 		ID, ssNbr, Position, StartStamp, StopStamp, LicensePlate, CarModel
 	}
-	
+
 	public SmartPark(String deviceID){
 		super(dbName);
 		SmartPark.deviceID = deviceID;
 		this.tblName = "SmartPark_" + deviceID;
-		
+
 		this.resultList = new LinkedList<String>();
 	}
 
@@ -116,7 +116,7 @@ public class SmartPark extends Database {
 			statement = super.getConnection().createStatement();
 
 			// result = statement.executeQuery("SELECT * FROM Customer;");
-			
+
 			if (searchValue != null){
 				if(!rangeSelection){
 					result = statement
@@ -135,14 +135,14 @@ public class SmartPark extends Database {
 					result = statement.executeQuery("SELECT ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel FROM SmartPark_" 
 							+ SmartPark.deviceID + " WHERE " + c + " BETWEEN " + query[0] + " AND " + query[1] + ";");
 				}
-				
+
 			}
-			
+
 			else{
 				result = statement
 						.executeQuery("SELECT * FROM SmartPark_" + SmartPark.deviceID + ";");
 			}
-				
+
 			resultList.clear();
 			while (result.next()) {
 				this.id 			= result.getLong("ID");
@@ -338,7 +338,7 @@ public class SmartPark extends Database {
 	public void setCarModel(String carModel) {
 		this.carModel = carModel;
 	}
-	
+
 	/**
 	 * Get results after running the select method
 	 * @return
@@ -372,13 +372,13 @@ public class SmartPark extends Database {
 				sp.InsertSmartParkData(new SmartPark("2000", "Long/Lat", "1", "10", "OPH500", "Nissan"));
 				sp.InsertSmartParkData(new SmartPark("2001", "Long/Lat", "3", "1", "MRO500", "Opel"));
 				sp.InsertSmartParkData(new SmartPark("2003", "Long/Lat", "1", "null", "TTY500", "Toyota"));
-				
+
 				SmartPark sp0 = new SmartPark("002Second");
 				sp0.CreateSmartParkTable();
 				sp0.InsertSmartParkData(new SmartPark("2004", "Long/Lat", "2", "3", "TTY600", "Lexus"));
 				sp0.InsertSmartParkData(new SmartPark("2005", "Long/Lat", "1", "null", "TTY800", "Mercedes"));
 				sp0.InsertSmartParkData(new SmartPark("2006", "Long/Lat", "5", "5", "TTY900", "Kia"));
-				
+
 				SmartPark spnull = new SmartPark("000Null");
 				spnull.CreateSmartParkTable();
 				spnull.InsertSmartParkData(new SmartPark("1987", "Long/Lat", "4", "10", "MRO519", "Toyota Celica"));
@@ -392,7 +392,7 @@ public class SmartPark extends Database {
 				System.out.println();
 				new SmartPark("000Null").selectSmartPark(null, null, false);
 				break;
-				
+
 			default:
 				System.out.println("Usage:\nCreateTable: To Create 3 SmartPark default tables\nPrint: to print all the created tables");
 				break;

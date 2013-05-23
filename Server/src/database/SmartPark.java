@@ -6,8 +6,6 @@ import java.sql.Statement;
 import java.util.Collections;
 import java.util.LinkedList;
 
-import javax.management.Query;
-
 public class SmartPark extends Database {
 	private long id;
 	private static String deviceID; // The Device ID

@@ -372,13 +372,28 @@ public class Customer extends Database {
 	}
 
 	public static void main(String[] args) {
-		Customer c = new Customer();
-//		c.CreateCustomerTable();
-//		c.InsertCustomerData(new Customer(1, "910611", "Artur", "Olech","Snödroppsgatan3", "0762361910", "artur", "001First", "Today"));
-//		c.InsertCustomerData(new Customer(0, "820620", "Saeed", "Ghasemi","Hyllie", "0763150074", "saeed", "002Second", "Tomorrow"));
-//		c.InsertCustomerData(new Customer(0, "na", "Truls", "Haraldsson","Trelleborg", "some number", "truls", "003Third", "Never"));
-		c.selectCustomer(null);
-		c.selectCustomer("910611");
+	
+		for (String s: args) {
+            switch (s) {
+			case "CreateTable":
+				Customer c = new Customer();
+				c.CreateCustomerTable();
+				c.InsertCustomerData(new Customer(1, "910611", "Artur", "Olech","Snödroppsgatan3", "0762361910", "artur", "001First", "Today"));
+				c.InsertCustomerData(new Customer(0, "820620", "Saeed", "Ghasemi","Hyllie", "0763150074", "saeed", "002Second", "Tomorrow"));
+				c.InsertCustomerData(new Customer(0, "na", "Truls", "Haraldsson","Trelleborg", "some number", "truls", "003Third", "Never"));
+				
+				break;
+			case "Print":
+				System.out.println("Printing all customer Tables in Database\n");
+				c = new Customer();
+				c.selectCustomer(null);
+				break;
+				
+			default:
+				System.out.println("Usage:\nCreateTable: To Create 3 customer default inserts\nPrint: to print all the created tables");
+				break;
+			}
+        }
 
 	}
 }

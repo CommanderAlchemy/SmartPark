@@ -1,4 +1,7 @@
 package server;
+
+import java.util.LinkedList;
+
 import database.*;
 import database.SmartPark.Col;
 
@@ -12,13 +15,13 @@ public class Handler {
 	private String ssNbr;
 	private boolean passwordAccepted = false;
 	private boolean controller = false;
-	
+
 	// Customer Table
 	private Customer customer;
-	
+
 	// SmartParkDevice Table
 	private SmartPark smartpark;
-	
+
 	private String[] inputParam;
 
 	// private LinkedList<String> buffer = new LinkedList<String>();
@@ -34,17 +37,17 @@ public class Handler {
 
 	public void checkCommand(String message) {
 		String inData[] = message.split(";");
-		
+
 		System.out.println("Handler Got This Message:" + message);
-		
+
 		switch (inData[0]) {
 		case "Login":
 
 			this.passwordAccepted = login(inData[1]);
 
-			if (passwordAccepted){
+			if (passwordAccepted) {
 				clientThread.sendMessage("LoginACK;Accepted:" + controller);
-			}else{
+			} else {
 				clientThread.sendMessage("LoginACK;Denied:false");
 			}
 
@@ -56,7 +59,7 @@ public class Handler {
 
 		case "Query":
 			if (passwordAccepted)
-				query(message);
+				query(inData[1]);
 
 			break;
 		case "echo":
@@ -79,11 +82,11 @@ public class Handler {
 	public boolean login(String param) {
 		inputParam = param.split(":");
 		this.customer = new Customer(inputParam[0]);
-		
+
 		if (customer.getPassword() != null)
 			if (inputParam[1].equals(customer.getPassword())) {
 				this.ssNbr = inputParam[0];
-				
+
 				if (customer.getCont() == 1)
 					this.controller = true;
 				return true;
@@ -92,12 +95,14 @@ public class Handler {
 		return false;
 	}
 
-	public String query(String param) {
-		inputParam = param.split(":");
+	public void  query(String param) {
+		LinkedList<String> resultList = new LinkedList<String>();
+
 		this.smartpark = new SmartPark(customer.getSmartParkID());
-		smartpark.selectSmartPark(this.smartpark, Col.StopStamp,param,true);
-		
-		return null;
+		this.smartpark.selectSmartPark(Col.StopStamp, param, true);
+		resultList = smartpark.getResultList();
+		clientThread.sendMessage(resultList.toString());
+
 	}
 
 	// public boolean login(String commandoParameters){

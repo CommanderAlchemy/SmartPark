@@ -44,7 +44,7 @@ public class Database {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 		}
 	}
-
+	
 	public void setC(Connection c) {
 		this.c = c;
 	}

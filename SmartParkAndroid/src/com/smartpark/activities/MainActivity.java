@@ -60,8 +60,6 @@ public class MainActivity extends FragmentActivity implements
 
 	private TextView gps_text;
 
-	private DatePickerFragment datePickerFromDate;
-	private DatePickerFragment datePickerToDate;
 
 	// This is used for vibration
 	private Vibrator myVib;
@@ -82,21 +80,8 @@ public class MainActivity extends FragmentActivity implements
 
 		setContentView(R.layout.activity_main);
 
-		int[] tempDate = new int[3];
-		if (savedInstanceState != null) {
+		
 
-			tempDate[0] = savedInstanceState.getInt("fromDay");
-			tempDate[1] = savedInstanceState.getInt("fromMonth");
-			tempDate[2] = savedInstanceState.getInt("fromYear");
-			datePickerFromDate.setDate(tempDate);
-			tempDate[0] = savedInstanceState.getInt("toDay");
-			tempDate[1] = savedInstanceState.getInt("toMonth");
-			tempDate[2] = savedInstanceState.getInt("toYear");
-			datePickerToDate.setDate(tempDate);
-		}
-
-		Log.e(TAG, "array: " + tempDate[0] + " " + tempDate[1] + " "
-				+ tempDate[2]);
 
 		setContentView(R.layout.activity_main);
 
@@ -231,13 +216,7 @@ public class MainActivity extends FragmentActivity implements
 		super.onSaveInstanceState(outState);
 		Log.i(TAG, "++ onSaveInstanceState ++");
 
-		outState.putInt("fromDay", datePickerFromDate.getDate()[0]);
-		outState.putInt("fromMonth", datePickerFromDate.getDate()[1]);
-		outState.putInt("fromYear", datePickerFromDate.getDate()[2]);
-
-		outState.putInt("toDay", datePickerToDate.getDate()[0]);
-		outState.putInt("toMonth", datePickerToDate.getDate()[1]);
-		outState.putInt("toYear", datePickerToDate.getDate()[2]);
+	
 
 	}// ------------------------------------------------------------
 		// ======= END OF LIFECYCLE METHODS ===========================

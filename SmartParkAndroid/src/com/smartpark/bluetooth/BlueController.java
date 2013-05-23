@@ -276,12 +276,7 @@ public class BlueController {
 					// This connect will start a new thread.
 					if (connect()) {
 						Log.e(TAG, "--> connected to: " + btDevice.getName());
-					} else {
-						Log.e(TAG,
-								"--> did not connected to: "
-										+ btDevice.getName());
 					}
-
 				} else {
 					Log.w(TAG, "--> device is null, bluetooth not found");
 				}

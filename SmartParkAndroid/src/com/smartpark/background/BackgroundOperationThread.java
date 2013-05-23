@@ -177,7 +177,7 @@ public class BackgroundOperationThread extends Thread {
 					Log.d(TAG, "--> TCP DATA read     " + inData);
 					if (inData != null) {
 						
-						Log.e(TAG, "---  inData = " + inData);
+						Log.e(TAG, "-----------------------------------------  inData = " + inData);
 						
 						// Send data to handler TODO
 						
@@ -219,6 +219,7 @@ public class BackgroundOperationThread extends Thread {
 			
 			
 			if(iterations  == 12){
+				iterations = 0;
 				// TODO
 				Log.i(TAG, "BT Connection state: " + (btController.isConnected()));
 				Log.i(TAG, "TCP Connection state: " + (tcpController.isConnected()));

@@ -152,7 +152,7 @@ public class TCPController {
 		// you might want to remove !mBufferOut.checkError()
 		// if error occurs, messages will never be send TODO
 		// && !mBufferOut.checkError()
-		if (tcpSocket.isConnected()) {
+		if (tcpSocket != null && tcpSocket.isConnected()) {
 			if (mBufferOut != null) {
 				mBufferOut.println(message);
 				mBufferOut.flush();
@@ -266,11 +266,14 @@ public class TCPController {
 	}
 	
 	public boolean testConnection(){
-		byte[] echo = new byte[4];
+		Log.e(TAG, "++ testConnection ++");
+		byte[] echo = {'e','c','h','o','\n'};
 		try {
 			tcpSocket.getOutputStream().write(echo);
+			setConnected();
 			return true;
-		} catch (IOException e) {
+		} catch (Exception e) {
+			setDisconnected();
 			e.printStackTrace();
 			return false;
 		}

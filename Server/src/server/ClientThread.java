@@ -20,8 +20,6 @@ public class ClientThread extends Thread {
 	private Socket socket;
 	private Handler handler;
 	
-//	private static HashMap<String, Socket> reConnection = new HashMap<String, Socket>();
-	
 	private boolean running = false;
 
 	private String message;
@@ -54,7 +52,6 @@ public class ClientThread extends Thread {
 			while (running) {
 				if (socket.isConnected()) {
 					if (bufferIn.ready()){
-						System.out.println("Rec.. DATA");
 						message = bufferIn.readLine();
 						System.out.println(message);
 					}
@@ -76,7 +73,6 @@ public class ClientThread extends Thread {
 	}
 
 	public void closeConnecton() {
-		System.out.println("Closing Connection");
 		try {
 			running = false;
 			socket.close();
@@ -86,7 +82,6 @@ public class ClientThread extends Thread {
 	}
 
 	public void sendMessage(String message) {
-		System.out.println("Sending: " + message);
 		if (bufferOut != null && !bufferOut.checkError()) {
 			bufferOut.println(message);
 			bufferOut.flush();

@@ -567,5 +567,25 @@ public class BlueController {
 
 	}
 
+	public boolean testBTConnection() {
+		Log.e(TAG, "++ testConnection ++");
+		byte[] echo = { 'e', 'c', 'h', 'o', ';', '\n' };
+		try {
+			if (btSocket != null && btSocket.isConnected()) {
+				btSocket.getOutputStream().write(echo);
+				setConnected();
+				return true;
+			}else{
+				setDisconnected();
+				return false;
+			}
+		} catch (Exception e) {
+			setDisconnected();
+			e.printStackTrace();
+			return false;
+		}
+
+	}
+
 	// ===================================
 }

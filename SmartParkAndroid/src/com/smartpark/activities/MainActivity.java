@@ -289,7 +289,7 @@ public class MainActivity extends FragmentActivity implements
 		myVib.vibrate(20);
 		Toast.makeText(this, "Logging into Server", Toast.LENGTH_SHORT).show();
 
-		Ref.bgThread.sendByTCP("Login;saeed:asd");
+		Ref.bgThread.sendByTCP("Login;910611:artur");
 	}
 
 	public void onClickBtnSendLocation(View view) {

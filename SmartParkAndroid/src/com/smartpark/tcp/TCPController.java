@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import android.bluetooth.BluetoothAdapter;
@@ -80,7 +81,7 @@ public class TCPController {
 							"--> connected to: " + tcpSocket.getInetAddress());
 				} else {
 					if (tcpSocket == null) {
-						Log.e(TAG,"--> did not connected to: ");
+						Log.e(TAG, "--> did not connected to: ");
 					}
 				}
 			}
@@ -129,11 +130,11 @@ public class TCPController {
 		} catch (Exception e) {
 			Log.e(TAG, "Exception: ", e);
 		}
-		if(tcpSocket!=null){
-			if(tcpSocket.isConnected()){
+		if (tcpSocket != null) {
+			if (tcpSocket.isConnected()) {
 				setConnected();
 			}
-		}else{
+		} else {
 			setDisconnected();
 		}
 		return isConnected;
@@ -214,6 +215,7 @@ public class TCPController {
 	}
 
 	public void setDisconnected() {
+		Log.e(TAG, "Set Disconnected !");
 		connectionState = Ref.STATE_NOT_CONNECTED;
 	}
 
@@ -264,20 +266,29 @@ public class TCPController {
 		}
 		return null;
 	}
-	
-	public boolean testConnection(){
+
+	public boolean testTCPConnection() {
 		Log.e(TAG, "++ testConnection ++");
-		byte[] echo = {'e','c','h','o',';','\n'};
+		byte[] echo = { 'e', 'c', 'h', 'o', ';', '\n' };
 		try {
-			tcpSocket.getOutputStream().write(echo);
-			setConnected();
-			return true;
-		} catch (Exception e) {
+			if (tcpSocket != null && tcpSocket.isConnected()) {
+				tcpSocket.getOutputStream().write(echo);
+				setConnected();
+				return true;
+			}else{
+				setDisconnected();
+				return false;
+			}
+		}catch (SocketException e){
+			setDisconnected();
+			e.printStackTrace();
+			return false;
+		}catch (Exception e) {
 			setDisconnected();
 			e.printStackTrace();
 			return false;
 		}
-		
+
 	}
 
 	// ===================================

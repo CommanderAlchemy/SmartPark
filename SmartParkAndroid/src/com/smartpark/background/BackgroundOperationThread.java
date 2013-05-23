@@ -45,7 +45,7 @@ public class BackgroundOperationThread extends Thread {
 
 		// BT
 		this.btController = btController;
-		
+
 		// TCP
 		this.tcpController = tcpController;
 
@@ -83,7 +83,7 @@ public class BackgroundOperationThread extends Thread {
 	private void fixConnections() {
 		Log.e(TAG, "++ fixConnections ++");
 		// Fix Bluetooth Connection ===================================
-		if (!(btController.isConnecting() || btController.isConnected())) {
+		if (!btController.isConnected()) {
 			Log.e(TAG, "Fixing TCP connection");
 			btController.setConnecting();
 
@@ -117,9 +117,17 @@ public class BackgroundOperationThread extends Thread {
 			btController.connectBT();
 		}
 		// Fix TCP Connection =======================================
-		Log.e(TAG, "" + tcpController.isConnecting() + " " + tcpController.isConnected() + " " + !(tcpController.isConnecting() || tcpController.isConnected()));
-		if (!(tcpController.isConnecting() || tcpController.isConnected())) {
-			Log.e(TAG, "Fixing TCP connection");
+		Log.e(TAG,
+				""
+						+ tcpController.isConnecting()
+						+ " "
+						+ tcpController.isConnected()
+						+ " "
+						+ !(tcpController.isConnecting() || tcpController
+								.isConnected()));
+		if (!tcpController.isConnected()) {
+			if (D)
+				Log.e(TAG, "Fixing TCP connection");
 			tcpController.setConnecting();
 
 			if (D)
@@ -131,13 +139,16 @@ public class BackgroundOperationThread extends Thread {
 
 	@Override
 	public void run() {
+		
+		tcpController.testTCPConnection();
+		btController.testBTConnection();
 		if (D)
 			Log.e(TAG, "++  run  ++");
-		
+
 		keepRunning = true;
 		int iterations = 0;
 		String inData = null;
-		
+
 		while (keepRunning) {
 			if (btController.isConnected()) {
 				// Code to process
@@ -145,13 +156,11 @@ public class BackgroundOperationThread extends Thread {
 					inData = btRead();
 					Log.d(TAG, "--> BT DATA read     " + inData);
 					if (inData != null) {
-						
+
 						Log.e(TAG, "---  inData = " + inData);
-						
+
 						// Send data to handler TODO
-						
-						
-						
+
 					}
 				} catch (NumberFormatException e) {
 					Log.e(TAG, "NumberFormatException");
@@ -171,18 +180,18 @@ public class BackgroundOperationThread extends Thread {
 
 			if (tcpController.isConnected()) {
 				// Code to process
-				
+
 				try {
 					inData = tcpRead();
 					Log.d(TAG, "--> TCP DATA read     " + inData);
 					if (inData != null) {
-						
-						Log.e(TAG, "-----------------------------------------  inData = " + inData);
-						
+
+						Log.e(TAG,
+								"-----------------------------------------  inData = "
+										+ inData);
+
 						// Send data to handler TODO
-						
-						
-						
+
 					}
 
 				} catch (NumberFormatException e) {
@@ -201,13 +210,10 @@ public class BackgroundOperationThread extends Thread {
 				fixConnections();
 			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
-			
-
 			// -----------------------------------------------------
 			// -----------------------------------------------------
 			// -----------------------------------------------------
 			// -----------------------------------------------------
-
 
 			// Check to see if the thread needs to start shutting down
 			// Log.d(TAG, "--> thread running");
@@ -216,21 +222,23 @@ public class BackgroundOperationThread extends Thread {
 			} catch (InterruptedException e) {
 				Log.e(TAG, "InterruptedException: ", e);
 			}
-			
-			
-			if(iterations  == 12){
+
+			if (iterations == 12) {
 				iterations = 0;
 				// TODO
-				Log.i(TAG, "BT Connection state: " + (btController.isConnected()));
-				Log.i(TAG, "TCP Connection state: " + (tcpController.isConnected()));
-				tcpController.testConnection();
-			}else{
+				Log.i(TAG,
+						"BT Connection state: " + (btController.isConnected()));
+				Log.i(TAG,
+						"TCP Connection state: "
+								+ (tcpController.isConnected()));
+				tcpController.testTCPConnection();
+				btController.testBTConnection();
+			} else {
 				iterations++;
 			}
-			
-			
+
 		}
-		
+
 		cleanUp();
 		Log.d(TAG, "--> Thread is shutdown");
 	}// ==================================================================

@@ -29,7 +29,10 @@ public class GPSReceiver extends BroadcastReceiver {
 		String action = intent.getAction();
 
 		gpsinfo = intent.getStringExtra("GPSCOORDINATES");
+		
 		Location location = intent.getParcelableExtra("location");
+		
+		System.out.println(location.toString());
 		
 		if (action.equals("com.smartpark.gpsinfo")) {
 			gpsinfo = intent.getStringExtra("GPS_COORDINATES");

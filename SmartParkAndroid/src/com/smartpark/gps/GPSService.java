@@ -188,9 +188,7 @@ public class GPSService extends Service {
 			Intent gpsinfo = new Intent("com.smartpark.gpsinfo");
 
 			gpsinfo.putExtra("location", location);
-
-			gpsinfo.putExtra("GPS_COORDINATES", "Latitide " + latitude
-					+ " Longitude " + longitude);
+			
 			sendBroadcast(gpsinfo);
 
 			Log.d(TAG, "Latitude: " + latitude + " Longitude: " + longitude);

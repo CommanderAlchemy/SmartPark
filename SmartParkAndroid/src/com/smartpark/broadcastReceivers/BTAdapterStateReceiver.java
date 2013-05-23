@@ -1,8 +1,5 @@
 package com.smartpark.broadcastReceivers;
 
-import com.smartpark.background.Ref;
-import com.smartpark.bluetooth.BlueController;
-
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -12,6 +9,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.smartpark.background.Ref;
+import com.smartpark.bluetooth.BlueController;
 
 public class BTAdapterStateReceiver extends BroadcastReceiver {
 

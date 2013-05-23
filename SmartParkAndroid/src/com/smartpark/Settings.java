@@ -7,6 +7,9 @@ package com.smartpark;
  */
 public class Settings {
 
+	/* TODO
+	 * Most of these things should be removed in favor of the SettingsActivity that should store these.
+	 */
 	public static int Server_Port = 25565; // 25565 10022
 	public static String Server_IP = "195.178.234.234"; // 195.178.234.234 85.24.243.11
 	public static String Close_Connection = "Close Connection";

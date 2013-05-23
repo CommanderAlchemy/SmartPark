@@ -2,9 +2,10 @@ package server;
 
 import java.util.LinkedList;
 
-import database.Customer;
-import database.SmartPark;
-import database.SmartPark.Col;
+import tables.Customer;
+import tables.SmartPark;
+import tables.SmartPark.Col;
+
 
 public class Handler {
 

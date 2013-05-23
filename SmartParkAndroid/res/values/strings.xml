@@ -7,8 +7,8 @@
     <string name="title_section1">Smart Park</string>
     <string name="title_section2">History</string>
     <string name="title_section3">Demo</string>
-    <string name="title_section4">debug</string>
-    <string name="title_section5">dummy</string>
+    <string name="title_section4">List</string>
+    <string name="title_section5">Map</string>
     
     <string name="welcome_text">Page Under Construction</string>
     <string name="debug_connect_btn">connect</string>

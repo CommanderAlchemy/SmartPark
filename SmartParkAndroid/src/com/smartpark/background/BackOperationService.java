@@ -126,26 +126,16 @@ public class BackOperationService extends Service {
 			btConnectionStateIntentIsRegistered = true;
 		}
 
-		Log.e(TAG, "----- 1");
 		if (Ref.bgThread == null) {
-			Log.e(TAG, "----- 2");
-
 			Ref.bgThread = new BackgroundOperationThread(applicationContext,
 					btController, tcpController);
-			Log.e(TAG, "----- 3");
 
 			Ref.bgThread.start();
-			Log.e(TAG, "----- 4");
-
 		} else {
-			Log.e(TAG, "----- 5");
-
-			if (!Ref.bgThread.isAlive()) {
-				Log.e(TAG, "----- 6");
-
+			if (!Ref.bgThread.isAlive() && Ref.bgThread.getState() == Thread.State.RUNNABLE
+					&& Ref.bgThread.getState() == Thread.State.TERMINATED) {
+				
 				Ref.bgThread.start();
-				Log.e(TAG, "----- 7");
-
 			}
 		}
 

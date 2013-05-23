@@ -13,8 +13,6 @@ import com.smartpark.tcp.TCPController;
 
 public class BackgroundOperationThread extends Thread {
 
-	private static long shutdownTime = 0; // 0 = never
-
 	// TRANSMITBUFFERS
 	private LinkedList<String> btTransmitBuffer = new LinkedList<String>();
 	private LinkedList<String> tcpTransmitBuffer = new LinkedList<String>();
@@ -41,7 +39,7 @@ public class BackgroundOperationThread extends Thread {
 			BlueController btController, TCPController tcpController) {
 		Log.e(TAG, "++ bgThread Constructor ++");
 
-		this.applicationContext = applicationContext;
+		BackgroundOperationThread.applicationContext = applicationContext;
 
 		// BT
 		this.btController = btController;
@@ -209,7 +207,9 @@ public class BackgroundOperationThread extends Thread {
 				Log.e(TAG, "TCP disconnected");
 				fixConnections();
 			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-
+			
+			Log.i(TAG, "BT state: " + btController.isConnected() + " TCP state: " + tcpController.isConnected());
+			
 			// -----------------------------------------------------
 			// -----------------------------------------------------
 			// -----------------------------------------------------

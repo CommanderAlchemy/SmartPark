@@ -11,13 +11,10 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-import android.bluetooth.BluetoothAdapter;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.smartpark.Settings;
 import com.smartpark.background.Ref;
-import com.smartpark.interfaces.OnMessageReceivedListener;
 
 /**
  * TCP Client, this class holds the application layer communication protocol for
@@ -35,15 +32,6 @@ public class TCPController {
 	// CONNECTION STATE-FLAG
 	private static int connectionState = Ref.STATE_NOT_CONNECTED;
 
-	// message to send to the server
-	private String mServerMessage;
-
-	// sends message received notifications
-	private OnMessageReceivedListener mMessageListener = null;
-
-	// while this is true, the server will continue running
-	private boolean mRun = false;
-
 	// used to send messages
 	private PrintWriter mBufferOut;
 
@@ -59,17 +47,17 @@ public class TCPController {
 	 * received from server
 	 */
 	public TCPController() {
-		// Instantiating listener
-		mMessageListener = new OnMessageReceivedListener() {
-			// messageReceived method is implemented. It is a listener
-			// for incoming messages from the TCP connection.
-			@Override
-			public void messageReceived(String message) {
-				Log.i(TAG, "++ messageReceived ++ TCP: " + message);
-				// this method calls the onProgressUpdate
-				// publishProgress(message);
-			}
-		};
+//		// Instantiating listener
+//		mMessageListener = new OnMessageReceivedListener() {
+//			// messageReceived method is implemented. It is a listener
+//			// for incoming messages from the TCP connection.
+//			@Override
+//			public void messageReceived(String message) {
+//				Log.i(TAG, "++ messageReceived ++ TCP: " + message);
+//				// this method calls the onProgressUpdate
+//				// publishProgress(message);
+//			}
+//		};
 	}// ==================================================================
 
 	public void connectTCP() {
@@ -79,6 +67,7 @@ public class TCPController {
 				if (connect()) {
 					Log.e(TAG,
 							"--> connected to: " + tcpSocket.getInetAddress());
+
 				} else {
 					if (tcpSocket == null) {
 						Log.e(TAG, "--> did not connected to: ");
@@ -92,40 +81,27 @@ public class TCPController {
 	private boolean connect() {
 		if (D)
 			Log.e(TAG, "++ connect ++");
-		boolean isConnected = false;
 		try {
-			Log.e(TAG, "before connection 1");
 			InetAddress serverAddr = InetAddress.getByName(Settings.Server_IP);
-			Log.e(TAG, "before connection 2");
-
 			// create a socket to make the connection with the server
-
 			try {
 				tcpSocket = new Socket(serverAddr, Settings.Server_Port);
+				setConnected();
 				tcpSocket.setKeepAlive(true);
-				if (tcpSocket.isConnected()) {
-					Log.e(TAG, "TCP Connected");
-					isConnected = true;
-					setConnected();
-					mBufferOut = new PrintWriter(
-							new BufferedWriter(new OutputStreamWriter(
-									tcpSocket.getOutputStream())), true);
-					mBufferIn = new BufferedReader(new InputStreamReader(
-							tcpSocket.getInputStream()));
-
-				} else {
-					setDisconnected();
-				}
+				Log.e(TAG, "TCP Connected");
+				setConnected();
+				mBufferOut = new PrintWriter(new BufferedWriter(
+						new OutputStreamWriter(tcpSocket.getOutputStream())),
+						true);
+				mBufferIn = new BufferedReader(new InputStreamReader(
+						tcpSocket.getInputStream()));
 			} catch (Exception e) {
+				setDisconnected();
 				Log.e(TAG, "Connection failed !" + serverAddr.toString());
 			}
-			Log.e(TAG, "before connection 3");
 
 		} catch (UnknownHostException e) {
 			Log.e(TAG, "UnknownHostException: ", e);
-			setDisconnected();
-		} catch (IOException e) {
-			Log.e(TAG, "IOException: ", e);
 			setDisconnected();
 		} catch (Exception e) {
 			Log.e(TAG, "Exception: ", e);
@@ -137,7 +113,7 @@ public class TCPController {
 		} else {
 			setDisconnected();
 		}
-		return isConnected;
+		return isConnected();
 	}
 
 	// ===================================================================
@@ -149,10 +125,6 @@ public class TCPController {
 	 *            text entered by client
 	 */
 	public void sendMessage(String message) {
-
-		// you might want to remove !mBufferOut.checkError()
-		// if error occurs, messages will never be send TODO
-		// && !mBufferOut.checkError()
 		if (tcpSocket != null && tcpSocket.isConnected()) {
 			if (mBufferOut != null) {
 				mBufferOut.println(message);
@@ -172,7 +144,6 @@ public class TCPController {
 			Log.d(TAG, "Closing Connection");
 		// send message that we are closing the connection
 		sendMessage(Settings.Close_Connection);
-		mRun = false;
 		if (mBufferOut != null) {
 			mBufferOut.flush();
 			mBufferOut.close();
@@ -276,15 +247,15 @@ public class TCPController {
 				tcpSocket.getOutputStream().write(echo);
 				setConnected();
 				return true;
-			}else{
+			} else {
 				setDisconnected();
 				return false;
 			}
-		}catch (SocketException e){
+		} catch (SocketException e) {
 			setDisconnected();
 			e.printStackTrace();
 			return false;
-		}catch (Exception e) {
+		} catch (Exception e) {
 			setDisconnected();
 			e.printStackTrace();
 			return false;

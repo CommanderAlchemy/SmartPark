@@ -1,6 +1,7 @@
 package tables;
 
-import java.util.ArrayList;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import database.Database;
 
@@ -12,11 +13,22 @@ public class ParkingLots extends Database {
 	private String smsQuery;
 	private String ticketHours;
 	private String freeHours;
-	private ArrayList<String> longitude;
-	private ArrayList<String> latitude;
+	private String longitude;
+	private String latitude;
+	
+	// == Settings for the Table ========================
 
 	private static String dbName = "test";
 	private static String tblName = "ParkingLots";
+	private static String[] columns = { "price", "company", "smsQuery",
+			"ticketHours", "freeHours", "longitude", "latitude"};
+
+	private String[] columnTypes = { "REAL", "TEXT", "TEXT", "TEXT", "TEXT", "TEXT", "TEXT" };
+
+	boolean[] notNull = { true, true, false, true, false, true, true };
+
+	// --------------------------------------------------
+	
 
 	/**
 	 * ParkingLots Constructor
@@ -28,8 +40,8 @@ public class ParkingLots extends Database {
 	}
 
 	public ParkingLots(long price, String company, String smsQuery,
-			String ticketHours, String freeHours, ArrayList<String> longitude,
-			ArrayList<String> latitude) {
+			String ticketHours, String freeHours, String longitude,
+			String latitude) {
 		super(dbName);
 		this.price = price;
 		this.company = company;
@@ -42,6 +54,35 @@ public class ParkingLots extends Database {
 	
 	public void CreateParkingLotsTable(){
 		
+	}
+	
+	public void InsertParkingLotsData(String[] columnData) {
+
+		insertIntoTable(tblName, columns, columnTypes, columnData);
+
+		System.out.println(columnData.toString());
+	}
+	
+	public void selectParkingLots(String searchString, int columnNr) {
+
+		ResultSet result = selectDataFromTable(tblName, columns, searchString,
+				columnNr);
+
+		try {
+			while (result.next()) {
+				this.ID = result.getLong("ID");
+				this.price = result.getLong("price");
+				this.company = result.getString("company");
+				this.smsQuery = result.getString("smsQuery");
+				this.ticketHours = result.getString("ticketHours");
+				this.freeHours = result.getString("freeHours");
+				this.longitude = result.getString("longitude");
+				this.latitude = result.getString("latitude");
+				System.out.println(this.toString());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	/**
 	 * GetID
@@ -156,36 +197,36 @@ public class ParkingLots extends Database {
 	 * 
 	 * @return
 	 */
-	public ArrayList<String> getLongitude() {
-		return longitude;
-	}
-
-	/**
-	 * Set Longitude
-	 * 
-	 * @param longitude
-	 */
-	public void setLongitude(ArrayList<String> longitude) {
-		this.longitude = longitude;
-	}
-
-	/**
-	 * Get Latitude
-	 * 
-	 * @return
-	 */
-	public ArrayList<String> getLatitude() {
-		return latitude;
-	}
-
-	/**
-	 * SetLatitude
-	 * 
-	 * @param latitude
-	 */
-	public void setLatitude(ArrayList<String> latitude) {
-		this.latitude = latitude;
-	}
+//	public ArrayList<String> getLongitude() {
+//		return longitude;
+//	}
+//
+//	/**
+//	 * Set Longitude
+//	 * 
+//	 * @param longitude
+//	 */
+//	public void setLongitude(ArrayList<String> longitude) {
+//		this.longitude = longitude;
+//	}
+//
+//	/**
+//	 * Get Latitude
+//	 * 
+//	 * @return
+//	 */
+//	public ArrayList<String> getLatitude() {
+//		return latitude;
+//	}
+//
+//	/**
+//	 * SetLatitude
+//	 * 
+//	 * @param latitude
+//	 */
+//	public void setLatitude(ArrayList<String> latitude) {
+//		this.latitude = latitude;
+//	}
 
 	/**
 	 * Get dbName

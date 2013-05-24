@@ -7,10 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
-import android.preference.PreferenceManager.OnActivityResultListener;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.smartpark.activities.MainActivity;
 import com.smartpark.bluetooth.BlueController;
 import com.smartpark.broadcastReceivers.BTAdapterStateReceiver;
 import com.smartpark.broadcastReceivers.BTFoundDeviceReceiver;
@@ -143,10 +143,15 @@ public class BackOperationService extends Service {
 
 		Log.i(TAG, "Service action= " + intent.getAction());
 
-		String message = intent.getStringExtra("message to Service");
-
-		// TODO do something with the message
-
+		boolean restart = intent.getBooleanExtra("Restart", false);
+		
+		if(restart){
+			Ref.activeActivity.finish();
+			Intent i = new Intent(getApplicationContext(), MainActivity.class);
+			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(i);
+		}
+		
 		return START_STICKY;
 	}
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 
 public class CopyPasteCode extends Activity {
 	
@@ -19,6 +20,13 @@ public class CopyPasteCode extends Activity {
 	
 //	TextView dummyTextView = (TextView) rootView.findViewById(R.id.section_label);
 //	dummyTextView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+//	
+//	try {
+//		Thread.currentThread();
+//		Thread.sleep(100);
+//	} catch (Exception e) {
+//		Log.e("Therad sleep", "--> Sleep didn't work");
+//	}
 	
 	
 	public void weNeedThisToCopyPasteWhereWeWantToHaveAButton() {

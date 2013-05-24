@@ -20,7 +20,15 @@ public class Customer extends Database {
 
 	private static String dbName = "test";
 	private static String tblName = "Customer";
-
+	private static String columnsdelete = "(ID,cont,ssNbr,ForName,Lastname,Address,PhoneNbr,Password,SmartParkID,Registered,Balance)";
+	private static String[] columns = { "cont", "ssNbr", "Forname", "Lastname", "Address",
+			"PhoneNbr", "Password", "SmartParkID", "RegistrationDate",
+			"Balance" };
+	String[] columnTypes = { "INT", "TEXT", "TEXT", "TEXT", "TEXT", "TEXT",
+			"TEXT", "TEXT", "TEXT", "REAL" };
+	boolean[] notNull = { true, true, true, true, true, true, true, true,
+			true, false };
+	
 	private String sql;
 	private Statement statement = null;
 	private ResultSet result;
@@ -87,14 +95,6 @@ public class Customer extends Database {
 
 	// finished
 	public void CreateCustomerTable() {
-		String[] columns = { "cont", "ssNbr", "Forname", "Lastname", "Address",
-				"PhoneNbr", "Password", "SmartParkID", "RegistrationDate",
-				"Balance" };
-		String[] columnTypes = { "INT", "TEXT", "TEXT", "TEXT", "TEXT", "TEXT",
-				"TEXT", "TEXT", "TEXT", "REAL" };
-		boolean[] notNull = { true, true, true, true, true, true, true, true,
-				true, false };
-		
 		createTable("Customer", columns, columnTypes, notNull);
 		
 		System.out
@@ -103,27 +103,7 @@ public class Customer extends Database {
 	
 	
 	public void InsertCustomerData(Customer c) {
-		try {
-			/* @formatter:off */
-			sql = "INSERT INTO Customer "
-					+ "(ID,cont,ssNbr,ForName,Lastname,Address,PhoneNbr,Password,SmartParkID,Registered,Balance) "
-					+ "VALUES (" + "NULL" + "," + c.cont + ",'" + c.ssNbr
-					+ "','" + c.forname + "','" + c.lastname + "','"
-					+ c.address + "','" + c.phoneNbr + "','" + c.password
-					+ "','" + c.smartParkID + "','" + c.registered + "',"
-					+ c.balance + ");";
 
-			/* @formatter:on */
-			statement = super.getConnection().createStatement();
-			statement.executeUpdate(sql);
-			statement.close();
-			super.closeConnection();
-
-		} catch (Exception e) {
-			System.out
-					.println("[ERROR] During Insert New Customer Into Customer Table:");
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-		}
 		System.out.println(c.forname + " sucessfully inserted into " + dbName
 				+ "." + tblName);
 	}

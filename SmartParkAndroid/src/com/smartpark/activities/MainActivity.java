@@ -79,7 +79,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.i(TAG, "++ onCreate ++");
+		Log.e(TAG, "++ onCreate ++");
 
 		setContentView(R.layout.activity_main);
 
@@ -89,67 +89,20 @@ public class MainActivity extends FragmentActivity implements
 		SharedPreferences loginSettings = getSharedPreferences("loginActivity",
 				MODE_PRIVATE);
 
-//		isController = loginSettings.getBoolean("controller", false);
-		isController = true;
+		isController = loginSettings.getBoolean("controller", false);
 		isLoggedOn = loginSettings.getBoolean("login", false);
-		
+
 		if (!isLoggedOn) {
 			Intent i = new Intent(this, LoginActivity.class);
 			startActivityForResult(i, REQUEST_LOGIN);
-		}else{
+		} else {
 			// Login the user by known username and password TODO
 		}
 
 		// ==== USER LOGGED ON ===================================
 
-		if (D)
-			Log.d(TAG,
-					"--> Getting the actionBar and setting its navigation mode");
+		setupPages();
 
-		// Set up the action bar
-		actionBar = getActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-		if (D)
-			Log.d(TAG, "--> instantiating SectionsPagerAdapter");
-		// Create the adapter that will return a fragment for each sections of
-		// the app.
-		mSectionsPagerAdapter = new SectionsPagerAdapter(
-				getSupportFragmentManager());
-
-		if (D)
-			Log.d(TAG, "--> passing SectionsPagerAdapter to ViewPager");
-
-		// Set up the ViewPager with the sections adapter.
-		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mViewPager.setAdapter(mSectionsPagerAdapter);
-		
-		/*
-		 * When swiping between different sections, select the corresponding
-		 * tab. We can also use ActionBar.Tab#select() to do this if we have a
-		 * reference to the Tab.
-		 */
-		mViewPager
-				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-					@Override
-					public void onPageSelected(int position) {
-						if (D)
-							Log.d(TAG, "position ");
-						System.out.println(position);
-						actionBar.setSelectedNavigationItem(position);
-					}
-				});
-
-		// For each of the sections in the app, add a tab to the action bar.
-		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-			// Create a tab with text corresponding to the page title defined by
-			// the adapter. Also specify this Activity object, which implements
-			// the TabListener interface, as the callback (listener) for when
-			// this tab is selected.
-			actionBar.addTab(actionBar.newTab()
-					.setText(mSectionsPagerAdapter.getPageTitle(i))
-					.setTabListener(this));
-		}
 		if (D)
 			Log.d(TAG, "--> loading from savedInstanceState");
 
@@ -422,14 +375,12 @@ public class MainActivity extends FragmentActivity implements
 						BackOperationService.class));
 				finish();
 			}
-			if (requestCode == RESULT_OK) {
-				SharedPreferences loginPreferences = getSharedPreferences(
-						"loginActivity", MODE_PRIVATE);
-				// isController = loginPreferences.getBoolean("controller",
-				// false);
-				// isLoggedOn = loginPreferences.getBoolean("login", false);
-				isController = false;
-				isLoggedOn = true;
+			if (resultCode == RESULT_OK) {
+				Intent intent = new Intent(getBaseContext(),
+						BackOperationService.class);
+				intent.putExtra("Restart", true);
+
+				startService(intent);
 			}
 			break;
 		default:
@@ -491,7 +442,8 @@ public class MainActivity extends FragmentActivity implements
 		switch (item.getItemId()) {
 		case 0:
 			Toast.makeText(this, "Login", Toast.LENGTH_SHORT).show();
-			startActivity(new Intent(this, LoginActivity.class));
+			startActivityForResult(new Intent(this, LoginActivity.class),
+					REQUEST_LOGIN);
 			return true;
 
 		case 1:
@@ -510,6 +462,55 @@ public class MainActivity extends FragmentActivity implements
 			// startActivity(new Intent(this, SettingsActivity.class));
 		}
 		return false;
+	}
+
+	private void setupPages() {
+		if (D)
+			Log.d(TAG,
+					"--> Getting the actionBar and setting its navigation mode");
+		// Set up the action bar
+		actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+		if (D)
+			Log.d(TAG, "--> instantiating SectionsPagerAdapter");
+		// Create the adapter that will return a fragment for each sections of
+		// the app.
+		mSectionsPagerAdapter = new SectionsPagerAdapter(
+				getSupportFragmentManager());
+
+		if (D)
+			Log.d(TAG, "--> passing SectionsPagerAdapter to ViewPager");
+
+		// Set up the ViewPager with the sections adapter.
+		mViewPager = (ViewPager) findViewById(R.id.pager);
+		mSectionsPagerAdapter.getItemId(mSectionsPagerAdapter.getCount());
+		mSectionsPagerAdapter.notifyDataSetChanged();
+		mViewPager.setAdapter(mSectionsPagerAdapter);
+		/*
+		 * When swiping between different sections, select the corresponding
+		 * tab. We can also use ActionBar.Tab#select() to do this if we have a
+		 * reference to the Tab.
+		 */
+		mViewPager
+				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+					@Override
+					public void onPageSelected(int position) {
+						if (D)
+							Log.d(TAG, "position" + position);
+						actionBar.setSelectedNavigationItem(position);
+					}
+				});
+		// For each of the sections in the app, add a tab to the action bar.
+		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+			// Create a tab with text corresponding to the page title defined by
+			// the adapter. Also specify this Activity object, which implements
+			// the TabListener interface, as the callback (listener) for when
+			// this tab is selected.
+			actionBar.addTab(actionBar.newTab()
+					.setText(mSectionsPagerAdapter.getPageTitle(i))
+					.setTabListener(this));
+		}
 	}
 
 	// ================
@@ -561,6 +562,7 @@ public class MainActivity extends FragmentActivity implements
 			if (isController) {
 				offset = 3;
 			}
+			Log.e(TAG, position + " offset" + offset);
 			switch (position + offset) {
 
 			case 0:
@@ -579,7 +581,6 @@ public class MainActivity extends FragmentActivity implements
 
 			case 2:
 				fragment = new UserDemoFragment();
-
 				// args.putInt(ControllerListFragment.ARG_SECTION_NUMBER,
 				// position + 1);
 				// fragment.setArguments(args);

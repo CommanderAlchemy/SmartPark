@@ -18,21 +18,28 @@ public class Customer extends Database {
 	private String registered;
 	private long balance;
 
+	// == Settings for the Table ========================
+	
 	private static String dbName = "test";
 	private static String tblName = "Customer";
-	private static String columnsdelete = "(ID,cont,ssNbr,ForName,Lastname,Address,PhoneNbr,Password,SmartParkID,Registered,Balance)";
-	private static String[] columns = { "cont", "ssNbr", "Forname", "Lastname", "Address",
-			"PhoneNbr", "Password", "SmartParkID", "RegistrationDate",
-			"Balance" };
-	String[] columnTypes = { "INT", "TEXT", "TEXT", "TEXT", "TEXT", "TEXT",
-			"TEXT", "TEXT", "TEXT", "REAL" };
-	boolean[] notNull = { true, true, true, true, true, true, true, true,
-			true, false };
+	private static String[] columns = { "cont", "ssNbr", "Forname", "Lastname",
+			"Address", "PhoneNbr", "Password", "SmartParkID",
+			"RegistrationDate", "Balance" };
+	
+	
+	private String[] columnTypes = { "INT", "TEXT", "TEXT", "TEXT", "TEXT",
+			"TEXT", "TEXT", "TEXT", "TEXT", "REAL" };
+	
+	
+	boolean[] notNull = { true, true, true, true, true, true, true, true, true,
+			false };
+
+	// --------------------------------------------------
 	
 	private String sql;
 	private Statement statement = null;
 	private ResultSet result;
-
+	
 	/*
 	 * Avail columns in the customer table
 	 */
@@ -96,12 +103,11 @@ public class Customer extends Database {
 	// finished
 	public void CreateCustomerTable() {
 		createTable("Customer", columns, columnTypes, notNull);
-		
+
 		System.out
 				.println(tblName + " table successfully created in " + dbName);
 	}
-	
-	
+
 	public void InsertCustomerData(Customer c) {
 
 		System.out.println(c.forname + " sucessfully inserted into " + dbName

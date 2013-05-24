@@ -118,6 +118,7 @@ public class Database {
 
 	/**
 	 * Insert
+	 * 
 	 * @param tblName
 	 * @param columns
 	 * @param columnTypes
@@ -178,49 +179,55 @@ public class Database {
 	/**
 	 * Select data from the table
 	 * 
-	 * @param searcCol
+	 * @param columnNr
 	 *            what column in table to search in
-	 * @param searchValue
+	 * @param searchString
 	 *            search value to search for
 	 * @param rangeSelection
 	 *            select range of columns
+	 * @param tblName
+	 *            The table name
+	 * @param columns
+	 *            An array of columns that the table is made of
 	 */
-	public ResultSet selectDataFromTable(String tblName, String[] columns, String searchString, int columnNr) {
+	public ResultSet selectDataFromTable(String tblName, String[] columns,
+			String searchString, int columnNr, boolean rangeSelection) {
 		Statement statement = null;
 		ResultSet result = null;
 		try {
 			// super.getConnection().setAutoCommit(false);
 			statement = getConnection().createStatement();
-			
+
 			if (searchString != null) {
-				if(!rangeSelection){
+				if (!rangeSelection) {
+					
+					String sql = "SELECT ID,";
 
-				String sql = "SELECT ID,";
+					for (int i = 0; i < columns.length; i++) {
 
-				for (int i = 0; i < columns.length; i++) {
+						sql += columns[i];
 
-					sql += columns[i];
-
-					if (i != columns.length - 1) {
-						sql += ",";
-					} else {
-						sql += "";
+						if (i != columns.length - 1) {
+							sql += ",";
+						} else {
+							sql += "";
+						}
 					}
-				}
 
-				sql += " FROM " + tblName + " WHERE " + columns[columnNr]
-						+ " = " + searchString + ";";
-			
-				System.out.println(sql);
-				
-				result = statement.executeQuery(sql);
+					sql += " FROM " + tblName + " WHERE " + columns[columnNr]
+							+ " = " + searchString + ";";
 
-				// ("SELECT ID,cont,ssNbr,Forname,Lastname,Address,PhoneNbr,Password,SmartParkID,Registered,Balance FROM Customer WHERE ssNbr = '"
-				// + searchString + "';");
-				}else{
+					System.out.println(sql);
+
+					result = statement.executeQuery(sql);
+
+					// ("SELECT ID,cont,ssNbr,Forname,Lastname,Address,PhoneNbr,Password,SmartParkID,Registered,Balance FROM Customer WHERE ssNbr = '"
+					// + searchString + "';");
+
 					
 					
-					
+				} else {
+
 					
 					
 					String[] query = null;
@@ -237,24 +244,20 @@ public class Database {
 									+ " WHERE "
 									+ c
 									+ " BETWEEN "
-									+ query[0]
-									+ " AND "
-									+ query[1] + ";");
-					
-					
-					
-					
+									+ query[0] + " AND " + query[1] + ";");
+
 				}
 			} else {
-//				result = statement.executeQuery("SELECT * FROM Customer;"
-//						+ searchValue);
-				result = statement.executeQuery("SELECT * FROM " + tblName + ";");
+				// result = statement.executeQuery("SELECT * FROM Customer;"
+				// + searchValue);
+				result = statement.executeQuery("SELECT * FROM " + tblName
+						+ ";");
 			}
 		} catch (Exception e) {
 			System.out.println("[ERROR] During Lookup Table");
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 		}
-		
+
 		try {
 			result.close();
 			statement.close();
@@ -281,41 +284,24 @@ public class Database {
 	 */
 	public void updateTableData(String searchCol, String searchValue,
 			String whatCol, String whatValue) {
-		
-			try {
-				// super.getConnection().setAutoCommit(false);
-				Statement statement = getConnection().createStatement();
-				
-				String sql = "UPDATE Customer set " + whatCol + " = '" + whatValue
-						+ "' where " + searchCol + "=" + searchValue + ";";
-				
-				System.out.println(sql);
-				statement.executeUpdate(sql);
-				// super.getConnection().commit();
-				
-			} catch (Exception e) {
-				System.out.println("[ERROR] During update customer table :");
-				System.err.println(e.getClass().getName() + ": " + e.getMessage());
-			}
+
+		try {
+			// super.getConnection().setAutoCommit(false);
+			Statement statement = getConnection().createStatement();
+
+			String sql = "UPDATE Customer set " + whatCol + " = '" + whatValue
+					+ "' where " + searchCol + "=" + searchValue + ";";
+
+			System.out.println(sql);
+			statement.executeUpdate(sql);
+			// super.getConnection().commit();
+
+		} catch (Exception e) {
+			System.out.println("[ERROR] During update customer table :");
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+		}
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	/**
 	 * Get resultList from previus query
 	 * 
@@ -347,17 +333,17 @@ public class Database {
 
 		String dbName = "test";
 		String tblName = "Customer";
-		String[] columns = { "cont", "ssNbr", "Forname", "Lastname",
-				"Address", "PhoneNbr", "Password", "SmartParkID",
-				"RegistrationDate", "Balance" };
+		String[] columns = { "cont", "ssNbr", "Forname", "Lastname", "Address",
+				"PhoneNbr", "Password", "SmartParkID", "RegistrationDate",
+				"Balance" };
 
-		String[] columnTypes = { "INT", "TEXT", "TEXT", "TEXT", "TEXT",
-				"TEXT", "TEXT", "TEXT", "TEXT", "REAL" };
+		String[] columnTypes = { "INT", "TEXT", "TEXT", "TEXT", "TEXT", "TEXT",
+				"TEXT", "TEXT", "TEXT", "REAL" };
 
-		boolean[] notNull = { true, true, true, true, true, true, true, true, true,
-				false };
+		boolean[] notNull = { true, true, true, true, true, true, true, true,
+				true, false };
 		Database j = new Database(dbName);
 		j.selectDataFromTable(tblName, columns, "'juhu'", 2);
-		
+
 	}
 }

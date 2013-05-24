@@ -2,11 +2,12 @@ package database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 
-abstract public class Database {
+public class Database {
 	private String dbName;
 	private Connection c = null;
 
@@ -68,20 +69,22 @@ abstract public class Database {
 
 	/**
 	 * Create table in the database
+	 * 
+	 * @return
 	 */
-	public void createTable(String tblName, String[] columns,
+	public String createTable(String tblName, String[] columns,
 			String[] columnTypes, boolean[] notNull) {
 
 		// check for spaces in tablename
 		if (tblName.contains(" ")) {
 			System.out.println("You may not use [space] in table name.");
-			return;
+			return "You may not use [space] in table name.";
 		}
 		// Check for equal string array sizes
 		if (columns.length != columnTypes.length
 				|| columnTypes.length != notNull.length) {
 			System.out.println("The arrays are not equa in length");
-			return;
+			return "The arrays are not equa in length";
 		}
 		String sql = "CREATE TABLE " + tblName + " (ID INTEGER PRIMARY KEY,";
 
@@ -94,6 +97,7 @@ abstract public class Database {
 				sql += ")";
 			}
 		}
+		String errorStack = "";
 		try {
 			Statement s = getConnection().createStatement();
 			s.executeUpdate(sql);
@@ -102,10 +106,11 @@ abstract public class Database {
 			System.out.println("[ERROR] During Create New Customer Table:");
 			System.err
 					.println(e1.getClass().getName() + ": " + e1.getMessage());
-
+			errorStack = e1.getMessage();
 		} finally {
 			closeConnection();
 		}
+		return errorStack;
 	}
 
 	/**
@@ -125,7 +130,7 @@ abstract public class Database {
 			System.out.println("The arrays are not equa in length");
 			return;
 		}
-		
+
 		String sql = "INSERT INTO " + tblName + " (ID,";
 
 		for (int i = 0; i < columns.length; i++) {
@@ -175,8 +180,47 @@ abstract public class Database {
 	 * @param rangeSelection
 	 *            select range of columns
 	 */
-	public void selectDataFromTable(String searchCol, String searchValue,
-			boolean rangeSelection) {
+	public ResultSet selectDataFromTable(String tblName, String[] columns, String searchString, int columnNr) {
+		
+		ResultSet result = null;
+		try {
+			// super.getConnection().setAutoCommit(false);
+			Statement statement = getConnection().createStatement();
+			
+			if (searchString != null) {
+
+				String sql = "SELECT ID,";
+
+				for (int i = 0; i < columns.length; i++) {
+
+					sql += columns[i];
+
+					if (i != columns.length - 1) {
+						sql += ",";
+					} else {
+						sql += "";
+					}
+				}
+
+				sql += " FROM " + tblName + " WHERE " + columns[columnNr]
+						+ " = " + searchString + ";";
+			
+				System.out.println(sql);
+				
+				result = statement.executeQuery(sql);
+
+				// ("SELECT ID,cont,ssNbr,Forname,Lastname,Address,PhoneNbr,Password,SmartParkID,Registered,Balance FROM Customer WHERE ssNbr = '"
+				// + searchString + "';");
+			} else {
+//				result = statement.executeQuery("SELECT * FROM Customer;"
+//						+ searchValue);
+				result = statement.executeQuery("SELECT * FROM " + tblName + ";");
+			}
+		} catch (Exception e) {
+			System.out.println("[ERROR] During Lookup Table");
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		return result;
 	}
 
 	/**
@@ -193,8 +237,23 @@ abstract public class Database {
 	 */
 	public void updateTableData(String searcCol, String searchValue,
 			String whatCol, String whatValue) {
+		
+		
+		
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * Get resultList from previus query
 	 * 
@@ -223,7 +282,19 @@ abstract public class Database {
 	}
 
 	public static void main(String[] args) {
-		Database.insertIntoTable();
+		String dbName = "test";
+		String tblName = "Customer";
+		String[] columns = { "cont", "ssNbr", "Forname", "Lastname",
+				"Address", "PhoneNbr", "Password", "SmartParkID",
+				"RegistrationDate", "Balance" };
 
+		String[] columnTypes = { "INT", "TEXT", "TEXT", "TEXT", "TEXT",
+				"TEXT", "TEXT", "TEXT", "TEXT", "REAL" };
+
+		boolean[] notNull = { true, true, true, true, true, true, true, true, true,
+				false };
+		Database j = new Database(dbName);
+		j.selectDataFromTable(tblName, columns, "'juhu'", 2);
+		
 	}
 }

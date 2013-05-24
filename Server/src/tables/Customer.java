@@ -1,6 +1,7 @@
 package tables;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import database.Database;
@@ -19,27 +20,26 @@ public class Customer extends Database {
 	private long balance;
 
 	// == Settings for the Table ========================
-	
+
 	private static String dbName = "test";
 	private static String tblName = "Customer";
 	private static String[] columns = { "cont", "ssNbr", "Forname", "Lastname",
 			"Address", "PhoneNbr", "Password", "SmartParkID",
 			"RegistrationDate", "Balance" };
-	
-	
+
 	private String[] columnTypes = { "INT", "TEXT", "TEXT", "TEXT", "TEXT",
 			"TEXT", "TEXT", "TEXT", "TEXT", "REAL" };
-	
-	
+
 	boolean[] notNull = { true, true, true, true, true, true, true, true, true,
 			false };
 
 	// --------------------------------------------------
-	
+
 	private String sql;
 	private Statement statement = null;
-	private ResultSet result;
-	
+
+	// private ResultSet result;
+
 	/*
 	 * Avail columns in the customer table
 	 */
@@ -67,11 +67,11 @@ public class Customer extends Database {
 
 	public Customer(String ssNbr) {
 		this();
-		selectCustomer(ssNbr);
+		selectCustomer(ssNbr, 1);
 	}
 
 	/**
-	 * Constuctor to read and write customer data to the database
+	 * Constructor to read and write customer data to the database
 	 * 
 	 * @param ssNbr
 	 * @param forename
@@ -100,35 +100,45 @@ public class Customer extends Database {
 
 	}
 
-	// finished
-	public void CreateCustomerTable() {
-		createTable("Customer", columns, columnTypes, notNull);
+	/**
+	 * Before invoking this method, set the table name and columns and column
+	 * types and whether or not hey can be NULL. This method will then create a
+	 * table with this information or return an error message.
+	 * 
+	 * @return
+	 */
+	public String CreateCustomerTable() {
+		String error = createTable(tblName, columns, columnTypes, notNull);
+		if (error.length() == 0)
+			System.out.println(tblName + " table successfully created in "
+					+ dbName);
 
-		System.out
-				.println(tblName + " table successfully created in " + dbName);
+		return error;
 	}
 
-	public void InsertCustomerData(Customer c) {
+	// -----------------------------------------------------------------
 
-		System.out.println(c.forname + " sucessfully inserted into " + dbName
-				+ "." + tblName);
+	public void InsertCustomerData(String[] columnData) {
+
+		insertIntoTable(tblName, columns, columnTypes, columnData);
+
+		System.out.println(columnData.toString());
 	}
 
-	public void selectCustomer(String searchValue) {
+	// -----------------------------------------------------------------
+
+	/**
+	 * Dont forget to put ' around a string you search for. Example: 'Thomas'
+	 * 
+	 * @param searchString
+	 * @param columnNr
+	 */
+	public void selectCustomer(String searchString, int columnNr) {
+
+		ResultSet result = selectDataFromTable(tblName, columns, searchString,
+				columnNr);
+
 		try {
-			// super.getConnection().setAutoCommit(false);
-			statement = super.getConnection().createStatement();
-
-			// result = statement.executeQuery("SELECT * FROM Customer;");
-			if (searchValue != null) {
-				result = statement
-						.executeQuery("SELECT ID,cont,ssNbr,Forname,Lastname,Address,PhoneNbr,Password,SmartParkID,Registered,Balance FROM Customer WHERE ssNbr = '"
-								+ searchValue + "';");
-			} else {
-				result = statement.executeQuery("SELECT * FROM Customer;"
-						+ searchValue);
-			}
-
 			while (result.next()) {
 				this.id = result.getInt("ID");
 				this.cont = result.getInt("cont");
@@ -143,15 +153,12 @@ public class Customer extends Database {
 				this.balance = result.getLong("balance");
 				System.out.println(this.toString());
 			}
-			result.close();
-			statement.close();
-			super.closeConnection();
-
-		} catch (Exception e) {
-			System.out.println("[ERROR] During Lookup Table");
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
+
+	// -----------------------------------------------------------------
 
 	/**
 	 * Update Customer data in Customer Table if exists
@@ -183,6 +190,8 @@ public class Customer extends Database {
 		}
 	}
 
+	// -----------------------------------------------------------------
+
 	/**
 	 * Set Row
 	 * 
@@ -191,6 +200,8 @@ public class Customer extends Database {
 	public void setId(long id) {
 		this.id = id;
 	}
+
+	// -----------------------------------------------------------------
 
 	/**
 	 * Get Row
@@ -201,14 +212,17 @@ public class Customer extends Database {
 		return id;
 	}
 
+	// -----------------------------------------------------------------
 	public int getCont() {
 		return cont;
 	}
 
+	// -----------------------------------------------------------------
 	public void setCont(int cont) {
 		this.cont = cont;
 	}
 
+	// -----------------------------------------------------------------
 	/**
 	 * Get SocialSecurityNumber
 	 * 
@@ -218,6 +232,7 @@ public class Customer extends Database {
 		this.ssNbr = ssNbr;
 	}
 
+	// -----------------------------------------------------------------
 	/**
 	 * Set SocialSecurityNumber
 	 * 
@@ -227,6 +242,7 @@ public class Customer extends Database {
 		return ssNbr;
 	}
 
+	// -----------------------------------------------------------------
 	/**
 	 * Get Forname (String)
 	 * 
@@ -236,6 +252,7 @@ public class Customer extends Database {
 		return forname;
 	}
 
+	// -----------------------------------------------------------------
 	/**
 	 * Set Forname
 	 * 
@@ -246,6 +263,7 @@ public class Customer extends Database {
 		this.forname = forname;
 	}
 
+	// -----------------------------------------------------------------
 	/**
 	 * Get Lastname (String)
 	 * 
@@ -255,6 +273,7 @@ public class Customer extends Database {
 		return lastname;
 	}
 
+	// -----------------------------------------------------------------
 	/**
 	 * Set Lastname
 	 * 
@@ -265,6 +284,7 @@ public class Customer extends Database {
 		this.lastname = lastname;
 	}
 
+	// -----------------------------------------------------------------
 	/**
 	 * Set Password
 	 * 
@@ -274,6 +294,7 @@ public class Customer extends Database {
 		this.password = password;
 	}
 
+	// -----------------------------------------------------------------
 	/**
 	 * Get Password
 	 * 
@@ -283,6 +304,7 @@ public class Customer extends Database {
 		return password;
 	}
 
+	// -----------------------------------------------------------------
 	/**
 	 * Set SmartParkID
 	 * 
@@ -291,6 +313,8 @@ public class Customer extends Database {
 	public void setSmartParkID(String smartParkID) {
 		this.smartParkID = smartParkID;
 	}
+
+	// -----------------------------------------------------------------
 
 	/**
 	 * Get SmartParkID
@@ -301,6 +325,7 @@ public class Customer extends Database {
 		return smartParkID;
 	}
 
+	// -----------------------------------------------------------------
 	/**
 	 * Set Register date
 	 * 
@@ -310,6 +335,7 @@ public class Customer extends Database {
 		this.registered = registered;
 	}
 
+	// -----------------------------------------------------------------
 	/**
 	 * Get Register date
 	 * 
@@ -319,6 +345,7 @@ public class Customer extends Database {
 		return registered;
 	}
 
+	// -----------------------------------------------------------------
 	/**
 	 * Get Balance
 	 * 
@@ -328,6 +355,7 @@ public class Customer extends Database {
 		return balance;
 	}
 
+	// -----------------------------------------------------------------
 	/**
 	 * Set Balance
 	 * 
@@ -337,6 +365,7 @@ public class Customer extends Database {
 		this.balance = balance;
 	}
 
+	// -----------------------------------------------------------------
 	/**
 	 * Tostring method. Create a string with all the current data in the object.
 	 */
@@ -352,37 +381,38 @@ public class Customer extends Database {
 		return string;
 	}
 
+	// -----------------------------------------------------------------
 	public static void main(String[] args) {
 
-		for (String s : args) {
-			switch (s) {
-			case "CreateTable":
-				Customer c = new Customer();
-				c.CreateCustomerTable();
-				c.InsertCustomerData(new Customer(1, "910611", "Artur",
-						"Olech", "Snödroppsgatan3", "0762361910", "artur",
-						"001First", "Today"));
-				c.InsertCustomerData(new Customer(0, "820620", "Saeed",
-						"Ghasemi", "Hyllie", "0763150074", "saeed",
-						"002Second", "Tomorrow"));
-				c.InsertCustomerData(new Customer(0, "na", "Truls",
-						"Haraldsson", "Trelleborg", "some number", "truls",
-						"003Third", "Never"));
-
-				break;
-			case "Print":
-				System.out
-						.println("Printing all customer Tables in Database\n");
-				c = new Customer();
-				c.selectCustomer(null);
-				break;
-
-			default:
-				System.out
-						.println("Usage:\nCreateTable: To Create 3 customer default inserts\nPrint: to print all the created tables");
-				break;
-			}
-		}
+		// for (String s : args) {
+		// switch (s) {
+		// case "CreateTable":
+		// Customer c = new Customer();
+		// c.CreateCustomerTable();
+		// c.InsertCustomerData(new Customer(1, "910611", "Artur",
+		// "Olech", "Snödroppsgatan3", "0762361910", "artur",
+		// "001First", "Today"));
+		// c.InsertCustomerData(new Customer(0, "820620", "Saeed",
+		// "Ghasemi", "Hyllie", "0763150074", "saeed",
+		// "002Second", "Tomorrow"));
+		// c.InsertCustomerData(new Customer(0, "na", "Truls",
+		// "Haraldsson", "Trelleborg", "some number", "truls",
+		// "003Third", "Never"));
+		//
+		// break;
+		// case "Print":
+		// System.out
+		// .println("Printing all customer Tables in Database\n");
+		// c = new Customer();
+		// c.selectCustomer(null);
+		// break;
+		//
+		// default:
+		// System.out
+		// .println("Usage:\nCreateTable: To Create 3 customer default inserts\nPrint: to print all the created tables");
+		// break;
+		// }
+		// }
 
 	}
 }

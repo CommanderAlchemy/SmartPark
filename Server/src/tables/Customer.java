@@ -118,7 +118,7 @@ public class Customer extends Database {
 	 * 
 	 * @return
 	 */
-	public String CreateCustomerTable() {
+	public String createCustomerTable() {
 		String error = createTable(tblName, columns, columnTypes, notNull);
 		if (error.length() == 0) {
 			System.out.println(tblName + " table successfully created in "
@@ -133,7 +133,7 @@ public class Customer extends Database {
 	 * 
 	 * @param columnData
 	 */
-	public void InsertCustomerData(String[] columnData) {
+	public void insertCustomerData(String[] columnData) {
 
 		insertIntoTable(tblName, columns, columnTypes, columnData);
 		String s = "";
@@ -202,7 +202,7 @@ public class Customer extends Database {
 	 * @param whatValue
 	 *            What value should that column be?
 	 */
-	public void UpdateCustomerTable(String searchColumn, String searchValue,
+	public void updateCustomerTable(String searchColumn, String searchValue,
 			String whatColumn, String whatValue) {
 		updateTableData(tblName, searchColumn, searchValue, whatColumn, whatValue);
 	}
@@ -402,26 +402,26 @@ public class Customer extends Database {
 	public static void main(String[] args) {
 		
 		Customer c = new Customer();
-		c.CreateCustomerTable();
+		c.createCustomerTable();
 		String[] data = {"1", "2", "Artur",
 				"Olech", "Snödroppsgatan3", "0762361910", "artur" ,
 				"001First", "Today", "150"};
-		c.InsertCustomerData(data);
+		c.insertCustomerData(data);
 		String[] data2 = {"0", "820620", "Saeed",
 				"Ghasemi", "fdtfg", "dfgfgdfg", "dgfdfgfg",
 				"002Second", "dfgdfg", "25"};
-		c.InsertCustomerData(data2);
+		c.insertCustomerData(data2);
 		String[] data3 = {"0","na", "Truls",
 				"dfgfgf", "dfgfgd", "some number", "truls",
 				"003Third", "Never", "0"};
-		c.InsertCustomerData(data3);
+		c.insertCustomerData(data3);
 		
 		
 		c.selectCustomer(null, 0, false);
 		System.out.println("looking...");
 		c.selectCustomer("1:50", 9, true);
 		System.out.println("updating....");
-		c.UpdateCustomerTable(Balance, "0", Balance, "1111111");
+		c.updateCustomerTable(Balance, "0", Balance, "1111111");
 		c.selectCustomer(null, 0, false);
 		
 

@@ -25,7 +25,7 @@ public class SmartPark extends Database {
 	private ResultSet result;
 
 	private LinkedList<String> resultList;
-
+	
 	public enum Col {
 		ID, ssNbr, Longitude, Latitude, StartStamp, StopStamp, LicensePlate, CarModel
 	}

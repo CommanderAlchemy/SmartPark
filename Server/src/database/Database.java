@@ -109,9 +109,11 @@ abstract public class Database {
 	}
 
 	/**
-	 * Insert data into the table
-	 * 
-	 * @param obj
+	 * Insert
+	 * @param tblName
+	 * @param columns
+	 * @param columnTypes
+	 * @param columnData
 	 */
 	public void insertIntoTable(String tblName, String[] columns,
 			String[] columnTypes, String[] columnData) {
@@ -223,7 +225,7 @@ abstract public class Database {
 	}
 
 	public static void main(String[] args) {
-		Database.insertIntoTable();
+//		Database.insertIntoTable();
 
 	}
 }

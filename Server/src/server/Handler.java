@@ -3,6 +3,7 @@ package server;
 import java.util.LinkedList;
 
 import tables.Customer;
+import tables.ParkingLots;
 import tables.SmartPark;
 import tables.SmartPark.Col;
 
@@ -14,11 +15,14 @@ public class Handler {
 	private boolean passwordAccepted = false;
 	private boolean controller = false;
 
-	// Customer Table
+	// Customer
 	private Customer customer;
 
-	// SmartParkDevice Table
+	// SmartParkDevice
 	private SmartPark smartpark;
+	
+	// ParkingLots
+	private ParkingLots parkinglots;
 
 	// Server Connection Thread to the client.
 	private ClientThread clientThread;

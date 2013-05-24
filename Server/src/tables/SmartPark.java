@@ -371,17 +371,17 @@ public class SmartPark extends Database {
 	 */
 	public String toString() {
 		/* @formatter:off */
-		String string = "ID:"				+ this.id			 	+ ";"
-						+ "deviceID:"		+ SmartPark.deviceID 	+ ";"
-						+ "ssNbr:"			+ this.ssNbr			+ ";"
-						+ "longitude:"		+ this.longitude 		+ ";"
-						+ "latitude:"		+ this.latitude			+ ";"
-						+ "startStamp:" 	+ this.startStamp  		+ ";"
-						+ "stopStamp:"		+ this.stopStamp 		+ ";"
-						+ "licensePlate:" 	+ this.licensePlate 	+ ";"
-						+ "carModel:" 		+ this.carModel 		+ ";";
+		return "ID:"				+ this.id			 	+ ";"
+				+ "deviceID:"		+ SmartPark.deviceID 	+ ";"
+				+ "ssNbr:"			+ this.ssNbr			+ ";"
+				+ "longitude:"		+ this.longitude 		+ ";"
+				+ "latitude:"		+ this.latitude			+ ";"
+				+ "startStamp:" 	+ this.startStamp  		+ ";"
+				+ "stopStamp:"		+ this.stopStamp 		+ ";"
+				+ "licensePlate:" 	+ this.licensePlate 	+ ";"
+				+ "carModel:" 		+ this.carModel 		+ ";";
 		/* @formatter:on */
-		return string;
+
 	}
 	public static void main(String[] args) {
 		for (String s: args) {

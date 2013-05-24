@@ -92,7 +92,7 @@ public class MainActivity extends FragmentActivity implements
 		SharedPreferences loginSettings = getSharedPreferences("loginActivity",
 				MODE_PRIVATE);
 //		isController = loginSettings.getBoolean("controller", false);
-		isController = false;
+		isController = true;
 		isLoggedOn = loginSettings.getBoolean("login", false);
 		
 		if (!isLoggedOn) {
@@ -125,7 +125,7 @@ public class MainActivity extends FragmentActivity implements
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-
+		
 		/*
 		 * When swiping between different sections, select the corresponding
 		 * tab. We can also use ActionBar.Tab#select() to do this if we have a

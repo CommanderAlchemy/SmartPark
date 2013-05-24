@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 
+import tables.Customer.Col;
+
 public class Database {
 	private String dbName;
 	private Connection c = null;
@@ -224,22 +226,37 @@ public class Database {
 	}
 
 	/**
-	 * Update information in table
+	 * Update Customer data in Customer Table if exists. This method first finds
+	 * a searchValue in the searchCol you specify and then changes the value in
+	 * the whatCol you have specified to whatValue.
 	 * 
-	 * @param searcCol
-	 *            what column in table to search in
+	 * @param searchCol
+	 *            What Column are you searching for?
 	 * @param searchValue
-	 *            search value to search for
+	 *            What value should that column contain?
 	 * @param whatCol
-	 *            whatCol to update
+	 *            What Column do you want to change?
 	 * @param whatValue
-	 *            what new value
+	 *            What value should that column be?
 	 */
-	public void updateTableData(String searcCol, String searchValue,
+	public void updateTableData(String searchCol, String searchValue,
 			String whatCol, String whatValue) {
 		
-		
-		
+			try {
+				// super.getConnection().setAutoCommit(false);
+				Statement statement = getConnection().createStatement();
+				
+				String sql = "UPDATE Customer set " + whatCol + " = '" + whatValue
+						+ "' where " + searchCol + "=" + searchValue + ";";
+				
+				System.out.println(sql);
+				statement.executeUpdate(sql);
+				// super.getConnection().commit();
+				
+			} catch (Exception e) {
+				System.out.println("[ERROR] During update customer table :");
+				System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			}
 	}
 
 	

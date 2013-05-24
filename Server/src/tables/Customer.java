@@ -161,37 +161,29 @@ public class Customer extends Database {
 	// -----------------------------------------------------------------
 
 	/**
-	 * Update Customer data in Customer Table if exists
+	 * Update Customer data in Customer Table if exists. This method first finds
+	 * a searchValue in the searchCol you specify and then changes the value in
+	 * the whatCol you have specified to whatValue.
 	 * 
 	 * @param searchCol
-	 *            What Column are you searching after?
+	 *            What Column are you searching for?
 	 * @param searchValue
-	 *            What value should that column be?
+	 *            What value should that column contain?
 	 * @param whatCol
 	 *            What Column do you want to change?
 	 * @param whatValue
 	 *            What value should that column be?
 	 */
-	public void UpdateCustomerTable(Col searchCol, String searchValue,
-			Col whatCol, String whatValue) {
-		try {
-			// super.getConnection().setAutoCommit(false);
-			statement = super.getConnection().createStatement();
-
-			sql = "UPDATE Customer set " + whatCol + " = '" + whatValue
-					+ "' where " + searchCol + "=" + searchValue + ";";
-			System.out.println(sql);
-			statement.executeUpdate(sql);
-			// super.getConnection().commit();
-
-		} catch (Exception e) {
-			System.out.println("[ERROR] During update customer table :");
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-		}
+	public void UpdateCustomerTable(String searchCol, String searchValue,
+			String whatCol, String whatValue) {
+		updateTableData(searchCol, searchValue, whatCol, whatValue);
 	}
 
 	// -----------------------------------------------------------------
 
+	
+	
+	
 	/**
 	 * Set Row
 	 * 

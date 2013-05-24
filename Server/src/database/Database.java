@@ -345,22 +345,4 @@ public class Database {
 			// TODO: handle exception
 		}
 	}
-
-	protected static void main(String[] args) {
-
-		String dbName = "test";
-		String tblName = "Customer";
-		String[] columns = { "cont", "ssNbr", "Forname", "Lastname", "Address",
-				"PhoneNbr", "Password", "SmartParkID", "RegistrationDate",
-				"Balance" };
-
-		String[] columnTypes = { "INT", "TEXT", "TEXT", "TEXT", "TEXT", "TEXT",
-				"TEXT", "TEXT", "TEXT", "REAL" };
-
-		boolean[] notNull = { true, true, true, true, true, true, true, true,
-				true, false };
-		Database j = new Database(dbName);
-		j.selectDataFromTable(tblName, columns, "", 1, false);
-
-	}
 }

@@ -490,7 +490,6 @@ public class MainActivity extends FragmentActivity implements
 		// On select
 		switch (item.getItemId()) {
 		case 0:
-
 			Toast.makeText(this, "Login", Toast.LENGTH_SHORT).show();
 			startActivity(new Intent(this, LoginActivity.class));
 			return true;

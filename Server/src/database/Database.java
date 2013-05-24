@@ -5,14 +5,15 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.LinkedList;
 
 public class Database {
 	private String dbName;
-	private Connection c = null;
-
+	private Connection connection;
+	private ResultSet result;
+	private Statement statement;
+	
 	// private static final String create = "CREATE TABLE";
-	public Database(String dbName) {
+	protected Database(String dbName) {
 		this.dbName = dbName;
 	}
 
@@ -22,7 +23,7 @@ public class Database {
 	private void initConnection() {
 		try {
 			Class.forName("org.sqlite.JDBC");
-			c = DriverManager.getConnection("jdbc:sqlite:" + dbName + ".db");
+			connection = DriverManager.getConnection("jdbc:sqlite:" + dbName + ".db");
 			System.out.println("Opened database succsessfully");
 
 		} catch (Exception e) {
@@ -34,10 +35,10 @@ public class Database {
 	/**
 	 * Close the connection to the database
 	 */
-	private void closeConnection() {
+	protected void closeConnection() {
 		try {
-			this.c.close();
-			c = null;
+			this.connection.close();
+			connection = null;
 		} catch (SQLException e) {
 			System.out.println("[ERROR] During closeConnection():");
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -50,12 +51,12 @@ public class Database {
 	 * @return
 	 */
 	private Connection getConnection() {
-		if (c == null) {
+		if (connection == null) {
 			System.out.println("Creating new connection to " + dbName);
 			initConnection();
 		}
 
-		return c;
+		return connection;
 	}
 
 	/**
@@ -64,7 +65,23 @@ public class Database {
 	 * @param c
 	 */
 	private void setConnection(Connection c) {
-		this.c = c;
+		this.connection = c;
+	}
+
+	protected ResultSet getResult() {
+		return result;
+	}
+
+	protected void setResult(ResultSet result) {
+		this.result = result;
+	}
+
+	protected Statement getStatement() {
+		return statement;
+	}
+
+	protected void setStatement(Statement statement) {
+		this.statement = statement;
 	}
 
 	/**
@@ -72,7 +89,7 @@ public class Database {
 	 * 
 	 * @return
 	 */
-	public String createTable(String tblName, String[] columns,
+	protected String createTable(String tblName, String[] columns,
 			String[] columnTypes, boolean[] notNull) {
 
 		// check for spaces in tablename
@@ -97,11 +114,14 @@ public class Database {
 				sql += ")";
 			}
 		}
+		
+		System.out.println(sql);
+		
 		String errorStack = "";
 		try {
-			Statement s = getConnection().createStatement();
-			s.executeUpdate(sql);
-			s.close();
+			statement = getConnection().createStatement();
+			statement.executeUpdate(sql);
+			statement.close();
 		} catch (SQLException e1) {
 			System.out.println("[ERROR] During Create New Customer Table:");
 			System.err
@@ -161,8 +181,10 @@ public class Database {
 				sql += ");";
 			}
 		}
+		
+		System.out.println(sql);
 		try {
-			Statement statement = getConnection().createStatement();
+			statement = getConnection().createStatement();
 			statement.executeUpdate(sql);
 			statement.close();
 			closeConnection();
@@ -187,11 +209,8 @@ public class Database {
 	 * @param columns
 	 *            An array of columns that the table is made of
 	 */
-	public ResultSet selectDataFromTable(String tblName, String[] columns,
+	protected ResultSet selectDataFromTable(String tblName, String[] columns,
 			String searchString, int columnNr, boolean rangeSelection) {
-
-		Statement statement = null;
-		ResultSet result = null;
 
 		try {
 			// super.getConnection().setAutoCommit(false);
@@ -220,7 +239,7 @@ public class Database {
 					+ " = " 
 					+ searchString + ";";
 
-					System.out.println(sql);
+//					System.out.println(sql);
 
 					result = statement.executeQuery(sql);
 
@@ -258,6 +277,8 @@ public class Database {
 					+ " BETWEEN "
 					+ query[0] + " AND " + query[1] + ";";
 					
+					System.out.println(sql);
+					
 					result = statement.executeQuery(sql);
 					
 //					result = statement
@@ -270,26 +291,20 @@ public class Database {
 
 				}
 			} else {
-				 result = statement.executeQuery("SELECT * FROM Customer;"
-				 + searchString);
-//				result = statement.executeQuery("SELECT * FROM " + tblName
-//						+ ";");
+
+//				 result = statement.executeQuery("SELECT * FROM Customer;"
+//				 + searchString);
+				result = statement.executeQuery("SELECT * FROM " + tblName + ";");
+
 			}
 		} catch (Exception e) {
 			System.out.println("[ERROR] During Lookup Table");
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 		}
 
-		try {
-			result.close();
-			statement.close();
-			closeConnection();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		return result;
 	}
-
+	
 	/**
 	 * Update Customer data in Customer Table if exists. This method first finds
 	 * a searchValue in the searchCol you specify and then changes the value in
@@ -304,14 +319,14 @@ public class Database {
 	 * @param whatValue
 	 *            What value should that column be?
 	 */
-	public void updateTableData(String searchColumn, String searchValue,
+	protected void updateTableData(String tblName, String searchColumn, String searchValue,
 			String whatColumn, String whatValue) {
 
 		try {
 			// super.getConnection().setAutoCommit(false);
-			Statement statement = getConnection().createStatement();
+			statement = getConnection().createStatement();
 
-			String sql = "UPDATE Customer set " + whatColumn + " = '" + whatValue
+			String sql = "UPDATE " + tblName + " set " + whatColumn + " = '" + whatValue
 					+ "' WHERE " + searchColumn + "=" + searchValue + ";";
 			
 			System.out.println(sql);
@@ -322,36 +337,16 @@ public class Database {
 			System.out.println("[ERROR] During update customer table :");
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 		}
+		
+		try {
+			statement.close();
+			closeConnection();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
-	/**
-	 * Get resultList from previous query
-	 * 
-	 * @return
-	 */
-	public LinkedList<String> getResultList() {
-		return null;
-	}
-
-	/**
-	 * set resultList
-	 * 
-	 * @return
-	 */
-	public LinkedList<String> setResultList() {
-		return null;
-	}
-
-	/**
-	 * ToString method
-	 * 
-	 * @return
-	 */
-	public String toString() {
-		return null;
-	}
-
-	public static void main(String[] args) {
+	protected static void main(String[] args) {
 
 		String dbName = "test";
 		String tblName = "Customer";

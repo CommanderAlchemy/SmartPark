@@ -121,7 +121,7 @@ public class ParkingLots extends Database {
 	 */
 	public void updateParkingLotsData(String searchCol, String searchValue,
 			String whatCol, String whatValue) {
-		updateTableData(searchCol, searchValue, whatCol, whatValue);
+		updateTableData(tblName, searchCol, searchValue, whatCol, whatValue);
 	}
 
 	/**

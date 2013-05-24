@@ -41,7 +41,6 @@ public class SmartPark extends Database {
 
 	// --------------------------------------------------
 
-	// -------------------------------------------------------
 
 	public SmartPark(String deviceID) {
 		super(dbName);
@@ -173,7 +172,7 @@ public class SmartPark extends Database {
 	public void UpdateSmartParkData(String searchColumn, String searchValue,
 			String whatColumn, String whatValue) {
 
-		updateTableData(searchColumn, searchValue, whatColumn, whatValue);
+		updateTableData(tblName, searchColumn, searchValue, whatColumn, whatValue);
 	}
 
 	/**

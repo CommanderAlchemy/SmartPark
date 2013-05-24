@@ -77,111 +77,103 @@ public class SmartPark extends Database {
 
 	public String CreateSmartParkTable() {
 		String error = createTable(tblName, columns, columnTypes, notNull);
-		if (error.length() == 0){
+		if (error.length() == 0) {
 			System.out.println(tblName + " table successfully created in "
 					+ dbName);
 		}
 		return error;
 	}
-	
+
 	public void InsertSmartParkData(String[] columnData) {
 		insertIntoTable(tblName, columns, columnTypes, columnData);
 		System.out.println(columnData.toString());
 	}
 
-	public void selectSmartPark(Col c, String searchValue,
+	public void selectSmartPark(String searchString, int columnNr,
 			boolean rangeSelection) {
-		try {
-			statement = super.getConnection().createStatement();
 
-			// result = statement.executeQuery("SELECT * FROM Customer;");
+		selectDataFromTable(tblName, columns, searchString, columnNr,
+				rangeSelection);
 
-			if (searchValue != null) {
-				if (!rangeSelection) {
-					result = statement
-							.executeQuery("SELECT ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel FROM "
-									+ deviceID
-									+ " WHERE "
-									+ c
-									+ " = '" + searchValue + "';");
-				} else {
-					String[] query = null;
-					try {
-						query = searchValue.split(":");
-					} catch (Exception e) {
-						System.out.println("[ERROR] During query split");
-						System.err.println(e.getClass().getName() + ": "
-								+ e.getMessage());
-					}
-					result = statement
-							.executeQuery("SELECT ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel FROM SmartPark_"
-									+ deviceID
-									+ " WHERE "
-									+ c
-									+ " BETWEEN "
-									+ query[0]
-									+ " AND "
-									+ query[1] + ";");
-				}
-			}
+		// String tblName, String[] columns,String searchString, int columnNr,
+		// boolean rangeSelection
 
-			else {
-				result = statement.executeQuery("SELECT * FROM "
-						+ deviceID + ";");
-			}
-
-			resultList.clear();
-			while (result.next()) {
-				this.id = result.getLong("ID");
-				this.ssNbr = result.getString("ssNbr");
-				this.longitude = result.getString("Longitude");
-				this.latitude = result.getString("latitude");
-				this.startStamp = result.getString("StartStamp");
-				this.stopStamp = result.getString("StopStamp");
-				this.licensePlate = result.getString("LicensePlate");
-				this.carModel = result.getString("CarModel");
-				resultList.addLast(this.toString() + "\n");
-			}
-			System.out.println(resultList.toString());
-			result.close();
-			statement.close();
-			super.closeConnection();
-
-		} catch (Exception e) {
-			System.out.println("[ERROR] During Lookup Table");
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-		}
+		// try {
+		// statement = super.getConnection().createStatement();
+		//
+		// // result = statement.executeQuery("SELECT * FROM Customer;");
+		//
+		// if (searchValue != null) {
+		// if (!rangeSelection) {
+		// result = statement
+		// .executeQuery("SELECT ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel FROM "
+		// + deviceID
+		// + " WHERE "
+		// + c
+		// + " = '" + searchValue + "';");
+		// } else {
+		// String[] query = null;
+		// try {
+		// query = searchValue.split(":");
+		// } catch (Exception e) {
+		// System.out.println("[ERROR] During query split");
+		// System.err.println(e.getClass().getName() + ": "
+		// + e.getMessage());
+		// }
+		// result = statement
+		// .executeQuery("SELECT ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel FROM SmartPark_"
+		// + deviceID
+		// + " WHERE "
+		// + c
+		// + " BETWEEN "
+		// + query[0]
+		// + " AND "
+		// + query[1] + ";");
+		// }
+		// }else {
+		// result = statement.executeQuery("SELECT * FROM "
+		// + deviceID + ";");
+		// }
+		//
+		// resultList.clear();
+		// while (result.next()) {
+		// this.id = result.getLong("ID");
+		// this.ssNbr = result.getString("ssNbr");
+		// this.longitude = result.getString("Longitude");
+		// this.latitude = result.getString("latitude");
+		// this.startStamp = result.getString("StartStamp");
+		// this.stopStamp = result.getString("StopStamp");
+		// this.licensePlate = result.getString("LicensePlate");
+		// this.carModel = result.getString("CarModel");
+		// resultList.addLast(this.toString() + "\n");
+		// }
+		// System.out.println(resultList.toString());
+		// result.close();
+		// statement.close();
+		// super.closeConnection();
+		//
+		// } catch (Exception e) {
+		// System.out.println("[ERROR] During Lookup Table");
+		// System.err.println(e.getClass().getName() + ": " + e.getMessage());
+		// }
 	}
 
 	/**
 	 * Update Customer data in Customer Table if exists
 	 * 
-	 * @param searchCol
+	 * @param searchColumn
 	 *            What Column are you searching after?
 	 * @param searchValue
 	 *            What value should that column be?
-	 * @param whatCol
+	 * @param whatColumn
 	 *            What Column do you want to change?
 	 * @param whatValue
 	 *            What value should that column be?
 	 */
-	public void UpdateSmartParkData(Col searchCol, String searchValue,
-			Col whatCol, String whatValue) {
-		try {
-			// super.getConnection().setAutoCommit(false);
-			statement = super.getConnection().createStatement();
+	public void UpdateSmartParkData(String searchColumn, String searchValue,
+			String whatColumn, String whatValue) {
 
-			sql = "UPDATE SmartPark-" + deviceID + " set " + whatCol + " = '"
-					+ whatValue + "' where " + searchCol + "=" + searchValue
-					+ ";";
-			System.out.println(sql);
-			statement.executeUpdate(sql);
-			// super.getConnection().commit();
-
-		} catch (Exception e) {
-			System.out.println("[ERROR] During update SmartPark table :");
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-		}
+		updateTableData(searchColumn, searchValue, whatColumn, whatValue);
 	}
 
 	/**

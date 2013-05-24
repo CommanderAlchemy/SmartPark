@@ -110,11 +110,11 @@ public class Handler {
 	 * Queries the database for information.
 	 * @param param
 	 */
-	public void  query(String param) {
+	public void  query(String searchString) {
 		LinkedList<String> resultList = new LinkedList<String>();
 		this.smartpark = new SmartPark(customer.getSmartParkID());
 
-		this.smartpark.selectSmartPark(Col.StopStamp, param, true);
+		this.smartpark.selectSmartPark(searchString, 4, true);
 		resultList = smartpark.getResultList();
 		clientThread.sendMessage(resultList.toString());
 

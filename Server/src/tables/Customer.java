@@ -43,7 +43,7 @@ public class Customer extends Database {
 	/*
 	 * Avail columns in the customer table
 	 */
-	public enum Col {
+	public enum CustomerColumns {
 		ID, cont, ssNbr, Forname, Lastname, Address, PhoneNbr, Password, SmartparkID, Registered, Balance
 	}
 
@@ -174,9 +174,9 @@ public class Customer extends Database {
 	 * @param whatValue
 	 *            What value should that column be?
 	 */
-	public void UpdateCustomerTable(String searchCol, String searchValue,
-			String whatCol, String whatValue) {
-		updateTableData(searchCol, searchValue, whatCol, whatValue);
+	public void UpdateCustomerTable(String searchColumn, String searchValue,
+			String whatColumn, String whatValue) {
+		updateTableData(searchColumn, searchValue, whatColumn, whatValue);
 	}
 
 	// -----------------------------------------------------------------

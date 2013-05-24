@@ -7,9 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 
-import tables.SmartPark;
-import tables.Customer.Col;
-
 public class Database {
 	private String dbName;
 	private Connection c = null;
@@ -190,16 +187,56 @@ public class Database {
 	 * @param columns
 	 *            An array of columns that the table is made of
 	 */
-	public ResultSet selectDataFromTable(String tblName, String[] columns, String searchString, int columnNr, boolean rangeSelection) {
+	public ResultSet selectDataFromTable(String tblName, String[] columns,
+			String searchString, int columnNr, boolean rangeSelection) {
 
 		Statement statement = null;
 		ResultSet result = null;
+
 		try {
 			// super.getConnection().setAutoCommit(false);
 			statement = getConnection().createStatement();
 
 			if (searchString != null) {
 				if (!rangeSelection) {
+
+					String sql = "SELECT ID,";
+
+					for (int i = 0; i < columns.length; i++) {
+
+						sql += columns[i];
+
+						if (i != columns.length - 1) {
+							sql += ",";
+						} else {
+							sql += "";
+						}
+					}
+
+					sql += " FROM " 
+					+ tblName 
+					+ " WHERE " 
+					+ columns[columnNr]
+					+ " = " 
+					+ searchString + ";";
+
+					System.out.println(sql);
+
+					result = statement.executeQuery(sql);
+
+					// ("SELECT ID,cont,ssNbr,Forname,Lastname,Address,PhoneNbr,Password,SmartParkID,Registered,Balance FROM Customer WHERE ssNbr = '"
+					// + searchString + "';");
+
+				} else {
+
+					String[] query = null;
+					try {
+						query = searchString.split(":");
+					} catch (Exception e) {
+						System.out.println("[ERROR] During query split");
+						System.err.println(e.getClass().getName() + ": "
+								+ e.getMessage());
+					}
 					
 					String sql = "SELECT ID,";
 
@@ -214,37 +251,22 @@ public class Database {
 						}
 					}
 
-					sql += " FROM " + tblName + " WHERE " + columns[columnNr]
-							+ " = " + searchString + ";";
-
-					System.out.println(sql);
-
+					sql += " FROM " 
+					+ tblName 
+					+ " WHERE " 
+					+ columns[columnNr]
+					+ " BETWEEN "
+					+ query[0] + " AND " + query[1] + ";";
+					
 					result = statement.executeQuery(sql);
-
-					// ("SELECT ID,cont,ssNbr,Forname,Lastname,Address,PhoneNbr,Password,SmartParkID,Registered,Balance FROM Customer WHERE ssNbr = '"
-					// + searchString + "';");
-
 					
-					
-				} else {
-
-					
-					
-					String[] query = null;
-					try {
-						query = searchString.split(":");
-					} catch (Exception e) {
-						System.out.println("[ERROR] During query split");
-						System.err.println(e.getClass().getName() + ": "
-								+ e.getMessage());
-					}
-					result = statement
-							.executeQuery("SELECT ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel FROM "
-									+ tblName
-									+ " WHERE "
-									+ c
-									+ " BETWEEN "
-									+ query[0] + " AND " + query[1] + ";");
+//					result = statement
+//							.executeQuery("SELECT ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel FROM "
+//									+ tblName
+//									+ " WHERE "
+//									+ columns[columnNr]
+//									+ " BETWEEN "
+//									+ query[0] + " AND " + query[1] + ";");
 
 				}
 			} else {
@@ -282,16 +304,16 @@ public class Database {
 	 * @param whatValue
 	 *            What value should that column be?
 	 */
-	public void updateTableData(String searchCol, String searchValue,
-			String whatCol, String whatValue) {
+	public void updateTableData(String searchColumn, String searchValue,
+			String whatColumn, String whatValue) {
 
 		try {
 			// super.getConnection().setAutoCommit(false);
 			Statement statement = getConnection().createStatement();
 
-			String sql = "UPDATE Customer set " + whatCol + " = '" + whatValue
-					+ "' where " + searchCol + "=" + searchValue + ";";
-
+			String sql = "UPDATE Customer set " + whatColumn + " = '" + whatValue
+					+ "' WHERE " + searchColumn + "=" + searchValue + ";";
+			
 			System.out.println(sql);
 			statement.executeUpdate(sql);
 			// super.getConnection().commit();
@@ -303,7 +325,7 @@ public class Database {
 	}
 
 	/**
-	 * Get resultList from previus query
+	 * Get resultList from previous query
 	 * 
 	 * @return
 	 */
@@ -344,6 +366,6 @@ public class Database {
 				true, false };
 		Database j = new Database(dbName);
 		j.selectDataFromTable(tblName, columns, "'juhu'", 2, false);
-		
+
 	}
 }

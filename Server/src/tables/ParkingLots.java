@@ -15,20 +15,20 @@ public class ParkingLots extends Database {
 	private String freeHours;
 	private String longitude;
 	private String latitude;
-	
+
 	// == Settings for the Table ========================
 
 	private static String dbName = "test";
 	private static String tblName = "ParkingLots";
 	private static String[] columns = { "price", "company", "smsQuery",
-			"ticketHours", "freeHours", "longitude", "latitude"};
+			"ticketHours", "freeHours", "longitude", "latitude" };
 
-	private String[] columnTypes = { "REAL", "TEXT", "TEXT", "TEXT", "TEXT", "TEXT", "TEXT" };
+	private String[] columnTypes = { "REAL", "TEXT", "TEXT", "TEXT", "TEXT",
+			"TEXT", "TEXT" };
 
 	boolean[] notNull = { true, true, false, true, false, true, true };
 
 	// --------------------------------------------------
-	
 
 	/**
 	 * ParkingLots Constructor
@@ -39,6 +39,16 @@ public class ParkingLots extends Database {
 		super(dbName);
 	}
 
+	/**
+	 * 
+	 * @param price
+	 * @param company
+	 * @param smsQuery
+	 * @param ticketHours
+	 * @param freeHours
+	 * @param longitude
+	 * @param latitude
+	 */
 	public ParkingLots(long price, String company, String smsQuery,
 			String ticketHours, String freeHours, String longitude,
 			String latitude) {
@@ -51,18 +61,35 @@ public class ParkingLots extends Database {
 		this.longitude = longitude;
 		this.latitude = latitude;
 	}
-	
-	public void CreateParkingLotsTable(){
-		
+
+	/**
+	 * Create ParkingLots Table
+	 */
+	public String CreateParkingLotsTable() {
+		String error = createTable(tblName, columns, columnTypes, notNull);
+		if (error.length() == 0){
+			System.out.println(tblName + " table successfully created in "
+					+ dbName);
+		}
+		return error;
 	}
-	
+
+	/**
+	 * Insert Data Into Table
+	 * @param columnData
+	 */
 	public void InsertParkingLotsData(String[] columnData) {
 
 		insertIntoTable(tblName, columns, columnTypes, columnData);
 
 		System.out.println(columnData.toString());
 	}
-	
+
+	/**
+	 * 
+	 * @param searchString
+	 * @param columnNr
+	 */
 	public void selectParkingLots(String searchString, int columnNr) {
 
 		ResultSet result = selectDataFromTable(tblName, columns, searchString,
@@ -84,6 +111,19 @@ public class ParkingLots extends Database {
 			e.printStackTrace();
 		}
 	}
+
+	/**
+	 * UpdateParkingLotsData
+	 * @param searchCol
+	 * @param searchValue
+	 * @param whatCol
+	 * @param whatValue
+	 */
+	public void updateParkingLotsData(String searchCol, String searchValue,
+			String whatCol, String whatValue) {
+		updateTableData(searchCol, searchValue, whatCol, whatValue);
+	}
+
 	/**
 	 * GetID
 	 * 
@@ -191,42 +231,6 @@ public class ParkingLots extends Database {
 	public void setFreeHours(String freeHours) {
 		this.freeHours = freeHours;
 	}
-
-	/**
-	 * Get Longitude
-	 * 
-	 * @return
-	 */
-//	public ArrayList<String> getLongitude() {
-//		return longitude;
-//	}
-//
-//	/**
-//	 * Set Longitude
-//	 * 
-//	 * @param longitude
-//	 */
-//	public void setLongitude(ArrayList<String> longitude) {
-//		this.longitude = longitude;
-//	}
-//
-//	/**
-//	 * Get Latitude
-//	 * 
-//	 * @return
-//	 */
-//	public ArrayList<String> getLatitude() {
-//		return latitude;
-//	}
-//
-//	/**
-//	 * SetLatitude
-//	 * 
-//	 * @param latitude
-//	 */
-//	public void setLatitude(ArrayList<String> latitude) {
-//		this.latitude = latitude;
-//	}
 
 	/**
 	 * Get dbName

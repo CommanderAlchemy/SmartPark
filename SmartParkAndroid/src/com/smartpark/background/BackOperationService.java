@@ -152,14 +152,14 @@ public class BackOperationService extends Service {
 
 		if (restart) {
 			Ref.activeActivity.finish();
-			for (int i = 0; i < 2; i++) {
-				try {
-					Thread.currentThread();
-					Thread.sleep(100);
-				} catch (Exception e) {
-					Log.e("Therad sleep", "--> Sleep didn't work");
-				}
-			}
+//			for (int i = 0; i < 2; i++) {
+//				try {
+//					Thread.currentThread();
+//					Thread.sleep(100);
+//				} catch (Exception e) {
+//					Log.e("Therad sleep", "--> Sleep didn't work");
+//				}
+//			}
 			Intent i = new Intent(getApplicationContext(), MainActivity.class);
 			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(i);

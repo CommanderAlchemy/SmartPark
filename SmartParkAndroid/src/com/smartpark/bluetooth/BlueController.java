@@ -537,11 +537,9 @@ public class BlueController {
 	// CONNECTION STATE SETTERS AND GETTERS
 
 	public boolean isConnected() {
-		
 		try {
 			Log.i(TAG, " btSocket state: " + btSocket.isConnected() + " boolean: " + (connectionState == Ref.STATE_CONNECTED));
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return connectionState == Ref.STATE_CONNECTED && btSocket.isConnected(); 

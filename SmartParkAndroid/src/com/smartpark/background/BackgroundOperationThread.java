@@ -92,10 +92,10 @@ public class BackgroundOperationThread extends Thread {
 		
 		// Fix Bluetooth Connection ===================================
 		
-		if (!(tcpController.isConnected() || tcpController.isConnecting())) {
-			Log.e(TAG, "Fixing TCP connection");
+		if (!(btController.isConnected() || btController.isConnecting())) {
+			Log.e(TAG, "Fixing BT connection");
 			btController.setConnecting();
-
+			
 			// Enable bluetooth if disabled by asking the user first (only once)
 			if (!userIsAlreadyAsked && !btController.isEnabled()) {
 				Log.d(TAG, "--> bluetooth is disabled");
@@ -126,14 +126,6 @@ public class BackgroundOperationThread extends Thread {
 			btController.connectBT();
 		}
 		// Fix TCP Connection =======================================
-		
-		Log.e(TAG,		""
-						+ tcpController.isConnecting()
-						+ " "
-						+ tcpController.isConnected()
-						+ " "
-						+ !(tcpController.isConnecting() || tcpController
-								.isConnected()));
 		
 		if (!(tcpController.isConnected() || tcpController.isConnecting())) {
 			if (D)

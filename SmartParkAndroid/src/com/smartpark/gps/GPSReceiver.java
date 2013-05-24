@@ -23,7 +23,7 @@ public class GPSReceiver extends BroadcastReceiver {
 	public GPSReceiver(TextView gps_text) {
 		this.gps_text = gps_text;
 	}
-
+	
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();

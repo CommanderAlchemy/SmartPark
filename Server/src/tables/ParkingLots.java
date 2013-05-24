@@ -90,10 +90,10 @@ public class ParkingLots extends Database {
 	 * @param searchString
 	 * @param columnNr
 	 */
-	public void selectParkingLots(String searchString, int columnNr) {
+	public void selectParkingLots(String searchString, int columnNr, boolean rangeSelection) {
 
 		ResultSet result = selectDataFromTable(tblName, columns, searchString,
-				columnNr);
+				columnNr, rangeSelection);
 
 		try {
 			while (result.next()) {

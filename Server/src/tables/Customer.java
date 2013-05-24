@@ -67,7 +67,7 @@ public class Customer extends Database {
 
 	public Customer(String ssNbr) {
 		this();
-		selectCustomer(ssNbr, 1);
+		selectCustomer(ssNbr, 1, false);
 	}
 
 	/**
@@ -133,10 +133,10 @@ public class Customer extends Database {
 	 * @param searchString
 	 * @param columnNr
 	 */
-	public void selectCustomer(String searchString, int columnNr) {
+	public void selectCustomer(String searchString, int columnNr, boolean rangeSelection) {
 
 		ResultSet result = selectDataFromTable(tblName, columns, searchString,
-				columnNr);
+				columnNr, rangeSelection);
 
 		try {
 			while (result.next()) {

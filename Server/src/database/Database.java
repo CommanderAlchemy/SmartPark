@@ -185,7 +185,7 @@ public class Database {
 	 * @param rangeSelection
 	 *            select range of columns
 	 */
-	public ResultSet selectDataFromTable(String tblName, String[] columns, String searchString, int columnNr) {
+	public ResultSet selectDataFromTable(String tblName, String[] columns, String searchString, int columnNr, boolean rangeSelection) {
 		Statement statement = null;
 		ResultSet result = null;
 		try {
@@ -357,7 +357,7 @@ public class Database {
 		boolean[] notNull = { true, true, true, true, true, true, true, true, true,
 				false };
 		Database j = new Database(dbName);
-		j.selectDataFromTable(tblName, columns, "'juhu'", 2);
+		j.selectDataFromTable(tblName, columns, "'juhu'", 2, false);
 		
 	}
 }

@@ -164,6 +164,6 @@ public class BackOperationService extends Service {
 			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(i);
 		}
-		return START_NOT_STICKY;
+		return START_STICKY;
 	}
 }

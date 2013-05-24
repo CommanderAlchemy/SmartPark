@@ -36,6 +36,9 @@ public class BackgroundOperationThread extends Thread {
 	private BlueController btController;
 	private TCPController tcpController;
 	private Handler handler;
+	
+	// The state of execution
+	private boolean amIRunning = false;
 
 	// =========== END OF CLASS VARIABLES ===============================
 

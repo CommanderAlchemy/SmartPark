@@ -89,7 +89,7 @@ abstract public class Database {
 			sql += columns[i] + " " + columnTypes[i]
 					+ ((notNull[i]) ? " NOT NULL" : "");
 			if (i != columns.length - 1) {
-				sql += ",\n";
+				sql += ",";
 			} else {
 				sql += ")";
 			}
@@ -100,7 +100,8 @@ abstract public class Database {
 			s.close();
 		} catch (SQLException e1) {
 			System.out.println("[ERROR] During Create New Customer Table:");
-			System.err.println(e1.getClass().getName() + ": " + e1.getMessage());
+			System.err
+					.println(e1.getClass().getName() + ": " + e1.getMessage());
 
 		} finally {
 			closeConnection();
@@ -112,70 +113,56 @@ abstract public class Database {
 	 * 
 	 * @param obj
 	 */
-	public void insertIntoTable(String tblName, String[] columns) {
-
+	public void insertIntoTable(String tblName, String[] columns,
+			String[] columnTypes, String[] columnData) {
 		// check for spaces in tablename
 		if (tblName.contains(" ")) {
 			System.out.println("You may not use [space] in table name.");
 			return;
 		}
 		// Check for equal string array sizes
-		if (columns.length != columnTypes.length
-				|| columnTypes.length != notNull.length) {
+		if (columns.length != columnData.length) {
 			System.out.println("The arrays are not equa in length");
 			return;
 		}
-		String sql = "CREATE TABLE " + tblName + " (ID INTEGER PRIMARY KEY,";
+		
+		String sql = "INSERT INTO " + tblName + " (ID,";
 
 		for (int i = 0; i < columns.length; i++) {
-			sql += columns[i] + " " + columnTypes[i]
-					+ ((notNull[i]) ? " NOT NULL" : "");
+			sql += columns[i];
 			if (i != columns.length - 1) {
-				sql += ",\n";
+				sql += ",";
 			} else {
-				sql += ")";
+				sql += ") ";
 			}
 		}
-		// ----------------------------------------------------------------
-		// check for spaces in tablename
-		if (tblName.contains(" ")) {
-			System.out.println("You may not use [space] in table name.");
-			return;
-		}
-		// Check for equal string array sizes
-//		if (columns.length != columnTypes.length
-//				|| columnTypes.length != notNull.length) {
-//			System.out.println("The arrays are not equa in length");
-//			return;
-//		}
-		
-		String sql = "CREATE TABLE " + tblName + " (ID INTEGER PRIMARY KEY,";
-		
-		for(int i = 0 ; i < columns.length ; i++){
-			
-		}
-		
-		try {
-			/* @formatter:off */
-			sql = "INSERT INTO " + tblName + "(ID," +             cont,ssNbr,ForName,Lastname,Address,PhoneNbr,Password,SmartParkID,Registered,Balance) "
-					+ "VALUES (" + "NULL" + "," + c.cont + ",'" + c.ssNbr
-					+ "','" + c.forname + "','" + c.lastname + "','"
-					+ c.address + "','" + c.phoneNbr + "','" + c.password
-					+ "','" + c.smartParkID + "','" + c.registered + "',"
-					+ c.balance + ");";
+		sql += "VALUES (NULL,";
 
-			/* @formatter:on */
-			statement = super.getConnection().createStatement();
+		for (int i = 0; i < columnData.length; i++) {
+			if (columnTypes[i].equals("TEXT")) {
+				sql += "'";
+			}
+			sql += columnData[i];
+			if (columnTypes[i].equals("TEXT")) {
+				sql += "'";
+			}
+
+			if (i != columns.length - 1) {
+				sql += ",";
+			} else {
+				sql += ");";
+			}
+		}
+		try {
+			Statement statement = getConnection().createStatement();
 			statement.executeUpdate(sql);
 			statement.close();
-			super.closeConnection();
-
+			closeConnection();
 		} catch (Exception e) {
 			System.out
 					.println("[ERROR] During Insert New Customer Into Customer Table:");
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 		}
-
 	}
 
 	/**
@@ -236,6 +223,7 @@ abstract public class Database {
 	}
 
 	public static void main(String[] args) {
-		Database.createTable();
+		Database.insertIntoTable();
+
 	}
 }

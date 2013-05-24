@@ -18,6 +18,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -59,6 +60,8 @@ public class LoginActivity extends Activity {
 
 	private static LinkedList<String> messages = new LinkedList<String>();
 	private boolean timeout = false;
+
+	private final boolean D = Ref.D;
 
 	// ================================================================
 
@@ -131,6 +134,46 @@ public class LoginActivity extends Activity {
 		return true;
 	}
 
+	/**
+	 * On ActionMenu Select Do something when that get selected in the
+	 * ActionMenu
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (D)
+			Log.i(TAG, "++ onOptionsItemSelected ++");
+
+		if (D) {
+			Log.d(TAG, "Item: " + item.toString() + "\nID: " + item.getItemId()
+					+ "\nIntent: " + item.getIntent());
+		}
+		Log.e(TAG, "dadasdd" + item.getItemId());
+		// TODO Cleanup!
+		// On select
+		switch (item.getItemId()) {
+		case R.id.action_forgot_password:
+			
+			// ======== ALERTDIALOG START =========================
+			AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+			builder1.setTitle("Recover lost password");
+			builder1.setMessage("Not yet implemented.\nPlease try later...");
+			builder1.setCancelable(true);
+			builder1.setPositiveButton(android.R.string.ok,
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					});
+			AlertDialog alert = builder1.create();
+			alert.show();
+			// ======== ALERTDIALOG END =========================
+			return true;
+		}
+		return false;
+	}
+	
+	
+	
+	
 	/**
 	 * Attempts to sign in or register the account specified by the login form.
 	 * If there are form errors (invalid email, missing fields, etc.), the

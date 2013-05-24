@@ -12,7 +12,7 @@ public class Database {
 	private Connection c = null;
 
 	// private static final String create = "CREATE TABLE";
-	public Database(String dbName) {
+	protected Database(String dbName) {
 		this.dbName = dbName;
 	}
 
@@ -72,7 +72,7 @@ public class Database {
 	 * 
 	 * @return
 	 */
-	public String createTable(String tblName, String[] columns,
+	protected String createTable(String tblName, String[] columns,
 			String[] columnTypes, boolean[] notNull) {
 
 		// check for spaces in tablename
@@ -121,7 +121,7 @@ public class Database {
 	 * @param columnTypes
 	 * @param columnData
 	 */
-	public void insertIntoTable(String tblName, String[] columns,
+	protected void insertIntoTable(String tblName, String[] columns,
 			String[] columnTypes, String[] columnData) {
 		// check for spaces in tablename
 		if (tblName.contains(" ")) {
@@ -187,7 +187,7 @@ public class Database {
 	 * @param columns
 	 *            An array of columns that the table is made of
 	 */
-	public ResultSet selectDataFromTable(String tblName, String[] columns,
+	protected ResultSet selectDataFromTable(String tblName, String[] columns,
 			String searchString, int columnNr, boolean rangeSelection) {
 
 		Statement statement = null;
@@ -304,7 +304,7 @@ public class Database {
 	 * @param whatValue
 	 *            What value should that column be?
 	 */
-	public void updateTableData(String searchColumn, String searchValue,
+	protected void updateTableData(String searchColumn, String searchValue,
 			String whatColumn, String whatValue) {
 
 		try {
@@ -329,7 +329,7 @@ public class Database {
 	 * 
 	 * @return
 	 */
-	public LinkedList<String> getResultList() {
+	protected LinkedList<String> getResultList() {
 		return null;
 	}
 
@@ -338,7 +338,7 @@ public class Database {
 	 * 
 	 * @return
 	 */
-	public LinkedList<String> setResultList() {
+	protected LinkedList<String> setResultList() {
 		return null;
 	}
 
@@ -351,7 +351,7 @@ public class Database {
 		return null;
 	}
 
-	public static void main(String[] args) {
+	protected static void main(String[] args) {
 
 		String dbName = "test";
 		String tblName = "Customer";

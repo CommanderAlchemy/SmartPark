@@ -117,12 +117,19 @@ public class Customer extends Database {
 	}
 
 	// -----------------------------------------------------------------
-
+	
+	/**
+	 * 
+	 * @param columnData
+	 */
 	public void InsertCustomerData(String[] columnData) {
 
 		insertIntoTable(tblName, columns, columnTypes, columnData);
-
-		System.out.println(columnData.toString());
+		String s = "";
+		for(String str : columnData){
+			s += str + " ";
+		}
+		System.out.println(s);
 	}
 
 	// -----------------------------------------------------------------

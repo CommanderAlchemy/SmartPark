@@ -94,6 +94,7 @@ public class MainActivity extends FragmentActivity implements
 
 		if (!isLoggedOn) {
 			Intent i = new Intent(this, LoginActivity.class);
+			i.putExtra("CancelAllowed", false);
 			startActivityForResult(i, REQUEST_LOGIN);
 		} else {
 			// Login the user by known username and password TODO
@@ -382,6 +383,9 @@ public class MainActivity extends FragmentActivity implements
 
 				startService(intent);
 			}
+			if (resultCode == RESULT_CANCELED) {
+				Toast.makeText(getBaseContext(), "Cancelled", Toast.LENGTH_SHORT);
+			}
 			break;
 		default:
 			break;
@@ -442,7 +446,8 @@ public class MainActivity extends FragmentActivity implements
 		switch (item.getItemId()) {
 		case 0:
 			Toast.makeText(this, "Login", Toast.LENGTH_SHORT).show();
-			startActivityForResult(new Intent(this, LoginActivity.class),
+			
+			startActivityForResult(new Intent(this, LoginActivity.class).putExtra("CancelAllowed", true),
 					REQUEST_LOGIN);
 			return true;
 

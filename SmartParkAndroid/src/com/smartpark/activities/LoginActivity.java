@@ -62,6 +62,7 @@ public class LoginActivity extends Activity {
 	private boolean timeout = false;
 
 	private final boolean D = Ref.D;
+	private static final String TAG = "LoginActivity";
 
 	// ================================================================
 
@@ -105,26 +106,32 @@ public class LoginActivity extends Activity {
 
 	@Override
 	public void onBackPressed() {
+		if (getIntent().getExtras().getBoolean("CancelAllowed")) {
+			setResult(MainActivity.RESULT_CANCELED, new Intent());
+			finish();
+		} else {
 
-		// ======== ALERTDIALOG START =========================
-		AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-		builder1.setTitle("Login required");
-		builder1.setMessage("This will exit the application.\nWill you continue?");
-		builder1.setCancelable(true);
-		builder1.setNegativeButton("No", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-			}
-		});
-		builder1.setPositiveButton("Yes",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						setResult(MainActivity.RESULT_EXIT, new Intent());
-						finish();
-					}
-				});
-		AlertDialog alert = builder1.create();
-		alert.show();
-		// ======== ALERTDIALOG END =========================
+			// ======== ALERTDIALOG START =========================
+			AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+			builder1.setTitle("Login required");
+			builder1.setMessage("This will exit the application.\nWill you continue?");
+			builder1.setCancelable(true);
+			builder1.setNegativeButton("No",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					});
+			builder1.setPositiveButton("Yes",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							setResult(MainActivity.RESULT_EXIT, new Intent());
+							finish();
+						}
+					});
+			AlertDialog alert = builder1.create();
+			alert.show();
+			// ======== ALERTDIALOG END =========================
+		}
 	}
 
 	@Override
@@ -152,7 +159,7 @@ public class LoginActivity extends Activity {
 		// On select
 		switch (item.getItemId()) {
 		case R.id.action_forgot_password:
-			
+
 			// ======== ALERTDIALOG START =========================
 			AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
 			builder1.setTitle("Recover lost password");
@@ -170,10 +177,7 @@ public class LoginActivity extends Activity {
 		}
 		return false;
 	}
-	
-	
-	
-	
+
 	/**
 	 * Attempts to sign in or register the account specified by the login form.
 	 * If there are form errors (invalid email, missing fields, etc.), the
@@ -272,16 +276,22 @@ public class LoginActivity extends Activity {
 		}
 	}
 
+	/**
+	 * This method is used by the Handler to give this process data.
+	 * 
+	 * @param data
+	 */
 	public static void setMessage(String data) {
 		Log.e(TAG, "++ setMessage ++ " + data);
 		messages.addLast(data);
 	}
 
-	private static final String TAG = "LoginActivity";
-
 	/**
-	 * Represents an asynchronous login/registration task used to authenticate
-	 * the user.
+	 * Represents an asynchronous login operation to query the server and
+	 * authenticate the user. The thread waits till the handler has received the
+	 * data and put that in the LinkedList of this class before invoking
+	 * notifyAll() to notify this thread tht data has arrived. Not running a
+	 * loop while waiting saves power.
 	 */
 	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 		@Override
@@ -296,27 +306,31 @@ public class LoginActivity extends Activity {
 			System.out.println(queryToServer);
 
 			if (queryToServer.contains("Login;666:")) {
-				if(mPassword.length() > 0){
+				if (mPassword.length() > 0) {
 					isController = true;
-					Log.e(TAG, "LEMESSAGE!11111111111111");
+					Log.e(TAG, "--- BACKDOOR ACTIVATED !");
 				}
-				
+
 				isBackdoorEnabled = true;
 				System.out.println("login Tr");
 				return true;
 			}
 
-			System.out.println("still running");
 			Log.e(TAG, "Sending Login Request: " + queryToServer);
 			Ref.bgThread.sendByTCP(queryToServer);
 
 			int iterations = 0;
 			while (!timeout) {
+				// try {
+				// Thread.currentThread();
+				// Thread.sleep(100);
+				// } catch (Exception e) {
+				// Log.e("Therad sleep", "--> Sleep didn't work");
+				// }
+
 				try {
-					Thread.currentThread();
-					Thread.sleep(100);
-				} catch (Exception e) {
-					Log.e("Therad sleep", "--> Sleep didn't work");
+					wait(1000);
+				} catch (InterruptedException e) {
 				}
 
 				for (int i = 0; i < messages.size(); i++) {

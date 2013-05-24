@@ -140,8 +140,6 @@ public class TCPController {
 	 */
 	public void disconnect() {
 		Log.e(TAG, "++ disconnect ++");
-		if (D)
-			Log.d(TAG, "Closing Connection");
 		// send message that we are closing the connection
 		sendMessage(Settings.Close_Connection);
 		if (mBufferOut != null) {

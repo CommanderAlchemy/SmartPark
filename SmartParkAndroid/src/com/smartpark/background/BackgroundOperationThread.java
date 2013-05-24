@@ -19,16 +19,14 @@ public class BackgroundOperationThread extends Thread {
 
 	// Debugging and stuff
 	private static final String TAG = "bgThread";
-	private static final boolean D = Ref.D;
-
-	
+	private static final boolean D = false;
 
 	// USED WHEN INITIATING SOFT SHUTDOWN (RECOMMENDED ON THE INTERNET)
 	private boolean keepRunning = true;
 
 	// CONTROL FLAGS
 	private boolean userIsAlreadyAsked = false;
-	
+
 	// REFERENCE TO APLLICATIONCONTEXT
 	private static Context applicationContext;
 
@@ -36,16 +34,17 @@ public class BackgroundOperationThread extends Thread {
 	private BlueController btController;
 	private TCPController tcpController;
 	private Handler handler;
-	
+
 	// The state of execution
 	private boolean amIRunning = false;
 
 	// =========== END OF CLASS VARIABLES ===============================
 
 	public BackgroundOperationThread(Context applicationContext,
-			BlueController btController, TCPController tcpController, Handler handler) {
-		Log.e(TAG, "++ bgThread Constructor ++");
-		
+			BlueController btController, TCPController tcpController,
+			Handler handler) {
+		if(D)Log.e(TAG, "++ bgThread Constructor ++");
+
 		BackgroundOperationThread.applicationContext = applicationContext;
 
 		// BT
@@ -53,7 +52,7 @@ public class BackgroundOperationThread extends Thread {
 
 		// TCP
 		this.tcpController = tcpController;
-		
+
 		this.handler = handler;
 
 		// Check to see if bluetooth is available
@@ -88,17 +87,17 @@ public class BackgroundOperationThread extends Thread {
 	}// ==================================================================
 
 	private void fixConnections() {
-		Log.e(TAG, "++ fixConnections ++");
-		
+		if(D)Log.e(TAG, "++ fixConnections ++");
+
 		// Fix Bluetooth Connection ===================================
-		
+
 		if (!(btController.isConnected() || btController.isConnecting())) {
-			Log.e(TAG, "Fixing BT connection");
+			if(D)Log.e(TAG, "Fixing BT connection");
 			btController.setConnecting();
-			
+
 			// Enable bluetooth if disabled by asking the user first (only once)
 			if (!userIsAlreadyAsked && !btController.isEnabled()) {
-				Log.d(TAG, "--> bluetooth is disabled");
+				if(D)Log.d(TAG, "--> bluetooth is disabled");
 				/*
 				 * Certain methods need to invoke methods of an Activity-class.
 				 * But in order to Categorize and keep method for certain
@@ -116,24 +115,24 @@ public class BackgroundOperationThread extends Thread {
 				 */
 				btController.enableAdapter();
 				userIsAlreadyAsked = true;
-				Log.d(TAG, "--> Enabling done");
+				if(D)Log.d(TAG, "--> Enabling done");
 				Toast.makeText(applicationContext, "Enabled",
 						Toast.LENGTH_SHORT).show();
 			}
 			if (D)
-				Log.e(TAG, "isConnected? " + btController.isConnected());
+				if(D)Log.e(TAG, "isConnected? " + btController.isConnected());
 			btController.closeConnection();
 			btController.connectBT();
 		}
 		// Fix TCP Connection =======================================
-		
+
 		if (!(tcpController.isConnected() || tcpController.isConnecting())) {
 			if (D)
-				Log.e(TAG, "Fixing TCP connection");
+				if(D)Log.e(TAG, "Fixing TCP connection");
 			tcpController.setConnecting();
 
 			if (D)
-				Log.e(TAG, "isConnected? " + tcpController.isConnected());
+				if(D)Log.e(TAG, "isConnected? " + tcpController.isConnected());
 			tcpController.closeConnection();
 			tcpController.connectTCP();
 		}
@@ -145,39 +144,42 @@ public class BackgroundOperationThread extends Thread {
 		btController.setDisconnected();
 
 		if (D)
-			Log.e(TAG, "++  run  ++");
+			if(D)Log.e(TAG, "++  run  ++");
 
 		keepRunning = true;
 		int iterations = 0;
 		String inData = null;
 
 		while (keepRunning) {
+			// Used to check that the thread is running for sure
+			// All the other method are inaccurate.
+			amIRunning = true;
 			if (btController.isConnected()) {
 				// Code to process
 				try {
 					inData = btRead();
-					Log.d(TAG, "--> BT DATA read     " + inData);
+					if(D)Log.d(TAG, "--> BT DATA read     " + inData);
 					if (inData != null) {
 
-						Log.e(TAG, "---  inData = " + inData);
+						if(D)Log.e(TAG, "---  inData = " + inData);
 
 						// Send data to handler TODO
 						this.handler.getMessageFromBT(inData);
-						
+
 					}
 				} catch (NumberFormatException e) {
-					Log.e(TAG, "NumberFormatException");
+					if(D)Log.e(TAG, "NumberFormatException");
 				}
 
 				while (btTransmitBuffer.size() > 0
 						&& btController.isConnected()) {
-					Log.d(TAG, "BT sending data");
+					if(D)Log.d(TAG, "BT sending data");
 					btWrite();
 				}
 				// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 			} else {
 				// Handle reconnection
-				Log.e(TAG, "BT disconnected");
+				if(D)Log.e(TAG, "BT disconnected");
 				fixConnections();
 			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
@@ -186,35 +188,33 @@ public class BackgroundOperationThread extends Thread {
 
 				try {
 					inData = tcpRead();
-					Log.d(TAG, "--> TCP DATA read     " + inData);
+					if(D)Log.d(TAG, "--> TCP DATA read     " + inData);
 					if (inData != null) {
 
-						Log.e(TAG, "-----  inData = " + inData);
-						
-						
-						
+						if(D)Log.e(TAG, "-----  inData = " + inData);
+
 						// Send data to handler TODO
 						this.handler.getMessageFromTCP(inData);
-						
+
 					}
 
 				} catch (NumberFormatException e) {
-					Log.e(TAG, "NumberFormatException");
+					if(D)Log.e(TAG, "NumberFormatException");
 				}
 
 				while (tcpTransmitBuffer.size() > 0
 						&& tcpController.isConnected()) {
-					Log.d(TAG, "TCP sending data");
+					if(D)Log.d(TAG, "TCP sending data");
 					tcpWrite();
 				}
 				// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 			} else {
 				// Handle reconnection
-				Log.e(TAG, "TCP disconnected");
+				if(D)Log.e(TAG, "TCP disconnected");
 				fixConnections();
 			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
-			Log.i(TAG, "BT state: " + btController.isConnected()
+			if(D)Log.i(TAG, "BT state: " + btController.isConnected()
 					+ " TCP state: " + tcpController.isConnected());
 
 			// -----------------------------------------------------
@@ -223,19 +223,23 @@ public class BackgroundOperationThread extends Thread {
 			// -----------------------------------------------------
 
 			// Check to see if the thread needs to start shutting down
-			// Log.d(TAG, "--> thread running");
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				Log.e(TAG, "InterruptedException: ", e);
+			// if(D)Log.d(TAG, "--> thread running");
+
+			if (inData == null) {
+				// This gives fast processing if there are incoming data.
+				// Saves battery
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					if(D)Log.e(TAG, "InterruptedException: ", e);
+				}
 			}
 
 			if (iterations == 60) {
 				iterations = 0;
-				// TODO
-				Log.i(TAG,
+				if(D)Log.i(TAG,
 						"BT Connection state: " + (btController.isConnected()));
-				Log.i(TAG,
+				if(D)Log.i(TAG,
 						"TCP Connection state: "
 								+ (tcpController.isConnected()));
 				tcpController.testTCPConnection();
@@ -247,11 +251,12 @@ public class BackgroundOperationThread extends Thread {
 		}
 
 		cleanUp();
-		Log.d(TAG, "--> Thread is shutdown");
+		if(D)Log.d(TAG, "--> Thread is shutdown");
+		keepRunning = false;
 	}// ==================================================================
 
 	private void btWrite() {
-		Log.e(TAG, "++ btWrite ++");
+		if(D)Log.e(TAG, "++ btWrite ++");
 		if (btController.isConnected()) {
 			if (btTransmitBuffer.size() > 0) {
 				btController.sendBytes(btTransmitBuffer.removeFirst()
@@ -261,7 +266,7 @@ public class BackgroundOperationThread extends Thread {
 	}// ==================================================================
 
 	private void tcpWrite() {
-		Log.e(TAG, "++ btWrite ++");
+		if(D)Log.e(TAG, "++ btWrite ++");
 		if (tcpController.isConnected()) {
 			if (tcpTransmitBuffer.size() > 0) {
 				tcpController.sendMessage(tcpTransmitBuffer.removeFirst());
@@ -275,7 +280,7 @@ public class BackgroundOperationThread extends Thread {
 	 * @return inData null if not connected or buffer not ready
 	 */
 	private String btRead() {
-		Log.e(TAG, "++ btRead ++");
+		if(D)Log.e(TAG, "++ btRead ++");
 		String inData = null;
 		if (btController.isConnected()) {
 			inData = btController.receiveString();
@@ -289,7 +294,7 @@ public class BackgroundOperationThread extends Thread {
 	 * @return inData null if not connected or buffer not ready
 	 */
 	private String tcpRead() {
-		Log.e(TAG, "++ tcpRead ++");
+		if(D)Log.e(TAG, "++ tcpRead ++");
 		String inData = null;
 		if (tcpController.isConnected()) {
 			inData = tcpController.receiveString();
@@ -298,12 +303,12 @@ public class BackgroundOperationThread extends Thread {
 	}// ==================================================================
 
 	private void cleanUp() {
-		Log.e(TAG, "++ cleanUp ++");
+		if(D)Log.e(TAG, "++ cleanUp ++");
 		// Do not invoke method that forcefully shut a thread down.
 		// Let the run method run out.
 		// this.shutdownThread(); wont work, just like suspend() and stop()
 
-		btController.cleanUp();
+		btController.disconnect();
 		tcpController.disconnect();
 
 		btTransmitBuffer = null;
@@ -316,13 +321,28 @@ public class BackgroundOperationThread extends Thread {
 
 	// The next two methods put strings in transmitbuffer
 	public void sendByBT(String data) {
-		Log.e(TAG, "++ sendByBT ++");
+		if(D)Log.e(TAG, "++ sendByBT ++");
 		btTransmitBuffer.addLast(data + "\r\n");
 	}// ==================================================================
 
 	public void sendByTCP(String data) {
-		Log.e(TAG, "++ sendByTCP ++");
+		if(D)Log.e(TAG, "++ sendByTCP ++");
 		tcpTransmitBuffer.addLast(data);
 	}// ==================================================================
+
+	/**
+	 * Run this method twice to get the state of the loop. This is proven a
+	 * better check than the native once.
+	 * 
+	 * @return
+	 */
+	public boolean isRunning() {
+		// TODO Auto-generated method stub
+		// use wait() for thread sleep and notify() to detect a dead thread.
+		boolean temp = amIRunning;
+		amIRunning = false;
+
+		return temp;
+	}
 
 }

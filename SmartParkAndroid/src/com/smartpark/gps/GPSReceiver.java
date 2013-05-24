@@ -14,9 +14,7 @@ public class GPSReceiver extends BroadcastReceiver {
 	private static final boolean D = Ref.D;
 	private static final String TAG = "GPSReceiver";
 
-	private String gpsinfo;
 	private PositionEMA positionEMA;
-	private int invoke = 0;
 
 	// ============================================
 
@@ -27,24 +25,9 @@ public class GPSReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();
-
-		gpsinfo = intent.getStringExtra("GPSCOORDINATES");
-		
-		Location location = intent.getParcelableExtra("location");
-		
-		System.out.println(location.toString());
-		
 		if (action.equals("com.smartpark.gpsinfo")) {
-			gpsinfo = intent.getStringExtra("GPS_COORDINATES");
-
-		
+			Location location = intent.getParcelableExtra("location");
+			positionEMA.put(location);
 		}
-		Log.e(TAG, "" + invoke);
-		invoke++;
 	}
-
-	public String getGPSinfo() {
-		return gpsinfo;
-	}
-
 }

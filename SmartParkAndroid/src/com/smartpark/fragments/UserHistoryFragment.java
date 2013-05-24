@@ -3,6 +3,7 @@ package com.smartpark.fragments;
 import java.util.Calendar;
 import java.util.HashMap;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
@@ -43,27 +44,48 @@ public class UserHistoryFragment extends Fragment {
 	public static final int BUTTON_FROM_DATE = 1;
 	public static final int BUTTON_TO_DATE = 2;
 
+	private View.OnClickListener onClickListener = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			Log.e(TAG, "++ onClick ++");
+			if (v instanceof Button) {
+				switch (v.getId()) {
+				case R.id.btnFromDate:
+					myVib.vibrate(50);
+					datePickerFromDate.show(getActivity().getFragmentManager(),
+							"From Date");
+					break;
+				case R.id.btnToDate:
+					myVib.vibrate(50);
+					datePickerToDate.show(getActivity().getFragmentManager(),
+							"To Date");
+					break;
+				default:
+					break;
+				}
+			}
+
+		}
+	};
+
 	// ----------------------------------------------------------------
 
 	public UserHistoryFragment() {
 		if (D)
 			Log.e(TAG, "++ Fragment: " + this.toString() + " Loaded ++");
-//		myVib = (Vibrator) getActivity().getSystemService(Activity.VIBRATOR_SERVICE);
 	}
 
 	// ----------------------------------------------------------------
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.i(TAG, "++ onCreateView ++");
-
-		if (datePickerFromDate == null) {
-			datePickerFromDate = new DatePickerFragment(this);
-			datePickerToDate = new DatePickerFragment(this);
-		}
+		Log.e(TAG, "++ onCreateView ++");
 
 		View rootView = inflater.inflate(R.layout.frag_history_view, container,
 				false);
+		myVib = (Vibrator) getActivity().getSystemService(
+				Activity.VIBRATOR_SERVICE);
 
 		// === CREATE REFERENCE FOR ALL VIEWS IN FRAGMENT ===========
 		//@formatter:off
@@ -74,40 +96,35 @@ public class UserHistoryFragment extends Fragment {
 		//@formatter:on
 		View view;
 		for (int i = 0; i < viewIds.length; i++) {
+
 			view = rootView.findViewById(viewIds[i]);
-			Log.w(TAG, "test1" + view.toString());
+
 			if (view instanceof Button) {
 				view.setOnClickListener(onClickListener);
 			}
 			viewReferences.put(viewKeys[i], view);
 		}
+		// === REFERENCES CREATED =======================================
+
+		if (savedInstanceState != null) {
+			OnClickBtnDateEvent(savedInstanceState.getIntArray("FromDate"),
+					BUTTON_FROM_DATE);
+			OnClickBtnDateEvent(savedInstanceState.getIntArray("ToDate"),
+					BUTTON_TO_DATE);
+		}
+
 		return rootView;
 	}
 
 	// ----------------------------------------------------------
 
-	private View.OnClickListener onClickListener = new View.OnClickListener() {
-
-		@Override
-		public void onClick(View v) {
-			if (v instanceof Button) {
-				switch (v.getId()) {
-				case R.id.btnFromDate:
-//					 myVib.vibrate(50);
-					datePickerFromDate.show(getActivity().getFragmentManager(),
-							"From Date");
-					break;
-				case R.id.btnToDate:
-//					 myVib.vibrate(50);
-					datePickerToDate.show(getActivity().getFragmentManager(),
-							"To Date");
-					break;
-				default:
-					break;
-				}
-			}
-
-		}
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		Log.e(TAG, "++ onSaveInstanceState ++");
+		outState.putIntArray("FromDate", datePickerFromDate.getDate());
+		outState.putIntArray("ToDate", datePickerToDate.getDate());
+		System.out.println(outState.getIntArray("FromDate").toString());
 	};
 
 	// ----------------------------------------------------------
@@ -157,8 +174,6 @@ public class UserHistoryFragment extends Fragment {
 				((Button) viewReferences.get("btnFromDate"))
 						.setText(pickedDate);
 				error = false;
-				Log.e(TAG, "" + viewReferences.get("btnFromDate").toString()
-						+ " " + pickedDate);
 			}
 			break;
 		case BUTTON_TO_DATE:
@@ -171,21 +186,70 @@ public class UserHistoryFragment extends Fragment {
 			default:
 				((Button) viewReferences.get("btnToDate")).setText(pickedDate);
 				error = false;
-				Log.e(TAG, "" + viewReferences.get("btnToDate").toString()
-						+ " " + pickedDate);
 			}
 			break;
 		}
 		if (error)
-			Toast.makeText(getActivity(), "From date > To date",
+			Toast.makeText(getActivity(), "From date is newer than To date",
 					Toast.LENGTH_LONG).show();
+	}
+
+	private void requestParkedCars() {
+		Log.e(TAG, "++ requestParkedCars ++");
+
 		/*
-		 * TODO implement Query method from the database.
-		 * Parking Data!
+		 * TODO implement Query method from the database. Parking Data!
 		 * 
 		 * Query;date:date
-		 * 
 		 */
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		Log.e(TAG, "++ onStart ++");
+
+		if (datePickerFromDate == null) {
+			datePickerFromDate = new DatePickerFragment(this);
+			datePickerToDate = new DatePickerFragment(this);
+
+			Calendar cal = Calendar.getInstance();
+			cal.get(Calendar.YEAR);
+			cal.get(Calendar.MONTH);
+			cal.get(Calendar.DAY_OF_MONTH);
+			int[] date = { cal.get(Calendar.DAY_OF_MONTH),
+					cal.get(Calendar.MONTH), cal.get(Calendar.YEAR) };
+			datePickerFromDate.setDate(date);
+			datePickerToDate.setDate(date);
+
+		} else {
+			OnClickBtnDateEvent(datePickerFromDate.getDate(), BUTTON_FROM_DATE);
+			OnClickBtnDateEvent(datePickerToDate.getDate(), BUTTON_TO_DATE);
+		}
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		Log.e(TAG, "++ onResume ++");
+
+//		if (datePickerFromDate == null) {
+//			datePickerFromDate = new DatePickerFragment(this);
+//			datePickerToDate = new DatePickerFragment(this);
+//
+//			Calendar cal = Calendar.getInstance();
+//			cal.get(Calendar.YEAR);
+//			cal.get(Calendar.MONTH);
+//			cal.get(Calendar.DAY_OF_MONTH);
+//			int[] date = { cal.get(Calendar.DAY_OF_MONTH),
+//					cal.get(Calendar.MONTH), cal.get(Calendar.YEAR) };
+//			datePickerFromDate.setDate(date);
+//			datePickerToDate.setDate(date);
+//
+//		} else {
+//			OnClickBtnDateEvent(datePickerFromDate.getDate(), BUTTON_FROM_DATE);
+//			OnClickBtnDateEvent(datePickerToDate.getDate(), BUTTON_TO_DATE);
+//		}
 	}
 
 }

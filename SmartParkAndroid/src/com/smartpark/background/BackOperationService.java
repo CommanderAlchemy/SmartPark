@@ -140,13 +140,21 @@ public class BackOperationService extends Service {
 		} else {
 			if (!Ref.bgThread.isAlive()
 					&& Ref.bgThread.getState() == Thread.State.RUNNABLE
-					&& Ref.bgThread.getState() == Thread.State.TERMINATED) {
-
-				Ref.bgThread.start();
+					&& Ref.bgThread.getState() == Thread.State.TERMINATED
+					&& !Ref.bgThread.isRunning()) {
+				try {
+					wait(1000);
+				} catch (InterruptedException e) {
+					Log.e(TAG, "--- wait() failed");
+					e.printStackTrace();
+				}
+				if(!Ref.bgThread.isRunning()){
+					Ref.bgThread.start();
+				}
 			}
 		}
 
-//		Log.i(TAG, "Service action= " + intent.getAction());
+		Log.i(TAG, "--- Service action= " + intent.getAction());
 
 		boolean restart = intent.getBooleanExtra("Restart", false);
 

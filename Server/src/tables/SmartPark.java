@@ -8,7 +8,7 @@ import database.Database;
 
 public class SmartPark extends Database {
 	private long id;
-	private static String deviceID; // The Device ID
+	private String deviceID; // The Device ID
 	private String ssNbr; // Connected to a persons.
 	private String longitude;
 	private String latitude;
@@ -17,22 +17,35 @@ public class SmartPark extends Database {
 	private String licensePlate;
 	private String carModel; // Not needed atm, but may be needed in the future
 
-	private final static String dbName = "test";
-	private String tblName;
-
 	private String sql;
 	private Statement statement = null;
 	private ResultSet result;
 
 	private LinkedList<String> resultList;
-	
+
 	public enum Col {
 		ID, ssNbr, Longitude, Latitude, StartStamp, StopStamp, LicensePlate, CarModel
 	}
 
-	public SmartPark(String deviceID){
+	// == Settings for the Table ========================
+
+	private static String dbName = "test";
+	private static String tblName;
+	private static String[] columns = { "ssNbr", "Longitude", "Latitude",
+			"StartStamp", "StopStamp", "LicensePlate", "CarModel" };
+
+	private String[] columnTypes = { "TEXT", "TEXT", "TEXT", "TEXT", "TEXT",
+			"TEXT", "TEXT" };
+
+	boolean[] notNull = { true, true, true, true, false, true, true };
+
+	// --------------------------------------------------
+
+	// -------------------------------------------------------
+
+	public SmartPark(String deviceID) {
 		super(dbName);
-		SmartPark.deviceID = deviceID;
+		this.deviceID = deviceID;
 		this.tblName = "SmartPark_" + deviceID;
 
 		this.resultList = new LinkedList<String>();
@@ -40,6 +53,7 @@ public class SmartPark extends Database {
 
 	/**
 	 * Constructor for smartpark
+	 * 
 	 * @param ssNbr
 	 * @param position
 	 * @param startStamp
@@ -60,103 +74,73 @@ public class SmartPark extends Database {
 		this.carModel = carModel;
 
 	}
-	public void CreateSmartParkTable() {
-		try {
-			System.out.println("Create " + tblName);
-			/* @formatter:off */
-			sql = "CREATE TABLE " + tblName + " " 
-					+ "(ID INTEGER PRIMARY KEY,"
-					+ "ssNbr				TEXT		NOT NULL," 
-					+ "Longitude			TEXT		NOT NULL,"
-					+ "Latitude				TEXT		NOT NULL,"
-					+ "StartStamp			REAL		NOT NULL,"
-					+ "StopStamp       		REAL				,"
-					+ "LicensePlate    		TEXT		NOT NULL,"
-					+ "CarModel				TEXT		NOT NULL)";
-			/* @formatter:on */
-			
-			statement = super.getConnection().createStatement();
-			statement.executeUpdate(sql);
-			statement.close();
-			super.closeConnection();
-		} catch (Exception e) {
-			System.out.println("[ERROR] During Create New SmartPark Table:");
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+
+	public String CreateSmartParkTable() {
+		String error = createTable(tblName, columns, columnTypes, notNull);
+		if (error.length() == 0){
+			System.out.println(tblName + " table successfully created in "
+					+ dbName);
 		}
-		System.out
-				.println(tblName + " table successfully created in " + dbName);
+		return error;
+	}
+	
+	public void InsertSmartParkData(String[] columnData) {
+		insertIntoTable(tblName, columns, columnTypes, columnData);
+		System.out.println(columnData.toString());
 	}
 
-	public void InsertSmartParkData(SmartPark sp) {
-		try {
-			/* @formatter:off */
-			sql = "INSERT INTO SmartPark_" + SmartPark.deviceID + " "
-					+ "(ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel) "
-					+ "VALUES (" + "NULL"			+ ",'"
-								 + sp.ssNbr 		+ "','"
-								 + sp.longitude		+ "','"
-								 + sp.latitude		+ "','"
-								 + sp.startStamp 	+ "','"
-								 + sp.stopStamp		+ "','"
-								 + sp.licensePlate	+ "','"
-								 + sp.carModel		+ "');";
-
-			/* @formatter:on */
-			
-			statement = super.getConnection().createStatement();
-			statement.executeUpdate(sql);
-			statement.close();
-			super.closeConnection();
-			
-
-		} catch (Exception e) {
-			System.out.println("[ERROR] During Insert New Device Into SmartPark Table:");
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-		}
-		System.out.println(SmartPark.deviceID + " sucessfully inserted into " + dbName
-				+ "." + tblName);
-	}
-
-	public void selectSmartPark( Col c, String searchValue, boolean rangeSelection) {
+	public void selectSmartPark(Col c, String searchValue,
+			boolean rangeSelection) {
 		try {
 			statement = super.getConnection().createStatement();
 
 			// result = statement.executeQuery("SELECT * FROM Customer;");
 
-			if (searchValue != null){
-				if(!rangeSelection){
+			if (searchValue != null) {
+				if (!rangeSelection) {
 					result = statement
-							.executeQuery("SELECT ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel FROM SmartPark_" 
-									+ SmartPark.deviceID + " WHERE " + c  + " = '"	+ searchValue + "';" );
-				}else{
+							.executeQuery("SELECT ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel FROM "
+									+ deviceID
+									+ " WHERE "
+									+ c
+									+ " = '" + searchValue + "';");
+				} else {
 					String[] query = null;
-					try{
+					try {
 						query = searchValue.split(":");
-					}catch(Exception e){
+					} catch (Exception e) {
 						System.out.println("[ERROR] During query split");
-						System.err.println(e.getClass().getName() + ": " + e.getMessage());
+						System.err.println(e.getClass().getName() + ": "
+								+ e.getMessage());
 					}
-					result = statement.executeQuery("SELECT ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel FROM SmartPark_" 
-							+ SmartPark.deviceID + " WHERE " + c + " BETWEEN " + query[0] + " AND " + query[1] + ";");
+					result = statement
+							.executeQuery("SELECT ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel FROM SmartPark_"
+									+ deviceID
+									+ " WHERE "
+									+ c
+									+ " BETWEEN "
+									+ query[0]
+									+ " AND "
+									+ query[1] + ";");
 				}
 			}
 
-			else{
-				result = statement
-						.executeQuery("SELECT * FROM SmartPark_" + SmartPark.deviceID + ";");
+			else {
+				result = statement.executeQuery("SELECT * FROM "
+						+ deviceID + ";");
 			}
 
 			resultList.clear();
 			while (result.next()) {
-				this.id 			= result.getLong("ID");
-				this.ssNbr 			= result.getString("ssNbr");
-				this.longitude 		= result.getString("Longitude");
-				this.latitude		= result.getString("latitude");
-				this.startStamp 	= result.getString("StartStamp");
-				this.stopStamp 		= result.getString("StopStamp");
-				this.licensePlate	= result.getString("LicensePlate");
-				this.carModel 		= result.getString("CarModel");
-				resultList.addLast(this.toString()+"\n");
+				this.id = result.getLong("ID");
+				this.ssNbr = result.getString("ssNbr");
+				this.longitude = result.getString("Longitude");
+				this.latitude = result.getString("latitude");
+				this.startStamp = result.getString("StartStamp");
+				this.stopStamp = result.getString("StopStamp");
+				this.licensePlate = result.getString("LicensePlate");
+				this.carModel = result.getString("CarModel");
+				resultList.addLast(this.toString() + "\n");
 			}
 			System.out.println(resultList.toString());
 			result.close();
@@ -187,8 +171,9 @@ public class SmartPark extends Database {
 			// super.getConnection().setAutoCommit(false);
 			statement = super.getConnection().createStatement();
 
-			sql = "UPDATE SmartPark-" + deviceID + " set " + whatCol + " = '" + whatValue
-					+ "' where " + searchCol + "=" + searchValue + ";";
+			sql = "UPDATE SmartPark-" + deviceID + " set " + whatCol + " = '"
+					+ whatValue + "' where " + searchCol + "=" + searchValue
+					+ ";";
 			System.out.println(sql);
 			statement.executeUpdate(sql);
 			// super.getConnection().commit();
@@ -232,7 +217,7 @@ public class SmartPark extends Database {
 	 * @param deviceID
 	 */
 	public void setDeviceID(String deviceID) {
-		SmartPark.deviceID = deviceID;
+		this.deviceID = "Smartpark_" + deviceID;
 	}
 
 	/**
@@ -261,9 +246,10 @@ public class SmartPark extends Database {
 	public void setLongitude(String longitude) {
 		this.longitude = longitude;
 	}
-	
+
 	/**
 	 * Get longitude position
+	 * 
 	 * @return
 	 */
 	public String getLongitude() {
@@ -272,14 +258,16 @@ public class SmartPark extends Database {
 
 	/**
 	 * Set Latitude position
+	 * 
 	 * @param latitude
 	 */
 	public void setLatitude(String latitude) {
 		this.latitude = latitude;
 	}
-	
+
 	/**
 	 * Get Latitude position
+	 * 
 	 * @return
 	 */
 	public String getLatitude() {
@@ -360,6 +348,7 @@ public class SmartPark extends Database {
 
 	/**
 	 * Get results after running the select method
+	 * 
 	 * @return
 	 */
 	public LinkedList<String> getResultList() {
@@ -372,7 +361,7 @@ public class SmartPark extends Database {
 	public String toString() {
 		/* @formatter:off */
 		return "ID:"				+ this.id			 	+ ";"
-				+ "deviceID:"		+ SmartPark.deviceID 	+ ";"
+				+ "deviceID:"		+ deviceID 				+ ";"
 				+ "ssNbr:"			+ this.ssNbr			+ ";"
 				+ "longitude:"		+ this.longitude 		+ ";"
 				+ "latitude:"		+ this.latitude			+ ";"
@@ -382,41 +371,49 @@ public class SmartPark extends Database {
 				+ "carModel:" 		+ this.carModel 		+ ";";
 		/* @formatter:on */
 	}
+
 	public static void main(String[] args) {
-		for (String s: args) {
-//            switch (s) {
-//			case "CreateTable":
-//				SmartPark sp = new SmartPark("001First");
-//				sp.CreateSmartParkTable();
-//				sp.InsertSmartParkData(new SmartPark("2000", "Long/Lat", "1", "10", "OPH500", "Nissan"));
-//				sp.InsertSmartParkData(new SmartPark("2001", "Long/Lat", "3", "1", "MRO500", "Opel"));
-//				sp.InsertSmartParkData(new SmartPark("2003", "Long/Lat", "1", "null", "TTY500", "Toyota"));
-//
-//				SmartPark sp0 = new SmartPark("002Second");
-//				sp0.CreateSmartParkTable();
-//				sp0.InsertSmartParkData(new SmartPark("2004", "Long/Lat", "2", "3", "TTY600", "Lexus"));
-//				sp0.InsertSmartParkData(new SmartPark("2005", "Long/Lat", "1", "null", "TTY800", "Mercedes"));
-//				sp0.InsertSmartParkData(new SmartPark("2006", "Long/Lat", "5", "5", "TTY900", "Kia"));
-//
-//				SmartPark spnull = new SmartPark("000Null");
-//				spnull.CreateSmartParkTable();
-//				spnull.InsertSmartParkData(new SmartPark("1987", "Long/Lat", "4", "10", "MRO519", "Toyota Celica"));
-//
-//				break;
-//			case "Print":
-//				System.out.println("Printing all SmartPark Tables in Database\n");
-//				new SmartPark("001First").selectSmartPark(null, null, false);
-//				System.out.println();
-//				new SmartPark("002Second").selectSmartPark(null, null, false);
-//				System.out.println();
-//				new SmartPark("000Null").selectSmartPark(null, null, false);
-//				break;
-//
-//			default:
-//				System.out.println("Usage:\nCreateTable: To Create 3 SmartPark default tables\nPrint: to print all the created tables");
-//				break;
-//			}
-        }
+		for (String s : args) {
+			// switch (s) {
+			// case "CreateTable":
+			// SmartPark sp = new SmartPark("001First");
+			// sp.CreateSmartParkTable();
+			// sp.InsertSmartParkData(new SmartPark("2000", "Long/Lat", "1",
+			// "10", "OPH500", "Nissan"));
+			// sp.InsertSmartParkData(new SmartPark("2001", "Long/Lat", "3",
+			// "1", "MRO500", "Opel"));
+			// sp.InsertSmartParkData(new SmartPark("2003", "Long/Lat", "1",
+			// "null", "TTY500", "Toyota"));
+			//
+			// SmartPark sp0 = new SmartPark("002Second");
+			// sp0.CreateSmartParkTable();
+			// sp0.InsertSmartParkData(new SmartPark("2004", "Long/Lat", "2",
+			// "3", "TTY600", "Lexus"));
+			// sp0.InsertSmartParkData(new SmartPark("2005", "Long/Lat", "1",
+			// "null", "TTY800", "Mercedes"));
+			// sp0.InsertSmartParkData(new SmartPark("2006", "Long/Lat", "5",
+			// "5", "TTY900", "Kia"));
+			//
+			// SmartPark spnull = new SmartPark("000Null");
+			// spnull.CreateSmartParkTable();
+			// spnull.InsertSmartParkData(new SmartPark("1987", "Long/Lat", "4",
+			// "10", "MRO519", "Toyota Celica"));
+			//
+			// break;
+			// case "Print":
+			// System.out.println("Printing all SmartPark Tables in Database\n");
+			// new SmartPark("001First").selectSmartPark(null, null, false);
+			// System.out.println();
+			// new SmartPark("002Second").selectSmartPark(null, null, false);
+			// System.out.println();
+			// new SmartPark("000Null").selectSmartPark(null, null, false);
+			// break;
+			//
+			// default:
+			// System.out.println("Usage:\nCreateTable: To Create 3 SmartPark default tables\nPrint: to print all the created tables");
+			// break;
+			// }
+		}
 
 	}
 

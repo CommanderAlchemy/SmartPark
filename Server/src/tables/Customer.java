@@ -20,7 +20,7 @@ public class Customer extends Database {
 	private long balance;
 
 	// == Settings for the Table ========================
-
+	
 	private static String dbName = "test";
 	private static String tblName = "Customer";
 	private static String[] columns = { "cont", "ssNbr", "Forname", "Lastname",
@@ -32,7 +32,7 @@ public class Customer extends Database {
 
 	boolean[] notNull = { true, true, true, true, true, true, true, true, true,
 			false };
-
+	
 	// --------------------------------------------------
 
 	private String sql;
@@ -109,10 +109,10 @@ public class Customer extends Database {
 	 */
 	public String CreateCustomerTable() {
 		String error = createTable(tblName, columns, columnTypes, notNull);
-		if (error.length() == 0)
+		if (error.length() == 0){
 			System.out.println(tblName + " table successfully created in "
 					+ dbName);
-
+		}
 		return error;
 	}
 

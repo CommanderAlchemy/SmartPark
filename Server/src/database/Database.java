@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 
+import tables.SmartPark;
 import tables.Customer.Col;
 
 public class Database {
@@ -185,13 +186,14 @@ public class Database {
 	 *            select range of columns
 	 */
 	public ResultSet selectDataFromTable(String tblName, String[] columns, String searchString, int columnNr) {
-		
+		Statement statement = null;
 		ResultSet result = null;
 		try {
 			// super.getConnection().setAutoCommit(false);
-			Statement statement = getConnection().createStatement();
+			statement = getConnection().createStatement();
 			
 			if (searchString != null) {
+				if(!rangeSelection){
 
 				String sql = "SELECT ID,";
 
@@ -215,6 +217,34 @@ public class Database {
 
 				// ("SELECT ID,cont,ssNbr,Forname,Lastname,Address,PhoneNbr,Password,SmartParkID,Registered,Balance FROM Customer WHERE ssNbr = '"
 				// + searchString + "';");
+				}else{
+					
+					
+					
+					
+					
+					String[] query = null;
+					try {
+						query = searchString.split(":");
+					} catch (Exception e) {
+						System.out.println("[ERROR] During query split");
+						System.err.println(e.getClass().getName() + ": "
+								+ e.getMessage());
+					}
+					result = statement
+							.executeQuery("SELECT ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel FROM "
+									+ tblName
+									+ " WHERE "
+									+ c
+									+ " BETWEEN "
+									+ query[0]
+									+ " AND "
+									+ query[1] + ";");
+					
+					
+					
+					
+				}
 			} else {
 //				result = statement.executeQuery("SELECT * FROM Customer;"
 //						+ searchValue);
@@ -223,6 +253,14 @@ public class Database {
 		} catch (Exception e) {
 			System.out.println("[ERROR] During Lookup Table");
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+		
+		try {
+			result.close();
+			statement.close();
+			closeConnection();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -261,6 +299,11 @@ public class Database {
 			}
 	}
 
+	
+	
+	
+	
+	
 	
 	
 	

@@ -381,7 +381,6 @@ public class SmartPark extends Database {
 				+ "licensePlate:" 	+ this.licensePlate 	+ ";"
 				+ "carModel:" 		+ this.carModel 		+ ";";
 		/* @formatter:on */
-
 	}
 	public static void main(String[] args) {
 		for (String s: args) {

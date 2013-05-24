@@ -116,9 +116,11 @@ public class Database {
 	}
 
 	/**
-	 * Insert data into the table
-	 * 
-	 * @param obj
+	 * Insert
+	 * @param tblName
+	 * @param columns
+	 * @param columnTypes
+	 * @param columnData
 	 */
 	public void insertIntoTable(String tblName, String[] columns,
 			String[] columnTypes, String[] columnData) {
@@ -299,6 +301,7 @@ public class Database {
 	}
 
 	public static void main(String[] args) {
+
 		String dbName = "test";
 		String tblName = "Customer";
 		String[] columns = { "cont", "ssNbr", "Forname", "Lastname",

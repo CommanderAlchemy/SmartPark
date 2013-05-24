@@ -20,14 +20,32 @@ public class ParkingLots extends Database {
 
 	/**
 	 * ParkingLots Constructor
+	 * 
 	 * @param dbName
 	 */
 	public ParkingLots(String dbName) {
 		super(dbName);
 	}
 
+	public ParkingLots(long price, String company, String smsQuery,
+			String ticketHours, String freeHours, ArrayList<String> longitude,
+			ArrayList<String> latitude) {
+		super(dbName);
+		this.price = price;
+		this.company = company;
+		this.smsQuery = smsQuery;
+		this.ticketHours = ticketHours;
+		this.freeHours = freeHours;
+		this.longitude = longitude;
+		this.latitude = latitude;
+	}
+	
+	public void CreateParkingLotsTable(){
+		
+	}
 	/**
 	 * GetID
+	 * 
 	 * @return
 	 */
 	public long getID() {
@@ -36,6 +54,7 @@ public class ParkingLots extends Database {
 
 	/**
 	 * SetID
+	 * 
 	 * @param iD
 	 */
 	public void setID(long iD) {
@@ -44,6 +63,7 @@ public class ParkingLots extends Database {
 
 	/**
 	 * GetPrice
+	 * 
 	 * @return
 	 */
 	public long getPrice() {
@@ -52,6 +72,7 @@ public class ParkingLots extends Database {
 
 	/**
 	 * SetPrice
+	 * 
 	 * @param price
 	 */
 	public void setPrice(long price) {
@@ -60,6 +81,7 @@ public class ParkingLots extends Database {
 
 	/**
 	 * Get Company
+	 * 
 	 * @return
 	 */
 	public String getCompany() {
@@ -68,6 +90,7 @@ public class ParkingLots extends Database {
 
 	/**
 	 * Set Company
+	 * 
 	 * @param company
 	 */
 	public void setCompany(String company) {
@@ -76,6 +99,7 @@ public class ParkingLots extends Database {
 
 	/**
 	 * Get SmsQuery
+	 * 
 	 * @return
 	 */
 	public String getSmsQuery() {
@@ -84,6 +108,7 @@ public class ParkingLots extends Database {
 
 	/**
 	 * Set SmsQuery
+	 * 
 	 * @param smsQuery
 	 */
 	public void setSmsQuery(String smsQuery) {
@@ -92,6 +117,7 @@ public class ParkingLots extends Database {
 
 	/**
 	 * Get TicketHours
+	 * 
 	 * @return
 	 */
 	public String getTicketHours() {
@@ -100,6 +126,7 @@ public class ParkingLots extends Database {
 
 	/**
 	 * set TicketHours
+	 * 
 	 * @param ticketHours
 	 */
 	public void setTicketHours(String ticketHours) {
@@ -108,6 +135,7 @@ public class ParkingLots extends Database {
 
 	/**
 	 * Get FreeHours
+	 * 
 	 * @return
 	 */
 	public String getFreeHours() {
@@ -116,6 +144,7 @@ public class ParkingLots extends Database {
 
 	/**
 	 * Set FreeHours
+	 * 
 	 * @param freeHours
 	 */
 	public void setFreeHours(String freeHours) {
@@ -124,6 +153,7 @@ public class ParkingLots extends Database {
 
 	/**
 	 * Get Longitude
+	 * 
 	 * @return
 	 */
 	public ArrayList<String> getLongitude() {
@@ -132,6 +162,7 @@ public class ParkingLots extends Database {
 
 	/**
 	 * Set Longitude
+	 * 
 	 * @param longitude
 	 */
 	public void setLongitude(ArrayList<String> longitude) {
@@ -140,6 +171,7 @@ public class ParkingLots extends Database {
 
 	/**
 	 * Get Latitude
+	 * 
 	 * @return
 	 */
 	public ArrayList<String> getLatitude() {
@@ -148,6 +180,7 @@ public class ParkingLots extends Database {
 
 	/**
 	 * SetLatitude
+	 * 
 	 * @param latitude
 	 */
 	public void setLatitude(ArrayList<String> latitude) {
@@ -156,6 +189,7 @@ public class ParkingLots extends Database {
 
 	/**
 	 * Get dbName
+	 * 
 	 * @return
 	 */
 	public static String getdbName() {
@@ -164,6 +198,7 @@ public class ParkingLots extends Database {
 
 	/**
 	 * Set dbName
+	 * 
 	 * @param dbName
 	 */
 	public static void setdbName(String dbName) {
@@ -172,6 +207,7 @@ public class ParkingLots extends Database {
 
 	/**
 	 * Get TblName
+	 * 
 	 * @return
 	 */
 	public static String getTblName() {
@@ -180,6 +216,7 @@ public class ParkingLots extends Database {
 
 	/**
 	 * Set TblName
+	 * 
 	 * @param tblName
 	 */
 	public static void setTblName(String tblName) {

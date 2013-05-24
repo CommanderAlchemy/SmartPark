@@ -71,8 +71,9 @@ public class GPSService extends Service {
 		} catch (IllegalArgumentException ex) {
 			Log.e(TAG, "gps provider does not exist " + ex);
 		}
-
-		gpsReceiver = new GPSReceiver(null);
+		
+		
+		gpsReceiver = new GPSReceiver();
 	}// ==========================================================
 
 	/**

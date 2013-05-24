@@ -135,7 +135,6 @@ public class Customer extends Database {
 	 */
 	public void insertCustomerData(String[] columnData) {
 
-
 		insertIntoTable(tblName, columns, columnTypes, columnData);
 		String s = "";
 		for (String str : columnData) {

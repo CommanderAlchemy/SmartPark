@@ -15,13 +15,13 @@ public class GPSReceiver extends BroadcastReceiver {
 	private static final String TAG = "GPSReceiver";
 
 	private String gpsinfo;
-	private TextView gps_text;
+	private PositionEMA positionEMA;
 	private int invoke = 0;
 
 	// ============================================
 
-	public GPSReceiver(TextView gps_text) {
-		this.gps_text = gps_text;
+	public GPSReceiver() {
+		this.positionEMA = new PositionEMA(10);
 	}
 	
 	@Override

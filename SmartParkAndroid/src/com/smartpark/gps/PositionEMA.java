@@ -22,7 +22,7 @@ import com.smartpark.background.Ref;
  * @author Saeed
  * 
  */
-public class positionEMA {
+public class PositionEMA {
 
 	private LinkedList<Location> locationList;
 	private int maxMeasurements;
@@ -31,7 +31,7 @@ public class positionEMA {
 	private boolean D = Ref.D;
 	private String TAG = "positionEMA";
 
-	public positionEMA(int size) {
+	public PositionEMA(int size) {
 		locationList = new LinkedList<Location>();
 		maxMeasurements = size;
 	}

@@ -1,6 +1,7 @@
 package tables;
 
-import java.util.ArrayList;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import database.Database;
 
@@ -12,11 +13,22 @@ public class ParkingLots extends Database {
 	private String smsQuery;
 	private String ticketHours;
 	private String freeHours;
-	private ArrayList<String> longitude;
-	private ArrayList<String> latitude;
+	private String longitude;
+	private String latitude;
+
+	// == Settings for the Table ========================
 
 	private static String dbName = "test";
 	private static String tblName = "ParkingLots";
+	private static String[] columns = { "price", "company", "smsQuery",
+			"ticketHours", "freeHours", "longitude", "latitude" };
+
+	private String[] columnTypes = { "REAL", "TEXT", "TEXT", "TEXT", "TEXT",
+			"TEXT", "TEXT" };
+
+	boolean[] notNull = { true, true, false, true, false, true, true };
+
+	// --------------------------------------------------
 
 	/**
 	 * ParkingLots Constructor
@@ -27,9 +39,19 @@ public class ParkingLots extends Database {
 		super(dbName);
 	}
 
+	/**
+	 * 
+	 * @param price
+	 * @param company
+	 * @param smsQuery
+	 * @param ticketHours
+	 * @param freeHours
+	 * @param longitude
+	 * @param latitude
+	 */
 	public ParkingLots(long price, String company, String smsQuery,
-			String ticketHours, String freeHours, ArrayList<String> longitude,
-			ArrayList<String> latitude) {
+			String ticketHours, String freeHours, String longitude,
+			String latitude) {
 		super(dbName);
 		this.price = price;
 		this.company = company;
@@ -39,10 +61,69 @@ public class ParkingLots extends Database {
 		this.longitude = longitude;
 		this.latitude = latitude;
 	}
-	
-	public void CreateParkingLotsTable(){
-		
+
+	/**
+	 * Create ParkingLots Table
+	 */
+	public String CreateParkingLotsTable() {
+		String error = createTable(tblName, columns, columnTypes, notNull);
+		if (error.length() == 0){
+			System.out.println(tblName + " table successfully created in "
+					+ dbName);
+		}
+		return error;
 	}
+
+	/**
+	 * Insert Data Into Table
+	 * @param columnData
+	 */
+	public void InsertParkingLotsData(String[] columnData) {
+
+		insertIntoTable(tblName, columns, columnTypes, columnData);
+
+		System.out.println(columnData.toString());
+	}
+
+	/**
+	 * 
+	 * @param searchString
+	 * @param columnNr
+	 */
+	public void selectParkingLots(String searchString, int columnNr, boolean rangeSelection) {
+
+		ResultSet result = selectDataFromTable(tblName, columns, searchString,
+				columnNr, rangeSelection);
+
+		try {
+			while (result.next()) {
+				this.ID = result.getLong("ID");
+				this.price = result.getLong("price");
+				this.company = result.getString("company");
+				this.smsQuery = result.getString("smsQuery");
+				this.ticketHours = result.getString("ticketHours");
+				this.freeHours = result.getString("freeHours");
+				this.longitude = result.getString("longitude");
+				this.latitude = result.getString("latitude");
+				System.out.println(this.toString());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * UpdateParkingLotsData
+	 * @param searchCol
+	 * @param searchValue
+	 * @param whatCol
+	 * @param whatValue
+	 */
+	public void updateParkingLotsData(String searchCol, String searchValue,
+			String whatCol, String whatValue) {
+		updateTableData(searchCol, searchValue, whatCol, whatValue);
+	}
+
 	/**
 	 * GetID
 	 * 
@@ -149,42 +230,6 @@ public class ParkingLots extends Database {
 	 */
 	public void setFreeHours(String freeHours) {
 		this.freeHours = freeHours;
-	}
-
-	/**
-	 * Get Longitude
-	 * 
-	 * @return
-	 */
-	public ArrayList<String> getLongitude() {
-		return longitude;
-	}
-
-	/**
-	 * Set Longitude
-	 * 
-	 * @param longitude
-	 */
-	public void setLongitude(ArrayList<String> longitude) {
-		this.longitude = longitude;
-	}
-
-	/**
-	 * Get Latitude
-	 * 
-	 * @return
-	 */
-	public ArrayList<String> getLatitude() {
-		return latitude;
-	}
-
-	/**
-	 * SetLatitude
-	 * 
-	 * @param latitude
-	 */
-	public void setLatitude(ArrayList<String> latitude) {
-		this.latitude = latitude;
 	}
 
 	/**

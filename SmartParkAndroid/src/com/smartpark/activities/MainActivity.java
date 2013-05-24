@@ -109,8 +109,8 @@ public class MainActivity extends FragmentActivity implements
 		// Restore additional variables and objects from last session
 		if (savedInstanceState != null) {
 		}
-		// startService(new Intent(getBaseContext(),
-		// BackOperationService.class));
+		 startService(new Intent(getBaseContext(),
+		 BackOperationService.class));
 	}
 
 	@Override

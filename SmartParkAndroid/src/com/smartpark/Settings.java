@@ -19,3 +19,4 @@ public class Settings {
 	public static String MCUbluetoothAddress = "00:00:00:00:00";
 }
 
+ 

@@ -67,9 +67,12 @@ public class BackOperationService extends Service {
 		startService(new Intent(getBaseContext(), GPSService.class));
 
 		applicationContext = getApplicationContext();
-		Toast.makeText(applicationContext, "Service started",
+		
+		Toast.makeText(getBaseContext(), "Service started",
 				Toast.LENGTH_SHORT).show();
+		
 		// -----------
+		
 		btController = new BlueController(applicationContext);
 		tcpController = new TCPController();
 		handler = new Handler();
@@ -84,6 +87,7 @@ public class BackOperationService extends Service {
 	public void onDestroy() {
 		super.onDestroy(); // this is not needed in service
 		Log.e(TAG, "++ onDestroy ++");
+		
 		// We first stop the thread
 		// We invoke all the cleanUp()-method of the different classes if they
 		// exist
@@ -134,24 +138,32 @@ public class BackOperationService extends Service {
 
 			Ref.bgThread.start();
 		} else {
-			if (!Ref.bgThread.isAlive() && Ref.bgThread.getState() == Thread.State.RUNNABLE
+			if (!Ref.bgThread.isAlive()
+					&& Ref.bgThread.getState() == Thread.State.RUNNABLE
 					&& Ref.bgThread.getState() == Thread.State.TERMINATED) {
-				
+
 				Ref.bgThread.start();
 			}
 		}
 
-		Log.i(TAG, "Service action= " + intent.getAction());
+//		Log.i(TAG, "Service action= " + intent.getAction());
 
 		boolean restart = intent.getBooleanExtra("Restart", false);
-		
-		if(restart){
+
+		if (restart) {
 			Ref.activeActivity.finish();
+			for (int i = 0; i < 2; i++) {
+				try {
+					Thread.currentThread();
+					Thread.sleep(100);
+				} catch (Exception e) {
+					Log.e("Therad sleep", "--> Sleep didn't work");
+				}
+			}
 			Intent i = new Intent(getApplicationContext(), MainActivity.class);
 			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(i);
 		}
-		
-		return START_STICKY;
+		return START_NOT_STICKY;
 	}
 }

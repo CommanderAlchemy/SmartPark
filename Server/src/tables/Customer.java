@@ -1,9 +1,6 @@
 package tables;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import database.Database;
 
 public class Customer extends Database {

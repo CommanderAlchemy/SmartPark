@@ -22,7 +22,7 @@ public class Customer extends Database {
 	// == Settings for the Table ========================
 	
 	private static String dbName = "test";
-	private static String tblName = "Customer";
+	private String tblName = "Customer";
 	private static String[] columns = { "cont", "ssNbr", "Forname", "Lastname",
 			"Address", "PhoneNbr", "Password", "SmartParkID",
 			"RegistrationDate", "Balance" };
@@ -107,7 +107,7 @@ public class Customer extends Database {
 	 * 
 	 * @return
 	 */
-	public String CreateCustomerTable() {
+	public String createCustomerTable() {
 		String error = createTable(tblName, columns, columnTypes, notNull);
 		if (error.length() == 0){
 			System.out.println(tblName + " table successfully created in "
@@ -118,7 +118,7 @@ public class Customer extends Database {
 
 	// -----------------------------------------------------------------
 
-	public void InsertCustomerData(String[] columnData) {
+	public void insertCustomerData(String[] columnData) {
 
 		insertIntoTable(tblName, columns, columnTypes, columnData);
 
@@ -174,7 +174,7 @@ public class Customer extends Database {
 	 * @param whatValue
 	 *            What value should that column be?
 	 */
-	public void UpdateCustomerTable(String searchColumn, String searchValue,
+	public void updateCustomerTable(String searchColumn, String searchValue,
 			String whatColumn, String whatValue) {
 		updateTableData(searchColumn, searchValue, whatColumn, whatValue);
 	}
@@ -375,7 +375,18 @@ public class Customer extends Database {
 
 	// -----------------------------------------------------------------
 	public static void main(String[] args) {
-
+		
+		
+		
+//		Customer c = new Customer("910611");
+//		c.createCustomerTable();
+//		String[] data = {"1", "'910611'", "Artur", "Olech", "Snödroppsgatan3", "0762361910", "artur", "001First", "Today", "0"};
+//		c.insertCustomerData(data);
+//		String[] data2 = {"0", "6666", "Artur", "Olech", "Snödroppsgatan3", "0762361910", "artur", "001First", "Today", "0"};
+//		c.insertCustomerData(data2);
+		Customer c = new Customer();
+		c.selectCustomer(null, 1, false);
+		
 		// for (String s : args) {
 		// switch (s) {
 		// case "CreateTable":

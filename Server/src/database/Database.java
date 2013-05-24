@@ -121,7 +121,7 @@ public class Database {
 	 * @param columnTypes
 	 * @param columnData
 	 */
-	public void insertIntoTable(String tblName, String[] columns,
+	protected void insertIntoTable(String tblName, String[] columns,
 			String[] columnTypes, String[] columnData) {
 		// check for spaces in tablename
 		if (tblName.contains(" ")) {
@@ -270,10 +270,10 @@ public class Database {
 
 				}
 			} else {
-				// result = statement.executeQuery("SELECT * FROM Customer;"
-				// + searchValue);
-				result = statement.executeQuery("SELECT * FROM " + tblName
-						+ ";");
+				 result = statement.executeQuery("SELECT * FROM Customer;"
+				 + searchString);
+//				result = statement.executeQuery("SELECT * FROM " + tblName
+//						+ ";");
 			}
 		} catch (Exception e) {
 			System.out.println("[ERROR] During Lookup Table");
@@ -365,7 +365,7 @@ public class Database {
 		boolean[] notNull = { true, true, true, true, true, true, true, true,
 				true, false };
 		Database j = new Database(dbName);
-		j.selectDataFromTable(tblName, columns, "'juhu'", 2, false);
+		j.selectDataFromTable(tblName, columns, "", 1, false);
 
 	}
 }

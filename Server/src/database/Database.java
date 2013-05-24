@@ -101,6 +101,7 @@ abstract public class Database {
 		} catch (SQLException e1) {
 			System.out.println("[ERROR] During Create New Customer Table:");
 			System.err.println(e1.getClass().getName() + ": " + e1.getMessage());
+
 		} finally {
 			closeConnection();
 		}
@@ -111,7 +112,70 @@ abstract public class Database {
 	 * 
 	 * @param obj
 	 */
-	public void insertIntoTable(Object obj) {
+	public void insertIntoTable(String tblName, String[] columns) {
+
+		// check for spaces in tablename
+		if (tblName.contains(" ")) {
+			System.out.println("You may not use [space] in table name.");
+			return;
+		}
+		// Check for equal string array sizes
+		if (columns.length != columnTypes.length
+				|| columnTypes.length != notNull.length) {
+			System.out.println("The arrays are not equa in length");
+			return;
+		}
+		String sql = "CREATE TABLE " + tblName + " (ID INTEGER PRIMARY KEY,";
+
+		for (int i = 0; i < columns.length; i++) {
+			sql += columns[i] + " " + columnTypes[i]
+					+ ((notNull[i]) ? " NOT NULL" : "");
+			if (i != columns.length - 1) {
+				sql += ",\n";
+			} else {
+				sql += ")";
+			}
+		}
+		// ----------------------------------------------------------------
+		// check for spaces in tablename
+		if (tblName.contains(" ")) {
+			System.out.println("You may not use [space] in table name.");
+			return;
+		}
+		// Check for equal string array sizes
+//		if (columns.length != columnTypes.length
+//				|| columnTypes.length != notNull.length) {
+//			System.out.println("The arrays are not equa in length");
+//			return;
+//		}
+		
+		String sql = "CREATE TABLE " + tblName + " (ID INTEGER PRIMARY KEY,";
+		
+		for(int i = 0 ; i < columns.length ; i++){
+			
+		}
+		
+		try {
+			/* @formatter:off */
+			sql = "INSERT INTO " + tblName + "(ID," +             cont,ssNbr,ForName,Lastname,Address,PhoneNbr,Password,SmartParkID,Registered,Balance) "
+					+ "VALUES (" + "NULL" + "," + c.cont + ",'" + c.ssNbr
+					+ "','" + c.forname + "','" + c.lastname + "','"
+					+ c.address + "','" + c.phoneNbr + "','" + c.password
+					+ "','" + c.smartParkID + "','" + c.registered + "',"
+					+ c.balance + ");";
+
+			/* @formatter:on */
+			statement = super.getConnection().createStatement();
+			statement.executeUpdate(sql);
+			statement.close();
+			super.closeConnection();
+
+		} catch (Exception e) {
+			System.out
+					.println("[ERROR] During Insert New Customer Into Customer Table:");
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+		}
+
 	}
 
 	/**

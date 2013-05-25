@@ -42,7 +42,7 @@ public class DatePickerFragment extends DialogFragment implements
 	// ------------------------------------------------------
 	@Override
 	public void onDateSet(DatePicker view, int year, int month, int day) {
-		Log.i(TAG, "++ onDateSet ++");
+		if(D)Log.i(TAG, "++ onDateSet ++");
 		
 		/*
 		 * we are saving the date to use this as the default next time the user

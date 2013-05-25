@@ -62,6 +62,8 @@ public class LoginActivity extends Activity {
 	private boolean timeout = false;
 
 	private final boolean D = Ref.D;
+
+	protected SharedPreferences loginSettings;
 	private static final String TAG = "LoginActivity";
 
 	// ================================================================
@@ -102,6 +104,7 @@ public class LoginActivity extends Activity {
 						attemptLogin();
 					}
 				});
+		loginSettings = getSharedPreferences("loginActivity", MODE_PRIVATE);
 	}
 
 	@Override
@@ -294,8 +297,13 @@ public class LoginActivity extends Activity {
 	 * loop while waiting saves power.
 	 */
 	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+		public UserLoginTask getUserTask() {
+			return this;
+		}
+
 		@Override
 		protected Boolean doInBackground(Void... params) {
+			Log.e(TAG, "----- async task");
 			messages.clear();
 
 			String queryToServer = "Login;"
@@ -319,19 +327,28 @@ public class LoginActivity extends Activity {
 			Log.e(TAG, "Sending Login Request: " + queryToServer);
 			Ref.bgThread.sendByTCP(queryToServer);
 
-			int iterations = 0;
-			while (!timeout) {
+			while (messages.size() == 0) {
+				//
+				// int iterations = 0;
+				// while (!timeout) {
+				try {
+					Thread.currentThread();
+					Thread.sleep(1000);
+				} catch (Exception e) {
+					Log.e("Therad sleep", "--> Sleep didn't work");
+				}
+				
+				//
 				// try {
 				// Thread.currentThread();
 				// Thread.sleep(100);
-				// } catch (Exception e) {
-				// Log.e("Therad sleep", "--> Sleep didn't work");
+				// synchronized (this) {
+				// Log.e(TAG, "------Waiting before Wait");
+				// this.wait();
+				// Log.e(TAG, "----Waiting");
 				// }
-
-				try {
-					wait(1000);
-				} catch (InterruptedException e) {
-				}
+				// } catch (InterruptedException e) {
+				// }
 
 				for (int i = 0; i < messages.size(); i++) {
 					String line = messages.getFirst();
@@ -353,12 +370,13 @@ public class LoginActivity extends Activity {
 						messages.removeFirst();
 					}
 				}
-				if (iterations == 100) {
-					timeout = true;
-				}
-				iterations++;
-				Log.e(TAG, "" + iterations);
 			}
+			// if (iterations == 100) {
+			// timeout = true;
+			// }
+			// iterations++;
+			// Log.e(TAG, "" + iterations);
+			// }
 			return false;
 		}
 
@@ -411,4 +429,5 @@ public class LoginActivity extends Activity {
 			showProgress(false);
 		}
 	}
+
 }

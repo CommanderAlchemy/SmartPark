@@ -19,11 +19,12 @@ public class BTAdapterStateReceiver extends BroadcastReceiver {
 	private static final String TAG = "BT_StateReceiver";
 	private static final boolean D = Ref.D;
 
-	private BlueController btController;
+	// private BlueController btController;
 
-	public BTAdapterStateReceiver(BlueController btController) {
+	// public BTAdapterStateReceiver(BlueController btController) {
+	public BTAdapterStateReceiver() {
 		super();
-		this.btController = btController;
+		// this.btController = btController;
 	}
 
 	@Override
@@ -62,27 +63,27 @@ public class BTAdapterStateReceiver extends BroadcastReceiver {
 
 			switch (event) {
 			case BluetoothAdapter.STATE_DISCONNECTED:
-				btController.setDisconnected();
+				BlueController.setDisconnected();
 				if (D)
 					Log.e(TAG, "--> BT - STATE_NOT_CONNECTED");
 				break;
 			case BluetoothAdapter.STATE_CONNECTED:
-				btController.setConnected();
+				BlueController.setConnected();
 				if (D)
 					Log.d(TAG, "--> BT - STATE_CONNECTED");
 				break;
 			case BluetoothAdapter.STATE_CONNECTING:
-				btController.setConnecting();
+				BlueController.setConnecting();
 				if (D)
 					Log.d(TAG, "--> BT - STATE_CONNECTING");
 				break;
 			case BluetoothAdapter.STATE_DISCONNECTING:
-				btController.setDisconnected();
+				BlueController.setDisconnected();
 				if (D)
 					Log.d(TAG, "--> BT - STATE_DISCONNECTING");
 				break;
 			default:
-				btController.setDisconnected();
+				BlueController.setDisconnected();
 				if (D)
 					Log.e(TAG,
 							"--> BT - STATE_DISCONNECTING (default case = inconclusive)");

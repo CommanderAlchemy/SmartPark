@@ -45,7 +45,6 @@ public class UserHistoryFragment extends Fragment {
 	public static final int BUTTON_TO_DATE = 2;
 
 	private View.OnClickListener onClickListener = new View.OnClickListener() {
-
 		@Override
 		public void onClick(View v) {
 			Log.e(TAG, "++ onClick ++");

@@ -62,7 +62,7 @@ public class BackOperationService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate(); // Not needed
-		Log.e(TAG, "++ onCreate ++");
+		if(D)Log.e(TAG, "++ onCreate ++");
 
 		startService(new Intent(getBaseContext(), GPSService.class));
 
@@ -78,7 +78,7 @@ public class BackOperationService extends Service {
 		handler = new Handler();
 
 		btFoundDeviceReceiver = new BTFoundDeviceReceiver(btController);
-		btAdapterStateReceiver = new BTAdapterStateReceiver(btController);
+		btAdapterStateReceiver = new BTAdapterStateReceiver();
 
 		// -----------
 	}
@@ -86,7 +86,7 @@ public class BackOperationService extends Service {
 	@Override
 	public void onDestroy() {
 		super.onDestroy(); // this is not needed in service
-		Log.e(TAG, "++ onDestroy ++");
+		if(D)Log.e(TAG, "++ onDestroy ++");
 		
 		// We first stop the thread
 		// We invoke all the cleanUp()-method of the different classes if they
@@ -113,7 +113,7 @@ public class BackOperationService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
-		Log.e(TAG, "++ onStartCommand ++");
+		if(D)Log.e(TAG, "++ onStartCommand ++");
 
 		if (!btFindIntentIsRegistered) {
 			// These are all unregistered in onDestroy
@@ -145,7 +145,7 @@ public class BackOperationService extends Service {
 				try {
 					wait(1000);
 				} catch (InterruptedException e) {
-					Log.e(TAG, "--- wait() failed");
+					if(D)Log.e(TAG, "--- wait() failed");
 					e.printStackTrace();
 				}
 				if(!Ref.bgThread.isRunning()){
@@ -154,7 +154,7 @@ public class BackOperationService extends Service {
 			}
 		}
 
-		Log.i(TAG, "--- Service action= " + intent.getAction());
+		if(D)Log.i(TAG, "--- Service action= " + intent.getAction());
 
 		boolean restart = intent.getBooleanExtra("Restart", false);
 
@@ -165,7 +165,7 @@ public class BackOperationService extends Service {
 //					Thread.currentThread();
 //					Thread.sleep(100);
 //				} catch (Exception e) {
-//					Log.e("Therad sleep", "--> Sleep didn't work");
+//					if(D)Log.e("Therad sleep", "--> Sleep didn't work");
 //				}
 //			}
 			Intent i = new Intent(getApplicationContext(), MainActivity.class);

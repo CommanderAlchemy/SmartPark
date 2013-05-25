@@ -20,18 +20,18 @@ public class Ref {
 	 * keeps a list of booleans to determine if all activities have been
 	 * destroyed/paused so that the thread wont continue running for ever.
 	 */
-	// GLOBAL APPLICATION STATE FLAGS
+	// GLOBAL APPLICATION STATE FLAGS / TODO put these into service
 	public static boolean flagMainActivityInFront = false;
 	public static boolean flagSettingsActivityInFront = false;
 	public static boolean flagLoginActivityInFront = false;
 
-	// CONNECTION STATE INTEGERS
+	// CONNECTION STATE INTEGERS / TODO put his into BT and TCP
 	public final static int STATE_NOT_CONNECTED = -1;
 	public final static int STATE_DISCONNECTING = 0;
 	public final static int STATE_CONNECTING = 1;
 	public final static int STATE_CONNECTED = 2;
 
-	// SOME RESPONSES
+	// SOME RESPONSES / TODO move
 	public final static int RESULT_OK = 0;
 	public final static int RESULT_IO_EXCEPTION = -1;
 	public final static int RESULT_UNKNOWN_HOST_EXCEPTION = -2;

@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
-import android.util.Log;
 
 public class CopyPasteCode extends Activity {
 	

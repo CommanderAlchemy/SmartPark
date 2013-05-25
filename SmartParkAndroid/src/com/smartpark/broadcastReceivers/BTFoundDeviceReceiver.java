@@ -14,11 +14,11 @@ public class BTFoundDeviceReceiver extends BroadcastReceiver {
 	private static final boolean D = Ref.D;
 	private static final String TAG = "BT_FoundDeviceReceiver";
 
-	BlueController btController;
+//	BlueController btController;
 
 	public BTFoundDeviceReceiver(BlueController btController) {
 		super();
-		this.btController = btController;
+//		this.btController = btController;
 	}
 
 	@Override
@@ -32,8 +32,8 @@ public class BTFoundDeviceReceiver extends BroadcastReceiver {
 			BluetoothDevice device = intent
 					.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 			// Add the found device to the foundDevices ArrayList
-			Log.e(TAG, "insert" + device.getName());
-			BlueController.setFoundDevice(device);
+			if(D)Log.e(TAG, "insert" + device.getName());
+			BlueController.addFoundDeviceTolist(device);
 		}
 	}
 }

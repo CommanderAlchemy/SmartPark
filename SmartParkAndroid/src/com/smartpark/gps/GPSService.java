@@ -45,7 +45,7 @@ public class GPSService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate(); // Not needed
-		Log.i(TAG, "++ onCreate ++: ");
+		if(D)Log.i(TAG, "++ onCreate ++: ");
 
 		if (locationManager == null) {
 			locationManager = (LocationManager) getApplicationContext()
@@ -57,9 +57,9 @@ public class GPSService extends Service {
 					LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL,
 					LOCATION_DISTANCE, networkLocationListener);
 		} catch (java.lang.SecurityException ex) {
-			Log.e(TAG, "fail to request location update", ex);
+			if(D)Log.e(TAG, "fail to request location update", ex);
 		} catch (IllegalArgumentException ex) {
-			Log.e(TAG, "network provider does not exist, " + ex);
+			if(D)Log.e(TAG, "network provider does not exist, " + ex);
 		}
 
 		try {
@@ -67,11 +67,10 @@ public class GPSService extends Service {
 					LocationManager.GPS_PROVIDER, LOCATION_INTERVAL,
 					LOCATION_DISTANCE, gpsLocationListener);
 		} catch (java.lang.SecurityException ex) {
-			Log.e(TAG, "fail to request location update", ex);
+			if(D)Log.e(TAG, "fail to request location update", ex);
 		} catch (IllegalArgumentException ex) {
-			Log.e(TAG, "gps provider does not exist " + ex);
+			if(D)Log.e(TAG, "gps provider does not exist " + ex);
 		}
-		
 		
 		gpsReceiver = new GPSReceiver();
 	}// ==========================================================
@@ -82,7 +81,7 @@ public class GPSService extends Service {
 	@Override
 	public void onDestroy() {
 		super.onDestroy(); // this is not needed in service
-		Log.i(TAG, "++ onDestroy ++: ");
+		if(D)Log.i(TAG, "++ onDestroy ++: ");
 		
 		Toast.makeText(this, "GPS-service ended", Toast.LENGTH_SHORT).show();
 
@@ -92,7 +91,7 @@ public class GPSService extends Service {
 				locationManager.removeUpdates(networkLocationListener);
 				locationManager.removeUpdates(gpsLocationListener);
 			} catch (Exception ex) {
-				Log.e(TAG, "fail to remove location listners", ex);
+				if(D)Log.e(TAG, "fail to remove location listners", ex);
 			}
 		}
 
@@ -102,7 +101,7 @@ public class GPSService extends Service {
 				gpsReceiverIsRegistered = false;
 			}
 		} catch (Exception e) {
-			Log.e(TAG, "unregistration failed", e);
+			if(D)Log.e(TAG, "unregistration failed", e);
 			gpsReceiverIsRegistered = false;
 		}
 	}
@@ -119,7 +118,7 @@ public class GPSService extends Service {
 		 * habit out of it, cause it's needed almost everywhere else.
 		 */
 		super.onStartCommand(intent, flags, startId);
-		Log.i(TAG, "++ onStartCommand ++: ");
+		if(D)Log.i(TAG, "++ onStartCommand ++: ");
 
 		/*
 		 * The intent is not used here because this service only has one
@@ -137,13 +136,13 @@ public class GPSService extends Service {
 						"com.smartpark.gpsinfo"));
 				gpsReceiverIsRegistered = true;
 			} catch (Exception e) {
-				Log.e(TAG, "registration failed", e);
+				if(D)Log.e(TAG, "registration failed", e);
 				gpsReceiverIsRegistered = false;
 			}
 		}
 
 		Toast.makeText(this, "GPS-service started", Toast.LENGTH_SHORT).show();
-		Log.i(TAG, "GPS-service started");
+		if(D)Log.i(TAG, "GPS-service started");
 
 		/*
 		 * In case this service is stopped by the system due to lack of
@@ -167,19 +166,19 @@ public class GPSService extends Service {
 		 * this is used when determining whether the new location is better than
 		 * current.
 		 */
-		private static final int HALF_MINUTES = 1000 * 30; // 30 seconds
-		Location mLastLocation;
+//		private static final int HALF_MINUTES = 1000 * 30; // 30 seconds
+//		Location mLastLocation;
 
 		// ==========================================================
 
 		public OurLocationListener(String provider) {
-			// Log.e(TAG, "LocationListener " + provider);
-			mLastLocation = new Location(provider);
+			// if(D)Log.e(TAG, "LocationListener " + provider);
+//			mLastLocation = new Location(provider);
 		}// ==========================================================
 
 		@Override
 		public void onLocationChanged(Location location) {
-			Log.i(TAG, "++ onLocationChanged ++: ");
+			if(D)Log.i(TAG, "++ onLocationChanged ++: ");
 						
 			Intent gpsIntent = new Intent("com.smartpark.gpsinfo");
 			gpsIntent.putExtra("location", location);
@@ -189,14 +188,15 @@ public class GPSService extends Service {
 
 		@Override
 		public void onProviderDisabled(String provider) {
-			Log.i(TAG, "++ onProviderDisabled ++ : " + provider);
-			Toast.makeText(Ref.activeActivity,"++ onProviderDisabled ++ : " + provider,Toast.LENGTH_SHORT).show();
+			if(D)Log.i(TAG, "++ onProviderDisabled ++ : " + provider);
+			// changed from Ref.activeActivity TODO test
+			Toast.makeText(getApplicationContext(),"++ onProviderDisabled ++ : " + provider,Toast.LENGTH_SHORT).show();
 			/*
 			 * Alert the user that the GPS-provider is disabled and this should
 			 * be enabled.
 			 */
 			AlertDialog.Builder builder1 = new AlertDialog.Builder(
-					Ref.activeActivity);
+					getApplicationContext()); // changed from Ref.activeActivity TODO test
 			builder1.setTitle("GPS Disabled!");
 			builder1.setMessage("GPS is disabled and this is vital for the operation of this application.\n\n"
 					+ "Do you wish to enable it now?");
@@ -209,7 +209,8 @@ public class GPSService extends Service {
 			builder1.setPositiveButton("Yes",
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
-							Ref.activeActivity.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+							getApplicationContext().startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+							// changed from Ref.activeActivity TODO test
 						}
 					});
 			AlertDialog alert = builder1.create();
@@ -218,14 +219,15 @@ public class GPSService extends Service {
 
 		@Override
 		public void onProviderEnabled(String provider) {
-			Log.i(TAG, "++ onProviderEnabled ++ : " + provider);
-			Toast.makeText(Ref.activeActivity,"++ onProviderEnabled ++ : " + provider, Toast.LENGTH_SHORT)
+			if(D)Log.i(TAG, "++ onProviderEnabled ++ : " + provider);
+			// changed from Ref.activeActivity TODO test
+			Toast.makeText(getApplicationContext(),"++ onProviderEnabled ++ : " + provider, Toast.LENGTH_SHORT)
 					.show();
 		}// ==========================================================
 
 		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras) {
-			Log.i(TAG, "++ onStatusChanged ++ : " + provider + " " + status
+			if(D)Log.i(TAG, "++ onStatusChanged ++ : " + provider + " " + status
 					+ " " + extras);
 			
 		}// ==========================================================

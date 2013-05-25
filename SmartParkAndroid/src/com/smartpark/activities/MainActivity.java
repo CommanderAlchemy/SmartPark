@@ -88,7 +88,6 @@ public class MainActivity extends FragmentActivity implements
 
 		SharedPreferences loginSettings = getSharedPreferences("loginActivity",
 				MODE_PRIVATE);
-
 		isController = loginSettings.getBoolean("controller", false);
 		isLoggedOn = loginSettings.getBoolean("login", false);
 
@@ -110,8 +109,7 @@ public class MainActivity extends FragmentActivity implements
 		// Restore additional variables and objects from last session
 		if (savedInstanceState != null) {
 		}
-		 startService(new Intent(getBaseContext(),
-		 BackOperationService.class));
+		startService(new Intent(getBaseContext(), BackOperationService.class));
 	}
 
 	@Override
@@ -384,7 +382,8 @@ public class MainActivity extends FragmentActivity implements
 				startService(intent);
 			}
 			if (resultCode == RESULT_CANCELED) {
-				Toast.makeText(getBaseContext(), "Cancelled", Toast.LENGTH_SHORT);
+				Toast.makeText(getBaseContext(), "Cancelled",
+						Toast.LENGTH_SHORT).show();
 			}
 			break;
 		default:
@@ -446,9 +445,10 @@ public class MainActivity extends FragmentActivity implements
 		switch (item.getItemId()) {
 		case 0:
 			Toast.makeText(this, "Login", Toast.LENGTH_SHORT).show();
-			
-			startActivityForResult(new Intent(this, LoginActivity.class).putExtra("CancelAllowed", true),
-					REQUEST_LOGIN);
+
+			startActivityForResult(
+					new Intent(this, LoginActivity.class).putExtra(
+							"CancelAllowed", true), REQUEST_LOGIN);
 			return true;
 
 		case 1:

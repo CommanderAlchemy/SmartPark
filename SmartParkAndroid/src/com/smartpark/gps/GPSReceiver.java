@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.util.Log;
-import android.widget.TextView;
 
 import com.smartpark.background.Ref;
 
@@ -24,6 +23,7 @@ public class GPSReceiver extends BroadcastReceiver {
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
+		if(D)Log.e(TAG, "++ onReceive ++");
 		String action = intent.getAction();
 		if (action.equals("com.smartpark.gpsinfo")) {
 			Location location = intent.getParcelableExtra("location");

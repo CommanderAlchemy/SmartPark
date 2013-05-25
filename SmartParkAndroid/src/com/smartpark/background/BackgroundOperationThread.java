@@ -35,6 +35,14 @@ public class BackgroundOperationThread extends Thread {
 	private TCPController tcpController;
 	private Handler handler;
 
+	public Handler getHandler() {
+		return handler;
+	}
+
+	public void setHandler(Handler handler) {
+		this.handler = handler;
+	}
+
 	// The state of execution
 	private boolean amIRunning = false;
 

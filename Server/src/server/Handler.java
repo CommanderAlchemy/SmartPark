@@ -36,7 +36,7 @@ public class Handler {
 		this.clientThread = clientThread;
 		clientThread.sendMessage("ConnectionACK;0:0");
 	}
-	
+
 	/**
 	 * Command Handler
 	 * 
@@ -45,14 +45,26 @@ public class Handler {
 	public void checkCommand(String message) {
 		String inData[] = message.split(";");
 
-		System.out.println("Handler Got This Message:" + message);
+		System.out.println("<-- Handler Got This Message:" + message);
 
 		switch (inData[0]) {
-		case "Login":
+		case "AutoLogin":
+			String data[] = inData[1].split(":");
+			if (data[1].equals("true")) {
+				if (autoLogin(data[0])) {
+					clientThread.sendMessage("LoginACK;Accepted:" + controller);
+				} else {
+					clientThread.sendMessage("LoginACK;Denied:false");
+				}
+			}
 
+			break;
+		case "Login":
 			this.passwordAccepted = login(inData[1]);
 
 			if (passwordAccepted) {
+				System.out.println("--< Handler send This Message: "
+						+ "LoginACK;Accepted:" + controller);
 				clientThread.sendMessage("LoginACK;Accepted:" + controller);
 			} else {
 				clientThread.sendMessage("LoginACK;Denied:false");
@@ -71,16 +83,16 @@ public class Handler {
 			break;
 
 		case "StartPark":
-			if (passwordAccepted){
+			if (passwordAccepted) {
 				this.smartpark = new SmartPark(customer.getSmartParkID());
 				smartpark.startParking(inData[1]);
 			}
-				// TODO Fix StartPark That will query the database
-				// Possibly query the query() method
-				break;
+			// TODO Fix StartPark That will query the database
+			// Possibly query the query() method
+			break;
 
 		case "StopPark":
-			if (passwordAccepted){
+			if (passwordAccepted) {
 				this.smartpark = new SmartPark(customer.getSmartParkID());
 				smartpark.stopParking(inData[1]);
 			}
@@ -94,6 +106,19 @@ public class Handler {
 		default:
 			break;
 		}
+	}
+
+	public boolean autoLogin(String param) {
+		if (!param.equals("error")) {
+			this.customer = new Customer(param);
+
+			if (customer.getPassword() != null)
+				if (customer.isController())
+					this.controller = true;
+			return true;
+
+		}
+		return false;
 	}
 
 	/**

@@ -241,24 +241,7 @@ public class UserHistoryFragment extends Fragment {
 	public void onResume() {
 		super.onResume();
 		Log.e(TAG, "++ onResume ++");
-
-//		if (datePickerFromDate == null) {
-//			datePickerFromDate = new DatePickerFragment(this);
-//			datePickerToDate = new DatePickerFragment(this);
-//
-//			Calendar cal = Calendar.getInstance();
-//			cal.get(Calendar.YEAR);
-//			cal.get(Calendar.MONTH);
-//			cal.get(Calendar.DAY_OF_MONTH);
-//			int[] date = { cal.get(Calendar.DAY_OF_MONTH),
-//					cal.get(Calendar.MONTH), cal.get(Calendar.YEAR) };
-//			datePickerFromDate.setDate(date);
-//			datePickerToDate.setDate(date);
-//
-//		} else {
-//			OnClickBtnDateEvent(datePickerFromDate.getDate(), BUTTON_FROM_DATE);
-//			OnClickBtnDateEvent(datePickerToDate.getDate(), BUTTON_TO_DATE);
-//		}
+		
 	}
 
 	public void onDestroy() {

@@ -123,7 +123,7 @@ abstract public class Database {
 			statement.executeUpdate(sql);
 			statement.close();
 		} catch (SQLException e) {
-			System.out.println("[ERROR] During create " + tblName + " :");
+			System.out.println("[ERROR] During create" + tblName + " :");
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 		} finally {
 			closeConnection();
@@ -216,7 +216,7 @@ abstract public class Database {
 			if (searchString != null) {
 				if (!rangeSelection) {
 
-					String sql = "SELECT ID,";
+					String sql = "SELECT ";
 
 					for (int i = 0; i < columns.length; i++) {
 
@@ -254,7 +254,7 @@ abstract public class Database {
 								+ e.getMessage());
 					}
 					
-					String sql = "SELECT ID,";
+					String sql = "SELECT ";
 
 					for (int i = 0; i < columns.length; i++) {
 
@@ -295,7 +295,7 @@ abstract public class Database {
 
 			}
 		} catch (Exception e) {
-			System.out.println("[ERROR] During lookup " + tblName + " :");
+			System.out.println("[ERROR] During lookup" + tblName + " :");
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 		}
 

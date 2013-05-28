@@ -23,7 +23,7 @@ public class SmartPark extends Database {
 
 	private static String dbName = "test";
 	private String tblName;
-	private static String[] columns = { "ID","ssNbr", "Longitude", "Latitude",
+	private static String[] columns = { "ssNbr", "Longitude", "Latitude",
 			"StartStamp", "StopStamp", "LicensePlate", "CarModel", "ParkID" };
 
 	private String[] columnTypes = { "TEXT", "TEXT", "TEXT", "TEXT", "TEXT",

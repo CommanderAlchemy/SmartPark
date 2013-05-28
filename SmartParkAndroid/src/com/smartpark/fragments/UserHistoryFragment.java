@@ -94,7 +94,6 @@ public class UserHistoryFragment extends Fragment {
 				{"btnFromDate","btnToDate"};
 		//@formatter:on
 		View view;
-		Log.w(TAG, "------------------- 1");
 		for (int i = 0; i < viewIds.length; i++) {
 
 			view = rootView.findViewById(viewIds[i]);
@@ -102,12 +101,11 @@ public class UserHistoryFragment extends Fragment {
 			if (view instanceof Button) {
 				view.setOnClickListener(onClickListener);
 			}
+			System.out.println();
 			viewReferences.put(viewKeys[i], view);
 		}
 		// === REFERENCES CREATED =======================================
-		Log.w(TAG, "------------------- 2");
 		if (datePickerFromDate == null) {
-			Log.e(TAG, "++ onStart ++ datePickerFromDate == null");
 			datePickerFromDate = new DatePickerFragment(this);
 			datePickerToDate = new DatePickerFragment(this);
 
@@ -132,9 +130,6 @@ public class UserHistoryFragment extends Fragment {
 				OnClickBtnDateEvent(datePickerToDate.getDate(), BUTTON_TO_DATE);
 			}
 		}
-
-		Log.w(TAG, "------------------- 3");
-
 		return rootView;
 	}
 
@@ -152,7 +147,7 @@ public class UserHistoryFragment extends Fragment {
 	// ----------------------------------------------------------
 
 	public void OnClickBtnDateEvent(int[] newDate, int tag) {
-		Log.i(TAG, "++ OnClickBtnDateEvent ++");
+		Log.i(TAG, "++ OnClickBtnDateEvent ++" + newDate[1] + "tag" + tag);
 		String month = null, pickedDate;
 		boolean error = true;
 
@@ -180,16 +175,10 @@ public class UserHistoryFragment extends Fragment {
 
 		Calendar otherDate = Calendar.getInstance();
 		otherDate.set(0, 0, 0, 0, 0, 0);
-		Log.w(TAG, "------------------- 4");
-
-		Log.w(TAG, "-----" + tag);
-
 		switch (tag) {
 		case BUTTON_FROM_DATE:
 			int[] toDate = datePickerToDate.getDate();
-			Log.w(TAG, "------------------- x");
 			otherDate.set(toDate[2], toDate[1], toDate[0]);
-			Log.w(TAG, "------------------- 5");
 
 			switch (newCal.compareTo(otherDate)) {
 			case 1:
@@ -203,7 +192,6 @@ public class UserHistoryFragment extends Fragment {
 		case BUTTON_TO_DATE:
 			int[] fromDate = datePickerFromDate.getDate();
 			otherDate.set(fromDate[2], fromDate[1], fromDate[0]);
-			Log.w(TAG, "------------------- 6");
 
 			switch (newCal.compareTo(otherDate)) {
 			case -1:
@@ -241,7 +229,7 @@ public class UserHistoryFragment extends Fragment {
 	public void onResume() {
 		super.onResume();
 		Log.e(TAG, "++ onResume ++");
-		
+
 	}
 
 	public void onDestroy() {

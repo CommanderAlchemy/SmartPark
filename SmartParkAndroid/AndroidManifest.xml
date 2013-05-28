@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.smartpark.activities.SettingsActivity"
+            android:name="com.smartpark.trash.SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
         <activity

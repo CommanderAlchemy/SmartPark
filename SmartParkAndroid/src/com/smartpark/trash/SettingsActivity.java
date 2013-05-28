@@ -1,4 +1,4 @@
-package com.smartpark.activities;
+package com.smartpark.trash;
 
 import java.util.List;
 

@@ -63,7 +63,7 @@ public class LoginActivity extends Activity {
 
 	private final boolean D = Ref.D;
 
-	protected SharedPreferences loginSettings;
+	private SharedPreferences loginSettings;
 	private static final String TAG = "LoginActivity";
 
 	// ================================================================

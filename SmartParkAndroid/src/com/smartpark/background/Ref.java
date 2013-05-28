@@ -21,9 +21,9 @@ public class Ref {
 	 * destroyed/paused so that the thread wont continue running for ever.
 	 */
 	// GLOBAL APPLICATION STATE FLAGS / TODO put these into service
-	public static boolean flagMainActivityInFront = false;
-	public static boolean flagSettingsActivityInFront = false;
-	public static boolean flagLoginActivityInFront = false;
+//	public static boolean flagMainActivityInFront = false;
+//	public static boolean flagSettingsActivityInFront = false;
+//	public static boolean flagLoginActivityInFront = false;
 
 	// CONNECTION STATE INTEGERS / TODO put his into BT and TCP
 	public final static int STATE_NOT_CONNECTED = -1;

@@ -11,8 +11,6 @@ public class Handler {
 	public void getMessageFromBT(String inData) {
 //		String message[] = inData.split(";");
 
-		
-		
 	}
 
 	public void getMessageFromTCP(String inData) {

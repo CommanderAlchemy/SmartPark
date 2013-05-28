@@ -49,13 +49,20 @@ public class Handler {
 
 		switch (inData[0]) {
 		case "AutoLogin":
+
 			String data[] = inData[1].split(":");
 			if (data[1].equals("true")) {
 				if (autoLogin(data[0])) {
+					System.out.println("--> Handler send This Message: "
+							+ "LoginACK;Accepted:" + controller);
 					clientThread.sendMessage("LoginACK;Accepted:" + controller);
 				} else {
 					clientThread.sendMessage("LoginACK;Denied:false");
 				}
+			} else {
+				System.out.println("--> Handler send This Message: "
+						+ "LoginACK;Denied:false");
+				clientThread.sendMessage("LoginACK;Denied:false");
 			}
 
 			break;
@@ -63,10 +70,12 @@ public class Handler {
 			this.passwordAccepted = login(inData[1]);
 
 			if (passwordAccepted) {
-				System.out.println("--< Handler send This Message: "
+				System.out.println("--> Handler send This Message: "
 						+ "LoginACK;Accepted:" + controller);
 				clientThread.sendMessage("LoginACK;Accepted:" + controller);
 			} else {
+				System.out.println("--> Handler send This Message: "
+						+ "LoginACK;Denied:false");
 				clientThread.sendMessage("LoginACK;Denied:false");
 			}
 
@@ -112,11 +121,11 @@ public class Handler {
 		if (!param.equals("error")) {
 			this.customer = new Customer(param);
 
-			if (customer.getPassword() != null)
+			if (customer.getPassword() != null) {
 				if (customer.isController())
 					this.controller = true;
-			return true;
-
+				return true;
+			}
 		}
 		return false;
 	}

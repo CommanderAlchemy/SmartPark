@@ -125,6 +125,7 @@ abstract public class Database {
 		} catch (SQLException e) {
 			System.out.println("[ERROR] During create" + tblName + " :");
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			errorStack = e.getMessage();
 		} finally {
 			closeConnection();
 		}
@@ -224,8 +225,6 @@ abstract public class Database {
 
 						if (i != columns.length - 1) {
 							sql += ",";
-						} else {
-							sql += "";
 						}
 					}
 
@@ -233,13 +232,14 @@ abstract public class Database {
 					+ tblName 
 					+ " WHERE " 
 					+ columns[columnNr]
-					+ " = " 
-					+ searchString + ";";
+					+ " = \"" 
+					+ searchString + "\";";
 
-//					System.out.println(sql);
-
+					System.out.println("        " + sql);
+//					sql = "SELECT ID,ssNbr,Longitude,Latitude,StartStamp,StopStamp,LicensePlate,CarModel,ParkID FROM SmartPark_001First WHERE ParkID =8;";
+//					sql = "SELECT \"ssNbr\" FROM SmartPark_001First";
 					result = statement.executeQuery(sql);
-
+					
 					// ("SELECT ID,cont,ssNbr,Forname,Lastname,Address,PhoneNbr,Password,SmartParkID,Registered,Balance FROM Customer WHERE ssNbr = '"
 					// + searchString + "';");
 

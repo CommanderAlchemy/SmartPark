@@ -31,7 +31,7 @@ public class SmartPark extends Database {
 
 	private static String dbName = "test";
 	private static String tblName;
-	private static String[] columns = {"ID", "ssNbr", "Longitude", "Latitude",
+	private static String[] columns = {"ssNbr", "Longitude", "Latitude",
 			"StartStamp", "StopStamp", "LicensePlate", "CarModel" };
 
 	private String[] columnTypes = { "TEXT", "TEXT", "TEXT", "TEXT", "TEXT",
@@ -88,8 +88,8 @@ public class SmartPark extends Database {
 		System.out.println(columnData.toString());
 	}
 	
-	public void insertSmartParkData() {
-		String[] columnData = {Long.toString(id),ssNbr,longitude,latitude,startStamp,stopStamp,licensePlate,carModel};
+	public void commit() {
+		String[] columnData = {ssNbr,longitude,latitude,startStamp,stopStamp,licensePlate,carModel};
 		insertIntoTable(tblName, columns, columnTypes, columnData);
 	}
 	
@@ -210,7 +210,7 @@ public class SmartPark extends Database {
 	 */
 	public void startParking(String param) {
 		String[] inputParam = param.split(":");
-		String[] columnData = {Long.toString(id),ssNbr,longitude,latitude,startStamp,stopStamp,licensePlate,carModel};
+		String[] columnData = {ssNbr,longitude,latitude,startStamp,stopStamp,licensePlate,carModel};
 		this.id = countRows(tblName);
 		this.latitude = inputParam[0];
 		this.longitude = inputParam[1];
@@ -417,46 +417,18 @@ public class SmartPark extends Database {
 	}
 
 	public static void main(String[] args) {
+//		SmartPark sp = new SmartPark("001First");
+//		sp.createSmartParkTable();
+//		sp.setSsNbr("910611");
+//		sp.setLongitude("longitude");
+//		sp.setLatitude("latitude");
+//		sp.setStartStamp("start");
+//		sp.setStopStamp("stop");
+//		sp.setLicensePlate("OPH500");
+//		sp.setCarModel("Nissan");
+//		sp.updateSmartParkData("ID", "1", "ssNbr", "910611");
 		for (String s : args) {
-			// switch (s) {
-			// case "CreateTable":
-			// SmartPark sp = new SmartPark("001First");
-			// sp.CreateSmartParkTable();
-			// sp.InsertSmartParkData(new SmartPark("2000", "Long/Lat", "1",
-			// "10", "OPH500", "Nissan"));
-			// sp.InsertSmartParkData(new SmartPark("2001", "Long/Lat", "3",
-			// "1", "MRO500", "Opel"));
-			// sp.InsertSmartParkData(new SmartPark("2003", "Long/Lat", "1",
-			// "null", "TTY500", "Toyota"));
-			//
-			// SmartPark sp0 = new SmartPark("002Second");
-			// sp0.CreateSmartParkTable();
-			// sp0.InsertSmartParkData(new SmartPark("2004", "Long/Lat", "2",
-			// "3", "TTY600", "Lexus"));
-			// sp0.InsertSmartParkData(new SmartPark("2005", "Long/Lat", "1",
-			// "null", "TTY800", "Mercedes"));
-			// sp0.InsertSmartParkData(new SmartPark("2006", "Long/Lat", "5",
-			// "5", "TTY900", "Kia"));
-			//
-			// SmartPark spnull = new SmartPark("000Null");
-			// spnull.CreateSmartParkTable();
-			// spnull.InsertSmartParkData(new SmartPark("1987", "Long/Lat", "4",
-			// "10", "MRO519", "Toyota Celica"));
-			//
-			// break;
-			// case "Print":
-			// System.out.println("Printing all SmartPark Tables in Database\n");
-			// new SmartPark("001First").selectSmartPark(null, null, false);
-			// System.out.println();
-			// new SmartPark("002Second").selectSmartPark(null, null, false);
-			// System.out.println();
-			// new SmartPark("000Null").selectSmartPark(null, null, false);
-			// break;
-			//
-			// default:
-			// System.out.println("Usage:\nCreateTable: To Create 3 SmartPark default tables\nPrint: to print all the created tables");
-			// break;
-			// }
+			
 		}
 
 	}

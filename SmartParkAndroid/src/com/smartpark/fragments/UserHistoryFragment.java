@@ -221,6 +221,7 @@ public class UserHistoryFragment extends Fragment {
 	public void onStart() {
 		super.onStart();
 		Log.e(TAG, "++ onStart ++");
+		// Do not use this. This won't run on orientation change
 
 	}
 

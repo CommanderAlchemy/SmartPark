@@ -397,7 +397,6 @@ public class Customer extends Database {
 	public static void main(String[] args) {
 
 		Customer c = new Customer();
-
 		// c.createCustomerTable();
 		// String[] data = {"1", "910611", "Artur","Olech", "Snödroppsgatan3",
 		// "0762361910", "artur" ,
@@ -426,7 +425,6 @@ public class Customer extends Database {
 		// System.out.println("\n");
 		// System.out.println("looking for all");
 //		 c.selectCustomer(ssN, 1, false);
-
 
 		// for (String s : args) {
 		// switch (s) {

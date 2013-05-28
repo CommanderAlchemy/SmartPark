@@ -290,8 +290,8 @@ public class ParkingLots extends Database {
 	}
 	public static void main(String[] args) {
 		ParkingLots pl = new ParkingLots(25, "QPark", "sms 202034", "08-18", "none", "longitude", "latitude");
-		pl.CreateParkingLotsTable();
-		pl.commit();
+//		pl.CreateParkingLotsTable();
+//		pl.commit();
 	}
 
 }

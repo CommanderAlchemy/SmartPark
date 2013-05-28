@@ -20,14 +20,14 @@ public class Customer extends Database {
 
 	private static String dbName = "test";
 	private String tblName = "Customer";
-	private static String[] columns = { "cont", "ssNbr", "Forname", "Lastname",
+	private static String[] columns = { "ID", "cont", "ssNbr", "Forname", "Lastname",
 			"Address", "PhoneNbr", "Password", "SmartParkID",
 			"RegistrationDate", "Balance" };
 
-	private String[] columnTypes = { "INT", "TEXT", "TEXT", "TEXT", "TEXT",
+	private String[] columnTypes = { "INT", "INT", "TEXT", "TEXT", "TEXT", "TEXT",
 			"TEXT", "TEXT", "TEXT", "TEXT", "REAL" };
 
-	boolean[] notNull = { true, true, true, true, true, true, true, true, true,
+	boolean[] notNull = { false, true, true, true, true, true, true, true, true, true,
 			false };
 
 	// --------------------------------------------------
@@ -42,15 +42,6 @@ public class Customer extends Database {
 	public static final String SmartParkID = "SmartParkID";
 	public static final String RegistrationDate = "RegistrationDate";
 	public static final String Balance = "Balance";
-
-	// private ResultSet result;
-
-	/*
-	 * Avail columns in the customer table
-	 */
-	public enum CustomerColumns {
-		ID, cont, ssNbr, Forname, Lastname, Address, PhoneNbr, Password, SmartparkID, Registered, Balance
-	}
 
 	/**
 	 * Constructor for Customer
@@ -154,7 +145,7 @@ public class Customer extends Database {
 
 		try {
 			while (getResult().next()) {
-				this.id = result.getInt("ID");
+				this.id = result.getLong("ID");
 				this.controller = result.getInt("cont");
 				this.ssNbrr = result.getString("ssNbr");
 				this.forname = result.getString("Forname");
@@ -397,7 +388,7 @@ public class Customer extends Database {
 	public static void main(String[] args) {
 
 		Customer c = new Customer();
-		// c.createCustomerTable();
+//		 c.createCustomerTable();
 		// String[] data = {"1", "910611", "Artur","Olech", "Snödroppsgatan3",
 		// "0762361910", "artur" ,
 		// "001First", "Today", "150"};
@@ -424,7 +415,7 @@ public class Customer extends Database {
 		// c.updateCustomerTable(Balance, "-500", Balance, "-900");
 		// System.out.println("\n");
 		// System.out.println("looking for all");
-//		 c.selectCustomer(ssN, 1, false);
+		 c.selectCustomer("1", 0, false);
 
 		// for (String s : args) {
 		// switch (s) {

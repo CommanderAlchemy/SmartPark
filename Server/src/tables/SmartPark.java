@@ -16,28 +16,20 @@ public class SmartPark extends Database {
 	private String stopStamp;
 	private String licensePlate;
 	private String carModel; // Not needed atm, but may be needed in the future
-
-	private String sql;
-	private Statement statement = null;
-	private ResultSet result;
-
+	private int ParkID;
 	private LinkedList<String> resultList;
-
-	public enum Col {
-		ID, ssNbr, Longitude, Latitude, StartStamp, StopStamp, LicensePlate, CarModel
-	}
 
 	// == Settings for the Table ========================
 
 	private static String dbName = "test";
-	private static String tblName;
-	private static String[] columns = {"ssNbr", "Longitude", "Latitude",
-			"StartStamp", "StopStamp", "LicensePlate", "CarModel" };
+	private String tblName;
+	private static String[] columns = { "ID","ssNbr", "Longitude", "Latitude",
+			"StartStamp", "StopStamp", "LicensePlate", "CarModel", "ParkID" };
 
 	private String[] columnTypes = { "TEXT", "TEXT", "TEXT", "TEXT", "TEXT",
-			"TEXT", "TEXT" };
+			"TEXT", "TEXT", "INT" };
 
-	boolean[] notNull = { true, true, true, true, false, true, true };
+	boolean[] notNull = { true, true, true, true, false, true, true, false};
 	
 
 	// --------------------------------------------------
@@ -110,6 +102,7 @@ public class SmartPark extends Database {
 				this.stopStamp = result.getString("StopStamp");
 				this.licensePlate = result.getString("LicensePlate");
 				this.carModel = result.getString("CarModel");
+				this.ParkID = result.getInt("ParkID");
 				resultList.addLast(this.toString());
 			}
 		} catch (Exception e) {
@@ -210,11 +203,12 @@ public class SmartPark extends Database {
 	 */
 	public void startParking(String param) {
 		String[] inputParam = param.split(":");
-		String[] columnData = {ssNbr,longitude,latitude,startStamp,stopStamp,licensePlate,carModel};
+		System.out.println("tablenamadawde: " + this.tblName);
 		this.id = countRows(tblName);
+		selectSmartPark(Long.toString(id),0,false);
+		String[] columnData = {ssNbr,longitude,latitude,startStamp,stopStamp,licensePlate,carModel};
 		this.latitude = inputParam[0];
 		this.longitude = inputParam[1];
-		selectSmartPark(Long.toString(id),0,false);
 		insertIntoTable(tblName, columns, columnTypes, columnData);
 	}
 	
@@ -417,9 +411,9 @@ public class SmartPark extends Database {
 	}
 
 	public static void main(String[] args) {
-//		SmartPark sp = new SmartPark("001First");
+		SmartPark sp = new SmartPark("001First");
 //		sp.createSmartParkTable();
-//		sp.setSsNbr("910611");
+		sp.setSsNbr("910611");
 //		sp.setLongitude("longitude");
 //		sp.setLatitude("latitude");
 //		sp.setStartStamp("start");
@@ -427,6 +421,8 @@ public class SmartPark extends Database {
 //		sp.setLicensePlate("OPH500");
 //		sp.setCarModel("Nissan");
 //		sp.updateSmartParkData("ID", "1", "ssNbr", "910611");
+//		sp.startParking("start:stop");
+		sp.countRows("SmartPark_001First");
 		for (String s : args) {
 			
 		}

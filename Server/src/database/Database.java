@@ -123,7 +123,7 @@ abstract public class Database {
 			statement.executeUpdate(sql);
 			statement.close();
 		} catch (SQLException e) {
-			System.out.println("[ERROR] During create" + tblName + " :");
+			System.out.println("[ERROR] During create " + tblName + " :");
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 		} finally {
 			closeConnection();
@@ -295,7 +295,7 @@ abstract public class Database {
 
 			}
 		} catch (Exception e) {
-			System.out.println("[ERROR] During lookup" + tblName + " :");
+			System.out.println("[ERROR] During lookup " + tblName + " :");
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 		}
 
@@ -344,24 +344,25 @@ abstract public class Database {
 	}
 	
 	protected int countRows(String tblName){
+		System.out.println("tablename " + tblName);
 		try {
 			statement.getConnection().createStatement();
 			statement.execute("SELECT COUNT(*) FROM " + tblName + ";");
 		} catch (Exception e) {
-			System.out.println("[ERROR] During count rows" + tblName + " :");
+			System.out.println("[ERROR] During count rows " + tblName + " :");
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 		}
 		try {
 			statement.close();
 			closeConnection();
 		} catch (Exception e) {
-			System.out.println("[ERROR] During count rows" + tblName + " :\nConnection Close Exception:");
+			System.out.println("[ERROR] During count rows " + tblName + " :\nConnection Close Exception:");
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 		}
 		try {
 			return statement.getMaxRows();
 		} catch (Exception e) {
-			System.out.println("[ERROR] During count rows" + tblName + " :\nGetMaxRowsException:");
+			System.out.println("[ERROR] During count rows " + tblName + " :\nGetMaxRowsException:");
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 		}
 		return -1;

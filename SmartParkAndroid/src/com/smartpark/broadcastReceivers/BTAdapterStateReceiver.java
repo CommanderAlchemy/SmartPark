@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.smartpark.activities.MainActivity;
 import com.smartpark.background.BackOperationService;
+import com.smartpark.background.Ref;
 import com.smartpark.bluetooth.BlueController;
 
 public class BTAdapterStateReceiver extends BroadcastReceiver {
@@ -20,6 +21,7 @@ public class BTAdapterStateReceiver extends BroadcastReceiver {
 	private static final String TAG = "BT_StateReceiver";
 	private static final boolean D = MainActivity.D;
 	private BackOperationService backOperationService;
+	private Context applicationContext;
 
 	// private BlueController btController;
 
@@ -91,12 +93,12 @@ public class BTAdapterStateReceiver extends BroadcastReceiver {
 							"--> BT - STATE_DISCONNECTING (default case = inconclusive)");
 			}
 		}
-
 	}
 
 	private void giveWarningDialog() {
+		
 		AlertDialog.Builder builder1 = new AlertDialog.Builder(
-				backOperationService);
+				Ref.activeActivity);
 		builder1.setTitle("Problem");
 		builder1.setMessage("You shouldn't disable Bluetooth while running SmartPark application.\n\n"
 				+ "Do you wish to reenable?");

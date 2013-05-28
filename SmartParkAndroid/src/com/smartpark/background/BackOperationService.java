@@ -80,7 +80,7 @@ public class BackOperationService extends Service {
 		tcpController = new TCPController();
 		btController = new BlueController(applicationContext);
 		handler = new Handler(btController, tcpController, mainPreference);
-		bgThread = new BackgroundOperationThread(applicationContext,
+		bgThread = new BackgroundOperationThread(applicationContext, this,
 				btController, tcpController, handler, mainPreference);
 		handler.setBackgroundThread(bgThread);
 		
@@ -141,7 +141,7 @@ public class BackOperationService extends Service {
 
 		if (bgThread == null) {
 			bgThread = new BackgroundOperationThread(applicationContext,
-					btController, tcpController, handler, mainPreference);
+					this, btController, tcpController, handler, mainPreference);
 
 			bgThread.start();
 		} else {

@@ -105,7 +105,7 @@ public class MainActivity extends FragmentActivity implements
 			startActivityForResult(i, REQUEST_LOGIN);
 		} else {
 			// Login the user by known username and password TODO
-			Toast.makeText(this, "Logging in...", Toast.LENGTH_SHORT);
+			Toast.makeText(this, "Logging in... " + ssNbr, Toast.LENGTH_LONG).show();
 		}
 
 		// ==== USER LOGGED ON ===================================

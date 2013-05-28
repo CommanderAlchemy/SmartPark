@@ -30,8 +30,10 @@ public class BackgroundOperationThread extends Thread {
 	private boolean userIsAlreadyAsked = false;
 
 	// REFERENCE TO APLLICATIONCONTEXT
-	private static Context applicationContext;
-
+	private Context applicationContext;
+	
+	private BackOperationService backOperationService;
+	
 	// REFERENCES TO CONTROL-CLASSES
 	private BlueController btController;
 	private TCPController tcpController;
@@ -43,16 +45,18 @@ public class BackgroundOperationThread extends Thread {
 	// The state of execution
 	private boolean amIRunning = false;
 	private boolean isLoggedIn;
+	
 
 	// =========== END OF CLASS VARIABLES ===============================
 
 	public BackgroundOperationThread(Context applicationContext,
-			BlueController btController, TCPController tcpController,
+			BackOperationService backOperationService, BlueController btController, TCPController tcpController,
 			Handler handler, SharedPreferences mainPreference) {
 		if (D)
 			Log.e(TAG, "++ bgThread Constructor ++");
 
-		BackgroundOperationThread.applicationContext = applicationContext;
+		this.applicationContext = applicationContext;
+		this.backOperationService = backOperationService;
 
 		// BT
 		this.btController = btController;
@@ -89,13 +93,13 @@ public class BackgroundOperationThread extends Thread {
 					Toast.LENGTH_SHORT).show();
 		}
 	}
-	
+
 	// ==================================================================
 
 	public boolean isLoggedIn() {
 		return isLoggedIn;
 	}
-	
+
 	// ==================================================================
 
 	public void powerDown() {
@@ -135,10 +139,6 @@ public class BackgroundOperationThread extends Thread {
 				 */
 				userIsAlreadyAsked = true;
 				BlueController.enableAdapter(Ref.activeActivity);
-				if (D)
-					Log.d(TAG, "--> Enabling done");
-				Toast.makeText(applicationContext, "Enabled",
-						Toast.LENGTH_SHORT).show();
 			}
 			if (D)
 				if (D)
@@ -170,7 +170,7 @@ public class BackgroundOperationThread extends Thread {
 		if (D)
 			if (D)
 				Log.e(TAG, "++  run  ++");
-		
+
 		keepRunning = true;
 		int iterations = 0;
 		String inData = null;
@@ -198,12 +198,13 @@ public class BackgroundOperationThread extends Thread {
 					if (D)
 						Log.w(TAG, "NumberFormatException");
 				}
-
-				while (btTransmitBuffer.size() > 0
-						&& BlueController.isConnected()) {
-					if (D)
-						Log.d(TAG, "BT sending data");
-					btWrite();
+				if (btTransmitBuffer != null) {
+					while (btTransmitBuffer.size() > 0
+							&& BlueController.isConnected()) {
+						if (D)
+							Log.d(TAG, "BT sending data");
+						btWrite();
+					}
 				}
 				// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 			} else {
@@ -234,12 +235,13 @@ public class BackgroundOperationThread extends Thread {
 					if (D)
 						Log.w(TAG, "NumberFormatException");
 				}
-
-				while (tcpTransmitBuffer.size() > 0
-						&& tcpController.isConnected()) {
-					if (D)
-						Log.d(TAG, "TCP sending data");
-					tcpWrite();
+				if (tcpTransmitBuffer != null) {
+					while (tcpTransmitBuffer.size() > 0
+							&& tcpController.isConnected()) {
+						if (D)
+							Log.d(TAG, "TCP sending data");
+						tcpWrite();
+					}
 				}
 				// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 			} else {
@@ -257,12 +259,11 @@ public class BackgroundOperationThread extends Thread {
 			// -----------------------------------------------------
 			// -----------------------------------------------------
 			// -----------------------------------------------------
-			
-			
+
 			// ========================================
 			// ===== THREAD MAINTENANCE ===============
 			// ========================================
-			
+
 			// This gives fast processing if there are incoming data.
 			// Saves battery
 			if (inData == null) {
@@ -273,7 +274,7 @@ public class BackgroundOperationThread extends Thread {
 						Log.w(TAG, "InterruptedException: ", e);
 				}
 			}
-			
+
 			// This will echo the server for testing purposes
 			if (iterations == 60) {
 				iterations = 0;
@@ -299,6 +300,7 @@ public class BackgroundOperationThread extends Thread {
 		keepRunning = false;
 		amIRunning = false;
 	}
+
 	// ==================================================================
 	private void btWrite() {
 		if (D)
@@ -310,6 +312,7 @@ public class BackgroundOperationThread extends Thread {
 			}
 		}
 	}
+
 	// ==================================================================
 	private void tcpWrite() {
 		if (D)

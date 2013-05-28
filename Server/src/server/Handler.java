@@ -61,9 +61,9 @@ public class Handler {
 			clientThread.closeConnecton();
 			break;
 
-		case "Query":
+		case "queryHistory":
 			if (passwordAccepted)
-				query(inData[1]);
+				queryHistory(inData[1]);
 
 			break;
 			
@@ -110,13 +110,21 @@ public class Handler {
 	 * Queries the database for information.
 	 * @param param
 	 */
-	public void  query(String searchString) {
+	public void  queryHistory(String searchString) {
 		LinkedList<String> resultList = new LinkedList<String>();
 		this.smartpark = new SmartPark(customer.getSmartParkID());
 
 		this.smartpark.selectSmartPark(searchString, 4, true);
 		resultList = smartpark.getResultList();
 		clientThread.sendMessage(resultList.toString());
-
+	}
+	public void StartParking(){
+		
+	}
+	public void StopParking(){
+		
+	}
+	public void calculateRange(){
+		
 	}
 }

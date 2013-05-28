@@ -101,9 +101,11 @@ public class UserHistoryFragment extends Fragment {
 			if (view instanceof Button) {
 				view.setOnClickListener(onClickListener);
 			}
+			System.out.println();
 			viewReferences.put(viewKeys[i], view);
 		}
 		// === REFERENCES CREATED =======================================
+		System.out.println("savedinstance............");
 
 		if (savedInstanceState != null) {
 			OnClickBtnDateEvent(savedInstanceState.getIntArray("FromDate"),
@@ -111,6 +113,7 @@ public class UserHistoryFragment extends Fragment {
 			OnClickBtnDateEvent(savedInstanceState.getIntArray("ToDate"),
 					BUTTON_TO_DATE);
 		}
+		System.out.println("return...............");
 
 		return rootView;
 	}
@@ -129,7 +132,7 @@ public class UserHistoryFragment extends Fragment {
 	// ----------------------------------------------------------
 
 	public void OnClickBtnDateEvent(int[] newDate, int tag) {
-		Log.i(TAG, "++ OnClickBtnDateEvent ++");
+		Log.i(TAG, "++ OnClickBtnDateEvent ++" + newDate[1] + "tag" + tag);
 		String month = null, pickedDate;
 		boolean error = true;
 
@@ -149,6 +152,7 @@ public class UserHistoryFragment extends Fragment {
 		case 11:	month = "Dec";	break;
 		}
 		/* @formatter:on */
+		System.out.println("Array............");
 		pickedDate = newDate[0] + " " + month + " " + newDate[2];
 		Log.e(TAG, "" + pickedDate);
 
@@ -160,7 +164,7 @@ public class UserHistoryFragment extends Fragment {
 
 		Calendar otherDate = Calendar.getInstance();
 		otherDate.set(0, 0, 0, 0, 0, 0);
-
+System.out.println("switch....................");
 		switch (tag) {
 		case BUTTON_FROM_DATE:
 			int[] toDate = datePickerToDate.getDate();
@@ -176,6 +180,7 @@ public class UserHistoryFragment extends Fragment {
 			}
 			break;
 		case BUTTON_TO_DATE:
+			System.out.println(to........);
 			int[] fromDate = datePickerFromDate.getDate();
 			otherDate.set(fromDate[2], fromDate[1], fromDate[0]);
 
@@ -232,23 +237,23 @@ public class UserHistoryFragment extends Fragment {
 		super.onResume();
 		Log.e(TAG, "++ onResume ++");
 
-//		if (datePickerFromDate == null) {
-//			datePickerFromDate = new DatePickerFragment(this);
-//			datePickerToDate = new DatePickerFragment(this);
-//
-//			Calendar cal = Calendar.getInstance();
-//			cal.get(Calendar.YEAR);
-//			cal.get(Calendar.MONTH);
-//			cal.get(Calendar.DAY_OF_MONTH);
-//			int[] date = { cal.get(Calendar.DAY_OF_MONTH),
-//					cal.get(Calendar.MONTH), cal.get(Calendar.YEAR) };
-//			datePickerFromDate.setDate(date);
-//			datePickerToDate.setDate(date);
-//
-//		} else {
-//			OnClickBtnDateEvent(datePickerFromDate.getDate(), BUTTON_FROM_DATE);
-//			OnClickBtnDateEvent(datePickerToDate.getDate(), BUTTON_TO_DATE);
-//		}
+		if (datePickerFromDate == null) {
+			datePickerFromDate = new DatePickerFragment(this);
+			datePickerToDate = new DatePickerFragment(this);
+
+			Calendar cal = Calendar.getInstance();
+			cal.get(Calendar.YEAR);
+			cal.get(Calendar.MONTH);
+			cal.get(Calendar.DAY_OF_MONTH);
+			int[] date = { cal.get(Calendar.DAY_OF_MONTH),
+					cal.get(Calendar.MONTH), cal.get(Calendar.YEAR) };
+			datePickerFromDate.setDate(date);
+			datePickerToDate.setDate(date);
+
+		} else {
+			OnClickBtnDateEvent(datePickerFromDate.getDate(), BUTTON_FROM_DATE);
+			OnClickBtnDateEvent(datePickerToDate.getDate(), BUTTON_TO_DATE);
+		}
 	}
 
 }

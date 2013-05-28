@@ -128,7 +128,7 @@ public class UserHistoryFragment extends Fragment {
 						BUTTON_FROM_DATE);
 				OnClickBtnDateEvent(datePickerToDate.getDate(), BUTTON_TO_DATE);
 			}
-		
+		Log.e(TAG, "onCreateView ended");
 		return rootView;
 	}
 

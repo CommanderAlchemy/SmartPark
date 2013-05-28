@@ -399,7 +399,7 @@ public class LoginActivity extends Activity {
 					edit.putString("ssNbr", ssNbr);
 					edit.putBoolean("controller", messages.getFirst()
 							.split(";")[1].split(":")[1].equals("true"));
-					edit.putBoolean("login", success);
+					edit.putBoolean("loginState", success);
 					edit.commit();
 				} else {
 					// Storing some data as shared preference

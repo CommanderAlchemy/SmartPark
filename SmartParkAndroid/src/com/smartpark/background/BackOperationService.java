@@ -49,6 +49,7 @@ public class BackOperationService extends Service {
 	private TCPController tcpController;
 	private Handler handler;
 	private BackgroundOperationThread bgThread;
+	private SharedPreferences mainPreference;
 
 	// ============ END OF CLASS-VARIABLES ===========================
 
@@ -67,20 +68,22 @@ public class BackOperationService extends Service {
 		if(D)Log.e(TAG, "++ onCreate ++");
 		
 		startService(new Intent(getBaseContext(), GPSService.class));
-
+		
+		mainPreference = getSharedPreferences("MainPreference", MODE_PRIVATE);
+		
 		applicationContext = getApplicationContext();
 		
 		Toast.makeText(getBaseContext(), "Service started",
 				Toast.LENGTH_SHORT).show();
 		
 		// -----------
-		
-		
-		
-		btController = new BlueController(applicationContext);
 		tcpController = new TCPController();
-		handler = new Handler();
-
+		btController = new BlueController(applicationContext);
+		handler = new Handler(btController, tcpController, mainPreference);
+		bgThread = new BackgroundOperationThread(applicationContext,
+				btController, tcpController, handler, mainPreference);
+		handler.setBackgroundThread(bgThread);
+		
 		btFoundDeviceReceiver = new BTFoundDeviceReceiver();
 		btAdapterStateReceiver = new BTAdapterStateReceiver(this);
 
@@ -137,22 +140,16 @@ public class BackOperationService extends Service {
 		}
 
 		if (bgThread == null) {
-			SharedPreferences mainPreference = getSharedPreferences("MainPreference", MODE_PRIVATE);
 			bgThread = new BackgroundOperationThread(applicationContext,
 					btController, tcpController, handler, mainPreference);
 
 			bgThread.start();
 		} else {
-			if (!bgThread.isAlive()
-					&& bgThread.getState() == Thread.State.RUNNABLE
-					&& bgThread.getState() == Thread.State.TERMINATED
-					&& !bgThread.isRunning()) {
+			if (!bgThread.isRunning()) {
 				try {
-					wait(1000);
-				} catch (InterruptedException e) {
-					if(D)Log.e(TAG, "--- wait() failed");
-					e.printStackTrace();
-				}
+					Thread.currentThread();
+					Thread.sleep(1000);
+				} catch (InterruptedException e1) {}
 				if(!bgThread.isRunning()){
 					bgThread.start();
 				}
@@ -165,14 +162,7 @@ public class BackOperationService extends Service {
 
 		if (restart) {
 			Ref.activeActivity.finish();
-//			for (int i = 0; i < 2; i++) {
-//				try {
-//					Thread.currentThread();
-//					Thread.sleep(100);
-//				} catch (Exception e) {
-//					if(D)Log.e("Therad sleep", "--> Sleep didn't work");
-//				}
-//			}
+
 			Intent i = new Intent(getApplicationContext(), MainActivity.class);
 			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(i);

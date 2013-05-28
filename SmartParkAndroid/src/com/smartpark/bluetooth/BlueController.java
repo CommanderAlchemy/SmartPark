@@ -108,7 +108,7 @@ public class BlueController {
 			btSocket.close();
 			return RESULT_OK;
 		} catch (Exception e) {
-			if(D)Log.e(TAG, "IOException: ", e);
+			if(D)Log.w(TAG, "IOException: ", e);
 			return RESULT_IO_EXCEPTION;
 		}finally{
 			btInStream = null;
@@ -247,7 +247,7 @@ public class BlueController {
 								try {
 									Thread.sleep(1200);
 								} catch (InterruptedException e) {
-									if(D)Log.e(TAG,
+									if(D)Log.w(TAG,
 											"--> Thread.sleep was interrupted!");
 								}
 								btDevice = getFoundDeviceByName(SMARTPARK_DEVICE);
@@ -300,32 +300,29 @@ public class BlueController {
 				 * from google developer)
 				 */
 				stopDiscovery();
-				if(D)Log.e(TAG, "-------1a-------");
 				btSocket.connect();
 				isConnected = true;
 				setConnected();
-				if(D)Log.e(TAG, "-------2-------");
 				/*
 				 * We are changing state to connected since we have a
 				 * BroadcastReceiver for it and it's more reliable.
 				 */
 			} catch (Exception e) {
-				if(D)Log.e(TAG, "-------3-------");
+				Log.w(TAG, "Socket connect Exception: ", e);
 				// Close the socket upon error
 				try {
 					if (D)
 						if(D)Log.e(TAG, "Connection Exception: ", e);
 					setDisconnected();
 					btSocket.close();
-					if(D)Log.e(TAG, "-------4-------");
 				} catch (Exception e2) {
 					if (D)
-						if(D)Log.e(TAG, "Socket Close Exception: " + e2);
+						if(D)Log.w(TAG, "Socket Close Exception: " + e2);
 				}
 			}
 		} catch (Exception e) {
 			if (D)
-				if(D)Log.e(TAG, "Socket init Exception: " + e);
+				if(D)Log.w(TAG, "Socket init Exception: " + e);
 			setDisconnected();
 		}
 
@@ -338,7 +335,7 @@ public class BlueController {
 			}
 		} catch (Exception e) {
 			if (D)
-				if(D)Log.e(TAG, "Socket I/O Streams Exception" + e);
+				if(D)Log.w(TAG, "Socket I/O Streams Exception" + e);
 			setDisconnected();
 		}
 		return isConnected;
@@ -354,11 +351,11 @@ public class BlueController {
 			}
 		} catch (IOException e1) {
 			if (D)
-				if(D)Log.e(TAG, "Sending of data with bt failed" + e1);
+				if(D)Log.w(TAG, "Sending of data with bt failed" + e1);
 			setDisconnected();
 			return RESULT_IO_EXCEPTION;
 		} catch (Exception e1) {
-			if(D)Log.e(TAG, "ggggggggggggggggggg" + e1);
+			if(D)Log.w(TAG, "Exception: " + e1);
 			return RESULT_EXCEPTION;
 		}
 		return RESULT_IO_EXCEPTION;
@@ -391,7 +388,7 @@ public class BlueController {
 			} catch (Exception e1) {
 				setDisconnected();
 				if (D)
-					if(D)Log.e(TAG, "btSocket not connected");
+					if(D)Log.w(TAG, "Exception:", e1);
 			}
 		} else {
 			setDisconnected();
@@ -423,7 +420,7 @@ public class BlueController {
 			return RESULT_OK;
 		} catch (Exception e) {
 			if (D)
-				if(D)Log.e(TAG, "Error closing btSocket: ", e);
+				if(D)Log.w(TAG, "Error closing btSocket: ", e);
 			return RESULT_IO_EXCEPTION;
 		}
 	}
@@ -509,7 +506,7 @@ public class BlueController {
 		try {
 			if(D)Log.i(TAG, " btSocket state: " + btSocket.isConnected() + " boolean: " + (connectionState == STATE_CONNECTED));
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.w(TAG, "Exception: ", e);
 		}
 		return connectionState == STATE_CONNECTED && btSocket.isConnected(); 
 	}
@@ -546,7 +543,7 @@ public class BlueController {
 			}
 		} catch (Exception e) {
 			setDisconnected();
-			e.printStackTrace();
+			Log.w(TAG, "Exception: ", e);
 			return false;
 		}
 

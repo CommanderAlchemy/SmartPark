@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.smartpark.activities.MainActivity;
 import com.smartpark.bluetooth.BlueController;
 import com.smartpark.tcp.TCPController;
 
@@ -20,7 +21,7 @@ public class BackgroundOperationThread extends Thread {
 
 	// Debugging and stuff
 	private static final String TAG = "bgThread";
-	private static final boolean D = false;
+	private static final boolean D = MainActivity.D;
 
 	// USED WHEN INITIATING SOFT SHUTDOWN (RECOMMENDED ON THE INTERNET)
 	private boolean keepRunning = true;
@@ -132,8 +133,8 @@ public class BackgroundOperationThread extends Thread {
 				 * Toasts and others. enableAdapter() in BlueController is one
 				 * of those methods.
 				 */
-				BlueController.enableAdapter(Ref.activeActivity);
 				userIsAlreadyAsked = true;
+				BlueController.enableAdapter(Ref.activeActivity);
 				if (D)
 					Log.d(TAG, "--> Enabling done");
 				Toast.makeText(applicationContext, "Enabled",
@@ -166,13 +167,10 @@ public class BackgroundOperationThread extends Thread {
 		tcpController.setDisconnected();
 		BlueController.setDisconnected();
 
-		// Login the person
-		mainPreference.getString("ssNbr", "NoOne");
-
 		if (D)
 			if (D)
 				Log.e(TAG, "++  run  ++");
-
+		
 		keepRunning = true;
 		int iterations = 0;
 		String inData = null;
@@ -198,7 +196,7 @@ public class BackgroundOperationThread extends Thread {
 					}
 				} catch (NumberFormatException e) {
 					if (D)
-						Log.e(TAG, "NumberFormatException");
+						Log.w(TAG, "NumberFormatException");
 				}
 
 				while (btTransmitBuffer.size() > 0
@@ -234,7 +232,7 @@ public class BackgroundOperationThread extends Thread {
 
 				} catch (NumberFormatException e) {
 					if (D)
-						Log.e(TAG, "NumberFormatException");
+						Log.w(TAG, "NumberFormatException");
 				}
 
 				while (tcpTransmitBuffer.size() > 0
@@ -259,21 +257,24 @@ public class BackgroundOperationThread extends Thread {
 			// -----------------------------------------------------
 			// -----------------------------------------------------
 			// -----------------------------------------------------
-
-			// Check to see if the thread needs to start shutting down
-			// if(D)Log.d(TAG, "--> thread running");
-
+			
+			
+			// ========================================
+			// ===== THREAD MAINTENANCE ===============
+			// ========================================
+			
+			// This gives fast processing if there are incoming data.
+			// Saves battery
 			if (inData == null) {
-				// This gives fast processing if there are incoming data.
-				// Saves battery
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					if (D)
-						Log.e(TAG, "InterruptedException: ", e);
+						Log.w(TAG, "InterruptedException: ", e);
 				}
 			}
-
+			
+			// This will echo the server for testing purposes
 			if (iterations == 60) {
 				iterations = 0;
 				if (D)
@@ -296,8 +297,9 @@ public class BackgroundOperationThread extends Thread {
 		if (D)
 			Log.d(TAG, "--> Thread is shutdown");
 		keepRunning = false;
-	}// ==================================================================
-
+		amIRunning = false;
+	}
+	// ==================================================================
 	private void btWrite() {
 		if (D)
 			Log.e(TAG, "++ btWrite ++");
@@ -307,8 +309,8 @@ public class BackgroundOperationThread extends Thread {
 						.getBytes());
 			}
 		}
-	}// ==================================================================
-
+	}
+	// ==================================================================
 	private void tcpWrite() {
 		if (D)
 			Log.e(TAG, "++ btWrite ++");
@@ -387,20 +389,9 @@ public class BackgroundOperationThread extends Thread {
 	 * @return
 	 */
 	public boolean isRunning() {
-		// TODO Auto-generated method stub
-		// use wait() for thread sleep and notify() to detect a dead thread.
 		boolean temp = amIRunning;
 		amIRunning = false;
 
 		return temp;
 	}
-
-	public Handler getHandler() {
-		return handler;
-	}
-
-	public void setHandler(Handler handler) {
-		this.handler = handler;
-	}
-
 }

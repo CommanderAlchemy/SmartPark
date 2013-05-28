@@ -67,14 +67,14 @@ public class MainActivity extends FragmentActivity implements
 	// isLoggedOn
 	private boolean isLoggedOn = false;
 
-	private SharedPreferences loginSettings;
+	private SharedPreferences mainPreference;
 	
 	// Persons social-security-number
 	private String ssNbr;
 
 	// Debugging and stuff
 	private static final String TAG = "MainActivity";
-	public static final boolean D = false;
+	public static final boolean D = true;
 
 	// RequestCodes
 	public static final int REQUEST_LOGIN = 3;
@@ -92,12 +92,12 @@ public class MainActivity extends FragmentActivity implements
 		myVib = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 		myVib.vibrate(50);
 
-		loginSettings = getSharedPreferences("MainPreference",
+		mainPreference = getSharedPreferences("MainPreference",
 				MODE_PRIVATE);
 		
-		ssNbr = loginSettings.getString("ssNbr", "0000000000");
-		isController = loginSettings.getBoolean("controller", false);
-		isLoggedOn = loginSettings.getBoolean("loginState", false);
+		ssNbr = mainPreference.getString("ssNbr", "0000000000");
+		isController = mainPreference.getBoolean("controller", false);
+		isLoggedOn = mainPreference.getBoolean("loginState", false);
 		
 		if (!isLoggedOn) {
 			Intent i = new Intent(this, LoginActivity.class);
@@ -105,6 +105,7 @@ public class MainActivity extends FragmentActivity implements
 			startActivityForResult(i, REQUEST_LOGIN);
 		} else {
 			// Login the user by known username and password TODO
+			Toast.makeText(this, "Logging in...", Toast.LENGTH_SHORT);
 		}
 
 		// ==== USER LOGGED ON ===================================
@@ -386,7 +387,8 @@ public class MainActivity extends FragmentActivity implements
 				Intent intent = new Intent(getBaseContext(),
 						BackOperationService.class);
 				intent.putExtra("Restart", true);
-
+				Toast.makeText(getBaseContext(), "Cancelled",
+						Toast.LENGTH_SHORT).show();
 				startService(intent);
 			}
 			if (resultCode == RESULT_CANCELED) {
@@ -546,7 +548,7 @@ public class MainActivity extends FragmentActivity implements
 				Thread.currentThread();
 				Thread.sleep(3000);
 			} catch (Exception e) {
-				Log.e("Therad sleep", "--> Sleep didn't work");
+				Log.w("Therad sleep", "--> Sleep didn't work");
 			}
 		}
 	}
@@ -575,7 +577,6 @@ public class MainActivity extends FragmentActivity implements
 			if (isController) {
 				offset = 3;
 			}
-			Log.e(TAG, position + " offset" + offset);
 			switch (position + offset) {
 
 			case 0:

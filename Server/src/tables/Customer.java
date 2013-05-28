@@ -140,7 +140,8 @@ public class Customer extends Database {
 	// -----------------------------------------------------------------
 
 	/**
-	 * Dont forget to put ' around a string you search for. Example: 'Thomas'
+	 * The rangeselection need that the searchString must be able to get
+	 * seperated by ':' into two parameter.
 	 * 
 	 * @param searchString
 	 * @param columnNr
@@ -396,6 +397,7 @@ public class Customer extends Database {
 	public static void main(String[] args) {
 
 		Customer c = new Customer();
+
 		// c.createCustomerTable();
 		// String[] data = {"1", "910611", "Artur","Olech", "Snödroppsgatan3",
 		// "0762361910", "artur" ,
@@ -423,7 +425,8 @@ public class Customer extends Database {
 		// c.updateCustomerTable(Balance, "-500", Balance, "-900");
 		// System.out.println("\n");
 		// System.out.println("looking for all");
-		 c.selectCustomer(ssN, 1, false);
+//		 c.selectCustomer(ssN, 1, false);
+
 
 		// for (String s : args) {
 		// switch (s) {

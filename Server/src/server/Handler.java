@@ -1,12 +1,12 @@
 package server;
 
+import java.rmi.server.LoaderHandler;
 import java.util.LinkedList;
 
 import tables.Customer;
 import tables.ParkingLots;
 import tables.SmartPark;
 import tables.SmartPark.Col;
-
 
 public class Handler {
 
@@ -20,7 +20,7 @@ public class Handler {
 
 	// SmartParkDevice
 	private SmartPark smartpark;
-	
+
 	// ParkingLots
 	private ParkingLots parkinglots;
 
@@ -29,6 +29,7 @@ public class Handler {
 
 	/**
 	 * Constructor
+	 * 
 	 * @param clientThread
 	 */
 	public Handler(ClientThread clientThread) {
@@ -38,6 +39,7 @@ public class Handler {
 	
 	/**
 	 * Command Handler
+	 * 
 	 * @param message
 	 */
 	public void checkCommand(String message) {
@@ -62,22 +64,26 @@ public class Handler {
 			clientThread.closeConnecton();
 			break;
 
-		case "Query":
+		case "queryHistory":
 			if (passwordAccepted)
-				query(inData[1]);
+				queryHistory(inData[1]);
 
 			break;
-			
+
 		case "StartPark":
+			if (passwordAccepted){
+				this.smartpark = new SmartPark(customer.getSmartParkID());
+				smartpark.startParking(inData[1]);
+			}
 				// TODO Fix StartPark That will query the database
 				// Possibly query the query() method
-			break;
-			
+				break;
+
 		case "StopPark":
-				// TODO Fix StopPark That will query the database
-				// Possibly query the query() method
+			// TODO Fix StopPark That will query the database
+			// Possibly query the query() method
 			break;
-			
+
 		case "echo":
 			clientThread.sendMessage("echoACK");
 			break;
@@ -88,6 +94,7 @@ public class Handler {
 
 	/**
 	 * Login Method, checks user and if correct password is supplied.
+	 * 
 	 * @param param
 	 * @return
 	 */
@@ -109,15 +116,25 @@ public class Handler {
 
 	/**
 	 * Queries the database for information.
+	 * 
 	 * @param param
 	 */
-	public void  query(String searchString) {
+	public void queryHistory(String searchString) {
 		LinkedList<String> resultList = new LinkedList<String>();
 		this.smartpark = new SmartPark(customer.getSmartParkID());
 
 		this.smartpark.selectSmartPark(searchString, 4, true);
 		resultList = smartpark.getResultList();
 		clientThread.sendMessage(resultList.toString());
+	}
+
+	
+
+	public void StopParking() {
+
+	}
+
+	public void calculateRange() {
 
 	}
 }

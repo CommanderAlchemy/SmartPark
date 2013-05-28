@@ -46,7 +46,6 @@ public class SmartPark extends Database {
 		super(dbName);
 		this.deviceID = deviceID;
 		this.tblName = "SmartPark_" + deviceID;
-
 		this.resultList = new LinkedList<String>();
 	}
 
@@ -74,7 +73,7 @@ public class SmartPark extends Database {
 
 	}
 
-	public String CreateSmartParkTable() {
+	public String createSmartParkTable() {
 		String error = createTable(tblName, columns, columnTypes, notNull);
 		if (error.length() == 0) {
 			System.out.println(tblName + " table successfully created in "
@@ -83,17 +82,59 @@ public class SmartPark extends Database {
 		return error;
 	}
 
-	public void InsertSmartParkData(String[] columnData) {
+	public void insertSmartParkData(String[] columnData) {
+		insertIntoTable(tblName, columns, columnTypes, columnData);
+		System.out.println(columnData.toString());
+	}
+	
+	public void insertSmartParkData() {
 		insertIntoTable(tblName, columns, columnTypes, columnData);
 		System.out.println(columnData.toString());
 	}
 
+	
+	public void StartParking(String param) {
+		String[] inputParam = param.split(":");
+		
+		selectSmartPark(this.ssNbr,2,false);
+		
+//		smartpark.setLongitude(inputParam[1]);
+//		smartpark.setLatitude(inputParam[1]);
+//		smartpark.insertSmartParkData(columnData)
+//		
+	}
+	
 	public void selectSmartPark(String searchString, int columnNr,
 			boolean rangeSelection) {
 
-		selectDataFromTable(tblName, columns, searchString, columnNr,
-				rangeSelection);
+		ResultSet result = selectDataFromTable(tblName, columns, searchString,
+				columnNr, rangeSelection);
 
+		
+		try {
+			while (getResult().next()) {
+				this.id = result.getInt("ID");
+				this.ssNbr = result.getString("ssNbr");
+				this.longitude = result.getString("Longitude");
+				this.latitude = result.getString("Latitude");
+				this.startStamp = result.getString("StartStamp");
+				this.stopStamp = result.getString("StopStamp");
+				this.licensePlate = result.getString("LicensePlate");
+				this.carModel = result.getString("CarModel");
+				resultList.addLast(this.toString());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			getResult().close();
+			getStatement().close();
+			closeConnection();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		// String tblName, String[] columns,String searchString, int columnNr,
 		// boolean rangeSelection
 
@@ -169,7 +210,7 @@ public class SmartPark extends Database {
 	 * @param whatValue
 	 *            What value should that column be?
 	 */
-	public void UpdateSmartParkData(String searchColumn, String searchValue,
+	public void updateSmartParkData(String searchColumn, String searchValue,
 			String whatColumn, String whatValue) {
 
 		updateTableData(tblName, searchColumn, searchValue, whatColumn, whatValue);

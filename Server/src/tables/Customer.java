@@ -20,13 +20,13 @@ public class Customer extends Database {
 
 	private static String dbName = "test";
 	private String tblName = "Customer";
-	private static String[] columns = { "ID", "cont", "ssNbr", "Forname", "Lastname",
+	private static String[] columns = { "cont", "ssNbr", "Forname", "Lastname",
 			"Address", "PhoneNbr", "Password", "SmartParkID",
 			"RegistrationDate", "Balance" };
 
 	private String[] columnTypes = { "INT", "TEXT", "TEXT", "TEXT", "TEXT",
 			"TEXT", "TEXT", "TEXT", "TEXT", "REAL" };
-	
+
 	boolean[] notNull = { true, true, true, true, true, true, true, true, true,
 			false };
 
@@ -42,9 +42,6 @@ public class Customer extends Database {
 	public static final String SmartParkID = "SmartParkID";
 	public static final String RegistrationDate = "RegistrationDate";
 	public static final String Balance = "Balance";
-
-	
-	
 
 	// private ResultSet result;
 
@@ -154,7 +151,6 @@ public class Customer extends Database {
 		ResultSet result = selectDataFromTable(tblName, columns, searchString,
 				columnNr, rangeSelection);
 
-		
 		try {
 			while (getResult().next()) {
 				this.id = result.getInt("ID");
@@ -173,7 +169,7 @@ public class Customer extends Database {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		try {
 			getResult().close();
 			getStatement().close();
@@ -201,7 +197,8 @@ public class Customer extends Database {
 	 */
 	public void updateCustomerTable(String searchColumn, String searchValue,
 			String whatColumn, String whatValue) {
-		updateTableData(tblName, searchColumn, searchValue, whatColumn, whatValue);
+		updateTableData(tblName, searchColumn, searchValue, whatColumn,
+				whatValue);
 	}
 
 	// -----------------------------------------------------------------
@@ -385,7 +382,7 @@ public class Customer extends Database {
 	 */
 	public String toString() {
 		/* @formatter:off */
-		String string = "ID: " + this.id + " controller: " + this.cont
+		String string = "ID: " + this.id + " controller: " + this.controller
 				+ " ssNbr: " + this.ssNbrr + " Name: " + this.forname
 				+ " Lastname: " + this.lastname + " Address: " + this.address
 				+ " PhoneNbr: " + this.phoneNbr + " Password: " + this.password
@@ -398,65 +395,65 @@ public class Customer extends Database {
 	// -----------------------------------------------------------------
 	public static void main(String[] args) {
 
-		
 		Customer c = new Customer();
-		c.createCustomerTable();
-		String[] data = {"1", "910611", "Artur","Olech", "Snödroppsgatan3", "0762361910", "artur" ,
-				"001First", "Today", "150"};
-		c.insertCustomerData(data);
-		String[] data2 = {"0", "820620", "Saeed","Ghasemi", "Folketspark", "0762361910", "saeed",
-				"002First", "Today", "100"};
-		c.insertCustomerData(data2);
-		String[] data3 = {"0","666", "Truls","jobbarinte", "trelleborg", "9999999 999999", "truls",
-				"003Third", "Never", "-500"};
-		c.insertCustomerData(data3);
-		
-		System.out.println("\n");
-		System.out.println("looking for all");
-		c.selectCustomer(null, 0, false);
-		
-		System.out.println("\n");
-		System.out.println("Select: 100-200 in balance");
-		c.selectCustomer("100:200", 9, true);
-		
-		System.out.println("\n");
-		System.out.println("Update Truls....");
-		c.updateCustomerTable(Balance, "-500", Balance, "-900");
-		System.out.println("\n");
-		System.out.println("looking for all");
-		c.selectCustomer(null, 0, false);
-		
+		// c.createCustomerTable();
+		// String[] data = {"1", "910611", "Artur","Olech", "Snödroppsgatan3",
+		// "0762361910", "artur" ,
+		// "001First", "Today", "150"};
+		// c.insertCustomerData(data);
+		// String[] data2 = {"0", "820620", "Saeed","Ghasemi", "Folketspark",
+		// "0762361910", "saeed",
+		// "002First", "Today", "100"};
+		// c.insertCustomerData(data2);
+		// String[] data3 = {"0","666", "Truls","jobbarinte", "trelleborg",
+		// "9999999 999999", "truls",
+		// "003Third", "Never", "-500"};
+		// c.insertCustomerData(data3);
+		//
+		// System.out.println("\n");
+		// System.out.println("looking for all");
+		// c.selectCustomer(null, 0, false);
+		//
+		// System.out.println("\n");
+		// System.out.println("Select: 100-200 in balance");
+		// c.selectCustomer("100:200", 9, true);
+		//
+		// System.out.println("\n");
+		// System.out.println("Update Truls....");
+		// c.updateCustomerTable(Balance, "-500", Balance, "-900");
+		// System.out.println("\n");
+		// System.out.println("looking for all");
+		 c.selectCustomer(ssN, 1, false);
 
-//		for (String s : args) {
-//			switch (s) {
-//			case "CreateTable":
-//				Customer c = new Customer();
-//				c.CreateCustomerTable();
-//				c.InsertCustomerData(new Customer(1, "910611", "Artur",
-//						"Olech", "Snödroppsgatan3", "0762361910", "artur",
-//						"001First", "Today"));
-//				c.InsertCustomerData(new Customer(0, "820620", "Saeed",
-//						"Ghasemi", "Hyllie", "0763150074", "saeed",
-//						"002Second", "Tomorrow"));
-//				c.InsertCustomerData(new Customer(0, "na", "Truls",
-//						"Haraldsson", "Trelleborg", "some number", "truls",
-//						"003Third", "Never"));
-//
-//				break;
-//			case "Print":
-//				System.out
-//						.println("Printing all customer Tables in Database\n");
-//				c = new Customer();
-//				c.selectCustomer(null);
-//				break;
-//
-//			default:
-//				System.out
-//						.println("Usage:\nCreateTable: To Create 3 customer default inserts\nPrint: to print all the created tables");
-//				break;
-//			}
-//		}
-
+		// for (String s : args) {
+		// switch (s) {
+		// case "CreateTable":
+		// Customer c = new Customer();
+		// c.CreateCustomerTable();
+		// c.InsertCustomerData(new Customer(1, "910611", "Artur",
+		// "Olech", "Snödroppsgatan3", "0762361910", "artur",
+		// "001First", "Today"));
+		// c.InsertCustomerData(new Customer(0, "820620", "Saeed",
+		// "Ghasemi", "Hyllie", "0763150074", "saeed",
+		// "002Second", "Tomorrow"));
+		// c.InsertCustomerData(new Customer(0, "na", "Truls",
+		// "Haraldsson", "Trelleborg", "some number", "truls",
+		// "003Third", "Never"));
+		//
+		// break;
+		// case "Print":
+		// System.out
+		// .println("Printing all customer Tables in Database\n");
+		// c = new Customer();
+		// c.selectCustomer(null);
+		// break;
+		//
+		// default:
+		// System.out
+		// .println("Usage:\nCreateTable: To Create 3 customer default inserts\nPrint: to print all the created tables");
+		// break;
+		// }
+		// }
 
 	}
 }

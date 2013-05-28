@@ -92,7 +92,7 @@ public class Handler {
 
 		case "QueryHistory":
 			System.out.println(" --- QueryHistory --- ");
-			
+
 			if (passwordAccepted)
 				queryHistory(inData[1]);
 
@@ -100,7 +100,7 @@ public class Handler {
 
 		case "StartPark":
 			System.out.println(" --- StartPark --- ");
-			
+
 			if (passwordAccepted) {
 				this.smartpark = new SmartPark(customer.getSmartParkID());
 				smartpark.startParking(inData[1]);
@@ -111,7 +111,7 @@ public class Handler {
 
 		case "StopPark":
 			System.out.println(" --- StopPark --- ");
-			
+
 			if (passwordAccepted) {
 				this.smartpark = new SmartPark(customer.getSmartParkID());
 				smartpark.stopParking(inData[1]);
@@ -157,6 +157,7 @@ public class Handler {
 
 				if (customer.isController())
 					this.controller = true;
+
 				return true;
 			}
 

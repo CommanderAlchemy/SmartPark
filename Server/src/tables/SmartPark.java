@@ -89,18 +89,7 @@ public class SmartPark extends Database {
 	}
 	
 	public void insertSmartParkData() {
-		String[] columnData = {deviceID,ssNbr,longitude,latitude,startStamp,stopStamp,licensePlate,carModel};
-		insertIntoTable(tblName, columns, columnTypes, columnData);
-	}
-
-	
-	public void startParking(String param) {
-		String[] inputParam = param.split(":");
-		String[] columnData = {deviceID,ssNbr,longitude,latitude,startStamp,stopStamp,licensePlate,carModel};
-		this.id = countRows(tblName);
-		this.latitude = inputParam[0];
-		this.longitude = inputParam[1];
-		selectSmartPark(Long.toString(id),0,false);
+		String[] columnData = {Long.toString(id),ssNbr,longitude,latitude,startStamp,stopStamp,licensePlate,carModel};
 		insertIntoTable(tblName, columns, columnTypes, columnData);
 	}
 	
@@ -214,6 +203,29 @@ public class SmartPark extends Database {
 			String whatColumn, String whatValue) {
 
 		updateTableData(tblName, searchColumn, searchValue, whatColumn, whatValue);
+	}
+	/**
+	 * StartParking
+	 * @param param
+	 */
+	public void startParking(String param) {
+		String[] inputParam = param.split(":");
+		String[] columnData = {Long.toString(id),ssNbr,longitude,latitude,startStamp,stopStamp,licensePlate,carModel};
+		this.id = countRows(tblName);
+		this.latitude = inputParam[0];
+		this.longitude = inputParam[1];
+		selectSmartPark(Long.toString(id),0,false);
+		insertIntoTable(tblName, columns, columnTypes, columnData);
+	}
+	
+	/**
+	 * StopParking
+	 * @param param
+	 */
+	public void stopParking(String param){
+		String [] inputParam = param.split(":");
+		this.id = countRows(tblName);
+		updateSmartParkData("ID", Long.toString(this.id), "StopStamp", inputParam[1]);
 	}
 
 	/**

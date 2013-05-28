@@ -80,6 +80,10 @@ public class Handler {
 				break;
 
 		case "StopPark":
+			if (passwordAccepted){
+				this.smartpark = new SmartPark(customer.getSmartParkID());
+				smartpark.stopParking(inData[1]);
+			}
 			// TODO Fix StopPark That will query the database
 			// Possibly query the query() method
 			break;
@@ -126,12 +130,6 @@ public class Handler {
 		this.smartpark.selectSmartPark(searchString, 4, true);
 		resultList = smartpark.getResultList();
 		clientThread.sendMessage(resultList.toString());
-	}
-
-	
-
-	public void StopParking() {
-
 	}
 
 	public void calculateRange() {

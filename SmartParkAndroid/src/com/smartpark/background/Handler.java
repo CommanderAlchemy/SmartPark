@@ -1,6 +1,10 @@
 package com.smartpark.background;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.smartpark.activities.LoginActivity;
 import com.smartpark.activities.MainActivity;
@@ -33,6 +37,7 @@ public class Handler {
 
 	// ================================================================
 	public void getMessageFromTCP(String inData) {
+		Log.e(TAG, "--> Received data = " + inData);
 		String message[] = inData.split(";");
 
 		if (message[0].equals("LoginACK")) {
@@ -43,6 +48,32 @@ public class Handler {
 					+ mainPreference.getString("ssNbr", "error") + ":"
 					+ mainPreference.getBoolean("loginState", false);
 			BackgroundOperationThread.sendByTCP(autoLogin);
+		} else if (message[0].equals("AutoLoginACK")) {
+			String[] data = message[1].split(":");
+
+			if (data[0].equals("Accepted")) {
+				// ======== ALERTDIALOG START =========================
+				AlertDialog.Builder builder1 = new AlertDialog.Builder(
+						Ref.activeActivity);
+				builder1.setTitle("Login Failed");
+				builder1.setMessage("Server did not accept previously saved credentials!"
+						+ "\n\nPlease try again...");
+				builder1.setCancelable(true);
+				builder1.setPositiveButton(android.R.string.ok,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int which) {
+							}
+						});
+				AlertDialog alert = builder1.create();
+				alert.show();
+				// ======== ALERTDIALOG END =========================
+
+				Intent i = new Intent(Ref.activeActivity, LoginActivity.class);
+				i.putExtra("CancelAllowed", false);
+				Ref.activeActivity.startActivityForResult(i,
+						MainActivity.REQUEST_LOGIN);
+			}
 		}
 
 	}

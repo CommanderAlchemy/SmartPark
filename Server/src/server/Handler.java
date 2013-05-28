@@ -56,15 +56,15 @@ public class Handler {
 			if (data[1].equals("true")) {
 				if (autoLogin(data[0])) {
 					System.out.println("--> Handler send This Message: "
-							+ "LoginACK;Accepted:" + controller);
-					clientThread.sendMessage("LoginACK;Accepted:" + controller);
+							+ "AutoLoginACK;Accepted:" + controller);
+					clientThread.sendMessage("AutoLoginACK;Accepted:" + controller);
 				} else {
-					clientThread.sendMessage("LoginACK;Denied:false");
+					clientThread.sendMessage("AutoLoginACK;Denied:false");
 				}
 			} else {
 				System.out.println("--> Handler send This Message: "
-						+ "LoginACK;Denied:false");
-				clientThread.sendMessage("LoginACK;Denied:false");
+						+ "AutoLoginACK;Denied:false");
+				clientThread.sendMessage("AutoLoginACK;Denied:false");
 			}
 
 			break;

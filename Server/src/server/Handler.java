@@ -35,6 +35,8 @@ public class Handler {
 	public Handler(ClientThread clientThread) {
 		this.clientThread = clientThread;
 		clientThread.sendMessage("ConnectionACK;0:0");
+		System.out.println("--> Handler send This Message: "
+				+ "ConnectionACK;0:0");
 	}
 
 	/**
@@ -49,7 +51,7 @@ public class Handler {
 
 		switch (inData[0]) {
 		case "AutoLogin":
-
+			System.out.println(" --- AutoLogin --- ");
 			String data[] = inData[1].split(":");
 			if (data[1].equals("true")) {
 				if (autoLogin(data[0])) {
@@ -67,6 +69,7 @@ public class Handler {
 
 			break;
 		case "Login":
+			System.out.println(" --- Login --- ");
 			this.passwordAccepted = login(inData[1]);
 
 			if (passwordAccepted) {
@@ -81,17 +84,23 @@ public class Handler {
 
 			break;
 		case "Close Connection":
+			System.out.println(" --- Close Connection --- ");
+
 			clientThread.sendMessage("CloseACK");
 			clientThread.closeConnecton();
 			break;
 
-		case "queryHistory":
+		case "QueryHistory":
+			System.out.println(" --- QueryHistory --- ");
+			
 			if (passwordAccepted)
 				queryHistory(inData[1]);
 
 			break;
 
 		case "StartPark":
+			System.out.println(" --- StartPark --- ");
+			
 			if (passwordAccepted) {
 				this.smartpark = new SmartPark(customer.getSmartParkID());
 				smartpark.startParking(inData[1]);
@@ -101,6 +110,8 @@ public class Handler {
 			break;
 
 		case "StopPark":
+			System.out.println(" --- StopPark --- ");
+			
 			if (passwordAccepted) {
 				this.smartpark = new SmartPark(customer.getSmartParkID());
 				smartpark.stopParking(inData[1]);

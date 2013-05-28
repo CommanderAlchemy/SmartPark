@@ -449,7 +449,7 @@ public class SmartPark extends Database {
 	public static void main(String[] args) {
 		SmartPark sp = new SmartPark("001First");
 		sp.createSmartParkTable();
-		sp.selectSmartPark("2", 1, false);
+		sp.selectSmartPark("8", 7, false);
 //		sp.setSsNbr("910611");
 //		sp.setLongitude("longitude");
 //		sp.setLatitude("latitude");

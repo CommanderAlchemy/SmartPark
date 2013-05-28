@@ -23,13 +23,13 @@ public class SmartPark extends Database {
 
 	private static String dbName = "test";
 	private String tblName;
-	private static String[] columns = { "ssNbr", "Longitude", "Latitude",
+	private static String[] columns = {"ssNbr", "Longitude", "Latitude",
 			"StartStamp", "StopStamp", "LicensePlate", "CarModel", "ParkID" };
 
-	private String[] columnTypes = { "TEXT", "TEXT", "TEXT", "TEXT", "TEXT",
+	private String[] columnTypes = {"TEXT", "TEXT", "TEXT", "TEXT", "TEXT",
 			"TEXT", "TEXT", "INT" };
 
-	boolean[] notNull = { true, true, true, true, false, true, true, false};
+	boolean[] notNull = {true, true, true, true, false, true, true, false};
 	
 
 	// --------------------------------------------------
@@ -204,7 +204,6 @@ public class SmartPark extends Database {
 	public void startParking(String param) {
 		String[] inputParam = param.split(":");
 		System.out.println("tablenamadawde: " + this.tblName);
-		this.id = countRows(tblName);
 		selectSmartPark(Long.toString(id),0,false);
 		String[] columnData = {ssNbr,longitude,latitude,startStamp,stopStamp,licensePlate,carModel};
 		this.latitude = inputParam[0];
@@ -218,7 +217,6 @@ public class SmartPark extends Database {
 	 */
 	public void stopParking(String param){
 		String [] inputParam = param.split(":");
-		this.id = countRows(tblName);
 		updateSmartParkData("ID", Long.toString(this.id), "StopStamp", inputParam[1]);
 	}
 
@@ -412,17 +410,16 @@ public class SmartPark extends Database {
 
 	public static void main(String[] args) {
 		SmartPark sp = new SmartPark("001First");
-//		sp.createSmartParkTable();
+		sp.createSmartParkTable();
 		sp.setSsNbr("910611");
-//		sp.setLongitude("longitude");
-//		sp.setLatitude("latitude");
-//		sp.setStartStamp("start");
-//		sp.setStopStamp("stop");
-//		sp.setLicensePlate("OPH500");
-//		sp.setCarModel("Nissan");
-//		sp.updateSmartParkData("ID", "1", "ssNbr", "910611");
-//		sp.startParking("start:stop");
-		sp.countRows("SmartPark_001First");
+		sp.setLongitude("longitude");
+		sp.setLatitude("latitude");
+		sp.setStartStamp("start");
+		sp.setStopStamp("stop");
+		sp.setLicensePlate("OPH500");
+		sp.setCarModel("Nissan");
+//		sp.updateSmartParkData("ID", "0", "ssNbr", "910611");
+		sp.startParking("start:stop");
 		for (String s : args) {
 			
 		}

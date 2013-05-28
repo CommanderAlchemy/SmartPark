@@ -216,7 +216,7 @@ abstract public class Database {
 			if (searchString != null) {
 				if (!rangeSelection) {
 
-					String sql = "SELECT ";
+					String sql = "SELECT ID,";
 
 					for (int i = 0; i < columns.length; i++) {
 
@@ -254,7 +254,7 @@ abstract public class Database {
 								+ e.getMessage());
 					}
 					
-					String sql = "SELECT ";
+					String sql = "SELECT ID, ";
 
 					for (int i = 0; i < columns.length; i++) {
 

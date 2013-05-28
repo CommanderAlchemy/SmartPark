@@ -20,14 +20,14 @@ public class Customer extends Database {
 
 	private static String dbName = "test";
 	private String tblName = "Customer";
-	private static String[] columns = { "ID", "cont", "ssNbr", "Forname", "Lastname",
+	private static String[] columns = {"cont", "ssNbr", "Forname", "Lastname",
 			"Address", "PhoneNbr", "Password", "SmartParkID",
 			"RegistrationDate", "Balance" };
 
-	private String[] columnTypes = { "INT","INT", "TEXT", "TEXT", "TEXT", "TEXT",
+	private String[] columnTypes = {"INT", "TEXT", "TEXT", "TEXT", "TEXT",
 			"TEXT", "TEXT", "TEXT", "TEXT", "REAL" };
 
-	boolean[] notNull = { false, true, true, true, true, true, true, true, true, true,
+	boolean[] notNull = {true, true, true, true, true, true, true, true, true,
 			false };
 
 	// --------------------------------------------------
@@ -398,33 +398,33 @@ public class Customer extends Database {
 
 		Customer c = new Customer();
 
-//		 c.createCustomerTable();
-//		 String[] data = {"1", "910611", "Artur","Olech", "Snödroppsgatan3",
-//		 "0762361910", "artur" ,
-//		 "001First", "Today", "150"};
-//		 c.insertCustomerData(data);
-//		 String[] data2 = {"0", "820620", "Saeed","Ghasemi", "Folketspark",
-//		 "0762361910", "saeed",
-//		 "002First", "Today", "100"};
-//		 c.insertCustomerData(data2);
-//		 String[] data3 = {"0","666", "Truls","jobbarinte", "trelleborg",
-//		 "9999999 999999", "truls",
-//		 "003Third", "Never", "-500"};
-//		 c.insertCustomerData(data3);
-//		
-//		 System.out.println("\n");
-//		 System.out.println("looking for all");
-//		 c.selectCustomer(null, 0, false);
-//		
-//		 System.out.println("\n");
-//		 System.out.println("Select: 100-200 in balance");
-//		 c.selectCustomer("100:200", 9, true);
-//		
-//		 System.out.println("\n");
-//		 System.out.println("Update Truls....");
-//		 c.updateCustomerTable(Balance, "-500", Balance, "-900");
-//		 System.out.println("\n");
-//		 System.out.println("looking for all");
+		 c.createCustomerTable();
+		 String[] data = {"1", "910611", "Artur","Olech", "Snödroppsgatan3",
+		 "0762361910", "artur" ,
+		 "001First", "Today", "150"};
+		 c.insertCustomerData(data);
+		 String[] data2 = {"0", "820620", "Saeed","Ghasemi", "Folketspark",
+		 "0762361910", "saeed",
+		 "002First", "Today", "100"};
+		 c.insertCustomerData(data2);
+		 String[] data3 = {"0","666", "Truls","jobbarinte", "trelleborg",
+		 "9999999 999999", "truls",
+		 "003Third", "Never", "-500"};
+		 c.insertCustomerData(data3);
+		
+		 System.out.println("\n");
+		 System.out.println("looking for all");
+		 c.selectCustomer(null, 0, false);
+		
+		 System.out.println("\n");
+		 System.out.println("Select: 100-200 in balance");
+		 c.selectCustomer("100:200", 9, true);
+		
+		 System.out.println("\n");
+		 System.out.println("Update Truls....");
+		 c.updateCustomerTable(Balance, "-500", Balance, "-900");
+		 System.out.println("\n");
+		 System.out.println("looking for all");
 		 c.selectCustomer("3", 0, false);
 
 		// for (String s : args) {

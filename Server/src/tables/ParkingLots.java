@@ -20,7 +20,7 @@ public class ParkingLots extends Database {
 
 	private static String dbName = "test";
 	private static String tblName = "ParkingLots";
-	private static String[] columns = { "ID", "price", "company", "smsQuery",
+	private static String[] columns = { "price", "company", "smsQuery",
 			"ticketHours", "freeHours", "longitude", "latitude" };
 
 	private String[] columnTypes = { "REAL", "TEXT", "TEXT", "TEXT", "TEXT",
@@ -73,6 +73,12 @@ public class ParkingLots extends Database {
 		}
 		return error;
 	}
+	
+	public void commit() {
+		String[] columnData = {Long.toString(price),company,smsQuery,ticketHours,freeHours,longitude,latitude};
+		insertIntoTable(tblName, columns, columnTypes, columnData);
+	}
+	
 
 	/**
 	 * Insert Data Into Table
@@ -281,6 +287,11 @@ public class ParkingLots extends Database {
 				+ "latitude:"		+ this.longitude.toString()	+ ";"
 				+ "startStamp:" 	+ this.latitude.toString()	+ ";";
 		/* @formatter:on */
+	}
+	public static void main(String[] args) {
+		ParkingLots pl = new ParkingLots(25, "QPark", "sms 202034", "08-18", "none", "longitude", "latitude");
+		pl.CreateParkingLotsTable();
+		pl.commit();
 	}
 
 }

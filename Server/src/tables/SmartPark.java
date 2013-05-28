@@ -16,7 +16,9 @@ public class SmartPark extends Database {
 	private String stopStamp;
 	private String licensePlate;
 	private String carModel; // Not needed atm, but may be needed in the future
-	private String ParkID;
+	private String parkID;
+	
+	
 	private LinkedList<String> resultList;
 
 	// == Settings for the Table ========================
@@ -27,20 +29,39 @@ public class SmartPark extends Database {
 			"StartStamp", "StopStamp", "LicensePlate", "CarModel", "ParkID" };
 
 	private String[] columnTypes = {"TEXT", "TEXT", "TEXT", "TEXT", "TEXT",
-			"TEXT", "TEXT", "INT" };
+			"TEXT", "TEXT", "TEXT" };
 
-	boolean[] notNull = {true, true, true, true, false, true, true, false};
+	boolean[] notNull = {true, true, true, true, false, true, true, true};
 	
 
 	// --------------------------------------------------
 
-
+	public static final String SS_NBR = "ssNbr";
+	public static final String LONGITUDE = "Longitude";
+	public static final String LATITUDE = "Latitude";
+	public static final String START_STAMP = "StartStamp";
+	public static final String STOP_STAMP = "StopStamp";
+	public static final String LICENSEPLATE = "LicensePlate";
+	public static final String CAR_MODEL = "CarModel";
+	public static final String PARK_ID = "ParkID";
+	
+	
+	
 	public SmartPark(String deviceID) {
 		super(dbName);
 		this.deviceID = deviceID;
 		this.tblName = "SmartPark_" + deviceID;
 		this.resultList = new LinkedList<String>();
 	}
+	
+	
+	private void allocateMetaData(){
+		String[] columnData = {"metadata","2", "3","4", "5","6", "7","8"};
+		insertSmartParkData(columnData);
+	}
+	
+	
+	
 
 	/**
 	 * Constructor for smartpark
@@ -54,7 +75,7 @@ public class SmartPark extends Database {
 	 */
 	public SmartPark(String ssNbr, String longitude, String latitude,
 			String startStamp, String stopStamp, String licensePlate,
-			String carModel) {
+			String carModel, String parkID) {
 		super(dbName);
 		this.ssNbr = ssNbr;
 		this.longitude = longitude;
@@ -63,7 +84,7 @@ public class SmartPark extends Database {
 		this.stopStamp = stopStamp;
 		this.licensePlate = licensePlate;
 		this.carModel = carModel;
-
+		this.parkID = parkID;
 	}
 
 	public String createSmartParkTable() {
@@ -71,17 +92,30 @@ public class SmartPark extends Database {
 		if (error.length() == 0) {
 			System.out.println(tblName + " table successfully created in "
 					+ dbName);
+			
+			allocateMetaData();
 		}
 		return error;
 	}
 
+	
 	public void insertSmartParkData(String[] columnData) {
 		insertIntoTable(tblName, columns, columnTypes, columnData);
-		System.out.println(columnData.toString());
+		
+		
+		selectSmartPark("*", 0, false);
+		System.out.println(ssNbr);
+		
+//		int a = Integer.parseInt(this.longitude);
+//		a++;
+//		updateSmartParkData(SS_NBR, "metadata", LONGITUDE, Integer.toString(a));
+//		selectSmartPark("*", 0, false);
+//		System.out.println(ssNbr);
 	}
 	
 	public void commit() {
-		String[] columnData = {ssNbr,longitude,latitude,startStamp,stopStamp,licensePlate,carModel};
+		String[] columnData = {ssNbr,longitude,latitude,startStamp,stopStamp,licensePlate,carModel, parkID};
+		System.out.println(this.toString());
 		insertIntoTable(tblName, columns, columnTypes, columnData);
 	}
 	
@@ -90,8 +124,10 @@ public class SmartPark extends Database {
 
 		ResultSet result = selectDataFromTable(tblName, columns, searchString,
 				columnNr, rangeSelection);
-
 		
+//		private static String[] columns = {"ssNbr", "Longitude", "Latitude",
+//			"StartStamp", "StopStamp", "LicensePlate", "CarModel", "ParkID" };
+//		
 		try {
 			while (getResult().next()) {
 				this.id = result.getInt("ID");
@@ -102,7 +138,8 @@ public class SmartPark extends Database {
 				this.stopStamp = result.getString("StopStamp");
 				this.licensePlate = result.getString("LicensePlate");
 				this.carModel = result.getString("CarModel");
-				this.ParkID = result.getString("ParkID");
+				this.parkID = result.getString("ParkID");
+				System.out.println(this.toString());
 				resultList.addLast(this.toString());
 			}
 		} catch (Exception e) {
@@ -205,7 +242,7 @@ public class SmartPark extends Database {
 		String[] inputParam = param.split(":");
 		System.out.println("tablenamadawde: " + this.tblName);
 		selectSmartPark(Long.toString(id),0,false);
-		String[] columnData = {ssNbr,longitude,latitude,startStamp,stopStamp,licensePlate,carModel,ParkID};
+		String[] columnData = {ssNbr,longitude,latitude,startStamp,stopStamp,licensePlate,carModel,parkID};
 		this.latitude = inputParam[0];
 		this.longitude = inputParam[1];
 		insertIntoTable(tblName, columns, columnTypes, columnData);
@@ -396,32 +433,37 @@ public class SmartPark extends Database {
 	 */
 	public String toString() {
 		/* @formatter:off */
-		return "ID:"				+ this.id			 	+ ";"
-				+ "deviceID:"		+ deviceID 				+ ";"
-				+ "ssNbr:"			+ this.ssNbr			+ ";"
-				+ "longitude:"		+ this.longitude 		+ ";"
-				+ "latitude:"		+ this.latitude			+ ";"
-				+ "startStamp:" 	+ this.startStamp  		+ ";"
-				+ "stopStamp:"		+ this.stopStamp 		+ ";"
-				+ "licensePlate:" 	+ this.licensePlate 	+ ";"
-				+ "carModel:" 		+ this.carModel 		+ ";";
+		return "ID:"				+ this.id			 	+ "; "
+				+ "deviceID:"		+ deviceID 				+ "; "
+				+ "ssNbr:"			+ this.ssNbr			+ "; "
+				+ "longitude:"		+ this.longitude 		+ "; "
+				+ "latitude:"		+ this.latitude			+ "; "
+				+ "startStamp:" 	+ this.startStamp  		+ "; "
+				+ "stopStamp:"		+ this.stopStamp 		+ "; "
+				+ "licensePlate:" 	+ this.licensePlate 	+ "; "
+				+ "carModel:" 		+ this.carModel 		+ "; " 
+				+ "parkID:"			+ this.parkID			+ "; ";
 		/* @formatter:on */
 	}
 
 	public static void main(String[] args) {
 		SmartPark sp = new SmartPark("001First");
 		sp.createSmartParkTable();
-		sp.setSsNbr("910611");
-		sp.setLongitude("longitude");
-		sp.setLatitude("latitude");
-		sp.setStartStamp("start");
-		sp.setStopStamp("stop");
-		sp.setLicensePlate("OPH500");
-		sp.setCarModel("Nissan");
-		sp.selectSmartPark("910611", 2, false);
+		sp.selectSmartPark("2", 1, false);
+//		sp.setSsNbr("910611");
+//		sp.setLongitude("longitude");
+//		sp.setLatitude("latitude");
+//		sp.setStartStamp("start");
+//		sp.setStopStamp("stop");
+//		sp.setLicensePlate("OPH500");
+//		sp.setCarModel("Nissan");
+//		sp.selectSmartPark("910611", 0, false);
+//		sp.commit();
 //		sp.updateSmartParkData("ID", "0", "ssNbr", "910611");
-		sp.startParking("start:stop");
-		
+//		sp.startParking("start:stop");
+//		String[] columnData2 = {"910611", "123123123123", "1231231231",
+//			"123123121231", "", "MRO-519", "Toyota", "ParkID" };
+//		sp.insertSmartParkData(columnData2);
 
 	}
 

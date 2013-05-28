@@ -424,7 +424,7 @@ public class Customer extends Database {
 //		 c.updateCustomerTable(Balance, "-500", Balance, "-900");
 		 System.out.println("\n");
 		 System.out.println("looking for all");
-		 c.selectCustomer("-900", 9, false);
+		 c.selectCustomer("Today", 9, false);
 
 		// for (String s : args) {
 		// switch (s) {

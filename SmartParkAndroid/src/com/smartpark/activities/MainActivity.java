@@ -103,9 +103,6 @@ public class MainActivity extends FragmentActivity implements
 			Intent i = new Intent(this, LoginActivity.class);
 			i.putExtra("CancelAllowed", false);
 			startActivityForResult(i, REQUEST_LOGIN);
-		} else {
-			// Login the user by known username and password TODO
-			Toast.makeText(this, "Logging in... " + ssNbr, Toast.LENGTH_LONG).show();
 		}
 
 		// ==== USER LOGGED ON ===================================

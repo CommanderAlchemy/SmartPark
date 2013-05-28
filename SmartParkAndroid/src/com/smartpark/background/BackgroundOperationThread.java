@@ -16,8 +16,8 @@ import com.smartpark.tcp.TCPController;
 public class BackgroundOperationThread extends Thread {
 
 	// TRANSMITBUFFERS
-	private static LinkedList<String> btTransmitBuffer = new LinkedList<String>();
-	private static LinkedList<String> tcpTransmitBuffer = new LinkedList<String>();
+	private static LinkedList<String> btTransmitBuffer;
+	private static LinkedList<String> tcpTransmitBuffer;
 
 	// Debugging and stuff
 	private static final String TAG = "bgThread";
@@ -54,7 +54,10 @@ public class BackgroundOperationThread extends Thread {
 			Handler handler, SharedPreferences mainPreference) {
 		if (D)
 			Log.e(TAG, "++ bgThread Constructor ++");
-
+		
+		btTransmitBuffer = new LinkedList<String>();
+		tcpTransmitBuffer = new LinkedList<String>();
+		
 		this.applicationContext = applicationContext;
 		this.backOperationService = backOperationService;
 
@@ -238,8 +241,6 @@ public class BackgroundOperationThread extends Thread {
 				if (tcpTransmitBuffer != null) {
 					while (tcpTransmitBuffer.size() > 0
 							&& tcpController.isConnected()) {
-						if (D)
-							Log.d(TAG, "TCP sending data");
 						tcpWrite();
 					}
 				}

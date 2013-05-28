@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.smartpark.R;
-import com.smartpark.background.Ref;
+import com.smartpark.activities.MainActivity;
 
 /**
  * SmartParkFragment, this holds the general page of our application
@@ -18,7 +18,7 @@ import com.smartpark.background.Ref;
 public class UserSmartParkFragment extends Fragment  {
 	
 	// Debug Information, the boolean should be stored in a common settings file in the future!
-	private static boolean D = Ref.D;
+	private static boolean D = MainActivity.D;
 	private static final String TAG = "SmartParkFragment";
 	
 	// This needs some fixing for code cleanup

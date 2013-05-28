@@ -6,11 +6,11 @@ import android.content.Intent;
 import android.location.Location;
 import android.util.Log;
 
-import com.smartpark.background.Ref;
+import com.smartpark.activities.MainActivity;
 
 public class GPSReceiver extends BroadcastReceiver {
 
-	private static final boolean D = Ref.D;
+	private static final boolean D = MainActivity.D;
 	private static final String TAG = "GPSReceiver";
 
 	private PositionEMA positionEMA;

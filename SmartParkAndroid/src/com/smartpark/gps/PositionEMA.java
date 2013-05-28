@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import android.location.Location;
 import android.util.Log;
 
-import com.smartpark.background.Ref;
+import com.smartpark.activities.MainActivity;
 
 /**
  * The purpose of this class is to calculate more precisely the position based
@@ -28,7 +28,7 @@ public class PositionEMA {
 	private int maxMeasurements;
 	private float maxInaccuracy = 10.0f;
 
-	private boolean D = Ref.D;
+	private boolean D = MainActivity.D;
 	private String TAG = "positionEMA";
 
 	public PositionEMA(int size) {

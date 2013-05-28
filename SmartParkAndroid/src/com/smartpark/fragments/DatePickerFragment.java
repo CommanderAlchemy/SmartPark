@@ -9,13 +9,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.DatePicker;
 
-import com.smartpark.background.Ref;
+import com.smartpark.activities.MainActivity;
 
 public class DatePickerFragment extends DialogFragment implements
 		DatePickerDialog.OnDateSetListener {
 
 	// Debug stuff
-	private static final boolean D = Ref.D;
+	private static final boolean D = MainActivity.D;
 	private static final String TAG = "DatePickerFragment";
 
 	// Latest date picked

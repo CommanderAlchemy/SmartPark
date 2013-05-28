@@ -13,7 +13,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.smartpark.background.Ref;
+import com.smartpark.activities.MainActivity;
 
 public class GPSService extends Service {
 
@@ -24,7 +24,7 @@ public class GPSService extends Service {
 	private static final int LOCATION_INTERVAL = 100; // Millisecond
 	private static final float LOCATION_DISTANCE = 1f; // meter
 
-	private static final boolean D = Ref.D;
+	private static final boolean D = MainActivity.D;
 	private static final String TAG = "GPSService";
 
 	// used in GPS-fragment class

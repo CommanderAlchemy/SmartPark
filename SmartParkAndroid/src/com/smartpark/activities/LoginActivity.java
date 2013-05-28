@@ -27,7 +27,6 @@ import android.widget.Toast;
 
 import com.smartpark.R;
 import com.smartpark.background.BackgroundOperationThread;
-import com.smartpark.background.Ref;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
@@ -38,7 +37,7 @@ public class LoginActivity extends Activity {
 	/**
 	 * The default email to populate the email field with.
 	 */
-	public static final String EXTRA_EMAIL = "com.example.android.authenticatordemo.extra.EMAIL";
+//	public static final String EXTRA_EMAIL = "com.example.android.authenticatordemo.extra.EMAIL";
 
 	/**
 	 * Keep track of the login task to ensure we can cancel it if requested.
@@ -46,15 +45,15 @@ public class LoginActivity extends Activity {
 	private UserLoginTask mAuthTask = null;
 
 	// Values for email and password at the time of the login attempt.
-	private String mEmail;
+	private String ssNbr;
 	private String mPassword;
 
 	// UI references.
-	private EditText mEmailView;
-	private EditText mPasswordView;
-	private View mLoginFormView;
-	private View mLoginStatusView;
-	private TextView mLoginStatusMessageView;
+	private EditText ssNbrView;
+	private EditText passwordView;
+	private View loginFormView;
+	private View loginStatusView;
+	private TextView loginStatusMessageView;
 
 	private boolean isBackdoorEnabled = false;
 	private boolean isController = false;
@@ -62,9 +61,11 @@ public class LoginActivity extends Activity {
 	private static LinkedList<String> messages = new LinkedList<String>();
 	private boolean timeout = false;
 
-	private final boolean D = Ref.D;
-
 	private SharedPreferences loginSettings;
+	private Editor edit;
+	
+	private final boolean D = MainActivity.D;
+
 	private static final String TAG = "LoginActivity";
 
 	// ================================================================
@@ -76,12 +77,12 @@ public class LoginActivity extends Activity {
 		setContentView(R.layout.activity_login);
 
 		// Set up the login form.
-		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
-		mEmailView = (EditText) findViewById(R.id.socialSecurityNumber);
-		mEmailView.setText(mEmail);
+//		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
+		ssNbrView = (EditText) findViewById(R.id.socialSecurityNumber);
+		ssNbrView.setText(ssNbr);
 
-		mPasswordView = (EditText) findViewById(R.id.password);
-		mPasswordView
+		passwordView = (EditText) findViewById(R.id.password);
+		passwordView
 				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 					@Override
 					public boolean onEditorAction(TextView textView, int id,
@@ -94,9 +95,9 @@ public class LoginActivity extends Activity {
 					}
 				});
 
-		mLoginFormView = findViewById(R.id.login_form);
-		mLoginStatusView = findViewById(R.id.login_status);
-		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
+		loginFormView = findViewById(R.id.login_form);
+		loginStatusView = findViewById(R.id.login_status);
+		loginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
 
 		findViewById(R.id.sign_in_button).setOnClickListener(
 				new View.OnClickListener() {
@@ -105,9 +106,10 @@ public class LoginActivity extends Activity {
 						attemptLogin();
 					}
 				});
-		loginSettings = getSharedPreferences("loginActivity", MODE_PRIVATE);
+		loginSettings = getSharedPreferences("MainPreference", MODE_PRIVATE);
+		edit = loginSettings.edit();
 	}
-
+	
 	@Override
 	public void onBackPressed() {
 		if (getIntent().getExtras().getBoolean("CancelAllowed")) {
@@ -193,35 +195,35 @@ public class LoginActivity extends Activity {
 		}
 
 		// Reset errors.
-		mEmailView.setError(null);
-		mPasswordView.setError(null);
+		ssNbrView.setError(null);
+		passwordView.setError(null);
 
 		// Store values at the time of the login attempt.
-		mEmail = mEmailView.getText().toString();
-		mPassword = mPasswordView.getText().toString();
+		ssNbr = ssNbrView.getText().toString();
+		mPassword = passwordView.getText().toString();
 
 		boolean cancel = false;
 		View focusView = null;
 
 		// Check for a valid password.
-		if (TextUtils.isEmpty(mPassword) && !mEmail.equals("666")) {
-			mPasswordView.setError(getString(R.string.error_field_required));
-			focusView = mPasswordView;
+		if (TextUtils.isEmpty(mPassword) && !ssNbr.equals("666")) {
+			passwordView.setError(getString(R.string.error_field_required));
+			focusView = passwordView;
 			cancel = true;
-		} else if (mPassword.length() < 4 && !mEmail.equals("666")) {
-			mPasswordView.setError(getString(R.string.error_invalid_password));
-			focusView = mPasswordView;
+		} else if (mPassword.length() < 4 && !ssNbr.equals("666")) {
+			passwordView.setError(getString(R.string.error_invalid_password));
+			focusView = passwordView;
 			cancel = true;
 		}
 
 		// Check for a valid email address.
-		if (TextUtils.isEmpty(mEmail)) {
-			mEmailView.setError(getString(R.string.error_field_required));
-			focusView = mEmailView;
+		if (TextUtils.isEmpty(ssNbr)) {
+			ssNbrView.setError(getString(R.string.error_field_required));
+			focusView = ssNbrView;
 			cancel = true;
-		} else if (mEmail.length() != 6 && !mEmail.equals("666")) {
-			mEmailView.setError(getString(R.string.error_invalid_email));
-			focusView = mEmailView;
+		} else if (ssNbr.length() != 6 && !ssNbr.equals("666")) {
+			ssNbrView.setError(getString(R.string.error_invalid_email));
+			focusView = ssNbrView;
 			cancel = true;
 		}
 
@@ -232,7 +234,7 @@ public class LoginActivity extends Activity {
 		} else {
 			// Show a progress spinner, and kick off a background task to
 			// perform the user login attempt.
-			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
+			loginStatusMessageView.setText(R.string.login_progress_signing_in);
 			showProgress(true);
 			mAuthTask = new UserLoginTask();
 			mAuthTask.execute((Void) null);
@@ -251,32 +253,32 @@ public class LoginActivity extends Activity {
 			int shortAnimTime = getResources().getInteger(
 					android.R.integer.config_shortAnimTime);
 
-			mLoginStatusView.setVisibility(View.VISIBLE);
-			mLoginStatusView.animate().setDuration(shortAnimTime)
+			loginStatusView.setVisibility(View.VISIBLE);
+			loginStatusView.animate().setDuration(shortAnimTime)
 					.alpha(show ? 1 : 0)
 					.setListener(new AnimatorListenerAdapter() {
 						@Override
 						public void onAnimationEnd(Animator animation) {
-							mLoginStatusView.setVisibility(show ? View.VISIBLE
+							loginStatusView.setVisibility(show ? View.VISIBLE
 									: View.GONE);
 						}
 					});
 
-			mLoginFormView.setVisibility(View.VISIBLE);
-			mLoginFormView.animate().setDuration(shortAnimTime)
+			loginFormView.setVisibility(View.VISIBLE);
+			loginFormView.animate().setDuration(shortAnimTime)
 					.alpha(show ? 0 : 1)
 					.setListener(new AnimatorListenerAdapter() {
 						@Override
 						public void onAnimationEnd(Animator animation) {
-							mLoginFormView.setVisibility(show ? View.GONE
+							loginFormView.setVisibility(show ? View.GONE
 									: View.VISIBLE);
 						}
 					});
 		} else {
 			// The ViewPropertyAnimator APIs are not available, so simply show
 			// and hide the relevant UI components.
-			mLoginStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
-			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+			loginStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
+			loginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
 		}
 	}
 
@@ -390,24 +392,19 @@ public class LoginActivity extends Activity {
 				Toast.makeText(getBaseContext(), "Counld not reach the Server",
 						Toast.LENGTH_LONG).show();
 			}
-
+			
 			if (success) {
 				if (!isBackdoorEnabled) {
 					// Storing some data as shared preference
-					loginSettings = getSharedPreferences(
-							"loginActivity", MODE_PRIVATE);
-					Editor edit = loginSettings.edit();
+					edit.putString("ssNbr", ssNbr);
 					edit.putBoolean("controller", messages.getFirst()
 							.split(";")[1].split(":")[1].equals("true"));
 					edit.putBoolean("login", success);
 					edit.commit();
 				} else {
 					// Storing some data as shared preference
-					loginSettings = getSharedPreferences(
-							"loginActivity", MODE_PRIVATE);
-					Editor edit = loginSettings.edit();
 					edit.putBoolean("controller", isController);
-					edit.putBoolean("login", success);
+					edit.putBoolean("loginState", success);
 					edit.commit();
 				}
 				Toast.makeText(getBaseContext(), "Login successful",
@@ -418,9 +415,9 @@ public class LoginActivity extends Activity {
 				setResult(RESULT_OK, intent);
 				finish();
 			} else {
-				mPasswordView
+				passwordView
 						.setError(getString(R.string.error_incorrect_password));
-				mPasswordView.requestFocus();
+				passwordView.requestFocus();
 			}
 		}
 

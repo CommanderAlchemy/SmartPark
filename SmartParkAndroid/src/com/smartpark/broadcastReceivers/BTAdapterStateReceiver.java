@@ -10,21 +10,23 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.smartpark.background.Ref;
+import com.smartpark.activities.MainActivity;
+import com.smartpark.background.BackOperationService;
 import com.smartpark.bluetooth.BlueController;
 
 public class BTAdapterStateReceiver extends BroadcastReceiver {
 
 	// Debugging and stuff
 	private static final String TAG = "BT_StateReceiver";
-	private static final boolean D = Ref.D;
+	private static final boolean D = MainActivity.D;
+	private BackOperationService backOperationService;
 
 	// private BlueController btController;
 
 	// public BTAdapterStateReceiver(BlueController btController) {
-	public BTAdapterStateReceiver() {
+	public BTAdapterStateReceiver(BackOperationService backOperationService) {
 		super();
-		// this.btController = btController;
+		this.backOperationService = backOperationService;
 	}
 
 	@Override
@@ -94,15 +96,15 @@ public class BTAdapterStateReceiver extends BroadcastReceiver {
 
 	private void giveWarningDialog() {
 		AlertDialog.Builder builder1 = new AlertDialog.Builder(
-				Ref.activeActivity);
+				backOperationService);
 		builder1.setTitle("Problem");
-		builder1.setMessage("You shouldn't disable Bluetooth while running this application.\n\n"
+		builder1.setMessage("You shouldn't disable Bluetooth while running SmartPark application.\n\n"
 				+ "Do you wish to reenable?");
 		builder1.setCancelable(true);
 		builder1.setNegativeButton(android.R.string.no,
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						Toast.makeText(Ref.activeActivity,
+						Toast.makeText(backOperationService,
 								"Bluetooth remained disable",
 								Toast.LENGTH_SHORT).show();
 					}

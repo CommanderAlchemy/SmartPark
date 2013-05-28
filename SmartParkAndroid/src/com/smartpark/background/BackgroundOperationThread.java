@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -35,15 +36,20 @@ public class BackgroundOperationThread extends Thread {
 	private TCPController tcpController;
 	private Handler handler;
 
+	// SharedPreferences for login settings
+	private SharedPreferences mainPreference;
+
 	// The state of execution
 	private boolean amIRunning = false;
+	private boolean isLoggedIn;
 
 	// =========== END OF CLASS VARIABLES ===============================
 
 	public BackgroundOperationThread(Context applicationContext,
 			BlueController btController, TCPController tcpController,
-			Handler handler) {
-		if(D)Log.e(TAG, "++ bgThread Constructor ++");
+			Handler handler, SharedPreferences mainPreference) {
+		if (D)
+			Log.e(TAG, "++ bgThread Constructor ++");
 
 		BackgroundOperationThread.applicationContext = applicationContext;
 
@@ -54,6 +60,8 @@ public class BackgroundOperationThread extends Thread {
 		this.tcpController = tcpController;
 
 		this.handler = handler;
+
+		this.mainPreference = mainPreference;
 
 		// Check to see if bluetooth is available
 		if (!BlueController.isBluetoothAdapterAvailable()) {
@@ -79,7 +87,15 @@ public class BackgroundOperationThread extends Thread {
 			Toast.makeText(applicationContext, "Bluetooth avaiable",
 					Toast.LENGTH_SHORT).show();
 		}
-	}// ==================================================================
+	}
+	
+	// ==================================================================
+
+	public boolean isLoggedIn() {
+		return isLoggedIn;
+	}
+	
+	// ==================================================================
 
 	public void powerDown() {
 		// When this flag gets set, the thread is told to shut it self down
@@ -87,17 +103,20 @@ public class BackgroundOperationThread extends Thread {
 	}// ==================================================================
 
 	private void fixConnections() {
-		if(D)Log.e(TAG, "++ fixConnections ++");
+		if (D)
+			Log.e(TAG, "++ fixConnections ++");
 
 		// Fix Bluetooth Connection ===================================
 
 		if (!(BlueController.isConnected() || BlueController.isConnecting())) {
-			if(D)Log.e(TAG, "Fixing BT connection");
+			if (D)
+				Log.e(TAG, "Fixing BT connection");
 			BlueController.setConnecting();
 
 			// Enable bluetooth if disabled by asking the user first (only once)
 			if (!userIsAlreadyAsked && !BlueController.isEnabled()) {
-				if(D)Log.d(TAG, "--> bluetooth is disabled");
+				if (D)
+					Log.d(TAG, "--> bluetooth is disabled");
 				/*
 				 * Certain methods need to invoke methods of an Activity-class.
 				 * But in order to Categorize and keep method for certain
@@ -115,12 +134,14 @@ public class BackgroundOperationThread extends Thread {
 				 */
 				BlueController.enableAdapter(Ref.activeActivity);
 				userIsAlreadyAsked = true;
-				if(D)Log.d(TAG, "--> Enabling done");
+				if (D)
+					Log.d(TAG, "--> Enabling done");
 				Toast.makeText(applicationContext, "Enabled",
 						Toast.LENGTH_SHORT).show();
 			}
 			if (D)
-				if(D)Log.e(TAG, "isConnected? " + BlueController.isConnected());
+				if (D)
+					Log.e(TAG, "isConnected? " + BlueController.isConnected());
 			BlueController.closeConnection();
 			BlueController.connectBT();
 		}
@@ -128,11 +149,13 @@ public class BackgroundOperationThread extends Thread {
 
 		if (!(tcpController.isConnected() || tcpController.isConnecting())) {
 			if (D)
-				if(D)Log.e(TAG, "Fixing TCP connection");
+				if (D)
+					Log.e(TAG, "Fixing TCP connection");
 			tcpController.setConnecting();
 
 			if (D)
-				if(D)Log.e(TAG, "isConnected? " + tcpController.isConnected());
+				if (D)
+					Log.e(TAG, "isConnected? " + tcpController.isConnected());
 			tcpController.closeConnection();
 			tcpController.connectTCP();
 		}
@@ -143,8 +166,12 @@ public class BackgroundOperationThread extends Thread {
 		tcpController.setDisconnected();
 		BlueController.setDisconnected();
 
+		// Login the person
+		mainPreference.getString("ssNbr", "NoOne");
+
 		if (D)
-			if(D)Log.e(TAG, "++  run  ++");
+			if (D)
+				Log.e(TAG, "++  run  ++");
 
 		keepRunning = true;
 		int iterations = 0;
@@ -158,28 +185,33 @@ public class BackgroundOperationThread extends Thread {
 				// Code to process
 				try {
 					inData = btRead();
-					if(D)Log.d(TAG, "--> BT DATA read     " + inData);
+					if (D)
+						Log.d(TAG, "--> BT DATA read     " + inData);
 					if (inData != null) {
 
-						if(D)Log.e(TAG, "---  inData = " + inData);
+						if (D)
+							Log.e(TAG, "---  inData = " + inData);
 
 						// Send data to handler TODO
 						this.handler.getMessageFromBT(inData);
 
 					}
 				} catch (NumberFormatException e) {
-					if(D)Log.e(TAG, "NumberFormatException");
+					if (D)
+						Log.e(TAG, "NumberFormatException");
 				}
 
 				while (btTransmitBuffer.size() > 0
 						&& BlueController.isConnected()) {
-					if(D)Log.d(TAG, "BT sending data");
+					if (D)
+						Log.d(TAG, "BT sending data");
 					btWrite();
 				}
 				// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 			} else {
 				// Handle reconnection
-				if(D)Log.e(TAG, "BT disconnected");
+				if (D)
+					Log.e(TAG, "BT disconnected");
 				fixConnections();
 			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
@@ -188,10 +220,12 @@ public class BackgroundOperationThread extends Thread {
 
 				try {
 					inData = tcpRead();
-					if(D)Log.d(TAG, "--> TCP DATA read     " + inData);
+					if (D)
+						Log.d(TAG, "--> TCP DATA read     " + inData);
 					if (inData != null) {
 
-						if(D)Log.e(TAG, "-----  inData = " + inData);
+						if (D)
+							Log.e(TAG, "-----  inData = " + inData);
 
 						// Send data to handler TODO
 						this.handler.getMessageFromTCP(inData);
@@ -199,23 +233,27 @@ public class BackgroundOperationThread extends Thread {
 					}
 
 				} catch (NumberFormatException e) {
-					if(D)Log.e(TAG, "NumberFormatException");
+					if (D)
+						Log.e(TAG, "NumberFormatException");
 				}
 
 				while (tcpTransmitBuffer.size() > 0
 						&& tcpController.isConnected()) {
-					if(D)Log.d(TAG, "TCP sending data");
+					if (D)
+						Log.d(TAG, "TCP sending data");
 					tcpWrite();
 				}
 				// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 			} else {
 				// Handle reconnection
-				if(D)Log.e(TAG, "TCP disconnected");
+				if (D)
+					Log.e(TAG, "TCP disconnected");
 				fixConnections();
 			}// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
-			if(D)Log.i(TAG, "BT state: " + BlueController.isConnected()
-					+ " TCP state: " + tcpController.isConnected());
+			if (D)
+				Log.i(TAG, "BT state: " + BlueController.isConnected()
+						+ " TCP state: " + tcpController.isConnected());
 
 			// -----------------------------------------------------
 			// -----------------------------------------------------
@@ -231,17 +269,21 @@ public class BackgroundOperationThread extends Thread {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
-					if(D)Log.e(TAG, "InterruptedException: ", e);
+					if (D)
+						Log.e(TAG, "InterruptedException: ", e);
 				}
 			}
 
 			if (iterations == 60) {
 				iterations = 0;
-				if(D)Log.i(TAG,
-						"BT Connection state: " + (BlueController.isConnected()));
-				if(D)Log.i(TAG,
-						"TCP Connection state: "
-								+ (tcpController.isConnected()));
+				if (D)
+					Log.i(TAG,
+							"BT Connection state: "
+									+ (BlueController.isConnected()));
+				if (D)
+					Log.i(TAG,
+							"TCP Connection state: "
+									+ (tcpController.isConnected()));
 				tcpController.testTCPConnection();
 				BlueController.testBTConnection();
 			} else {
@@ -251,12 +293,14 @@ public class BackgroundOperationThread extends Thread {
 		}
 
 		cleanUp();
-		if(D)Log.d(TAG, "--> Thread is shutdown");
+		if (D)
+			Log.d(TAG, "--> Thread is shutdown");
 		keepRunning = false;
 	}// ==================================================================
 
 	private void btWrite() {
-		if(D)Log.e(TAG, "++ btWrite ++");
+		if (D)
+			Log.e(TAG, "++ btWrite ++");
 		if (BlueController.isConnected()) {
 			if (btTransmitBuffer.size() > 0) {
 				BlueController.sendBytes(btTransmitBuffer.removeFirst()
@@ -266,7 +310,8 @@ public class BackgroundOperationThread extends Thread {
 	}// ==================================================================
 
 	private void tcpWrite() {
-		if(D)Log.e(TAG, "++ btWrite ++");
+		if (D)
+			Log.e(TAG, "++ btWrite ++");
 		if (tcpController.isConnected()) {
 			if (tcpTransmitBuffer.size() > 0) {
 				tcpController.sendMessage(tcpTransmitBuffer.removeFirst());
@@ -280,7 +325,8 @@ public class BackgroundOperationThread extends Thread {
 	 * @return inData null if not connected or buffer not ready
 	 */
 	private String btRead() {
-		if(D)Log.e(TAG, "++ btRead ++");
+		if (D)
+			Log.e(TAG, "++ btRead ++");
 		String inData = null;
 		if (BlueController.isConnected()) {
 			inData = btController.receiveString();
@@ -294,7 +340,8 @@ public class BackgroundOperationThread extends Thread {
 	 * @return inData null if not connected or buffer not ready
 	 */
 	private String tcpRead() {
-		if(D)Log.e(TAG, "++ tcpRead ++");
+		if (D)
+			Log.e(TAG, "++ tcpRead ++");
 		String inData = null;
 		if (tcpController.isConnected()) {
 			inData = tcpController.receiveString();
@@ -303,7 +350,8 @@ public class BackgroundOperationThread extends Thread {
 	}// ==================================================================
 
 	private void cleanUp() {
-		if(D)Log.e(TAG, "++ cleanUp ++");
+		if (D)
+			Log.e(TAG, "++ cleanUp ++");
 		// Do not invoke method that forcefully shut a thread down.
 		// Let the run method run out.
 		// this.shutdownThread(); wont work, just like suspend() and stop()
@@ -321,12 +369,14 @@ public class BackgroundOperationThread extends Thread {
 
 	// The next two methods put strings in transmitbuffer
 	public static void sendByBT(String data) {
-		if(D)Log.e(TAG, "++ sendByBT ++");
+		if (D)
+			Log.e(TAG, "++ sendByBT ++");
 		btTransmitBuffer.addLast(data + "\r\n");
 	}// ==================================================================
 
 	public static void sendByTCP(String data) {
-		if(D)Log.e(TAG, "++ sendByTCP ++");
+		if (D)
+			Log.e(TAG, "++ sendByTCP ++");
 		tcpTransmitBuffer.addLast(data);
 	}// ==================================================================
 
@@ -352,5 +402,5 @@ public class BackgroundOperationThread extends Thread {
 	public void setHandler(Handler handler) {
 		this.handler = handler;
 	}
-	
+
 }

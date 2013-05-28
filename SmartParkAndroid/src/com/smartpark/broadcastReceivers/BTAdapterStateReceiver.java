@@ -34,7 +34,8 @@ public class BTAdapterStateReceiver extends BroadcastReceiver {
 
 		int event;
 		if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
-			// --> getIntExtra(int state, default int)
+			Log.e(TAG, "ACTION_STATE_CHANGED");
+
 			event = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
 					BluetoothAdapter.ERROR);
 
@@ -51,13 +52,12 @@ public class BTAdapterStateReceiver extends BroadcastReceiver {
 			default:
 			}
 
-		} else
-			Log.e(TAG, " ------------- do something here");
-		if (action.equals(BluetoothDevice.ACTION_ACL_DISCONNECTED)
+		} else if (action.equals(BluetoothDevice.ACTION_ACL_DISCONNECTED)
 				|| action
 						.equals(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED)) {
-			Log.e(TAG, "BT State changed!");
-			// getIntExtra(int state, default int)
+			Log.e(TAG,
+					"ACTION_ACL_DISCONNECTED eller ACTION_ACL_DISCONNECT_REQUESTED");
+
 			event = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE,
 					BluetoothAdapter.ERROR);
 
@@ -89,6 +89,7 @@ public class BTAdapterStateReceiver extends BroadcastReceiver {
 							"--> BT - STATE_DISCONNECTING (default case = inconclusive)");
 			}
 		}
+
 	}
 
 	private void giveWarningDialog() {

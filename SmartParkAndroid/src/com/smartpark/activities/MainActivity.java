@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.smartpark.R;
 import com.smartpark.background.BackOperationService;
+import com.smartpark.background.BackgroundOperationThread;
 import com.smartpark.background.Ref;
 import com.smartpark.bluetooth.BlueController;
 import com.smartpark.fragments.ControllerListFragment;
@@ -251,8 +252,8 @@ public class MainActivity extends FragmentActivity implements
 		myVib.vibrate(20);
 		Toast.makeText(this, "Logging into Server", Toast.LENGTH_SHORT).show();
 
-		Ref.bgThread.sendByTCP("Login;910611:artur");
-		Ref.bgThread.sendByTCP("Query;2:5");
+		BackgroundOperationThread.sendByTCP("Login;910611:artur");
+		BackgroundOperationThread.sendByTCP("Query;2:5");
 	}
 
 	public void onClickBtnSendLocation(View view) {
@@ -267,13 +268,13 @@ public class MainActivity extends FragmentActivity implements
 
 	public void onClickBtnIsBTavailable(View view) {
 		myVib.vibrate(20);
-		Ref.bgThread.sendByBT("1");
+		BackgroundOperationThread.sendByBT("1");
 		Log.d(TAG, "wrote 1");
 	}
 
 	public void onClickBtnIsBTEnable(View view) {
 		myVib.vibrate(20);
-		Ref.bgThread.sendByBT("999950");
+		BackgroundOperationThread.sendByBT("999950");
 		Log.d(TAG, "wrote 10");
 	}
 

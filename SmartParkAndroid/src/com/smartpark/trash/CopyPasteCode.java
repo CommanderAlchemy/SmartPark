@@ -18,8 +18,9 @@ public class CopyPasteCode extends Activity {
 		startActivity(setIntent);
 	}
 	
-//    android:onClick="onClickBtnFromDate"
-
+	// Detect orientation of the screen
+//	Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+//	int rotation = display.getRotation();
 	
 //	TextView dummyTextView = (TextView) rootView.findViewById(R.id.section_label);
 //	dummyTextView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));

@@ -25,6 +25,8 @@ public class ClientThread extends Thread {
 	private String message;
 	private BufferedReader bufferIn;
 	private PrintWriter bufferOut;
+	
+	
 
 	/**
 	 * The constructor takes one parameter
@@ -35,10 +37,10 @@ public class ClientThread extends Thread {
 	 * @throws IOException
 	 */
 	public ClientThread(Socket socket) throws IOException {
-		this.handler = new Handler(this);
 		this.socket = socket;
 		this.bufferIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		bufferOut = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
+		this.bufferOut = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
+		this.handler = new Handler(this);
 	}
 
 	/**

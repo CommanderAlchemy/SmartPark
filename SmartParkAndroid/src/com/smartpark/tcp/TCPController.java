@@ -138,6 +138,7 @@ public class TCPController {
 	 */
 	public void sendMessage(String message) {
 		if (tcpSocket != null && tcpSocket.isConnected()) {
+			Log.d(TAG, "TCP sended DATA: " + message);
 			if (mBufferOut != null) {
 				mBufferOut.println(message);
 				mBufferOut.flush();

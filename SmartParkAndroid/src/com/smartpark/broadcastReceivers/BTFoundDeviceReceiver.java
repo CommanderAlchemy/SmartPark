@@ -6,13 +6,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.smartpark.background.Ref;
+import com.smartpark.activities.MainActivity;
 import com.smartpark.bluetooth.BlueController;
 
 public class BTFoundDeviceReceiver extends BroadcastReceiver {
 
-	private static final boolean D = Ref.D;
+	private static final boolean D = MainActivity.D;
 	private static final String TAG = "BT_FoundDeviceReceiver";
+
+
+	public BTFoundDeviceReceiver() {
+		// TODO Auto-generated constructor stub
+	}
 
 
 	@Override

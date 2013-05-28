@@ -20,22 +20,33 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.smartpark.activities.MainActivity;
-import com.smartpark.background.Ref;
 
 public class BlueController {
 	/*
-	 * Since there is only one bluetooth adapter in every handheld device, some
+	 * Since there is only one bluetooth adapter in every handheld device, all
 	 * variables are defined using the static modifier, because they only
 	 * represent settings and findings of the same adapter. However, they are
 	 * all private to this class.
 	 */
 
+	// CONNECTION STATE INTEGERS / TODO put his into BT and TCP
+	public final static int STATE_NOT_CONNECTED = -1;
+	public final static int STATE_DISCONNECTING = 0;
+	public final static int STATE_CONNECTING = 1;
+	public final static int STATE_CONNECTED = 2;
+	
+	// SOME RESPONSES / TODO move
+	public final static int RESULT_OK = 0;
+	public final static int RESULT_IO_EXCEPTION = -1;
+	public final static int RESULT_UNKNOWN_HOST_EXCEPTION = -2;
+	public final static int RESULT_EXCEPTION = -3;
+	
 	// Debugging and stuff
 	private static final boolean D = false;
 	private static final String TAG = "BlueController";
 
 	// CONNECTION STATE-FLAG
-	private static int connectionState = Ref.STATE_NOT_CONNECTED;
+	private static int connectionState = STATE_NOT_CONNECTED;
 
 	// Device to connect to
 	private final static String SMARTPARK_DEVICE = "HC-06-SLAVE";
@@ -95,10 +106,10 @@ public class BlueController {
 		setDisconnected();
 		try {
 			btSocket.close();
-			return Ref.RESULT_OK;
+			return RESULT_OK;
 		} catch (Exception e) {
 			if(D)Log.e(TAG, "IOException: ", e);
-			return Ref.RESULT_IO_EXCEPTION;
+			return RESULT_IO_EXCEPTION;
 		}finally{
 			btInStream = null;
 			btOutStream = null;
@@ -339,18 +350,18 @@ public class BlueController {
 		try {
 			if (btSocket.isConnected()) {
 				btOutStream.write(data);
-				return Ref.RESULT_OK;
+				return RESULT_OK;
 			}
 		} catch (IOException e1) {
 			if (D)
 				if(D)Log.e(TAG, "Sending of data with bt failed" + e1);
 			setDisconnected();
-			return Ref.RESULT_IO_EXCEPTION;
+			return RESULT_IO_EXCEPTION;
 		} catch (Exception e1) {
 			if(D)Log.e(TAG, "ggggggggggggggggggg" + e1);
-			return Ref.RESULT_EXCEPTION;
+			return RESULT_EXCEPTION;
 		}
-		return Ref.RESULT_IO_EXCEPTION;
+		return RESULT_IO_EXCEPTION;
 	}
 
 	// ================================================================
@@ -409,11 +420,11 @@ public class BlueController {
 			if (btSocket != null) {
 				btSocket.close();
 			}
-			return Ref.RESULT_OK;
+			return RESULT_OK;
 		} catch (Exception e) {
 			if (D)
 				if(D)Log.e(TAG, "Error closing btSocket: ", e);
-			return Ref.RESULT_IO_EXCEPTION;
+			return RESULT_IO_EXCEPTION;
 		}
 	}
 
@@ -496,28 +507,28 @@ public class BlueController {
 
 	public static boolean isConnected() {
 		try {
-			if(D)Log.i(TAG, " btSocket state: " + btSocket.isConnected() + " boolean: " + (connectionState == Ref.STATE_CONNECTED));
+			if(D)Log.i(TAG, " btSocket state: " + btSocket.isConnected() + " boolean: " + (connectionState == STATE_CONNECTED));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return connectionState == Ref.STATE_CONNECTED && btSocket.isConnected(); 
+		return connectionState == STATE_CONNECTED && btSocket.isConnected(); 
 	}
 
 	public static boolean isConnecting() {
-		return connectionState == Ref.STATE_CONNECTING;
+		return connectionState == STATE_CONNECTING;
 	}
 
 	public static void setConnecting() {
-		connectionState = Ref.STATE_CONNECTING;
+		connectionState = STATE_CONNECTING;
 	}
 
 	public static void setConnected() {
 		if(D)Log.e(TAG, "++ setConnected ++");
-		connectionState = Ref.STATE_CONNECTED;
+		connectionState = STATE_CONNECTED;
 	}
 
 	public static void setDisconnected() {
-		connectionState = Ref.STATE_NOT_CONNECTED;
+		connectionState = STATE_NOT_CONNECTED;
 
 	}
 

@@ -14,7 +14,7 @@ import java.net.UnknownHostException;
 import android.util.Log;
 
 import com.smartpark.Settings;
-import com.smartpark.background.Ref;
+import com.smartpark.activities.MainActivity;
 
 /**
  * TCP Client, this class holds the application layer communication protocol for
@@ -25,12 +25,24 @@ import com.smartpark.background.Ref;
  */
 public class TCPController {
 
+	// CONNECTION STATE INTEGERS / TODO put his into BT and TCP
+	public final static int STATE_NOT_CONNECTED = -1;
+	public final static int STATE_DISCONNECTING = 0;
+	public final static int STATE_CONNECTING = 1;
+	public final static int STATE_CONNECTED = 2;
+	
+	// SOME RESPONSES / TODO move
+	public final static int RESULT_OK = 0;
+	public final static int RESULT_IO_EXCEPTION = -1;
+	public final static int RESULT_UNKNOWN_HOST_EXCEPTION = -2;
+	public final static int RESULT_EXCEPTION = -3;
+	
 	// Debug
 	private static final String TAG = "TCPController";
-	private static boolean D = Ref.D;
+	private static boolean D = MainActivity.D;
 
 	// CONNECTION STATE-FLAG
-	private static int connectionState = Ref.STATE_NOT_CONNECTED;
+	private static int connectionState = STATE_NOT_CONNECTED;
 
 	// used to send messages
 	private PrintWriter mBufferOut;
@@ -173,20 +185,20 @@ public class TCPController {
 	}
 
 	public boolean isConnecting() {
-		return connectionState == Ref.STATE_CONNECTING;
+		return connectionState == STATE_CONNECTING;
 	}
 
 	public void setConnecting() {
-		connectionState = Ref.STATE_CONNECTING;
+		connectionState = STATE_CONNECTING;
 	}
 
 	public void setConnected() {
-		connectionState = Ref.STATE_CONNECTED;
+		connectionState = STATE_CONNECTED;
 	}
 
 	public void setDisconnected() {
 		Log.e(TAG, "Set Disconnected !");
-		connectionState = Ref.STATE_NOT_CONNECTED;
+		connectionState = STATE_NOT_CONNECTED;
 	}
 
 	public int closeConnection() {
@@ -200,11 +212,11 @@ public class TCPController {
 			if (tcpSocket != null) {
 				tcpSocket.close();
 			}
-			return Ref.RESULT_OK;
+			return RESULT_OK;
 		} catch (Exception e) {
 			if (D)
 				Log.e(TAG, "Error closing btSocket: ", e);
-			return Ref.RESULT_IO_EXCEPTION;
+			return RESULT_IO_EXCEPTION;
 		}
 	}
 

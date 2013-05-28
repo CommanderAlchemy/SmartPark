@@ -15,7 +15,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.smartpark.R;
-import com.smartpark.background.Ref;
+import com.smartpark.activities.MainActivity;
 
 /**
  * GPSFragment, this holds the GPS side of the project and will show GPS
@@ -30,7 +30,7 @@ public class UserHistoryFragment extends Fragment {
 	 * Debug Information, the boolean should be stored in a common settings file
 	 * in the future!
 	 */
-	private static boolean D = Ref.D;
+	private static boolean D = MainActivity.D;
 	private static final String TAG = "HistoryFragment";
 
 	private HashMap<String, View> viewReferences = new HashMap<String, View>(20);

@@ -34,8 +34,9 @@ public class Handler {
 	 */
 	public Handler(ClientThread clientThread) {
 		this.clientThread = clientThread;
+		clientThread.sendMessage("ConnectionACK;0:0");
 	}
-
+	
 	/**
 	 * Command Handler
 	 * 

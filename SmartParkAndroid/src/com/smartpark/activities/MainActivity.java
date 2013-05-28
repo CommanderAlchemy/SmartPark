@@ -67,9 +67,14 @@ public class MainActivity extends FragmentActivity implements
 	// isLoggedOn
 	private boolean isLoggedOn = false;
 
+	private SharedPreferences loginSettings;
+	
+	// Persons social-security-number
+	private String ssNbr;
+
 	// Debugging and stuff
 	private static final String TAG = "MainActivity";
-	private static final boolean D = Ref.D;
+	public static final boolean D = false;
 
 	// RequestCodes
 	public static final int REQUEST_LOGIN = 3;
@@ -87,11 +92,13 @@ public class MainActivity extends FragmentActivity implements
 		myVib = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 		myVib.vibrate(50);
 
-		SharedPreferences loginSettings = getSharedPreferences("loginActivity",
+		loginSettings = getSharedPreferences("MainPreference",
 				MODE_PRIVATE);
+		
+		ssNbr = loginSettings.getString("ssNbr", "0000000000");
 		isController = loginSettings.getBoolean("controller", false);
-		isLoggedOn = loginSettings.getBoolean("login", false);
-
+		isLoggedOn = loginSettings.getBoolean("loginState", false);
+		
 		if (!isLoggedOn) {
 			Intent i = new Intent(this, LoginActivity.class);
 			i.putExtra("CancelAllowed", false);

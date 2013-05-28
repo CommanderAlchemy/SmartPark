@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
@@ -42,7 +43,7 @@ public class BackOperationService extends Service {
 	private Context applicationContext;
 
 	private String TAG = "BackOperationService";
-	private boolean D = Ref.D;
+	private boolean D = MainActivity.D;
 
 	private BlueController btController;
 	private TCPController tcpController;
@@ -64,7 +65,7 @@ public class BackOperationService extends Service {
 	public void onCreate() {
 		super.onCreate(); // Not needed
 		if(D)Log.e(TAG, "++ onCreate ++");
-
+		
 		startService(new Intent(getBaseContext(), GPSService.class));
 
 		applicationContext = getApplicationContext();
@@ -74,12 +75,14 @@ public class BackOperationService extends Service {
 		
 		// -----------
 		
+		
+		
 		btController = new BlueController(applicationContext);
 		tcpController = new TCPController();
 		handler = new Handler();
 
 		btFoundDeviceReceiver = new BTFoundDeviceReceiver();
-		btAdapterStateReceiver = new BTAdapterStateReceiver();
+		btAdapterStateReceiver = new BTAdapterStateReceiver(this);
 
 		// -----------
 	}
@@ -134,8 +137,9 @@ public class BackOperationService extends Service {
 		}
 
 		if (bgThread == null) {
+			SharedPreferences mainPreference = getSharedPreferences("MainPreference", MODE_PRIVATE);
 			bgThread = new BackgroundOperationThread(applicationContext,
-					btController, tcpController, handler);
+					btController, tcpController, handler, mainPreference);
 
 			bgThread.start();
 		} else {

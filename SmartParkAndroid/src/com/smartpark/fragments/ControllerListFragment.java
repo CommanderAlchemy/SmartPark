@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.smartpark.R;
-import com.smartpark.background.Ref;
+import com.smartpark.activities.MainActivity;
 
 /**
  * DebugFragment, this will contain some debug information needed during this
@@ -21,7 +21,7 @@ public class ControllerListFragment extends Fragment {
 
 	// Debug Information, the boolean should be stored in a common settings file
 	// in the future!
-	private static boolean D = Ref.D;
+	private static boolean D = MainActivity.D;
 	private static final String TAG = "ListFragment";
 
 	// This needs some fixing for code cleanup

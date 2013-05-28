@@ -186,16 +186,12 @@ public class BackgroundOperationThread extends Thread {
 				// Code to process
 				try {
 					inData = btRead();
-					if (D)
-						Log.d(TAG, "--> BT DATA read     " + inData);
 					if (inData != null) {
-
 						if (D)
-							Log.e(TAG, "---  inData = " + inData);
+							Log.d(TAG, "--> BT DATA read     " + inData);
 
 						// Send data to handler TODO
 						this.handler.getMessageFromBT(inData);
-
 					}
 				} catch (NumberFormatException e) {
 					if (D)

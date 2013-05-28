@@ -39,10 +39,10 @@ public class Handler {
 			LoginActivity.setMessage(inData);
 		} else if (message[0].equals("ConnectionACK")) {
 			// Login the person
-			String login = "AutoLogin;"
+			String autoLogin = "AutoLogin;"
 					+ mainPreference.getString("ssNbr", "error") + ":"
 					+ mainPreference.getBoolean("loginState", false);
-			BackgroundOperationThread.sendByTCP(login);
+			BackgroundOperationThread.sendByTCP(autoLogin);
 		}
 
 	}

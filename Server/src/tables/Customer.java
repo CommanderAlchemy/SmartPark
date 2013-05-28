@@ -227,8 +227,8 @@ public class Customer extends Database {
 	}
 
 	// -----------------------------------------------------------------
-	public int getCont() {
-		return controller;
+	public boolean isController() {
+		return controller == 1;
 	}
 
 	// -----------------------------------------------------------------

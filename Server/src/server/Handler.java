@@ -98,7 +98,7 @@ public class Handler {
 			if (inputParam[1].equals(customer.getPassword())) {
 				this.ssNbr = inputParam[0];
 
-				if (customer.getCont() == 1)
+				if (customer.isController())
 					this.controller = true;
 				return true;
 			}

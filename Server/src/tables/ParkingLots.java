@@ -20,7 +20,7 @@ public class ParkingLots extends Database {
 
 	private static String dbName = "test";
 	private static String tblName = "ParkingLots";
-	private static String[] columns = { "price", "company", "smsQuery",
+	private static String[] columns = { "ID", "price", "company", "smsQuery",
 			"ticketHours", "freeHours", "longitude", "latitude" };
 
 	private String[] columnTypes = { "REAL", "TEXT", "TEXT", "TEXT", "TEXT",

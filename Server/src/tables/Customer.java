@@ -20,7 +20,7 @@ public class Customer extends Database {
 
 	private static String dbName = "test";
 	private String tblName = "Customer";
-	private static String[] columns = { "cont", "ssNbr", "Forname", "Lastname",
+	private static String[] columns = { "ID", "cont", "ssNbr", "Forname", "Lastname",
 			"Address", "PhoneNbr", "Password", "SmartParkID",
 			"RegistrationDate", "Balance" };
 

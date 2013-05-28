@@ -31,13 +31,14 @@ public class SmartPark extends Database {
 
 	private static String dbName = "test";
 	private static String tblName;
-	private static String[] columns = { "ssNbr", "Longitude", "Latitude",
+	private static String[] columns = {"ID", "ssNbr", "Longitude", "Latitude",
 			"StartStamp", "StopStamp", "LicensePlate", "CarModel" };
 
 	private String[] columnTypes = { "TEXT", "TEXT", "TEXT", "TEXT", "TEXT",
 			"TEXT", "TEXT" };
 
 	boolean[] notNull = { true, true, true, true, false, true, true };
+	
 
 	// --------------------------------------------------
 
@@ -88,20 +89,19 @@ public class SmartPark extends Database {
 	}
 	
 	public void insertSmartParkData() {
+		String[] columnData = {deviceID,ssNbr,longitude,latitude,startStamp,stopStamp,licensePlate,carModel};
 		insertIntoTable(tblName, columns, columnTypes, columnData);
-		System.out.println(columnData.toString());
 	}
 
 	
-	public void StartParking(String param) {
+	public void startParking(String param) {
 		String[] inputParam = param.split(":");
-		
-		selectSmartPark(this.ssNbr,2,false);
-		
-//		smartpark.setLongitude(inputParam[1]);
-//		smartpark.setLatitude(inputParam[1]);
-//		smartpark.insertSmartParkData(columnData)
-//		
+		String[] columnData = {deviceID,ssNbr,longitude,latitude,startStamp,stopStamp,licensePlate,carModel};
+		this.id = countRows(tblName);
+		this.latitude = inputParam[0];
+		this.longitude = inputParam[1];
+		selectSmartPark(Long.toString(id),0,false);
+		insertIntoTable(tblName, columns, columnTypes, columnData);
 	}
 	
 	public void selectSmartPark(String searchString, int columnNr,

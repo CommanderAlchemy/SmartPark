@@ -43,15 +43,6 @@ public class Customer extends Database {
 	public static final String RegistrationDate = "RegistrationDate";
 	public static final String Balance = "Balance";
 
-	// private ResultSet result;
-
-	/*
-	 * Avail columns in the customer table
-	 */
-	public enum CustomerColumns {
-		ID, cont, ssNbr, Forname, Lastname, Address, PhoneNbr, Password, SmartparkID, Registered, Balance
-	}
-
 	/**
 	 * Constructor for Customer
 	 * 
@@ -135,6 +126,14 @@ public class Customer extends Database {
 			s += str + " ";
 		}
 		System.out.println(s);
+	}
+	
+	
+	public void commit() {
+		String[] columnData = {"cont", "ssNbr", "Forname", "Lastname",
+			"Address", "PhoneNbr", "Password", "SmartParkID",
+			"RegistrationDate", "Balance" };
+		insertIntoTable(tblName, columns, columnTypes, columnData);
 	}
 
 	// -----------------------------------------------------------------

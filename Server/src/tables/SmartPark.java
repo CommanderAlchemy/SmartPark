@@ -16,7 +16,7 @@ public class SmartPark extends Database {
 	private String stopStamp;
 	private String licensePlate;
 	private String carModel; // Not needed atm, but may be needed in the future
-	private int ParkID;
+	private String ParkID;
 	private LinkedList<String> resultList;
 
 	// == Settings for the Table ========================
@@ -102,7 +102,7 @@ public class SmartPark extends Database {
 				this.stopStamp = result.getString("StopStamp");
 				this.licensePlate = result.getString("LicensePlate");
 				this.carModel = result.getString("CarModel");
-				this.ParkID = result.getInt("ParkID");
+				this.ParkID = result.getString("ParkID");
 				resultList.addLast(this.toString());
 			}
 		} catch (Exception e) {
@@ -205,7 +205,7 @@ public class SmartPark extends Database {
 		String[] inputParam = param.split(":");
 		System.out.println("tablenamadawde: " + this.tblName);
 		selectSmartPark(Long.toString(id),0,false);
-		String[] columnData = {ssNbr,longitude,latitude,startStamp,stopStamp,licensePlate,carModel};
+		String[] columnData = {ssNbr,longitude,latitude,startStamp,stopStamp,licensePlate,carModel,ParkID};
 		this.latitude = inputParam[0];
 		this.longitude = inputParam[1];
 		insertIntoTable(tblName, columns, columnTypes, columnData);
@@ -418,11 +418,10 @@ public class SmartPark extends Database {
 		sp.setStopStamp("stop");
 		sp.setLicensePlate("OPH500");
 		sp.setCarModel("Nissan");
+		sp.selectSmartPark("910611", 2, false);
 //		sp.updateSmartParkData("ID", "0", "ssNbr", "910611");
 		sp.startParking("start:stop");
-		for (String s : args) {
-			
-		}
+		
 
 	}
 

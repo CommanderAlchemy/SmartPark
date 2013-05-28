@@ -47,6 +47,7 @@ public class BackOperationService extends Service {
 	private BlueController btController;
 	private TCPController tcpController;
 	private Handler handler;
+	private BackgroundOperationThread bgThread;
 
 	// ============ END OF CLASS-VARIABLES ===========================
 
@@ -77,7 +78,7 @@ public class BackOperationService extends Service {
 		tcpController = new TCPController();
 		handler = new Handler();
 
-		btFoundDeviceReceiver = new BTFoundDeviceReceiver(btController);
+		btFoundDeviceReceiver = new BTFoundDeviceReceiver();
 		btAdapterStateReceiver = new BTAdapterStateReceiver();
 
 		// -----------
@@ -94,7 +95,7 @@ public class BackOperationService extends Service {
 		// We then clean this Service-resources if any
 		// We set everything in Ref.java to null
 
-		Ref.bgThread.powerDown();
+		bgThread.powerDown();
 
 		// Unregister all BroadcastReceivers that are registered
 		if (btFindIntentIsRegistered) {
@@ -132,24 +133,24 @@ public class BackOperationService extends Service {
 			btConnectionStateIntentIsRegistered = true;
 		}
 
-		if (Ref.bgThread == null) {
-			Ref.bgThread = new BackgroundOperationThread(applicationContext,
+		if (bgThread == null) {
+			bgThread = new BackgroundOperationThread(applicationContext,
 					btController, tcpController, handler);
 
-			Ref.bgThread.start();
+			bgThread.start();
 		} else {
-			if (!Ref.bgThread.isAlive()
-					&& Ref.bgThread.getState() == Thread.State.RUNNABLE
-					&& Ref.bgThread.getState() == Thread.State.TERMINATED
-					&& !Ref.bgThread.isRunning()) {
+			if (!bgThread.isAlive()
+					&& bgThread.getState() == Thread.State.RUNNABLE
+					&& bgThread.getState() == Thread.State.TERMINATED
+					&& !bgThread.isRunning()) {
 				try {
 					wait(1000);
 				} catch (InterruptedException e) {
 					if(D)Log.e(TAG, "--- wait() failed");
 					e.printStackTrace();
 				}
-				if(!Ref.bgThread.isRunning()){
-					Ref.bgThread.start();
+				if(!bgThread.isRunning()){
+					bgThread.start();
 				}
 			}
 		}

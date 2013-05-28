@@ -14,8 +14,8 @@ import com.smartpark.tcp.TCPController;
 public class BackgroundOperationThread extends Thread {
 
 	// TRANSMITBUFFERS
-	private LinkedList<String> btTransmitBuffer = new LinkedList<String>();
-	private LinkedList<String> tcpTransmitBuffer = new LinkedList<String>();
+	private static LinkedList<String> btTransmitBuffer = new LinkedList<String>();
+	private static LinkedList<String> tcpTransmitBuffer = new LinkedList<String>();
 
 	// Debugging and stuff
 	private static final String TAG = "bgThread";
@@ -320,12 +320,12 @@ public class BackgroundOperationThread extends Thread {
 	}// ==================================================================
 
 	// The next two methods put strings in transmitbuffer
-	public void sendByBT(String data) {
+	public static void sendByBT(String data) {
 		if(D)Log.e(TAG, "++ sendByBT ++");
 		btTransmitBuffer.addLast(data + "\r\n");
 	}// ==================================================================
 
-	public void sendByTCP(String data) {
+	public static void sendByTCP(String data) {
 		if(D)Log.e(TAG, "++ sendByTCP ++");
 		tcpTransmitBuffer.addLast(data);
 	}// ==================================================================

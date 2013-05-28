@@ -38,7 +38,7 @@ public class Ref {
 	public final static int RESULT_EXCEPTION = -3;
 
 	// Reference to the background thread (needed for sending data)
-	public static BackgroundOperationThread bgThread;
+//	public static BackgroundOperationThread bgThread;
 
 	// === Runtime references===============================================
 	/*

@@ -94,6 +94,7 @@ public class UserHistoryFragment extends Fragment {
 				{"btnFromDate","btnToDate"};
 		//@formatter:on
 		View view;
+		Log.w(TAG, "------------------- 1");
 		for (int i = 0; i < viewIds.length; i++) {
 
 			view = rootView.findViewById(viewIds[i]);
@@ -104,13 +105,35 @@ public class UserHistoryFragment extends Fragment {
 			viewReferences.put(viewKeys[i], view);
 		}
 		// === REFERENCES CREATED =======================================
+		Log.w(TAG, "------------------- 2");
+		if (datePickerFromDate == null) {
+			Log.e(TAG, "++ onStart ++ datePickerFromDate == null");
+			datePickerFromDate = new DatePickerFragment(this);
+			datePickerToDate = new DatePickerFragment(this);
 
-		if (savedInstanceState != null) {
-			OnClickBtnDateEvent(savedInstanceState.getIntArray("FromDate"),
-					BUTTON_FROM_DATE);
-			OnClickBtnDateEvent(savedInstanceState.getIntArray("ToDate"),
-					BUTTON_TO_DATE);
+			Calendar cal = Calendar.getInstance();
+			cal.get(Calendar.YEAR);
+			cal.get(Calendar.MONTH);
+			cal.get(Calendar.DAY_OF_MONTH);
+			int[] date = { cal.get(Calendar.DAY_OF_MONTH),
+					cal.get(Calendar.MONTH), cal.get(Calendar.YEAR) };
+			datePickerFromDate.setDate(date);
+			datePickerToDate.setDate(date);
+
+		} else {
+			if (savedInstanceState != null) {
+				OnClickBtnDateEvent(savedInstanceState.getIntArray("FromDate"),
+						BUTTON_FROM_DATE);
+				OnClickBtnDateEvent(savedInstanceState.getIntArray("ToDate"),
+						BUTTON_TO_DATE);
+			} else {
+				OnClickBtnDateEvent(datePickerFromDate.getDate(),
+						BUTTON_FROM_DATE);
+				OnClickBtnDateEvent(datePickerToDate.getDate(), BUTTON_TO_DATE);
+			}
 		}
+
+		Log.w(TAG, "------------------- 3");
 
 		return rootView;
 	}
@@ -152,19 +175,21 @@ public class UserHistoryFragment extends Fragment {
 		pickedDate = newDate[0] + " " + month + " " + newDate[2];
 		Log.e(TAG, "" + pickedDate);
 
-		Log.e(TAG, "newDate: " + newDate[0] + " " + newDate[1] + " "
-				+ newDate[2]);
-
 		Calendar newCal = Calendar.getInstance();
 		newCal.set(newDate[2], newDate[1], newDate[0], 0, 0, 0);
 
 		Calendar otherDate = Calendar.getInstance();
 		otherDate.set(0, 0, 0, 0, 0, 0);
+		Log.w(TAG, "------------------- 4");
+
+		Log.w(TAG, "-----" + tag);
 
 		switch (tag) {
 		case BUTTON_FROM_DATE:
 			int[] toDate = datePickerToDate.getDate();
+			Log.w(TAG, "------------------- x");
 			otherDate.set(toDate[2], toDate[1], toDate[0]);
+			Log.w(TAG, "------------------- 5");
 
 			switch (newCal.compareTo(otherDate)) {
 			case 1:
@@ -178,6 +203,7 @@ public class UserHistoryFragment extends Fragment {
 		case BUTTON_TO_DATE:
 			int[] fromDate = datePickerFromDate.getDate();
 			otherDate.set(fromDate[2], fromDate[1], fromDate[0]);
+			Log.w(TAG, "------------------- 6");
 
 			switch (newCal.compareTo(otherDate)) {
 			case -1:
@@ -191,6 +217,7 @@ public class UserHistoryFragment extends Fragment {
 		if (error)
 			Toast.makeText(getActivity(), "From date is newer than To date",
 					Toast.LENGTH_LONG).show();
+
 	}
 
 	private void requestParkedCars() {
@@ -208,23 +235,6 @@ public class UserHistoryFragment extends Fragment {
 		super.onStart();
 		Log.e(TAG, "++ onStart ++");
 
-		if (datePickerFromDate == null) {
-			datePickerFromDate = new DatePickerFragment(this);
-			datePickerToDate = new DatePickerFragment(this);
-
-			Calendar cal = Calendar.getInstance();
-			cal.get(Calendar.YEAR);
-			cal.get(Calendar.MONTH);
-			cal.get(Calendar.DAY_OF_MONTH);
-			int[] date = { cal.get(Calendar.DAY_OF_MONTH),
-					cal.get(Calendar.MONTH), cal.get(Calendar.YEAR) };
-			datePickerFromDate.setDate(date);
-			datePickerToDate.setDate(date);
-
-		} else {
-			OnClickBtnDateEvent(datePickerFromDate.getDate(), BUTTON_FROM_DATE);
-			OnClickBtnDateEvent(datePickerToDate.getDate(), BUTTON_TO_DATE);
-		}
 	}
 
 	@Override
@@ -249,6 +259,11 @@ public class UserHistoryFragment extends Fragment {
 //			OnClickBtnDateEvent(datePickerFromDate.getDate(), BUTTON_FROM_DATE);
 //			OnClickBtnDateEvent(datePickerToDate.getDate(), BUTTON_TO_DATE);
 //		}
+	}
+
+	public void onDestroy() {
+		super.onDestroy();
+		Log.w(TAG, "++ onDestroy ++");
 	}
 
 }

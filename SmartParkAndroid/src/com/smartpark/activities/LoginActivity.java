@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.smartpark.R;
+import com.smartpark.background.BackgroundOperationThread;
 import com.smartpark.background.Ref;
 
 /**
@@ -325,7 +326,7 @@ public class LoginActivity extends Activity {
 			}
 
 			Log.e(TAG, "Sending Login Request: " + queryToServer);
-			Ref.bgThread.sendByTCP(queryToServer);
+			BackgroundOperationThread.sendByTCP(queryToServer);
 
 			while (messages.size() == 0) {
 				//
@@ -393,18 +394,18 @@ public class LoginActivity extends Activity {
 			if (success) {
 				if (!isBackdoorEnabled) {
 					// Storing some data as shared preference
-					SharedPreferences loginPreferences = getSharedPreferences(
+					loginSettings = getSharedPreferences(
 							"loginActivity", MODE_PRIVATE);
-					Editor edit = loginPreferences.edit();
+					Editor edit = loginSettings.edit();
 					edit.putBoolean("controller", messages.getFirst()
 							.split(";")[1].split(":")[1].equals("true"));
 					edit.putBoolean("login", success);
 					edit.commit();
 				} else {
 					// Storing some data as shared preference
-					SharedPreferences loginPreferences = getSharedPreferences(
+					loginSettings = getSharedPreferences(
 							"loginActivity", MODE_PRIVATE);
-					Editor edit = loginPreferences.edit();
+					Editor edit = loginSettings.edit();
 					edit.putBoolean("controller", isController);
 					edit.putBoolean("login", success);
 					edit.commit();

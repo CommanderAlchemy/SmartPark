@@ -74,7 +74,7 @@ public class MainActivity extends FragmentActivity implements
 
 	// Debugging and stuff
 	private static final String TAG = "MainActivity";
-	public static final boolean D = true;
+	public static final boolean D = false;
 
 	// RequestCodes
 	public static final int REQUEST_LOGIN = 3;

@@ -1,12 +1,10 @@
 package server;
 
-import java.rmi.server.LoaderHandler;
 import java.util.LinkedList;
 
 import tables.Customer;
 import tables.ParkingLots;
 import tables.SmartPark;
-import tables.SmartPark.Col;
 
 public class Handler {
 
@@ -34,7 +32,7 @@ public class Handler {
 	 */
 	public Handler(ClientThread clientThread) {
 		this.clientThread = clientThread;
-		clientThread.sendMessage("ConnectionACK;0:0");
+//		clientThread.sendMessage("ConnectionACK;0:0");
 		System.out.println("--> Handler send This Message: "
 				+ "ConnectionACK;0:0");
 	}
@@ -57,9 +55,9 @@ public class Handler {
 				if (autoLogin(data[0])) {
 					System.out.println("--> Handler send This Message: "
 							+ "AutoLoginACK;Accepted:" + controller);
-					clientThread.sendMessage("AutoLoginACK;Accepted:" + controller);
+//					clientThread.sendMessage("AutoLoginACK;Accepted:" + controller);
 				} else {
-					clientThread.sendMessage("AutoLoginACK;Denied:false");
+//					clientThread.sendMessage("AutoLoginACK;Denied:false");
 				}
 			} else {
 				System.out.println("--> Handler send This Message: "
@@ -75,7 +73,7 @@ public class Handler {
 			if (passwordAccepted) {
 				System.out.println("--> Handler send This Message: "
 						+ "LoginACK;Accepted:" + controller);
-				clientThread.sendMessage("LoginACK;Accepted:" + controller);
+//				clientThread.sendMessage("LoginACK;Accepted:" + controller);
 			} else {
 				System.out.println("--> Handler send This Message: "
 						+ "LoginACK;Denied:false");
@@ -94,7 +92,7 @@ public class Handler {
 			System.out.println(" --- QueryHistory --- ");
 
 			if (passwordAccepted)
-				queryHistory(inData[1]);
+				queryHistory();
 
 			break;
 
@@ -103,26 +101,34 @@ public class Handler {
 
 			if (passwordAccepted) {
 				this.smartpark = new SmartPark(customer.getSmartParkID());
-				smartpark.startParking(inData[1]);
+				String parkID = smartpark.startParking(inData[1]);
+				//parkinglots.selectParkingLots(searchString, columnNr, rangeSelection)
+				clientThread.sendMessage("StartParkACK;" + parkID);
 			}
-			// TODO Fix StartPark That will query the database
-			// Possibly query the query() method
 			break;
 
 		case "StopPark":
 			System.out.println(" --- StopPark --- ");
 
 			if (passwordAccepted) {
-				this.smartpark = new SmartPark(customer.getSmartParkID());
+				this.smartpark = new SmartPark(customer.getSmartParkID())
 				smartpark.stopParking(inData[1]);
+				clientThread.sendMessage("StopParkACK");
 			}
-			// TODO Fix StopPark That will query the database
-			// Possibly query the query() method
 			break;
 
 		case "echo":
 			clientThread.sendMessage("echoACK");
 			break;
+			
+//		case "CheckParking"
+//		if (passwordAccepted)
+//			checkParking(inData[1]);
+//		break;
+		
+		
+		
+		
 		default:
 			break;
 		}
@@ -169,16 +175,25 @@ public class Handler {
 	 * 
 	 * @param param
 	 */
-	public void queryHistory(String searchString) {
+	public void queryHistory() {
 		LinkedList<String> resultList = new LinkedList<String>();
 		this.smartpark = new SmartPark(customer.getSmartParkID());
-
-		this.smartpark.selectSmartPark(searchString, 4, true);
+		this.smartpark.selectSmartPark(null, 0, true);
+		System.out.println();
 		resultList = smartpark.getResultList();
-		clientThread.sendMessage(resultList.toString());
+		
+		while (resultList.size() > 0) {
+			System.out.println("QueryHistory;"+resultList.removeFirst());
+//			clientThread.sendMessage(resultList.toString());
+		}
 	}
 
 	public void calculateRange() {
 
+	}
+	public static void main(String[] args) {
+		Handler hand = new Handler(null);
+		hand.checkCommand("Login;820620:saeed");
+		hand.checkCommand("QueryHistory;");
 	}
 }

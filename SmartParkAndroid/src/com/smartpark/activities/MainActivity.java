@@ -447,8 +447,6 @@ public class MainActivity extends FragmentActivity implements
 					+ "\nIntent: " + item.getIntent());
 		}
 
-		// TODO Cleanup!
-		// On select
 		switch (item.getItemId()) {
 		case 0:
 			Toast.makeText(this, "Login", Toast.LENGTH_SHORT).show();
@@ -471,6 +469,7 @@ public class MainActivity extends FragmentActivity implements
 			Toast.makeText(this, "Terminating Service", Toast.LENGTH_SHORT)
 					.show();
 			stopService(new Intent(getBaseContext(), BackOperationService.class));
+			finish();
 			return true;
 
 			// default:

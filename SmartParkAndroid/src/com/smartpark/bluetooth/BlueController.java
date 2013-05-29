@@ -29,13 +29,13 @@ public class BlueController {
 	 * all private to this class.
 	 */
 
-	// CONNECTION STATE INTEGERS / TODO put his into BT and TCP
+	// CONNECTION STATE INTEGERS
 	public final static int STATE_NOT_CONNECTED = -1;
 	public final static int STATE_DISCONNECTING = 0;
 	public final static int STATE_CONNECTING = 1;
 	public final static int STATE_CONNECTED = 2;
 	
-	// SOME RESPONSES / TODO move
+	// SOME RESPONSES
 	public final static int RESULT_OK = 0;
 	public final static int RESULT_IO_EXCEPTION = -1;
 	public final static int RESULT_UNKNOWN_HOST_EXCEPTION = -2;

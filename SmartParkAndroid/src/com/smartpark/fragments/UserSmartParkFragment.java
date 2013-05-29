@@ -128,7 +128,7 @@ public class UserSmartParkFragment extends Fragment {
 				while (run) {
 
 					if (isParking) {
-//
+						
 //						((TextView) viewReferences.get()
 //								.setText(screenStrings[i]);
 
@@ -156,7 +156,7 @@ public class UserSmartParkFragment extends Fragment {
 	private int convertMilisToMinut(String millis) {
 		int minuts = -1;
 		try {
-//			minuts = (int) (Long.parseLong(millis) / 60000);
+			minuts = (int) (Long.parseLong(millis) / 60000);
 
 		} catch (Exception e) {
 			e.printStackTrace();

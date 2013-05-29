@@ -9,9 +9,9 @@ import java.sql.Statement;
 abstract public class Database {
 	private String dbName;
 	private Connection connection;
-	private ResultSet result;
+	protected ResultSet result;
 	private Statement statement;
-	
+
 	// private static final String create = "CREATE TABLE";
 	protected Database(String dbName) {
 		this.dbName = dbName;
@@ -23,7 +23,8 @@ abstract public class Database {
 	private void initConnection() {
 		try {
 			Class.forName("org.sqlite.JDBC");
-			connection = DriverManager.getConnection("jdbc:sqlite:" + dbName + ".db");
+			connection = DriverManager.getConnection("jdbc:sqlite:" + dbName
+					+ ".db");
 			System.out.println("Opened database succsessfully");
 
 		} catch (Exception e) {
@@ -114,9 +115,9 @@ abstract public class Database {
 				sql += ")";
 			}
 		}
-		
-		System.out.println(sql);
-		
+
+		System.out.println("\n[SQL Query]		" + sql + "\n");
+
 		String errorStack = "";
 		try {
 			statement = getConnection().createStatement();
@@ -180,8 +181,9 @@ abstract public class Database {
 				sql += ");";
 			}
 		}
-		
-		System.out.println(sql);
+
+		System.out.println("\n[SQL Query]		" + sql + "\n");
+		;
 		try {
 			statement = getConnection().createStatement();
 			statement.executeUpdate(sql);
@@ -211,7 +213,6 @@ abstract public class Database {
 			String searchString, int columnNr, boolean rangeSelection) {
 
 		try {
-			// super.getConnection().setAutoCommit(false);
 			statement = getConnection().createStatement();
 
 			if (searchString != null) {
@@ -228,20 +229,13 @@ abstract public class Database {
 						}
 					}
 
-					sql += " FROM " 
-					+ tblName 
-					+ " WHERE " 
-					+ columns[columnNr]
-					+ " = \"" 
-					+ searchString + "\";";
+					sql += " FROM " + tblName + " WHERE " + columns[columnNr]
+							+ " = \"" + searchString + "\";";
 
-					System.out.println("        " + sql);
-//					sql = "SELECT ID,ssNbr,Longitude,Latitude,StartStamp,StopStamp,LicensePlate,CarModel,ParkID FROM SmartPark_001First WHERE ParkID =8;";
-//					sql = "SELECT \"ssNbr\" FROM SmartPark_001First";
+					System.out.println("\n[SQL Query]		" + sql + "\n");
+					// sql =
+					// "SELECT ID,ssNbr,Longitude,Latitude,StartStamp,StopStamp,LicensePlate,CarModel,ParkID FROM SmartPark_001First WHERE ParkID =8;";
 					result = statement.executeQuery(sql);
-					
-					// ("SELECT ID,cont,ssNbr,Forname,Lastname,Address,PhoneNbr,Password,SmartParkID,Registered,Balance FROM Customer WHERE ssNbr = '"
-					// + searchString + "';");
 
 				} else {
 
@@ -253,7 +247,7 @@ abstract public class Database {
 						System.err.println(e.getClass().getName() + ": "
 								+ e.getMessage());
 					}
-					
+
 					String sql = "SELECT ID, ";
 
 					for (int i = 0; i < columns.length; i++) {
@@ -267,41 +261,29 @@ abstract public class Database {
 						}
 					}
 
-					sql += " FROM " 
-					+ tblName 
-					+ " WHERE " 
-					+ columns[columnNr]
-					+ " BETWEEN "
-					+ query[0] + " AND " + query[1] + ";";
-					
-					System.out.println(sql);
-					
+					sql += " FROM " + tblName + " WHERE " + columns[columnNr]
+							+ " BETWEEN " + query[0] + " AND " + query[1] + ";";
+
+					System.out.println("\n[SQL Query]		" + sql + "\n");
 					result = statement.executeQuery(sql);
-					
-//					result = statement
-//							.executeQuery("SELECT ID,ssNbr,Position,StartStamp,StopStamp,LicensePlate,CarModel FROM "
-//									+ tblName
-//									+ " WHERE "
-//									+ columns[columnNr]
-//									+ " BETWEEN "
-//									+ query[0] + " AND " + query[1] + ";");
 
 				}
 			} else {
 
-//				 result = statement.executeQuery("SELECT * FROM Customer;"
-//				 + searchString);
-				result = statement.executeQuery("SELECT * FROM " + tblName + ";");
+				System.out.println("\n[SQL Query]		" + "SELECT * FROM "
+						+ tblName + ";\n");
+				result = statement.executeQuery("SELECT * FROM " + tblName
+						+ ";");
 
 			}
 		} catch (Exception e) {
-			System.out.println("[ERROR] During lookup" + tblName + " :");
+			System.out.println("[ERROR] During lookup " + tblName + " :");
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 		}
 
 		return result;
 	}
-	
+
 	/**
 	 * Update Customer data in Customer Table if exists. This method first finds
 	 * a searchValue in the searchCol you specify and then changes the value in
@@ -316,55 +298,25 @@ abstract public class Database {
 	 * @param whatValue
 	 *            What value should that column be?
 	 */
-	protected void updateTableData(String tblName, String searchColumn, String searchValue,
-			String whatColumn, String whatValue) {
+	protected void updateTableData(String tblName, String searchColumn,
+			String searchValue, String whatColumn, String whatValue) {
 
 		try {
-			// super.getConnection().setAutoCommit(false);
 			statement = getConnection().createStatement();
 
-			String sql = "UPDATE " + tblName + " set " + whatColumn + " = '" + whatValue
-					+ "' WHERE " + searchColumn + "=" + searchValue + ";";
-			
-			System.out.println(sql);
+			String sql = "UPDATE " + tblName + " set " + whatColumn + " = '"
+					+ whatValue + "' WHERE " + searchColumn + "=\""
+					+ searchValue + "\";";
+
+			System.out.println("\n[SQL Query]		" + sql + "\n");
 			statement.executeUpdate(sql);
-			// super.getConnection().commit();
+			statement.close();
 
 		} catch (Exception e) {
 			System.out.println("[ERROR] During update" + tblName + " :");
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-		}
-		
-		try {
-			statement.close();
+		} finally {
 			closeConnection();
-		} catch (Exception e) {
-			// TODO: handle exception
 		}
-	}
-	
-	protected int countRows(String tblName){
-		System.out.println("tablename " + tblName);
-		try {
-			statement.getConnection().createStatement();
-			statement.execute("SELECT COUNT(*) FROM " + tblName + ";");
-		} catch (Exception e) {
-			System.out.println("[ERROR] During count rows " + tblName + " :");
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-		}
-		try {
-			statement.close();
-			closeConnection();
-		} catch (Exception e) {
-			System.out.println("[ERROR] During count rows " + tblName + " :\nConnection Close Exception:");
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-		}
-		try {
-			return statement.getMaxRows();
-		} catch (Exception e) {
-			System.out.println("[ERROR] During count rows " + tblName + " :\nGetMaxRowsException:");
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-		}
-		return -1;
 	}
 }

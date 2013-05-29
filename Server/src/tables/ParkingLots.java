@@ -111,8 +111,9 @@ public class ParkingLots extends Database {
 				this.freeHours = result.getString("freeHours");
 				this.longitude = result.getString("longitude");
 				this.latitude = result.getString("latitude");
-				System.out.println(this.toString());
+				System.out.println("[RESULT: ParkingLots]		" + this.toString());
 			}
+			System.out.println();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -289,10 +290,10 @@ public class ParkingLots extends Database {
 		/* @formatter:on */
 	}
 	public static void main(String[] args) {
-		ParkingLots pl = new ParkingLots(25, "PMalmö", "sms 404026", "08-18", "first 2", "longitude", "latitude");
+//		ParkingLots pl = new ParkingLots(25, "Qpark", "sms 404026", "08-18", "first 2", "longitude", "latitude");
 //		pl.CreateParkingLotsTable();
-		pl.commit();
-		pl.selectParkingLots("25", 0, false);
+//		pl.commit();
+//		pl.selectParkingLots("25", 0, false);
 	}
 
 }

@@ -9,6 +9,7 @@ import database.Database;
 public class SmartPark extends Database {
 	private long id;
 	private String deviceID; // The Device ID
+	
 	private String ssNbr; // Connected to a persons.
 	private String longitude;
 	private String latitude;
@@ -31,7 +32,7 @@ public class SmartPark extends Database {
 	private String[] columnTypes = {"TEXT", "TEXT", "TEXT", "TEXT", "TEXT",
 			"TEXT", "TEXT", "TEXT" };
 
-	boolean[] notNull = {true, true, true, true, false, true, true, true};
+	boolean[] notNull = {true, true, true, true, true, true, true, true};
 	
 
 	// --------------------------------------------------
@@ -56,12 +57,9 @@ public class SmartPark extends Database {
 	
 	
 	private void allocateMetaData(){
-		String[] columnData = {"metadata","2", "3","4", "5","6", "7","8"};
+		String[] columnData = {"metadata","0", "-1","-1", "-1","-1", "-1","-1"};
 		insertSmartParkData(columnData);
 	}
-	
-	
-	
 
 	/**
 	 * Constructor for smartpark
@@ -103,15 +101,21 @@ public class SmartPark extends Database {
 		insertIntoTable(tblName, columns, columnTypes, columnData);
 		
 		
-		selectSmartPark("*", 0, false);
-		System.out.println(ssNbr);
-		
-//		int a = Integer.parseInt(this.longitude);
-//		a++;
-//		updateSmartParkData(SS_NBR, "metadata", LONGITUDE, Integer.toString(a));
-//		selectSmartPark("*", 0, false);
-//		System.out.println(ssNbr);
 	}
+	
+	
+	public String incrementParkID(){
+		selectSmartPark("metadata", 0, false);
+		int a = Integer.parseInt(this.longitude);
+		a++;
+		updateSmartParkData(SS_NBR, "metadata", LONGITUDE, Integer.toString(a));
+		return Integer.toString(a);
+	}
+	
+	public void printMetaData(){
+		selectSmartPark("metadata", 0, false);
+	}
+	
 	
 	public void commit() {
 		String[] columnData = {ssNbr,longitude,latitude,startStamp,stopStamp,licensePlate,carModel, parkID};
@@ -139,9 +143,10 @@ public class SmartPark extends Database {
 				this.licensePlate = result.getString("LicensePlate");
 				this.carModel = result.getString("CarModel");
 				this.parkID = result.getString("ParkID");
-				System.out.println(this.toString());
-				resultList.addLast(this.toString());
+				System.out.println("[RESULT: SmartPark]		" +this.toString());
+				resultList.addLast(this.serialize());
 			}
+			System.out.println();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -237,15 +242,27 @@ public class SmartPark extends Database {
 	/**
 	 * StartParking
 	 * @param param
+	 * @return 
 	 */
-	public void startParking(String param) {
+	public String startParking(String param) {
 		String[] inputParam = param.split(":");
-		System.out.println("tablenamadawde: " + this.tblName);
-		selectSmartPark(Long.toString(id),0,false);
+	
 		String[] columnData = {ssNbr,longitude,latitude,startStamp,stopStamp,licensePlate,carModel,parkID};
-		this.latitude = inputParam[0];
-		this.longitude = inputParam[1];
+		
+		columnData[0] = inputParam[0];
+		columnData[1] = inputParam[1];
+		columnData[2] = inputParam[2];
+		columnData[3] = inputParam[3];
+		columnData[4] = inputParam[4];
+		columnData[5] = inputParam[5];
+		columnData[6] = inputParam[6];
+		String parkID = incrementParkID();
+		// ParkID
+		columnData[7] = parkID;
+		
 		insertIntoTable(tblName, columns, columnTypes, columnData);
+		
+		return parkID;
 	}
 	
 	/**
@@ -254,7 +271,7 @@ public class SmartPark extends Database {
 	 */
 	public void stopParking(String param){
 		String [] inputParam = param.split(":");
-		updateSmartParkData("ID", Long.toString(this.id), "StopStamp", inputParam[1]);
+		updateSmartParkData("ParkID",inputParam[7],"StopStamp",inputParam[4]);
 	}
 
 	/**
@@ -445,11 +462,27 @@ public class SmartPark extends Database {
 				+ "parkID:"			+ this.parkID			+ "; ";
 		/* @formatter:on */
 	}
+	public String serialize(){
+		return 	this.id + ":" + this.deviceID + ":" + this.ssNbr + ":" + this.longitude + 
+				this.latitude + ":" + this.startStamp + ":" + this.stopStamp + ":" +
+				this.licensePlate + ":" + this.carModel + ":" + this.parkID;
+	}
 
 	public static void main(String[] args) {
-		SmartPark sp = new SmartPark("001First");
-		sp.createSmartParkTable();
-		sp.selectSmartPark("8", 7, false);
+//		SmartPark sp = new SmartPark("001First");
+//		sp.createSmartParkTable();
+		
+//		SmartPark sp2 = new SmartPark("002Second");
+//		sp2.createSmartParkTable();
+//		
+//		SmartPark sp3 = new SmartPark("003Third");
+//		sp3.createSmartParkTable();
+		
+//		sp.incrementParkID();
+//		sp.printMetaData();
+		
+//		sp.createSmartParkTable();
+//		sp.selectSmartPark("8", 7, false);
 //		sp.setSsNbr("910611");
 //		sp.setLongitude("longitude");
 //		sp.setLatitude("latitude");

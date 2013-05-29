@@ -13,7 +13,7 @@ public class GPSReceiver extends BroadcastReceiver {
 	private static final boolean D = MainActivity.D;
 	private static final String TAG = "GPSReceiver";
 
-	private PositionEMA positionEMA;
+	private static PositionEMA positionEMA;
 
 	// ============================================
 
@@ -30,4 +30,11 @@ public class GPSReceiver extends BroadcastReceiver {
 			positionEMA.put(location);
 		}
 	}
+	
+	public static Location getLocation(){
+		return positionEMA.getPosition();
+	}
+	
+	
+	
 }

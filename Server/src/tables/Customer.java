@@ -164,8 +164,9 @@ public class Customer extends Database {
 				this.smartParkID = result.getString("SmartParkID");
 				this.registered = result.getString("RegistrationDate");
 				this.balance = result.getLong("Balance");
-				System.out.println(this.toString());
+				System.out.println("[RESULT: Customer]		" +this.toString());
 			}
+			System.out.println();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -396,35 +397,42 @@ public class Customer extends Database {
 	public static void main(String[] args) {
 
 		Customer c = new Customer();
+//		c.selectCustomer("", columnNr, rangeSelection)
+//		c.updateCustomerTable("Forname", "Artur", "SmartParkID", "001First");
 
 //		 c.createCustomerTable();
 //		 String[] data = {"1", "910611", "Artur","Olech", "Snödroppsgatan3",
 //		 "0762361910", "artur" ,
 //		 "001First", "Today", "150"};
 //		 c.insertCustomerData(data);
+//		 
 //		 String[] data2 = {"0", "820620", "Saeed","Ghasemi", "Folketspark",
 //		 "0762361910", "saeed",
 //		 "002First", "Today", "100"};
 //		 c.insertCustomerData(data2);
+//		 
 //		 String[] data3 = {"0","666", "Truls","jobbarinte", "trelleborg",
 //		 "9999999 999999", "truls",
 //		 "003Third", "Never", "-500"};
 //		 c.insertCustomerData(data3);
-//		
+		
+		 
+		 
+		 
 //		 System.out.println("\n");
 //		 System.out.println("looking for all");
 //		 c.selectCustomer(null, 0, false);
 //		
 //		 System.out.println("\n");
-//		 System.out.println("Select: 100-200 in balance");
-//		 c.selectCustomer("100:200", 9, true);
+		 System.out.println("Select: 100-200 in balance");
+		 c.selectCustomer("0:700", 1, true);
 //		
 //		 System.out.println("\n");
 //		 System.out.println("Update Truls....");
 //		 c.updateCustomerTable(Balance, "-500", Balance, "-900");
-		 System.out.println("\n");
-		 System.out.println("looking for all");
-		 c.selectCustomer("Today", 9, false);
+//		 System.out.println("\n");
+//		 System.out.println("looking for all");
+//		 c.selectCustomer("Today", 9, false);
 
 		// for (String s : args) {
 		// switch (s) {

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
 import com.smartpark.activities.LoginActivity;
@@ -32,7 +33,11 @@ public class Handler {
 	// ================================================================
 	public void getMessageFromBT(String inData) {
 		// String message[] = inData.split(";");
-
+		if(inData.equals("engineOff")){
+			bgThread.startPark("ADT-435", "Renault");
+		}else if(inData.equals("engineOn")){
+			bgThread.stopPark("ADT-435", "Renault");
+		}
 	}
 
 	// ================================================================
@@ -74,6 +79,27 @@ public class Handler {
 				Ref.activeActivity.startActivityForResult(i,
 						MainActivity.REQUEST_LOGIN);
 			}
+		} else if (message[0].equals("StartParkACK")) {
+			if (message[1].length() > 0) {
+				mainPreference.edit().putString("parkID", message[1]);
+			}
+			// Example string received
+			String parkeringLot = "20:QPark:smsQuery:9,18:18,9:55.242342:26.42345:parkID";
+			String[] park = parkeringLot.split(":");
+
+			Editor edit = mainPreference.edit();
+			edit.putBoolean("isParking", true);
+			edit.putString("price", park[0]);
+			edit.putString("company", park[1]);
+			edit.putString("smsQuery", park[2]);
+			edit.putString("ticketHours", park[3]);
+			edit.putString("freeHours", park[4]);
+			edit.putString("longtitude", park[5]);
+			edit.putString("latitude", park[6]);
+			edit.putString("parkID", park[7]);
+			edit.commit();
+			// TODO send parkinLot data to the
+
 		}
 
 	}

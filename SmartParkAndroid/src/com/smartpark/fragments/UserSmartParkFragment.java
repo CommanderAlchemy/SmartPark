@@ -1,6 +1,8 @@
 package com.smartpark.fragments;
 
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -15,6 +17,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.smartpark.R;
+import com.smartpark.ScreenThread;
 import com.smartpark.activities.MainActivity;
 
 /**
@@ -128,9 +131,23 @@ public class UserSmartParkFragment extends Fragment {
 				while (run) {
 
 					if (isParking) {
-//
-//						((TextView) viewReferences.get()
-//								.setText(screenStrings[i]);
+						
+						String parking = mainPreference.getString("StartPark", "0");
+						String[] current_parking = parking.split(";")[1].split(":");
+						// StartPark;xxxxxx:55.3452324:26.3423423:2342133424:0:ADT-435:Renault:0
+						
+						String parkedSince = convertMilisToTime(current_parking[3]);
+						String duration = "dfsfs";
+						String price = "dfsfs";
+						String ticketTime = "dfsfs";
+						String freeTime = "dfsfs";
+						String priceTillNow = "";
+						String totalThisMonth = mainPreference.getString("totalThisMonth", "0");
+						
+						
+						
+						((TextView) viewReferences.get()
+								.setText(screenStrings[i]);
 
 					} else {
 						((TextView) viewReferences.get("lblTotalPriceShow"))
@@ -150,17 +167,20 @@ public class UserSmartParkFragment extends Fragment {
 
 	public void onDestroy() {
 		super.onDestroy();
-//		((ScreenThread) screenThread).stopThread();
+		((ScreenThread) screenThread).stopThread();
 	}
 
-	private int convertMilisToMinut(String millis) {
-		int minuts = -1;
+	protected String convertMilisToTime(String millisString) {
+		String time = "00:00";
 		try {
-//			minuts = (int) (Long.parseLong(millis) / 60000);
+			long millis = Long.parseLong(millisString);
+			time = TimeUnit.MINUTES.toHours(TimeUnit.MINUTES.toMinutes(millis)) + ":" +
+					TimeUnit.MILLISECONDS.toMinutes(millis);
+			System.out.println(time);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return minuts;
+		return time;
 	}
 }

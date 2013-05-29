@@ -111,7 +111,7 @@ public class Handler {
 			System.out.println(" --- StopPark --- ");
 
 			if (passwordAccepted) {
-				this.smartpark = new SmartPark(customer.getSmartParkID())
+				this.smartpark = new SmartPark(customer.getSmartParkID());
 				smartpark.stopParking(inData[1]);
 				clientThread.sendMessage("StopParkACK");
 			}

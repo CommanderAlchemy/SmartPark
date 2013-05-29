@@ -1,16 +1,19 @@
 package com.smartpark.background;
 
+import java.util.Calendar;
 import java.util.LinkedList;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.smartpark.activities.MainActivity;
 import com.smartpark.bluetooth.BlueController;
+import com.smartpark.gps.GPSReceiver;
 import com.smartpark.tcp.TCPController;
 
 public class BackgroundOperationThread extends Thread {
@@ -31,9 +34,9 @@ public class BackgroundOperationThread extends Thread {
 
 	// REFERENCE TO APLLICATIONCONTEXT
 	private Context applicationContext;
-	
+
 	private BackOperationService backOperationService;
-	
+
 	// REFERENCES TO CONTROL-CLASSES
 	private BlueController btController;
 	private TCPController tcpController;
@@ -45,19 +48,19 @@ public class BackgroundOperationThread extends Thread {
 	// The state of execution
 	private boolean amIRunning = false;
 	private boolean isLoggedIn;
-	
 
 	// =========== END OF CLASS VARIABLES ===============================
 
 	public BackgroundOperationThread(Context applicationContext,
-			BackOperationService backOperationService, BlueController btController, TCPController tcpController,
+			BackOperationService backOperationService,
+			BlueController btController, TCPController tcpController,
 			Handler handler, SharedPreferences mainPreference) {
 		if (D)
 			Log.e(TAG, "++ bgThread Constructor ++");
-		
+
 		btTransmitBuffer = new LinkedList<String>();
 		tcpTransmitBuffer = new LinkedList<String>();
-		
+
 		this.applicationContext = applicationContext;
 		this.backOperationService = backOperationService;
 
@@ -190,7 +193,6 @@ public class BackgroundOperationThread extends Thread {
 						if (D)
 							Log.d(TAG, "--> BT DATA read     " + inData);
 
-						// Send data to handler TODO
 						this.handler.getMessageFromBT(inData);
 					}
 				} catch (NumberFormatException e) {
@@ -225,7 +227,6 @@ public class BackgroundOperationThread extends Thread {
 						if (D)
 							Log.e(TAG, "-----  inData = " + inData);
 
-						// Send data to handler TODO
 						this.handler.getMessageFromTCP(inData);
 
 					}
@@ -393,5 +394,75 @@ public class BackgroundOperationThread extends Thread {
 		amIRunning = false;
 
 		return temp;
+	}
+
+	public void startPark(String licensePlate, String carModel) {
+		String startPark = "StartPark;";
+		String ssNbr = mainPreference.getString("ssNbr", "error") + ":";
+		if (!ssNbr.equals("error:")) {
+			Calendar cal = Calendar.getInstance();
+			long startTimestamp = cal.getTimeInMillis();
+
+			Location location = GPSReceiver.getLocation();
+
+			// StartPark;xxxxxx:55.3452324:26.3423423:2342133424:0:ADT-435:Renault:0
+			startPark += ssNbr + ":" + location.getLongitude() + ":"
+					+ location.getLatitude() + ":" + startTimestamp + ":0:"
+					+ licensePlate + ":" + carModel + ":0";
+
+			Log.e(TAG, "--> Send parking request:\n" + startPark);
+
+			mainPreference.edit().putString("StartPark", startPark);
+
+			sendByTCP(startPark);
+		} else {
+			Toast.makeText(Ref.activeActivity, "Error,  please login again",
+					Toast.LENGTH_LONG).show();
+		}
+	}
+
+	public void stopPark(String licensePlate, String carModel) {
+		String stopString = mainPreference.getString("StartPark", "no data");
+		if (stopString.equals("no data")) {
+			Log.e(TAG, "--> No parking to stop");
+			Toast.makeText(Ref.activeActivity, "No parking to stop", Toast.LENGTH_LONG)
+					.show();
+			return;
+		}
+		
+		String StopPark = "StopPark;";
+		String ssNbr = mainPreference.getString("ssNbr", "error") + ":";
+		if (!ssNbr.equals("error:")) {
+			Calendar cal = Calendar.getInstance();
+			long stopTimestamp = cal.getTimeInMillis();
+			
+			String startPark = mainPreference.getString("StartPark", "0");
+			
+			String startTimeStamp = startPark.split(";")[1].split(":")[3];
+					
+			String parkID = mainPreference.getString("parkID", "-1");
+			
+			// StopPark;xxxxxx:55.3452324:26.3423423:2342133424:2342143424:ADT-435:Renault:16
+
+			Location location = GPSReceiver.getLocation();
+
+			StopPark += ssNbr + ":" 
+					+ location.getLongitude() + ":"
+					+ location.getLatitude() + ":" 
+					+ startTimeStamp + ":" 
+					+ stopTimestamp + ":"
+					+ licensePlate+ ":" 
+					+ carModel + ":" 
+					+ parkID;
+			
+			
+			
+
+			Log.e(TAG, "--> Send parking request: " + StopPark);
+			sendByTCP(StopPark);
+		} else {
+			Toast.makeText(Ref.activeActivity, "Error,  please login again",
+					Toast.LENGTH_LONG).show();
+		}
 	}
 }

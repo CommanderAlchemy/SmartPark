@@ -14,6 +14,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.smartpark.activities.MainActivity;
+import com.smartpark.background.Ref;
 
 public class GPSService extends Service {
 
@@ -30,7 +31,7 @@ public class GPSService extends Service {
 	// used in GPS-fragment class
 	// private TextView gps_text;
 	private GPSReceiver gpsReceiver;
-
+	
 	OurLocationListener gpsLocationListener = new OurLocationListener(
 			LocationManager.GPS_PROVIDER);
 	OurLocationListener networkLocationListener = new OurLocationListener(
@@ -46,7 +47,7 @@ public class GPSService extends Service {
 	public void onCreate() {
 		super.onCreate(); // Not needed
 		if(D)Log.i(TAG, "++ onCreate ++: ");
-
+		
 		if (locationManager == null) {
 			locationManager = (LocationManager) getApplicationContext()
 					.getSystemService(Context.LOCATION_SERVICE);
@@ -83,8 +84,6 @@ public class GPSService extends Service {
 		super.onDestroy(); // this is not needed in service
 		if(D)Log.i(TAG, "++ onDestroy ++: ");
 		
-		Toast.makeText(this, "GPS-service ended", Toast.LENGTH_SHORT).show();
-
 		// Disable receiving of new updates from providers
 		if (locationManager != null) {
 			try {
@@ -179,7 +178,7 @@ public class GPSService extends Service {
 		@Override
 		public void onLocationChanged(Location location) {
 			if(D)Log.i(TAG, "++ onLocationChanged ++: ");
-						
+			
 			Intent gpsIntent = new Intent("com.smartpark.gpsinfo");
 			gpsIntent.putExtra("location", location);
 			
@@ -189,14 +188,12 @@ public class GPSService extends Service {
 		@Override
 		public void onProviderDisabled(String provider) {
 			if(D)Log.i(TAG, "++ onProviderDisabled ++ : " + provider);
-			// changed from Ref.activeActivity TODO test
-			Toast.makeText(getApplicationContext(),"++ onProviderDisabled ++ : " + provider,Toast.LENGTH_SHORT).show();
 			/*
 			 * Alert the user that the GPS-provider is disabled and this should
 			 * be enabled.
 			 */
 			AlertDialog.Builder builder1 = new AlertDialog.Builder(
-					getApplicationContext()); // changed from Ref.activeActivity TODO test
+					Ref.activeActivity);
 			builder1.setTitle("GPS Disabled!");
 			builder1.setMessage("GPS is disabled and this is vital for the operation of this application.\n\n"
 					+ "Do you wish to enable it now?");
@@ -209,8 +206,7 @@ public class GPSService extends Service {
 			builder1.setPositiveButton("Yes",
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
-							getApplicationContext().startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-							// changed from Ref.activeActivity TODO test
+							Ref.activeActivity.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 						}
 					});
 			AlertDialog alert = builder1.create();
@@ -220,8 +216,7 @@ public class GPSService extends Service {
 		@Override
 		public void onProviderEnabled(String provider) {
 			if(D)Log.i(TAG, "++ onProviderEnabled ++ : " + provider);
-			// changed from Ref.activeActivity TODO test
-			Toast.makeText(getApplicationContext(),"++ onProviderEnabled ++ : " + provider, Toast.LENGTH_SHORT)
+			Toast.makeText(Ref.activeActivity,"++ onProviderEnabled ++ : " + provider, Toast.LENGTH_SHORT)
 					.show();
 		}// ==========================================================
 

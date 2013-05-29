@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.smartpark.R;
 import com.smartpark.background.BackgroundOperationThread;
+import com.smartpark.background.Ref;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
@@ -75,6 +76,8 @@ public class LoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_login);
+		
+		Ref.activeActivity = this;
 
 		// Set up the login form.
 //		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);

@@ -73,9 +73,6 @@ public class BackOperationService extends Service {
 		
 		applicationContext = getApplicationContext();
 		
-		Toast.makeText(getBaseContext(), "Service started",
-				Toast.LENGTH_SHORT).show();
-		
 		// -----------
 		tcpController = new TCPController();
 		btController = new BlueController(applicationContext);

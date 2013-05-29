@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import tables.Customer;
 import tables.ParkingLots;
 import tables.SmartPark;
-import tables.SmartPark.Col;
 
 public class Handler {
 

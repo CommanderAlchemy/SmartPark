@@ -197,7 +197,7 @@ public class MainActivity extends FragmentActivity implements
 	public void onBackPressed() {
 		Log.e(TAG, "++ onBackPressed ++");
 		myVib.vibrate(20);
-		stopService(new Intent(getBaseContext(), BackOperationService.class));
+//		stopService(new Intent(getBaseContext(), BackOperationService.class));
 		super.onBackPressed();
 		finish();
 	}
@@ -460,11 +460,17 @@ public class MainActivity extends FragmentActivity implements
 
 		case 1:
 			Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show();
+			mainPreference.edit().putBoolean("loginState", false);
+			Intent intent = new Intent(getBaseContext(),
+					BackOperationService.class);
+			intent.putExtra("Restart", true);
+			startService(intent);
 			return true;
 
 		case 2:
 			Toast.makeText(this, "Terminating Service", Toast.LENGTH_SHORT)
 					.show();
+			stopService(new Intent(getBaseContext(), BackOperationService.class));
 			return true;
 
 			// default:

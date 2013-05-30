@@ -469,16 +469,12 @@ public class BackgroundOperationThread extends Thread {
 		}
 	}
 	
-	public void getHistory(long fromDate, long toDate){
+	public static void getHistory(long fromDate, long toDate){
 		// History;startDate:stopDate
 		// HistoryACK;longitute:latitute:startStamp:stopStamp:price:parkID
 		// duration parkID position price
 		
 		// History;
 		String query = "History;" + fromDate + ":" + toDate;
-		
-		
-		
-		
 	}
 }

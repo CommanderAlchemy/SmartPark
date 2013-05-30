@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.smartpark.R;
 import com.smartpark.activities.MainActivity;
+import com.smartpark.background.BackgroundOperationThread;
 
 /**
  * GPSFragment, this holds the GPS side of the project and will show GPS
@@ -105,29 +106,28 @@ public class UserHistoryFragment extends Fragment {
 			viewReferences.put(viewKeys[i], view);
 		}
 		// === REFERENCES CREATED =======================================
-		
-			datePickerFromDate = new DatePickerFragment(this);
-			datePickerToDate = new DatePickerFragment(this);
-			
-			if (savedInstanceState != null) {
-				OnClickBtnDateEvent(savedInstanceState.getIntArray("FromDate"),
-						BUTTON_FROM_DATE);
-				OnClickBtnDateEvent(savedInstanceState.getIntArray("ToDate"),
-						BUTTON_TO_DATE);
-			} else {
-				Calendar cal = Calendar.getInstance();
-				cal.get(Calendar.YEAR);
-				cal.get(Calendar.MONTH);
-				cal.get(Calendar.DAY_OF_MONTH);
-				int[] date = { cal.get(Calendar.DAY_OF_MONTH),
-						cal.get(Calendar.MONTH), cal.get(Calendar.YEAR) };
-				datePickerFromDate.setDate(date);
-				datePickerToDate.setDate(date);
-				
-				OnClickBtnDateEvent(datePickerFromDate.getDate(),
-						BUTTON_FROM_DATE);
-				OnClickBtnDateEvent(datePickerToDate.getDate(), BUTTON_TO_DATE);
-			}
+
+		datePickerFromDate = new DatePickerFragment(this);
+		datePickerToDate = new DatePickerFragment(this);
+
+		if (savedInstanceState != null) {
+			OnClickBtnDateEvent(savedInstanceState.getIntArray("FromDate"),
+					BUTTON_FROM_DATE);
+			OnClickBtnDateEvent(savedInstanceState.getIntArray("ToDate"),
+					BUTTON_TO_DATE);
+		} else {
+			Calendar cal = Calendar.getInstance();
+			cal.get(Calendar.YEAR);
+			cal.get(Calendar.MONTH);
+			cal.get(Calendar.DAY_OF_MONTH);
+			int[] date = { cal.get(Calendar.DAY_OF_MONTH),
+					cal.get(Calendar.MONTH), cal.get(Calendar.YEAR) };
+			datePickerFromDate.setDate(date);
+			datePickerToDate.setDate(date);
+
+			OnClickBtnDateEvent(datePickerFromDate.getDate(), BUTTON_FROM_DATE);
+			OnClickBtnDateEvent(datePickerToDate.getDate(), BUTTON_TO_DATE);
+		}
 		Log.e(TAG, "onCreateView ended");
 		return rootView;
 	}
@@ -207,14 +207,10 @@ public class UserHistoryFragment extends Fragment {
 
 	}
 
-	private void requestParkedCars() {
-		Log.e(TAG, "++ requestParkedCars ++");
-
-		/*
-		 * TODO implement Query method from the database. Parking Data!
-		 * 
-		 * Query;date:date
-		 */
+	public void getHistory() {
+		BackgroundOperationThread.getHistory(
+				datePickerFromDate.getDateInMillis(),
+				datePickerToDate.getDateInMillis());
 	}
 
 	@Override
@@ -232,6 +228,7 @@ public class UserHistoryFragment extends Fragment {
 
 	}
 
+	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		Log.w(TAG, "++ onDestroy ++");

@@ -41,4 +41,16 @@ public class ControllerListFragment extends Fragment {
 
 		return rootView;
 	}
+	
+	private void requestParkedCars() {
+		Log.e(TAG, "++ requestParkedCars ++");
+
+		/*
+		 * TODO implement Query method from the database. Parking Data!
+		 * 
+		 * Query;date:date
+		 */
+		
+	}
+	
 }

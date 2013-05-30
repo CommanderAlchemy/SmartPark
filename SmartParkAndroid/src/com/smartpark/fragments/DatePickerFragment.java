@@ -59,6 +59,9 @@ public class DatePickerFragment extends DialogFragment implements
 			this.fragment.OnClickBtnDateEvent(getDate(),
 					UserHistoryFragment.BUTTON_TO_DATE);
 		}
+		
+		this.fragment.getHistory();
+		
 	}
 	// ------------------------------------------------------
 	public int[] getDate() {

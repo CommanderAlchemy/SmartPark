@@ -152,8 +152,8 @@ public class ParkingLots extends Database {
 		for (String s : resultList) {
 			i ++;
 			String[] stringArray = s.split(":");
-			parkinglong = stringArray[2];
-			parkinglat = stringArray[3];
+			parkinglong = stringArray[5];
+			parkinglat = stringArray[6];
 			
 			distance = Math
 					.acos((Math.sin(inputlatitude) * Math.sin(Double
@@ -166,9 +166,21 @@ public class ParkingLots extends Database {
 			
 			range[i] = distance;
 		}
+		
+		
 		int index = (int) getMin(range);
 		
-		return resultList.get(index);
+		if(index == -1)
+			return "ParkingLotNotFound";
+		
+		System.out.println(range[index]);
+		if(range[index] <= 1){
+			return resultList.get(index);
+		}
+		
+		
+		
+		return "ParkingLotNotFound";
 	}
 
 	public double getMin(double[] array) {
@@ -353,13 +365,19 @@ public class ParkingLots extends Database {
 				+ "Freehours: "		+ this.freeHours 			+ ";"
 				+ "Longitude: "		+ this.longitude.toString()	+ ";"
 				+ "Latitude: " 		+ this.latitude.toString()	+ ";";
-		/* @formatter:on */
+		
 	}
 
 	public String serialize() {
-		return 
+		return this.price + ":" 
+				+ this.company + ":" 
+				+ this.smsQuery + ":" 
+				+ this.ticketHours + ":" 
+				+ this.freeHours + ":" 
+				+ this.longitude + ":" 
+				+ this.latitude; 
 	}
-
+		/* @formatter:on */
 	public static void main(String[] args) {
 		// ParkingLots pl = new ParkingLots(25, "Qpark", "sms 404026", "08-18",
 		// "first 2", "longitude", "latitude");

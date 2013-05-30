@@ -15,10 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.smartpark.CustomThread;
 import com.smartpark.R;
 import com.smartpark.activities.MainActivity;
 import com.smartpark.background.BackgroundOperationThread;
+import com.smartpark.background.Ref;
 
 /**
  * SmartParkFragment, this holds the general page of our application
@@ -49,25 +52,32 @@ public class UserSmartParkFragment extends Fragment {
 				switch (v.getId()) {
 				case R.id.btnTogglePark:
 					myVib.vibrate(50);
+					if(BackgroundOperationThread.isP)
+					BackgroundOperationThread.startPark("ADT-435", "Renault");
 					
+					Toast.makeText(Ref.activeActivity, "Initiating Parking...", Toast.LENGTH_SHORT).show();
+						
+						
+
+					Toast.makeText(Ref.activeActivity, "Stopped Parking...", Toast.LENGTH_SHORT).show();
 					break;
 				default:
 					break;
 				}
 			}
-
 		}
 	};
 
 	private Vibrator myVib;
 	private HashMap<String, View> viewReferences = new HashMap<String, View>(20);
-	boolean isParking = false;
+	
 	String[] screenStrings = new String[8];
 	String[] viewKeys;
 	SharedPreferences mainPreference;
 	protected boolean run = true;
 	private Thread screenThread;
 
+	// ==================================================
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -106,7 +116,7 @@ public class UserSmartParkFragment extends Fragment {
 		mainPreference = getActivity().getSharedPreferences("MainPreference",
 				Activity.MODE_PRIVATE);
 
-		isParking = mainPreference.getBoolean("isParking", false);
+//		isParking = mainPreference.getBoolean("isParking", false);
 		screenStrings[0] = mainPreference.getString("price", "---");
 		screenStrings[1] = mainPreference.getString("company", "---");
 		screenStrings[2] = mainPreference.getString("smsQuery", "---");
@@ -124,21 +134,48 @@ public class UserSmartParkFragment extends Fragment {
 		super.onResume();
 
 		screenThread = new Thread() {
+			
 			private boolean run = true;
-
+			private Button btnPark;
+			private TextView lblCurrentTime;
+			private TextView lblGPS;
+			private TextView lblBT;
+			private TextView lblParkedSinceShow;
+			private TextView lblDurationShow;
+			private TextView lblPriceNowShow;
+			private TextView lblFreeTimeShow;
+			private TextView lblHoursShow;
+			private TextView lblPriceShow;
+			private TextView lblTotalPriceShow;
+			
 			@Override
 			public void run() {
+				btnPark = (Button)viewReferences.get("btnTogglePark");
+				lblCurrentTime = (TextView)viewReferences.get("lblCurrentTime");
+				lblGPS = (TextView)viewReferences.get("lblGPS");
+				lblBT = (TextView)viewReferences.get("lblBT");
+				lblParkedSinceShow = (TextView)viewReferences.get("lblParkedSinceShow");
+				lblDurationShow = (TextView)viewReferences.get("lblDurationShow");
+				lblPriceNowShow = (TextView)viewReferences.get("lblPriceNowShow");
+				lblFreeTimeShow = (TextView)viewReferences.get("lblFreeTimeShow");
+				lblHoursShow = (TextView)viewReferences.get("lblHoursShow");
+				lblPriceShow = (TextView)viewReferences.get("lblPriceShow");
+				lblTotalPriceShow = (TextView)viewReferences.get("lblTotalPriceShow");
+				
 				while (run) {
-					
-					while(BackgroundOperationThread.parkingStarted()){
+					if (BackgroundOperationThread.parkingStarted()) {
 						
-						// Wait till response arrived from server
-						// TODO
-					}
-					
-					
-					if (isParking) {
-						// TODO check to see if the parkingsequence have been aborted
+//						while(!BackgroundOperationThread.parkingStarted()){
+//							// Wait till response arrived from server
+//							// TODO
+//							try {
+//								Thread.sleep(1000);
+//							} catch (InterruptedException e) {
+//								Log.w(TAG, "Error in sleep1: ", e);
+//							}
+//						}
+						
+						// TODO check to see if the parking-sequence have been aborted
 						
 						
 						String parking = mainPreference.getString("StartPark", "0");
@@ -153,17 +190,25 @@ public class UserSmartParkFragment extends Fragment {
 						String priceTillNow = "";
 						String totalThisMonth = mainPreference.getString("totalThisMonth", "0");
 						
-						
-						
-						((TextView) viewReferences.get()
-								.setText(screenStrings[i]);
+//						((TextView) viewReferences.get()
+//								.setText(screenStrings[i]);
 
 					} else {
-						((TextView) viewReferences.get("lblTotalPriceShow"))
-								.setText(mainPreference.getString(
-										"MonthlyTotal", "0"));
+						if(!btnPark.getText().equals("Park")){
+							btnPark.setText("Park");
+						}
+						
+//						((TextView) viewReferences.get("lblTotalPriceShow"))
+//								.setText(mainPreference.getString(
+//										"MonthlyTotal", "0"));
+						
+						
 					}
-
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						Log.w(TAG, "Error in sleep2: ", e);
+					}
 				}
 			}
 
@@ -176,7 +221,7 @@ public class UserSmartParkFragment extends Fragment {
 
 	public void onDestroy() {
 		super.onDestroy();
-		((ScreenThread) screenThread).stopThread();
+		((CustomThread) screenThread).stopThread();
 	}
 
 	protected String convertMilisToTime(String millisString) {

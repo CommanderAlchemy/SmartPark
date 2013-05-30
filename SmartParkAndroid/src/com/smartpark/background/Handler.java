@@ -1,7 +1,5 @@
 package com.smartpark.background;
 
-import java.sql.ResultSet;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,6 +10,7 @@ import android.util.Log;
 import com.smartpark.activities.LoginActivity;
 import com.smartpark.activities.MainActivity;
 import com.smartpark.bluetooth.BlueController;
+import com.smartpark.fragments.UserHistoryFragment;
 import com.smartpark.tcp.TCPController;
 
 public class Handler {
@@ -23,8 +22,11 @@ public class Handler {
 	private BlueController btController;
 	private TCPController tcpController;
 	private SharedPreferences mainPreference;
-	// Indicates whether or not we have an ongoing parking sequence
-	private boolean parkingIsongoingPARK;
+
+	
+	
+	
+	
 
 	// ================================================================
 	public Handler(BlueController btController, TCPController tcpController,
@@ -52,6 +54,7 @@ public class Handler {
 	
 	// ================================================================
 	public void getMessageFromTCP(String inData) {
+		try{
 		Log.e(TAG, "--> Received data = " + inData);
 		String message[] = inData.split(";");
 
@@ -97,15 +100,14 @@ public class Handler {
 			//========================================
 		} else if (message[0].equals("StartParkACK")) {
 			// Indicates whether or not we have an ongoing parking sequence
-			parkingIsongoingPARK = true;
 			Log.e(TAG, message[1]);
 			// Server responds with parking-lot data and a parkID for this
 			// parking sequence			
 			if (message[1].equals("ParkingLotNotFound")) {
 				// TODO
-				cancelParkingSequence();
-				parkingIsongoingPARK = false;
+				BackgroundOperationThread.cancelParkingSequence();
 			} else {
+				bgThread.setParkingInitiated();
 				// "price:QPark:smsQuery:9,18:18,9:55.242342:26.42345:parkID";
 				String[] startPark = message[1].split(":");
 				
@@ -132,12 +134,21 @@ public class Handler {
 						"no data");
 				if (!stopPark.equals("no data")) {
 					BackgroundOperationThread.sendByTCP(stopPark);
+					bgThread.setParkingEnded();
 				}
 			}
 			//========================================
-		} else if (message[0].equals("--------")) { // TODO
+		} else if (message[0].equals("HistoryACK")) { // TODO
 			Log.e(TAG, message[1]);
-
+			
+			if(message[1].equals("endl")){
+				UserHistoryFragment.receiveDone();
+			}
+			
+			
+		}
+		}catch(Exception e){
+			Log.w(TAG, "Someone send us crapdata --> error on string.split");
 		}
 
 	}

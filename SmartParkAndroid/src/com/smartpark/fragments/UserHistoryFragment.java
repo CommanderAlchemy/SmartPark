@@ -12,10 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.smartpark.R;
 import com.smartpark.CustomThread;
+import com.smartpark.R;
 import com.smartpark.activities.MainActivity;
 import com.smartpark.background.BackgroundOperationThread;
 
@@ -35,12 +37,13 @@ public class UserHistoryFragment extends Fragment {
 	private static boolean D = MainActivity.D;
 	private static final String TAG = "HistoryFragment";
 
-	private HashMap<String, View> viewReferences = new HashMap<String, View>(20);
+	private static HashMap<String, View> viewReferences = new HashMap<String, View>(
+			20);
 
 	private Vibrator myVib;
 
-	private DatePickerFragment datePickerFromDate;
-	private DatePickerFragment datePickerToDate;
+	private static DatePickerFragment datePickerFromDate;
+	private static DatePickerFragment datePickerToDate;
 
 	// CODES
 	public static final int BUTTON_FROM_DATE = 1;
@@ -89,29 +92,31 @@ public class UserHistoryFragment extends Fragment {
 		myVib = (Vibrator) getActivity().getSystemService(
 				Activity.VIBRATOR_SERVICE);
 
-		// === CREATE REFERENCE FOR ALL VIEWS IN FRAGMENT ===========
-		//@formatter:off
-		int[] viewIds = new int[]
-				{R.id.btnFromDate,R.id.btnToDate};
-		String[] viewKeys = new String[]
-				{"btnFromDate","btnToDate"};
-		//@formatter:on
-		View view;
-		for (int i = 0; i < viewIds.length; i++) {
+		if (viewReferences.size() == 0) {
+			// === CREATE REFERENCE FOR ALL VIEWS IN FRAGMENT ===========
+			//@formatter:off
+			int[] viewIds = new int[]
+					{R.id.btnFromDate,R.id.btnToDate,R.id.progressBarHistory};
+			String[] viewKeys = new String[]
+					{"btnFromDate","btnToDate","progressBarHistory"};
+			//@formatter:on
+			View view;
+			for (int i = 0; i < viewIds.length; i++) {
 
-			view = rootView.findViewById(viewIds[i]);
+				view = rootView.findViewById(viewIds[i]);
 
-			if (view instanceof Button) {
-				view.setOnClickListener(onClickListener);
+				if (view instanceof Button) {
+					view.setOnClickListener(onClickListener);
+				}
+				System.out.println();
+				viewReferences.put(viewKeys[i], view);
 			}
-			System.out.println();
-			viewReferences.put(viewKeys[i], view);
+			// === REFERENCES CREATED =======================================
 		}
-		// === REFERENCES CREATED =======================================
-
-		datePickerFromDate = new DatePickerFragment(this);
-		datePickerToDate = new DatePickerFragment(this);
-
+		if (datePickerFromDate == null) {
+			datePickerFromDate = new DatePickerFragment(this);
+			datePickerToDate = new DatePickerFragment(this);
+		}
 		if (savedInstanceState != null) {
 			OnClickBtnDateEvent(savedInstanceState.getIntArray("FromDate"),
 					BUTTON_FROM_DATE);
@@ -131,7 +136,7 @@ public class UserHistoryFragment extends Fragment {
 			OnClickBtnDateEvent(datePickerToDate.getDate(), BUTTON_TO_DATE);
 		}
 		Log.e(TAG, "onCreateView ended");
-		
+
 		screenThread = new Thread() {
 			private boolean run = true;
 			private boolean running = false;
@@ -140,14 +145,18 @@ public class UserHistoryFragment extends Fragment {
 			public void run() {
 				running = true;
 				while (run) {
-
-				
-
+					
+					
+					
+					
+					
+					
+					
 				}
 				running = false;
 			}
-
-			public boolean isRunning(){
+			// =========================
+			public boolean isRunning() {
 				return running;
 			}
 			public void stopThread() {
@@ -155,8 +164,7 @@ public class UserHistoryFragment extends Fragment {
 			}
 		};
 		screenThread.start();
-		
-		
+
 		return rootView;
 	}
 
@@ -239,6 +247,15 @@ public class UserHistoryFragment extends Fragment {
 		BackgroundOperationThread.getHistory(
 				datePickerFromDate.getDateInMillis(),
 				datePickerToDate.getDateInMillis());
+	}
+
+	public static void receiveDone() {
+		((ProgressBar)viewReferences.get(R.id.progressBarHistory)).setVisibility(View.GONE);
+		// TODO when is it supose to become visible
+	}
+
+	private void setItemInListView(String parking){
+//		((ListView)viewReferences.get(R.id.listViewHistory)).addI; TODO
 	}
 	
 	@Override

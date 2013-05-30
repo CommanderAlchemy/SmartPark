@@ -206,15 +206,7 @@ public class MainActivity extends FragmentActivity implements
 	 * Fragment SmartPark
 	 */
 	public void onClickBtnPark(View view) {
-		if (((Button) findViewById(R.id.btnTogglePark)).getText()
-				.equals("Park")) {
-			Toast.makeText(this, "Parking...", Toast.LENGTH_SHORT).show();
-			((Button) findViewById(R.id.btnTogglePark)).setText("Stop Parking");
-			return;
-		} else
-			((Button) findViewById(R.id.btnTogglePark)).setText("Park");
-
-		Toast.makeText(this, "Stopped Parking...", Toast.LENGTH_SHORT).show();
+		
 	}
 
 	/*

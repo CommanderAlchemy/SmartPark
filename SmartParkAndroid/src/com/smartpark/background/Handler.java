@@ -33,9 +33,9 @@ public class Handler {
 	// ================================================================
 	public void getMessageFromBT(String inData) {
 		// String message[] = inData.split(";");
-		if(inData.equals("engineOff")){
+		if (inData.equals("engineOff")) {
 			bgThread.startPark("ADT-435", "Renault");
-		}else if(inData.equals("engineOn")){
+		} else if (inData.equals("engineOn")) {
 			bgThread.stopPark("ADT-435", "Renault");
 		}
 	}
@@ -98,7 +98,7 @@ public class Handler {
 			edit.putString("latitude", park[6]);
 			edit.putString("parkID", park[7]);
 			edit.commit();
-			// TODO send parkinLot data to the
+			// TODO send parkinLot data to mainPreference
 
 		}
 

@@ -21,6 +21,8 @@ public class BackgroundOperationThread extends Thread {
 	// TRANSMITBUFFERS
 	private static LinkedList<String> btTransmitBuffer;
 	private static LinkedList<String> tcpTransmitBuffer;
+	
+	
 
 	// Debugging and stuff
 	private static final String TAG = "bgThread";
@@ -48,6 +50,8 @@ public class BackgroundOperationThread extends Thread {
 	// The state of execution
 	private boolean amIRunning = false;
 	private boolean isLoggedIn;
+	private static boolean serverResponded;
+	
 
 	// =========== END OF CLASS VARIABLES ===============================
 
@@ -396,7 +400,7 @@ public class BackgroundOperationThread extends Thread {
 		return temp;
 	}
 
-	public void startPark(String licensePlate, String carModel) {
+	public boolean startPark(String licensePlate, String carModel) {
 		String startPark = "StartPark;";
 		String ssNbr = mainPreference.getString("ssNbr", "error") + ":";
 		if (!ssNbr.equals("error:")) {
@@ -415,19 +419,22 @@ public class BackgroundOperationThread extends Thread {
 			mainPreference.edit().putString("StartPark", startPark);
 
 			sendByTCP(startPark);
+			return true;
 		} else {
 			Toast.makeText(Ref.activeActivity, "Error,  please login again",
 					Toast.LENGTH_LONG).show();
+			return false;
 		}
 	}
-
-	public void stopPark(String licensePlate, String carModel) {
+	
+	//=============================================================
+	public boolean stopPark(String licensePlate, String carModel) {
 		String stopString = mainPreference.getString("StartPark", "no data");
 		if (stopString.equals("no data")) {
 			Log.e(TAG, "--> No parking to stop");
 			Toast.makeText(Ref.activeActivity, "No parking to stop", Toast.LENGTH_LONG)
 					.show();
-			return;
+			return false;
 		}
 		
 		String StopPark = "StopPark;";
@@ -456,16 +463,19 @@ public class BackgroundOperationThread extends Thread {
 					+ parkID;
 			
 			Log.e(TAG, "--> Send parking request: " + StopPark);
-			mainPreference.edit().putString("LastParkingStop", StopPark);
 			sendByTCP(StopPark);
 			
+			mainPreference.edit().putString("LastParkingStop", StopPark);
 			while(mainPreference.getString("LastParkingStop", "-").equals(StopPark)){
 				mainPreference.edit().putString("LastParkingStop", StopPark);
 				Log.e(TAG, "Saving data in stopPark()");
 			}
+			
+			return true;
 		} else {
 			Toast.makeText(Ref.activeActivity, "Error,  please login again",
 					Toast.LENGTH_LONG).show();
+			return false;
 		}
 	}
 	
@@ -477,4 +487,12 @@ public class BackgroundOperationThread extends Thread {
 		// History;
 		String query = "History;" + fromDate + ":" + toDate;
 	}
+
+	public static boolean parkingStarted() {
+		
+		return serverResponded;
+	}
+	
+	
+	
 }

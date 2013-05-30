@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.smartpark.R;
+import com.smartpark.CustomThread;
 import com.smartpark.activities.MainActivity;
 import com.smartpark.background.BackgroundOperationThread;
 
@@ -68,6 +69,7 @@ public class UserHistoryFragment extends Fragment {
 
 		}
 	};
+	private Thread screenThread;
 
 	// ----------------------------------------------------------------
 
@@ -129,6 +131,32 @@ public class UserHistoryFragment extends Fragment {
 			OnClickBtnDateEvent(datePickerToDate.getDate(), BUTTON_TO_DATE);
 		}
 		Log.e(TAG, "onCreateView ended");
+		
+		screenThread = new Thread() {
+			private boolean run = true;
+			private boolean running = false;
+
+			@Override
+			public void run() {
+				running = true;
+				while (run) {
+
+				
+
+				}
+				running = false;
+			}
+
+			public boolean isRunning(){
+				return running;
+			}
+			public void stopThread() {
+				run = false;
+			}
+		};
+		screenThread.start();
+		
+		
 		return rootView;
 	}
 
@@ -212,13 +240,12 @@ public class UserHistoryFragment extends Fragment {
 				datePickerFromDate.getDateInMillis(),
 				datePickerToDate.getDateInMillis());
 	}
-
+	
 	@Override
 	public void onStart() {
 		super.onStart();
 		Log.e(TAG, "++ onStart ++");
 		// Do not use this. This won't run on orientation change
-
 	}
 
 	@Override
@@ -232,6 +259,7 @@ public class UserHistoryFragment extends Fragment {
 	public void onDestroy() {
 		super.onDestroy();
 		Log.w(TAG, "++ onDestroy ++");
+		((CustomThread) screenThread).stopThread();
 	}
 
 }

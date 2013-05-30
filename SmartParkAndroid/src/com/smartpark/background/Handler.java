@@ -1,5 +1,7 @@
 package com.smartpark.background;
 
+import java.sql.ResultSet;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,6 +23,8 @@ public class Handler {
 	private BlueController btController;
 	private TCPController tcpController;
 	private SharedPreferences mainPreference;
+	// Indicates whether or not we have an ongoing parking sequence
+	private boolean parkingIsongoingPARK;
 
 	// ================================================================
 	public Handler(BlueController btController, TCPController tcpController,
@@ -40,6 +44,12 @@ public class Handler {
 		}
 	}
 
+	
+	
+	
+	
+	
+	
 	// ================================================================
 	public void getMessageFromTCP(String inData) {
 		Log.e(TAG, "--> Received data = " + inData);
@@ -48,6 +58,7 @@ public class Handler {
 		if (message[0].equals("LoginACK")) {
 			Log.e(TAG, message[1]);
 			LoginActivity.setMessage(inData);
+			//========================================
 		} else if (message[0].equals("ConnectionACK")) {
 			Log.e(TAG, message[1]);
 			// Login the person
@@ -55,6 +66,7 @@ public class Handler {
 					+ mainPreference.getString("ssNbr", "error") + ":"
 					+ mainPreference.getBoolean("loginState", false);
 			BackgroundOperationThread.sendByTCP(autoLogin);
+			//========================================
 		} else if (message[0].equals("AutoLoginACK")) {
 			Log.e(TAG, message[1]);
 			String[] data = message[1].split(":");
@@ -82,31 +94,37 @@ public class Handler {
 				Ref.activeActivity.startActivityForResult(i,
 						MainActivity.REQUEST_LOGIN);
 			}
+			//========================================
 		} else if (message[0].equals("StartParkACK")) {
+			// Indicates whether or not we have an ongoing parking sequence
+			parkingIsongoingPARK = true;
 			Log.e(TAG, message[1]);
 			// Server responds with parking-lot data and a parkID for this
-			// parking sequence
+			// parking sequence			
 			if (message[1].equals("ParkingLotNotFound")) {
 				// TODO
+				cancelParkingSequence();
+				parkingIsongoingPARK = false;
 			} else {
-				// Example string received
-
-				String parkeringLot = "price:QPark:smsQuery:9,18:18,9:55.242342:26.42345:parkID";
-				String[] park = parkeringLot.split(":");
-
+				// "price:QPark:smsQuery:9,18:18,9:55.242342:26.42345:parkID";
+				String[] startPark = message[1].split(":");
+				
 				Editor edit = mainPreference.edit();
 				edit.putBoolean("isParking", true);
-				edit.putString("price", park[0]);
-				edit.putString("company", park[1]);
-				edit.putString("smsQuery", park[2]);
-				edit.putString("ticketHours", park[3]);
-				edit.putString("freeHours", park[4]);
-				edit.putString("longtitude", park[5]);
-				edit.putString("latitude", park[6]);
-				edit.putString("parkID", park[7]);
+				edit.putString("price", startPark[0]);
+				edit.putString("company", startPark[1]);
+				edit.putString("smsQuery", startPark[2]);
+				edit.putString("ticketHours", startPark[3]);
+				edit.putString("freeHours", startPark[4]);
+				edit.putString("longtitude", startPark[5]);
+				edit.putString("latitude", startPark[6]);
+				edit.putString("parkID", startPark[7]);
 				edit.commit();
-				// TODO send parkinLot data to mainPreference
+				
+				// TODO
+				
 			}
+			//========================================
 		} else if (message[0].equals("StopParkACK")) {
 			Log.e(TAG, message[1]);
 			if (message[1].equals("true")) { // false means no error
@@ -116,7 +134,8 @@ public class Handler {
 					BackgroundOperationThread.sendByTCP(stopPark);
 				}
 			}
-		} else if (message[0].equals("")) { // TODO
+			//========================================
+		} else if (message[0].equals("--------")) { // TODO
 			Log.e(TAG, message[1]);
 
 		}

@@ -17,8 +17,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.smartpark.R;
-import com.smartpark.ScreenThread;
 import com.smartpark.activities.MainActivity;
+import com.smartpark.background.BackgroundOperationThread;
 
 /**
  * SmartParkFragment, this holds the general page of our application
@@ -49,7 +49,7 @@ public class UserSmartParkFragment extends Fragment {
 				switch (v.getId()) {
 				case R.id.btnTogglePark:
 					myVib.vibrate(50);
-
+					
 					break;
 				default:
 					break;
@@ -81,11 +81,11 @@ public class UserSmartParkFragment extends Fragment {
 				int[] viewIds = new int[]
 						{R.id.lblCurrentTime,R.id.lblGPS,R.id.lblBT,R.id.lblParkedSinceShow,
 						R.id.lblDurationShow,R.id.lblPriceNowShow,R.id.lblFreeTimeShow,
-						R.id.lblHoursShow,R.id.lblPriceShow,R.id.lblTotalPriceShow};
+						R.id.lblHoursShow,R.id.lblPriceShow,R.id.lblTotalPriceShow,R.id.btnTogglePark};
 				String[] viewKeys = new String[]
 						{"lblCurrentTime","lblGPS","lblBT","lblParkedSinceShow","lblDurationShow",
 						"lblPriceNowShow","lblFreeTimeShow","lblHoursShow","lblPriceShow",
-						"lblTotalPriceShow"};
+						"lblTotalPriceShow","btnTogglePark"};
 				//@formatter:on
 		View view;
 		for (int i = 0; i < viewIds.length; i++) {
@@ -109,7 +109,7 @@ public class UserSmartParkFragment extends Fragment {
 		isParking = mainPreference.getBoolean("isParking", false);
 		screenStrings[0] = mainPreference.getString("price", "---");
 		screenStrings[1] = mainPreference.getString("company", "---");
-		screenStrings[2] = mainPreference.getString("smsQuery", "");
+		screenStrings[2] = mainPreference.getString("smsQuery", "---");
 		screenStrings[3] = mainPreference.getString("ticketHours", "---");
 		screenStrings[4] = mainPreference.getString("freeHours", "---");
 		screenStrings[5] = mainPreference.getString("longtitude", "0");
@@ -129,8 +129,17 @@ public class UserSmartParkFragment extends Fragment {
 			@Override
 			public void run() {
 				while (run) {
-
+					
+					while(BackgroundOperationThread.parkingStarted()){
+						
+						// Wait till response arrived from server
+						// TODO
+					}
+					
+					
 					if (isParking) {
+						// TODO check to see if the parkingsequence have been aborted
+						
 						
 						String parking = mainPreference.getString("StartPark", "0");
 						String[] current_parking = parking.split(";")[1].split(":");

@@ -405,7 +405,7 @@ public class BackgroundOperationThread extends Thread {
 
 			Location location = GPSReceiver.getLocation();
 
-			// StartPark;xxxxxx:55.3452324:26.3423423:2342133424:0:ADT-435:Renault:0
+			// StartPark;ssNbr:55.3452324:26.3423423:2342133424:0:ADT-435:Renault:0
 			startPark += ssNbr + ":" + location.getLongitude() + ":"
 					+ location.getLatitude() + ":" + startTimestamp + ":0:"
 					+ licensePlate + ":" + carModel + ":0";
@@ -442,7 +442,7 @@ public class BackgroundOperationThread extends Thread {
 					
 			String parkID = mainPreference.getString("parkID", "-1");
 			
-			// StopPark;xxxxxx:55.3452324:26.3423423:2342133424:2342143424:ADT-435:Renault:16
+			// StopPark;ssNbr:55.3452324:26.3423423:2342133424:2342143424:ADT-435:Renault:price:parkID
 
 			Location location = GPSReceiver.getLocation();
 
@@ -455,14 +455,30 @@ public class BackgroundOperationThread extends Thread {
 					+ carModel + ":" 
 					+ parkID;
 			
-			
-			
-
 			Log.e(TAG, "--> Send parking request: " + StopPark);
+			mainPreference.edit().putString("LastParkingStop", StopPark);
 			sendByTCP(StopPark);
+			
+			while(mainPreference.getString("LastParkingStop", "-").equals(StopPark)){
+				mainPreference.edit().putString("LastParkingStop", StopPark);
+				Log.e(TAG, "Saving data in stopPark()");
+			}
 		} else {
 			Toast.makeText(Ref.activeActivity, "Error,  please login again",
 					Toast.LENGTH_LONG).show();
 		}
+	}
+	
+	public void getHistory(long fromDate, long toDate){
+		// History;startDate:stopDate
+		// HistoryACK;longitute:latitute:startStamp:stopStamp:price:parkID
+		// duration parkID position price
+		
+		// History;
+		String query = "History;" + fromDate + ":" + toDate;
+		
+		
+		
+		
 	}
 }

@@ -46,14 +46,17 @@ public class Handler {
 		String message[] = inData.split(";");
 
 		if (message[0].equals("LoginACK")) {
+			Log.e(TAG, message[1]);
 			LoginActivity.setMessage(inData);
 		} else if (message[0].equals("ConnectionACK")) {
+			Log.e(TAG, message[1]);
 			// Login the person
 			String autoLogin = "AutoLogin;"
 					+ mainPreference.getString("ssNbr", "error") + ":"
 					+ mainPreference.getBoolean("loginState", false);
 			BackgroundOperationThread.sendByTCP(autoLogin);
 		} else if (message[0].equals("AutoLoginACK")) {
+			Log.e(TAG, message[1]);
 			String[] data = message[1].split(":");
 
 			if (data[0].equals("Accepted")) {
@@ -80,25 +83,41 @@ public class Handler {
 						MainActivity.REQUEST_LOGIN);
 			}
 		} else if (message[0].equals("StartParkACK")) {
-			if (message[1].length() > 0) {
-				mainPreference.edit().putString("parkID", message[1]);
-			}
-			// Example string received
-			String parkeringLot = "20:QPark:smsQuery:9,18:18,9:55.242342:26.42345:parkID";
-			String[] park = parkeringLot.split(":");
+			Log.e(TAG, message[1]);
+			// Server responds with parking-lot data and a parkID for this
+			// parking sequence
+			if (message[1].equals("ParkingLotNotFound")) {
+				// TODO
+			} else {
+				// Example string received
 
-			Editor edit = mainPreference.edit();
-			edit.putBoolean("isParking", true);
-			edit.putString("price", park[0]);
-			edit.putString("company", park[1]);
-			edit.putString("smsQuery", park[2]);
-			edit.putString("ticketHours", park[3]);
-			edit.putString("freeHours", park[4]);
-			edit.putString("longtitude", park[5]);
-			edit.putString("latitude", park[6]);
-			edit.putString("parkID", park[7]);
-			edit.commit();
-			// TODO send parkinLot data to mainPreference
+				String parkeringLot = "price:QPark:smsQuery:9,18:18,9:55.242342:26.42345:parkID";
+				String[] park = parkeringLot.split(":");
+
+				Editor edit = mainPreference.edit();
+				edit.putBoolean("isParking", true);
+				edit.putString("price", park[0]);
+				edit.putString("company", park[1]);
+				edit.putString("smsQuery", park[2]);
+				edit.putString("ticketHours", park[3]);
+				edit.putString("freeHours", park[4]);
+				edit.putString("longtitude", park[5]);
+				edit.putString("latitude", park[6]);
+				edit.putString("parkID", park[7]);
+				edit.commit();
+				// TODO send parkinLot data to mainPreference
+			}
+		} else if (message[0].equals("StopParkACK")) {
+			Log.e(TAG, message[1]);
+			if (message[1].equals("true")) { // false means no error
+				String stopPark = mainPreference.getString("LastParkingStop",
+						"no data");
+				if (!stopPark.equals("no data")) {
+					BackgroundOperationThread.sendByTCP(stopPark);
+				}
+			}
+		} else if (message[0].equals("")) { // TODO
+			Log.e(TAG, message[1]);
 
 		}
 

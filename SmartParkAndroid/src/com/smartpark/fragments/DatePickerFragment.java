@@ -74,5 +74,14 @@ public class DatePickerFragment extends DialogFragment implements
 		this.month = date[1];
 		this.year = date[2];
 	}
+	
+	public long getDateInMillis(){
+		Calendar cal = Calendar.getInstance();
+		cal.clear();
+		cal.set(this.year, this.month, this.day);
+		long time = cal.getTimeInMillis();
+		Log.e(TAG, "Time returned: " + time);
+		return cal.getTimeInMillis();
+	}
 
 }

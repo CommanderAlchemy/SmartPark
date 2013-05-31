@@ -397,9 +397,6 @@ public class Customer extends Database {
 	public static void main(String[] args) {
 
 		Customer c = new Customer();
-//		c.selectCustomer("", columnNr, rangeSelection)
-//		c.updateCustomerTable("Forname", "Artur", "SmartParkID", "001First");
-
 //		 c.createCustomerTable();
 //		 String[] data = {"1", "910611", "Artur","Olech", "Snödroppsgatan3",
 //		 "0762361910", "artur" ,
@@ -411,21 +408,34 @@ public class Customer extends Database {
 //		 "002First", "Today", "100"};
 //		 c.insertCustomerData(data2);
 //		 
-//		 String[] data3 = {"0","666", "Truls","jobbarinte", "trelleborg",
-//		 "9999999 999999", "truls",
+//		 String[] data3 = {"0","666", "Truls","Haraldsson", "Trelleborg",
+//		 "076666606", "truls",
 //		 "003Third", "Never", "-500"};
 //		 c.insertCustomerData(data3);
-		
+//		
+//		 String[] data4 = {"0","123456", "Rolf","Axelsson", "MalmöHögskola",
+//		 "rolf-nummer", "rolf",
+//		 "004Fourth", "Never", "1000"};
+//		 c.insertCustomerData(data4);
+//		 
+//		 String[] data5 = {"0","654321", "Kristina","Alder", "MalmöHögskola",
+//		 "kristina-nummer", "kristina",
+//		 "005Fith", "Never", "1000"};
+//		 c.insertCustomerData(data5);
+//		 
+//		 String[] data6 = {"0","999999", "Tommy","unknown", "MalmöHögskola",
+//		 "tommy-nummer", "tommy",
+//		 "006Sixth", "Never", "0"};
+//		 c.insertCustomerData(data6);
 		 
-		 
-		 
+		 c.selectCustomer(null, 1, true);
 //		 System.out.println("\n");
 //		 System.out.println("looking for all");
 //		 c.selectCustomer(null, 0, false);
 //		
 //		 System.out.println("\n");
-		 System.out.println("Select: 100-200 in balance");
-		 c.selectCustomer("0:700", 1, true);
+//		 System.out.println("Select: 100-200 in balance");
+		
 //		
 //		 System.out.println("\n");
 //		 System.out.println("Update Truls....");

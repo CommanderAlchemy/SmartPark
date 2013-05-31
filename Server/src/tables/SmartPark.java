@@ -245,10 +245,11 @@ public class SmartPark extends Database {
 	 * @param param
 	 * @return
 	 */
-	public String startParking(String param) {
+	public String startParking(String param, String parkinglot) {
 		String[] inputParam = param.split(":");
+		price = parkinglot.split(":")[0];
 
-		String[] columnData = { ssNbr, longitude, latitude, startStamp,
+		String[] columnData = {  ssNbr, longitude, latitude, startStamp,
 				stopStamp, licensePlate, carModel, price, parkID };
 
 		columnData[0] = inputParam[0];
@@ -258,7 +259,7 @@ public class SmartPark extends Database {
 		columnData[4] = inputParam[4];
 		columnData[5] = inputParam[5];
 		columnData[6] = inputParam[6];
-		columnData[7] = inputParam[7];
+		columnData[7] = price;
 		String parkID = incrementParkID();
 
 		// ParkID
@@ -494,17 +495,25 @@ public class SmartPark extends Database {
 	}
 	/* @formatter:on */
 	public static void main(String[] args) {
-		// SmartPark sp = new SmartPark("001First");
-		// sp.createSmartParkTable();
-
-		// SmartPark sp2 = new SmartPark("002Second");
-		// sp2.createSmartParkTable();
-		//
-		// SmartPark sp3 = new SmartPark("003Third");
-		// sp3.createSmartParkTable();
-
-		// sp.incrementParkID();
-		// sp.printMetaData();
+//		 SmartPark sp = new SmartPark("001First");
+//		 sp.createSmartParkTable();
+//
+//		 SmartPark sp2 = new SmartPark("002Second");
+//		 sp2.createSmartParkTable();
+//		
+//		 SmartPark sp3 = new SmartPark("003Third");
+//		 sp3.createSmartParkTable();
+//		 
+//		 SmartPark sp4 = new SmartPark("004Fourth");
+//		 sp4.createSmartParkTable();
+//		 
+//		 SmartPark sp5 = new SmartPark("005Fith");
+//		 sp5.createSmartParkTable();
+//		 
+//		 SmartPark sp6 = new SmartPark("006Sixth");
+//		 sp6.createSmartParkTable();
+		 
+//		 sp.selectSmartPark(null, 0, false);
 
 		// sp.createSmartParkTable();
 		// sp.selectSmartPark("8", 7, false);

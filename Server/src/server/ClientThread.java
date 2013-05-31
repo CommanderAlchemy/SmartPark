@@ -54,8 +54,9 @@ public class ClientThread extends Thread {
 			while (running) {
 				if (socket.isConnected()) {
 					if (bufferIn.ready()){
+						System.out.println("1" + message);
 						message = bufferIn.readLine();
-						System.out.println(message);
+						System.out.println("2" + message);
 					}
 					
 					if (message != null) {

@@ -55,6 +55,7 @@ public class Handler {
 				if (autoLogin(data[0])) {
 					System.out.println("--> Handler send This Message: "
 							+ "AutoLoginACK;Accepted:" + controller);
+					this.passwordAccepted = true;
 					 clientThread.sendMessage("AutoLoginACK;Accepted:" +
 					 controller);
 				} else {
@@ -101,12 +102,15 @@ public class Handler {
 			System.out.println(" --- StartPark --- ");
 
 			if (passwordAccepted) {
+				System.out.println("password accepted");
+				String[] param = inData[1].split(":");
 				// Get longitude and latitude and search for parking
+				System.out.println("looking for parkingplace....");
 				String parkingLot = new ParkingLots().searchForParking(
-						inData[1], inData[2]);
+						param[1], param[2]);
 				if (!parkingLot.equals("ParkingLotNotFound")) {
 					this.smartpark = new SmartPark(customer.getSmartParkID());
-					String parkID = this.smartpark.startParking(inData[1]);
+					String parkID = this.smartpark.startParking(inData[1], parkingLot);
 					clientThread.sendMessage("StartParkACK;" + parkingLot
 							+ ":" + parkID);
 				} else {

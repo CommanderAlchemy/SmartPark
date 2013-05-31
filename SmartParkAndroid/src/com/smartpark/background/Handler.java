@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.smartpark.activities.LoginActivity;
 import com.smartpark.activities.MainActivity;
@@ -103,6 +104,7 @@ public class Handler {
 				if (message[1].equals("ParkingLotNotFound")) {
 					// TODO
 					BackgroundOperationThread.cancelParkingSequence();
+					Toast.makeText(Ref.activeActivity, "Not on parkingplace", Toast.LENGTH_SHORT).show();
 				} else {
 					BackgroundOperationThread.setParkingInitiated();
 					// "price:QPark:smsQuery:9,18:18,9:55.242342:26.42345:parkID";
@@ -111,6 +113,7 @@ public class Handler {
 					// TODO
 					
 					BackgroundOperationThread.setParkingLotdataReceived();
+					BackgroundOperationThread.setParking();
 				}
 				// ========================================
 				

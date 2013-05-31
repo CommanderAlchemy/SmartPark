@@ -1,6 +1,7 @@
 package com.smartpark.fragments;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import android.app.Activity;
@@ -179,11 +180,20 @@ public class UserSmartParkFragment extends Fragment {
 	}
 
 	public String convertMilisToTime(String millisString) {
-		String time = "00:00";
+		String time = "";
 		try {
 			long millis = Long.parseLong(millisString);
-			time = TimeUnit.MINUTES.toHours(TimeUnit.MINUTES.toMinutes(millis))
-					+ ":" + TimeUnit.MILLISECONDS.toMinutes(millis);
+//			time = TimeUnit.MILLISECONDS.toHours(millis)
+//					+ ":" + TimeUnit.SECONDS.toHours(millis) 
+//					+ ":" + TimeUnit.MINUTES.toHours(millis);
+			
+			time = String.format("%02d:%02d:%02d", 
+					TimeUnit.MILLISECONDS.toHours(millis),
+					TimeUnit.MILLISECONDS.toMinutes(millis) -  
+					TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)), // The change is in this line
+					TimeUnit.MILLISECONDS.toSeconds(millis) - 
+					TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));   
+			
 			System.out.println(time);
 
 		} catch (Exception e) {
@@ -193,10 +203,19 @@ public class UserSmartParkFragment extends Fragment {
 	}
 
 	public String convertMilisToTime(long millis) {
-		String time = "00:00";
+		String time = "";
 		try {
-			time = TimeUnit.MINUTES.toHours(TimeUnit.MINUTES.toMinutes(millis))
-					+ ":" + TimeUnit.MILLISECONDS.toMinutes(millis);
+//			time = TimeUnit.MILLISECONDS.toHours(millis)
+//					+ ":" + TimeUnit.MILLISECONDS.toMinutes(millis) 
+//					+ ":" + TimeUnit.MILLISECONDS.toSeconds(millis);
+			
+			time = String.format("%02d:%02d:%02d", 
+					TimeUnit.MILLISECONDS.toHours(millis),
+					TimeUnit.MILLISECONDS.toMinutes(millis) -  
+					TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
+					TimeUnit.MILLISECONDS.toSeconds(millis) - 
+					TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));   
+			
 			System.out.println(time);
 
 		} catch (Exception e) {
@@ -205,7 +224,7 @@ public class UserSmartParkFragment extends Fragment {
 		return time;
 	}
 
-	public void setbtnParkText(String string) {
+	public synchronized void setbtnParkText(String string) {
 		if (!btnPark.getText().equals(string)) {
 			btnPark.setText(string);
 		}

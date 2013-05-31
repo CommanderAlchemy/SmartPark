@@ -36,7 +36,7 @@ public class BackgroundOperationThread extends Thread {
 
 	// REFERENCES TO CONTROL-CLASSES
 	private BlueController btController;
-	private TCPController tcpController;
+	private static TCPController tcpController;
 	private static Handler handler;
 
 	// SharedPreferences for login settings
@@ -64,7 +64,7 @@ public class BackgroundOperationThread extends Thread {
 	// ==============================
 	
 	
-
+	
 	// =========== END OF CLASS VARIABLES ===============================
 
 	public BackgroundOperationThread(Context applicationContext,
@@ -401,6 +401,12 @@ public class BackgroundOperationThread extends Thread {
 		tcpTransmitBuffer.addLast(data);
 	}// ==================================================================
 
+	public static TCPController getTCPReference(){
+		return tcpController;
+	}
+	
+	
+	
 	/**
 	 * Run this method twice to get the state of the loop. This is proven a
 	 * better check than the native once.
@@ -545,7 +551,7 @@ public class BackgroundOperationThread extends Thread {
 		parkingLotdataReceived = true;
 	}
 	// the fifth to be used
-	public void setParking() {
+	public static void setParking() {
 		isParking = true;
 	}
 	// the sixth to be used

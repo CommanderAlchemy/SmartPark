@@ -3,6 +3,7 @@ package tables;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
 
 import database.Database;
 
@@ -16,18 +17,20 @@ public class ParkingLots extends Database {
 	private String freeHours;
 	private String longitude;
 	private String latitude;
+	private LinkedList<String> resultList;
+	private LinkedList<String> coordinates;
 
 	// == Settings for the Table ========================
 
 	private static String dbName = "test";
 	private static String tblName = "ParkingLots";
-	private static String[] columns = {"price", "company", "smsQuery",
+	private static String[] columns = { "price", "company", "smsQuery",
 			"ticketHours", "freeHours", "longitude", "latitude" };
 
-	private String[] columnTypes = {"REAL", "TEXT", "TEXT", "TEXT", "TEXT",
+	private String[] columnTypes = { "REAL", "TEXT", "TEXT", "TEXT", "TEXT",
 			"TEXT", "TEXT" };
 
-	boolean[] notNull = {true, true, false, true, false, true, true };
+	boolean[] notNull = { true, true, false, true, false, true, true };
 
 	// --------------------------------------------------
 
@@ -36,7 +39,7 @@ public class ParkingLots extends Database {
 	 * 
 	 * @param dbName
 	 */
-	public ParkingLots(String dbName) {
+	public ParkingLots() {
 		super(dbName);
 	}
 
@@ -68,21 +71,22 @@ public class ParkingLots extends Database {
 	 */
 	public String CreateParkingLotsTable() {
 		String error = createTable(tblName, columns, columnTypes, notNull);
-		if (error.length() == 0){
+		if (error.length() == 0) {
 			System.out.println(tblName + " table successfully created in "
 					+ dbName);
 		}
 		return error;
 	}
-	
+
 	public void commit() {
-		String[] columnData = {Long.toString(price),company,smsQuery,ticketHours,freeHours,longitude,latitude};
+		String[] columnData = { Long.toString(price), company, smsQuery,
+				ticketHours, freeHours, longitude, latitude };
 		insertIntoTable(tblName, columns, columnTypes, columnData);
 	}
-	
 
 	/**
 	 * Insert Data Into Table
+	 * 
 	 * @param columnData
 	 */
 	public void InsertParkingLotsData(String[] columnData) {
@@ -96,8 +100,10 @@ public class ParkingLots extends Database {
 	 * 
 	 * @param searchString
 	 * @param columnNr
+	 * @return
 	 */
-	public void selectParkingLots(String searchString, int columnNr, boolean rangeSelection) {
+	public void selectParkingLots(String searchString, int columnNr,
+			boolean rangeSelection) {
 
 		ResultSet result = selectDataFromTable(tblName, columns, searchString,
 				columnNr, rangeSelection);
@@ -113,6 +119,7 @@ public class ParkingLots extends Database {
 				this.longitude = result.getString("longitude");
 				this.latitude = result.getString("latitude");
 				System.out.println("[RESULT: ParkingLots]		" + this.toString());
+				resultList.addLast(this.serialize());
 			}
 			System.out.println();
 		} catch (SQLException e) {
@@ -120,8 +127,79 @@ public class ParkingLots extends Database {
 		}
 	}
 
+	public String searchForParking(String longitude, String latitude) {
+		double[] range;
+		int radious = 6371;
+		double distance = -1;
+
+		double inputlongitude = Double.parseDouble(longitude);
+		double inputlatitude = Double.parseDouble(latitude);
+
+		// select the whole database over parkinglots
+		// create an array search the array and find a matching parkinglot
+		// return a string in format xx:xx:xx:xx
+		// latitute - lotLatitude
+
+		/*
+		 * var R = 6371; // km var d = Math.acos(Math.sin(lat1)*Math.sin(lat2) +
+		 * Math.cos(lat1)*Math.cos(lat2) * Math.cos(lon2-lon1)) * R;
+		 */
+		
+		selectParkingLots(null, 0, false);
+		range = new double[resultList.size()];
+		String parkinglong;
+		String parkinglat;
+		int i = 0;
+		for (String s : resultList) {
+			i ++;
+			String[] stringArray = s.split(":");
+			parkinglong = stringArray[5];
+			parkinglat = stringArray[6];
+			
+			distance = Math
+					.acos((Math.sin(inputlatitude) * Math.sin(Double
+							.parseDouble(parkinglat)
+							+ Math.cos(inputlatitude)
+							* Math.cos(Double.parseDouble(parkinglat)
+									* Math.cos(inputlongitude
+											- Double.parseDouble(parkinglong)
+											* radious)))));
+			
+			range[i] = distance;
+		}
+		
+		
+		int index = (int) getMin(range);
+		
+		if(index == -1)
+			return "ParkingLotNotFound";
+		
+		System.out.println(range[index]);
+		if(range[index] <= 1){
+			return resultList.get(index);
+		}
+		
+		
+		
+		return "ParkingLotNotFound";
+	}
+
+	public double getMin(double[] array) {
+		if (array.length > 0) {
+			int index = 0;
+			for (int i = 0; i < array.length; i++) {
+				if (array[index] > array[i]) {
+					index = i;
+				}
+			}
+			return index;
+		}
+		return -1;
+	}
+
 	/**
 	 * UpdateParkingLotsData
+	 * 
 	 * @param searchCol
 	 * @param searchValue
 	 * @param whatCol
@@ -288,13 +366,25 @@ public class ParkingLots extends Database {
 				+ "Freehours: "		+ this.freeHours 			+ ";"
 				+ "Longitude: "		+ this.longitude.toString()	+ ";"
 				+ "Latitude: " 		+ this.latitude.toString()	+ ";";
-		/* @formatter:on */
+		
 	}
+
+	public String serialize() {
+		return this.price + ":" 
+				+ this.company + ":" 
+				+ this.smsQuery + ":" 
+				+ this.ticketHours + ":" 
+				+ this.freeHours + ":" 
+				+ this.longitude + ":" 
+				+ this.latitude; 
+	}
+		/* @formatter:on */
 	public static void main(String[] args) {
-//		ParkingLots pl = new ParkingLots(25, "Qpark", "sms 404026", "08-18", "first 2", "longitude", "latitude");
-//		pl.CreateParkingLotsTable();
-//		pl.commit();
-//		pl.selectParkingLots("25", 0, false);
+		// ParkingLots pl = new ParkingLots(25, "Qpark", "sms 404026", "08-18",
+		// "first 2", "longitude", "latitude");
+		// pl.CreateParkingLotsTable();
+		// pl.commit();
+		// pl.selectParkingLots("25", 0, false);
 	}
 
 }

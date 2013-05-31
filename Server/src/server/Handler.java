@@ -32,7 +32,7 @@ public class Handler {
 	 */
 	public Handler(ClientThread clientThread) {
 		this.clientThread = clientThread;
-//		clientThread.sendMessage("ConnectionACK;0:0");
+		 clientThread.sendMessage("ConnectionACK;0:0");
 		System.out.println("--> Handler send This Message: "
 				+ "ConnectionACK;0:0");
 	}
@@ -55,9 +55,10 @@ public class Handler {
 				if (autoLogin(data[0])) {
 					System.out.println("--> Handler send This Message: "
 							+ "AutoLoginACK;Accepted:" + controller);
-//					clientThread.sendMessage("AutoLoginACK;Accepted:" + controller);
+					 clientThread.sendMessage("AutoLoginACK;Accepted:" +
+					 controller);
 				} else {
-//					clientThread.sendMessage("AutoLoginACK;Denied:false");
+					 clientThread.sendMessage("AutoLoginACK;Denied:false");
 				}
 			} else {
 				System.out.println("--> Handler send This Message: "
@@ -73,7 +74,7 @@ public class Handler {
 			if (passwordAccepted) {
 				System.out.println("--> Handler send This Message: "
 						+ "LoginACK;Accepted:" + controller);
-//				clientThread.sendMessage("LoginACK;Accepted:" + controller);
+				 clientThread.sendMessage("LoginACK;Accepted:" + controller);
 			} else {
 				System.out.println("--> Handler send This Message: "
 						+ "LoginACK;Denied:false");
@@ -88,11 +89,11 @@ public class Handler {
 			clientThread.closeConnecton();
 			break;
 
-		case "QueryHistory":
-			System.out.println(" --- QueryHistory --- ");
-
+		case "History":
+			System.out.println(" --- History --- ");
+			
 			if (passwordAccepted)
-				queryHistory();
+				queryHistory(inData[1]);
 
 			break;
 
@@ -100,10 +101,18 @@ public class Handler {
 			System.out.println(" --- StartPark --- ");
 
 			if (passwordAccepted) {
-				this.smartpark = new SmartPark(customer.getSmartParkID());
-				String parkID = smartpark.startParking(inData[1]);
-				//parkinglots.selectParkingLots(searchString, columnNr, rangeSelection)
-				clientThread.sendMessage("StartParkACK;" + parkID);
+				// Get longitude and latitude and search for parking
+				String parkingLot = new ParkingLots().searchForParking(
+						inData[1], inData[2]);
+				if (!parkingLot.equals("ParkingLotNotFound")) {
+					this.smartpark = new SmartPark(customer.getSmartParkID());
+					String parkID = this.smartpark.startParking(inData[1]);
+					clientThread.sendMessage("StartParkACK;" + parkingLot
+							+ ":" + parkID);
+				} else {
+					clientThread
+							.sendMessage("StartParckACK;ParkingLotNotFound");
+				}
 			}
 			break;
 
@@ -112,23 +121,15 @@ public class Handler {
 
 			if (passwordAccepted) {
 				this.smartpark = new SmartPark(customer.getSmartParkID());
-				smartpark.stopParking(inData[1]);
-				clientThread.sendMessage("StopParkACK");
+				boolean error = smartpark.stopParking(inData[1]);
+				clientThread.sendMessage("StopParkACK;" + !error);
 			}
 			break;
 
 		case "echo":
 			clientThread.sendMessage("echoACK");
 			break;
-			
-//		case "CheckParking"
-//		if (passwordAccepted)
-//			checkParking(inData[1]);
-//		break;
-		
-		
-		
-		
+
 		default:
 			break;
 		}
@@ -175,22 +176,19 @@ public class Handler {
 	 * 
 	 * @param param
 	 */
-	public void queryHistory() {
+	public void queryHistory(String param) {
 		LinkedList<String> resultList = new LinkedList<String>();
 		this.smartpark = new SmartPark(customer.getSmartParkID());
-		this.smartpark.selectSmartPark(null, 0, true);
+		this.smartpark.selectSmartPark(param, 4, true);
 		System.out.println();
 		resultList = smartpark.getResultList();
-		
+
 		while (resultList.size() > 0) {
-			System.out.println("QueryHistory;"+resultList.removeFirst());
-//			clientThread.sendMessage(resultList.toString());
+			 clientThread.sendMessage("HistoryACK;" + resultList.removeFirst());
 		}
+		clientThread.sendMessage("HistoryACK;endl");
 	}
 
-	public void calculateRange() {
-
-	}
 	public static void main(String[] args) {
 		Handler hand = new Handler(null);
 		hand.checkCommand("Login;820620:saeed");

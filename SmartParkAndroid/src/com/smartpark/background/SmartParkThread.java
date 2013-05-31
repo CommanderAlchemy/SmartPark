@@ -1,5 +1,8 @@
 package com.smartpark.background;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -43,43 +46,39 @@ public class SmartParkThread extends Thread {
 	@Override
 	public void run() {
 		long duration;
-		TCPController tcpController = BackgroundOperationThread.getTCPReference();
+		TCPController tcpController = BackgroundOperationThread
+				.getTCPReference();
 
 		while (run) {
-			if(BlueController.isConnected()){
+			if (BlueController.isConnected()) {
 				Ref.activeActivity.runOnUiThread(new Runnable() {
 					public void run() {
 						userSmartParkFragment.setLblBTText("BT(X)");
 					}
 				});
-			}else{
+			} else {
 				Ref.activeActivity.runOnUiThread(new Runnable() {
 					public void run() {
 						userSmartParkFragment.setLblBTText("BT( )");
 					}
 				});
 			}
-			
-			
-			
-			if(tcpController.isConnected()){
+
+			if (tcpController.isConnected()) {
 				Ref.activeActivity.runOnUiThread(new Runnable() {
 					public void run() {
 						userSmartParkFragment.setLblBTText("TCP(X)");
 					}
 				});
-			}else{
+			} else {
 				Ref.activeActivity.runOnUiThread(new Runnable() {
 					public void run() {
 						userSmartParkFragment.setLblBTText("TCP( )");
 					}
 				});
 			}
-			
-			
-			
+
 			if (BackgroundOperationThread.isParkingLotdataReceived()) {
-				Log.e(TAG, "received lot");
 				Ref.activeActivity.runOnUiThread(new Runnable() {
 					public void run() {
 
@@ -96,8 +95,6 @@ public class SmartParkThread extends Thread {
 				});
 			}
 
-			
-			
 			if (BackgroundOperationThread.isParking()) {
 
 				// StartPark;ssNbr:55.3452324:26.3423423:2342133424:0:ADT-435:Renault:0:0
@@ -111,9 +108,17 @@ public class SmartParkThread extends Thread {
 
 					public void run() {
 
+						Timestamp timestamp = new Timestamp(Long.parseLong(BackgroundOperationThread.startParkString[3]));
+						Date date = new Date(timestamp.getTime());
+
+						// S is the millisecond
+						SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd' 'HH:MM:ss:S");
+
+						System.out.println(simpleDateFormat.format(timestamp));
+						System.out.println(simpleDateFormat.format(date));
+
 						userSmartParkFragment
-								.setLblParkedSinceShowText(userSmartParkFragment
-										.convertMilisToTime(BackgroundOperationThread.startParkString[3]));
+								.setLblParkedSinceShowText(simpleDateFormat.format(timestamp.getTime()));
 
 						Calendar cal = Calendar.getInstance();
 						duration = cal.getTimeInMillis()
@@ -141,10 +146,10 @@ public class SmartParkThread extends Thread {
 						totalThisMonth = mainPreference.getFloat(
 								"totalThisMonth", 0);
 						mainPreference.edit().putFloat("totalThisMonth",
-								(float) (totalThisMonth + parkingPrice));
+								(float) (totalThisMonth + parkingPrice)).apply();
 						userSmartParkFragment.setlblTotalPriceShowText(Float
 								.toString(mainPreference.getFloat(
-										"totalThisMonth", -1)));
+										"totalThisMonth", 0)));
 
 					}
 				});

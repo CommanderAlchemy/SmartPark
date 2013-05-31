@@ -59,7 +59,11 @@ public class BackgroundOperationThread extends Thread {
 	// == Datacenter section ========
 	// Info about the last parkingLot
 	public static String[] parkingLot;
+	public static String[] startParkString;
+	public static String[] stopParkString;
 	// ==============================
+	
+	
 
 	// =========== END OF CLASS VARIABLES ===============================
 
@@ -434,8 +438,10 @@ public class BackgroundOperationThread extends Thread {
 					+ licensePlate + ":" + carModel + ":0:0";
 
 			Log.e(TAG, "--> Send parking request:\n" + startPark);
+			
+			startParkString = startPark.split(";")[1].split(":");
 
-			mainPreference.edit().putString("StartPark", startPark);
+			mainPreference.edit().putString("StartPark", startPark).apply();
 
 			sendByTCP(startPark);
 			return true;
@@ -458,7 +464,7 @@ public class BackgroundOperationThread extends Thread {
 			return false;
 		}
 
-		String StopPark = "StopPark;";
+		String stopPark = "StopPark;";
 		String ssNbr = mainPreference.getString("ssNbr", "error") + ":";
 		if (!ssNbr.equals("error:")) {
 			Calendar cal = Calendar.getInstance();
@@ -474,20 +480,17 @@ public class BackgroundOperationThread extends Thread {
 
 			Location location = GPSReceiver.getLocation();
 
-			StopPark += ssNbr + ":" + location.getLongitude() + ":"
+			stopPark += ssNbr + ":" + location.getLongitude() + ":"
 					+ location.getLatitude() + ":" + startTimeStamp + ":"
 					+ stopTimestamp + ":" + licensePlate + ":" + carModel + ":"
 					+ parkID;
+			
+			stopParkString = stopPark.split(";")[1].split(":");
 
-			Log.e(TAG, "--> Send parking request: " + StopPark);
-			sendByTCP(StopPark);
+			Log.e(TAG, "--> Send parking request: " + stopPark);
+			sendByTCP(stopPark);
 
-			mainPreference.edit().putString("LastParkingStop", StopPark);
-			while (mainPreference.getString("LastParkingStop", "-").equals(
-					StopPark)) {
-				mainPreference.edit().putString("LastParkingStop", StopPark);
-				Log.e(TAG, "Saving data in stopPark()");
-			}
+			mainPreference.edit().putString("LastParkingStop", stopPark).apply();
 
 			return true;
 		} else {

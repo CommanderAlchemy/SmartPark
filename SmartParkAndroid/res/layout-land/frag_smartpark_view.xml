@@ -77,7 +77,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
-            android:id="@+id/lblHours"
+            android:id="@+id/lblTicketHours"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/lblPrice"
@@ -87,21 +87,21 @@
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
-            android:id="@+id/lblFreeTime"
+            android:id="@+id/lblFreeHours"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/lblHours"
-            android:layout_alignRight="@+id/lblHours"
-            android:layout_below="@+id/lblHours"
+            android:layout_alignLeft="@+id/lblTicketHours"
+            android:layout_alignRight="@+id/lblTicketHours"
+            android:layout_below="@+id/lblTicketHours"
             android:text="Free time:"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
-            android:id="@+id/lblPriceNow"
+            android:id="@+id/lblPriceTillNow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/lblFreeTime"
-            android:layout_below="@+id/lblFreeTime"
+            android:layout_alignLeft="@+id/lblFreeHours"
+            android:layout_below="@+id/lblFreeHours"
             android:layout_marginTop="20dp"
             android:text="Price till now:"
             android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -129,33 +129,33 @@
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
-            android:id="@+id/lblPriceNowShow"
+            android:id="@+id/lblPriceTillNowShow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/lblPriceNow"
-            android:layout_alignBottom="@id/lblPriceNow"
-            android:layout_alignRight="@id/lblFreeTimeShow"
+            android:layout_alignBaseline="@id/lblPriceTillNow"
+            android:layout_alignBottom="@id/lblPriceTillNow"
+            android:layout_alignRight="@id/lblFreeHoursShow"
             android:layout_toRightOf="@+id/lblBT"
             android:text="21:-"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
-            android:id="@+id/lblFreeTimeShow"
+            android:id="@+id/lblFreeHoursShow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/lblPriceNow"
+            android:layout_above="@+id/lblPriceTillNow"
             android:layout_alignRight="@+id/lblDurationShow"
             android:layout_toRightOf="@+id/lblTotalPrice"
             android:text="first 3 hours"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
-            android:id="@+id/lblHoursShow"
+            android:id="@+id/lblTicketHoursShow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/lblFreeTimeShow"
-            android:layout_alignLeft="@+id/lblFreeTimeShow"
-            android:layout_alignRight="@+id/lblFreeTimeShow"
+            android:layout_above="@+id/lblFreeHoursShow"
+            android:layout_alignLeft="@+id/lblFreeHoursShow"
+            android:layout_alignRight="@+id/lblFreeHoursShow"
             android:text="9-18"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -163,8 +163,8 @@
             android:id="@+id/lblPriceShow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/lblHoursShow"
-            android:layout_alignLeft="@+id/lblHoursShow"
+            android:layout_above="@+id/lblTicketHoursShow"
+            android:layout_alignLeft="@+id/lblTicketHoursShow"
             android:layout_alignRight="@+id/lblDurationShow"
             android:text="20kr/h"
             android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -174,7 +174,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/lblTotalPrice"
-            android:layout_alignRight="@+id/lblPriceNowShow"
+            android:layout_alignRight="@+id/lblPriceTillNowShow"
             android:layout_toRightOf="@+id/lblBT"
             android:text="500:-"
             android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -194,8 +194,8 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/lblPriceNowShow"
-            android:layout_alignLeft="@+id/lblPriceNow"
+            android:layout_above="@+id/lblPriceTillNowShow"
+            android:layout_alignLeft="@+id/lblPriceTillNow"
             android:layout_alignParentRight="true"
             android:progress="100" />
 
@@ -203,8 +203,8 @@
             android:id="@+id/lblTotalPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/lblPriceNow"
-            android:layout_below="@+id/lblPriceNow"
+            android:layout_alignLeft="@+id/lblPriceTillNow"
+            android:layout_below="@+id/lblPriceTillNow"
             android:text="Total this month:"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </RelativeLayout>

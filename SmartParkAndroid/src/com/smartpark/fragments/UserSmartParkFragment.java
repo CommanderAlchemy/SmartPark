@@ -55,14 +55,16 @@ public class UserSmartParkFragment extends Fragment {
 						Toast.makeText(Ref.activeActivity,
 								"Stopped parking...", Toast.LENGTH_SHORT)
 								.show();
-						boolean parking = BackgroundOperationThread.stopPark("ADT-435","Renault");
-									
-					}else{
+						boolean parking = BackgroundOperationThread.stopPark(
+								"ADT-435", "Renault");
+
+					} else {
 						Toast.makeText(Ref.activeActivity,
 								"Initiating Parking...", Toast.LENGTH_SHORT)
 								.show();
-						boolean parking = BackgroundOperationThread.startPark("ADT-435","Renault");
-						if(!parking){
+						boolean parking = BackgroundOperationThread.startPark(
+								"ADT-435", "Renault");
+						if (!parking) {
 							Toast.makeText(Ref.activeActivity,
 									"Has no location!", Toast.LENGTH_SHORT)
 									.show();
@@ -90,9 +92,9 @@ public class UserSmartParkFragment extends Fragment {
 	private TextView lblBT;
 	private TextView lblParkedSinceShow;
 	private TextView lblDurationShow;
-	private TextView lblPriceNowShow;
-	private TextView lblFreeTimeShow;
-	private TextView lblHoursShow;
+	private TextView lblPriceTillNowShow;
+	private TextView lblFreeHoursShow;
+	private TextView lblTicketHoursShow;
 	private TextView lblPriceShow;
 	private TextView lblTotalPriceShow;
 
@@ -109,11 +111,11 @@ public class UserSmartParkFragment extends Fragment {
 		//@formatter:off
 				int[] viewIds = new int[]
 						{R.id.lblCurrentTime,R.id.lblGPS,R.id.lblBT,R.id.lblParkedSinceShow,
-						R.id.lblDurationShow,R.id.lblPriceNowShow,R.id.lblFreeTimeShow,
-						R.id.lblHoursShow,R.id.lblPriceShow,R.id.lblTotalPriceShow,R.id.btnTogglePark};
+						R.id.lblDurationShow,R.id.lblPriceTillNowShow,R.id.lblFreeHoursShow,
+						R.id.lblTicketHoursShow,R.id.lblPriceShow,R.id.lblTotalPriceShow,R.id.btnTogglePark};
 				String[] viewKeys = new String[]
 						{"lblCurrentTime","lblGPS","lblBT","lblParkedSinceShow","lblDurationShow",
-						"lblPriceNowShow","lblFreeTimeShow","lblHoursShow","lblPriceShow",
+						"lblPriceTillNowShow","lblFreeHoursShow","lblTicketHoursShow","lblPriceShow",
 						"lblTotalPriceShow","btnTogglePark"};
 				//@formatter:on
 		View view;
@@ -128,20 +130,22 @@ public class UserSmartParkFragment extends Fragment {
 			viewReferences.put(viewKeys[i], view);
 		}
 		// === REFERENCES CREATED =======================================
-		
-		btnPark = (Button)viewReferences.get("btnTogglePark");
+
+		btnPark = (Button) viewReferences.get("btnTogglePark");
 		lblCurrentTime = (TextView) viewReferences.get("lblCurrentTime");
 		lblGPS = (TextView) viewReferences.get("lblGPS");
 		lblBT = (TextView) viewReferences.get("lblBT");
 		lblParkedSinceShow = (TextView) viewReferences
 				.get("lblParkedSinceShow");
 		lblDurationShow = (TextView) viewReferences.get("lblDurationShow");
-		lblPriceNowShow = (TextView) viewReferences.get("lblPriceNowShow");
-		lblFreeTimeShow = (TextView) viewReferences.get("lblFreeTimeShow");
-		lblHoursShow = (TextView) viewReferences.get("lblHoursShow");
+		lblPriceTillNowShow = (TextView) viewReferences
+				.get("lblPriceTillNowShow");
+		lblFreeHoursShow = (TextView) viewReferences.get("lblFreeHoursShow");
+		lblTicketHoursShow = (TextView) viewReferences
+				.get("lblTicketHoursShow");
 		lblPriceShow = (TextView) viewReferences.get("lblPriceShow");
 		lblTotalPriceShow = (TextView) viewReferences.get("lblTotalPriceShow");
-		
+
 		myVib = (Vibrator) getActivity().getSystemService(
 				Activity.VIBRATOR_SERVICE);
 
@@ -187,58 +191,78 @@ public class UserSmartParkFragment extends Fragment {
 		}
 		return time;
 	}
-	
 
-	public void setLblCurrentTimeText(String string) {
-		if (!btnPark.getText().equals(string)){
+	public String convertMilisToTime(long millis) {
+		String time = "00:00";
+		try {
+			time = TimeUnit.MINUTES.toHours(TimeUnit.MINUTES.toMinutes(millis))
+					+ ":" + TimeUnit.MILLISECONDS.toMinutes(millis);
+			System.out.println(time);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return time;
+	}
+
+	public void setbtnParkText(String string) {
+		if (!btnPark.getText().equals(string)) {
 			btnPark.setText(string);
 		}
 	}
+
 	public void setLblGPSText(String string) {
-		if (!lblGPS.getText().equals(string)){
+		if (!lblGPS.getText().equals(string)) {
 			lblGPS.setText(string);
 		}
 	}
+
 	public void setLblBTText(String string) {
-		if (!lblBT.getText().equals(string)){
+		if (!lblBT.getText().equals(string)) {
 			lblBT.setText(string);
 		}
 	}
+
 	public void setLblParkedSinceShowText(String string) {
-		if (!lblParkedSinceShow.getText().equals(string)){
+		if (!lblParkedSinceShow.getText().equals(string)) {
 			lblParkedSinceShow.setText(string);
 		}
 	}
+
 	public void setLblDurationShowText(String string) {
-		if (!lblDurationShow.getText().equals(string)){
+		if (!lblDurationShow.getText().equals(string)) {
 			lblDurationShow.setText(string);
 		}
 	}
-	public void setlblPriceNowShowText(String string) {
-		if (!lblPriceNowShow.getText().equals(string)){
-			lblPriceNowShow.setText(string);
+
+	public void setlblPriceTillNowShowText(String string) {
+		if (!lblPriceTillNowShow.getText().equals(string)) {
+			lblPriceTillNowShow.setText(string);
 		}
 	}
-	public void setlblFreeTimeShowText(String string) {
-		if (!btnPark.getText().equals(string)){
-			btnPark.setText(string);
+
+	public void setlblFreeHoursShowText(String string) {
+		if (!lblFreeHoursShow.getText().equals(string)) {
+			lblFreeHoursShow.setText(string);
 		}
 	}
-	public void setlblHoursShowText(String string) {
-		if (!btnPark.getText().equals(string)){
-			btnPark.setText(string);
+
+	public void setlblTicketHoursShowText(String string) {
+		if (!lblTicketHoursShow.getText().equals(string)) {
+			lblTicketHoursShow.setText(string);
 		}
 	}
+
 	public void setlblPriceShowText(String string) {
-		if (!btnPark.getText().equals(string)){
-			btnPark.setText(string);
+		if (!lblPriceShow.getText().equals(string)) {
+			lblPriceShow.setText(string);
 		}
 	}
+
 	public void setlblTotalPriceShowText(String string) {
-		if (!btnPark.getText().equals(string)){
-			btnPark.setText(string);
+		if (!lblTotalPriceShow.getText().equals(string)) {
+			lblTotalPriceShow.setText(string);
 		}
 	}
-	
-	
+
 }

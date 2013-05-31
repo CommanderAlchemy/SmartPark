@@ -119,13 +119,13 @@ public class Handler {
 				
 			} else if (message[0].equals("StopParkACK")) {
 				Log.e(TAG, "StopParkACK: " + message[1]);
-				if (message[1].equals("true")) { // false means no error
-					String stopPark = mainPreference.getString(
-							"LastParkingStop", "no data");
-					if (!stopPark.equals("no data")) {
-						BackgroundOperationThread.sendByTCP(stopPark);
+				if (message[1].equals("false")) { // false means no error
+//					String stopPark = mainPreference.getString(
+//							"LastParkingStop", "no data");
+//					if (!stopPark.equals("no data")) {
+//						BackgroundOperationThread.sendByTCP(stopPark);
 						BackgroundOperationThread.setParkingEnded();
-					}
+//					}
 				}
 				// ========================================
 				

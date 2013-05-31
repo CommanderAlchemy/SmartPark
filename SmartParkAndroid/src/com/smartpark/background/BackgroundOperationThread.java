@@ -472,8 +472,8 @@ public class BackgroundOperationThread extends Thread {
 		}
 
 		String stopPark = "StopPark;";
-		String ssNbr = mainPreference.getString("ssNbr", "error") + ":";
-		if (!ssNbr.equals("error:")) {
+		String ssNbr = mainPreference.getString("ssNbr", "error");
+		if (!ssNbr.equals("error")) {
 			Calendar cal = Calendar.getInstance();
 			long stopTimestamp = cal.getTimeInMillis();
 
@@ -481,15 +481,21 @@ public class BackgroundOperationThread extends Thread {
 
 			String startTimeStamp = startPark.split(";")[1].split(":")[3];
 
-			String parkID = mainPreference.getString("parkID", "-1");
+			String parkID = BackgroundOperationThread.parkingLot[7];
 
 			// StopPark;ssNbr:55.3452324:26.3423423:2342133424:2342143424:ADT-435:Renault:price:parkID
 
+			String price = BackgroundOperationThread.parkingLot[0];
+			
 			Location location = GPSReceiver.getLocation();
 
 			stopPark += ssNbr + ":" + location.getLongitude() + ":"
-					+ location.getLatitude() + ":" + startTimeStamp + ":"
-					+ stopTimestamp + ":" + licensePlate + ":" + carModel + ":"
+					+ location.getLatitude() + ":" 
+					+ startTimeStamp + ":"
+					+ stopTimestamp + ":" 
+					+ licensePlate + ":" 
+					+ carModel + ":"
+					+ price + ":"
 					+ parkID;
 			
 			stopParkString = stopPark.split(";")[1].split(":");
@@ -565,7 +571,6 @@ public class BackgroundOperationThread extends Thread {
 	// the last to be used
 	public static void setParkingEnded() {
 		parkingInitiated = false;
-		// TODO
 		parkingLotdataReceived = false;
 		isParking = false;
 	}

@@ -53,6 +53,7 @@ public class UserSmartParkFragment extends Fragment {
 				case R.id.btnTogglePark:
 					myVib.vibrate(50);
 					if (BackgroundOperationThread.isParking()) {
+						Log.e(TAG, "++ is parking ++");
 						Toast.makeText(Ref.activeActivity,
 								"Stopped parking...", Toast.LENGTH_SHORT)
 								.show();
@@ -60,6 +61,7 @@ public class UserSmartParkFragment extends Fragment {
 								"ADT-435", "Renault");
 
 					} else {
+						Log.e(TAG, "++ not parking ++");
 						Toast.makeText(Ref.activeActivity,
 								"Initiating Parking...", Toast.LENGTH_SHORT)
 								.show();
@@ -228,7 +230,7 @@ public class UserSmartParkFragment extends Fragment {
 		}
 	}
 
-	public void setLblGPSText(String string) {
+	public void setLblTCPText(String string) {
 		if (!lblGPS.getText().equals(string)) {
 			lblGPS.setText(string);
 		}

@@ -67,17 +67,20 @@ public class SmartParkThread extends Thread {
 			if (tcpController.isConnected()) {
 				Ref.activeActivity.runOnUiThread(new Runnable() {
 					public void run() {
-						userSmartParkFragment.setLblBTText("TCP(X)");
+						userSmartParkFragment.setLblTCPText("TCP(X)");
 					}
 				});
 			} else {
 				Ref.activeActivity.runOnUiThread(new Runnable() {
 					public void run() {
-						userSmartParkFragment.setLblBTText("TCP( )");
+						userSmartParkFragment.setLblTCPText("TCP( )");
 					}
 				});
 			}
-
+			
+			System.out.println(BackgroundOperationThread.isParkingLotdataReceived());
+			System.out.println(BackgroundOperationThread.isParking());
+			
 			if (BackgroundOperationThread.isParkingLotdataReceived()) {
 				Ref.activeActivity.runOnUiThread(new Runnable() {
 					public void run() {
@@ -88,8 +91,6 @@ public class SmartParkThread extends Thread {
 			} else {
 				Ref.activeActivity.runOnUiThread(new Runnable() {
 					public void run() {
-
-						// Log.e(TAG, "not parking");
 						userSmartParkFragment.setbtnParkText("Park");
 					}
 				});

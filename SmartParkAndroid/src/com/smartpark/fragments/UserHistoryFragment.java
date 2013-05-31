@@ -89,7 +89,8 @@ public class UserHistoryFragment extends Fragment {
 	};
 	private HistoryThread screenThread;
 	private SharedPreferences mainPreference;
-	private ListView listViewHistory;
+//	private ListView listViewHistory;
+	//TODO check if crash^ 
 	private Button btnToDate;
 	private Button btnFromDate;
 

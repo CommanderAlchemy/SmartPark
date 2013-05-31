@@ -142,6 +142,47 @@ public class Handler {
 						+ ":" + parkID);
 			}
 		break;
+		
+		case "CheckPark":
+			System.out.println("---- Check Parkings----");
+			LinkedList<String> resultList = new LinkedList<String>();
+			this.smartpark = new SmartPark("001First");
+			smartpark.selectSmartPark(null, 0, false);
+			if(Double.parseDouble(smartpark.getStopStamp()) > 0){
+				resultList.add(smartpark.serialize());
+			}
+			this.smartpark = new SmartPark("002Second");
+			smartpark.selectSmartPark(null, 0, false);
+			if(Double.parseDouble(smartpark.getStopStamp()) > 0){
+				resultList.add(smartpark.serialize());
+			}
+			this.smartpark = new SmartPark("003Third");
+			smartpark.selectSmartPark(null, 0, false);
+			if(Double.parseDouble(smartpark.getStopStamp()) > 0){
+				resultList.add(smartpark.serialize());
+			}
+			this.smartpark = new SmartPark("004Fourth");
+			smartpark.selectSmartPark(null, 0, false);
+			if(Double.parseDouble(smartpark.getStopStamp()) > 0){
+				resultList.add(smartpark.serialize());
+			}
+			this.smartpark = new SmartPark("005Fith");
+			smartpark.selectSmartPark(null, 0, false);
+			if(Double.parseDouble(smartpark.getStopStamp()) > 0){
+				resultList.add(smartpark.serialize());
+			}
+			this.smartpark = new SmartPark("006Sixth");
+			smartpark.selectSmartPark(null, 0, false);
+			if(Double.parseDouble(smartpark.getStopStamp()) > 0){
+				resultList.add(smartpark.serialize());
+			}
+			while (resultList.size() > 0) {
+				 clientThread.sendMessage("CheckParkACK;" + resultList.removeFirst());
+			}
+			clientThread.sendMessage("CheckParkACK;endl");
+			
+			
+			break;
 		case "echo":
 			clientThread.sendMessage("echoACK");
 			break;

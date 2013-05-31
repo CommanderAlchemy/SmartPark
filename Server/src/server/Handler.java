@@ -129,8 +129,6 @@ public class Handler {
 				clientThread.sendMessage("StopParkACK;" + !error);
 			}
 			break;
-
-			
 			
 		case "DemoPark":
 			System.out.println(" --- DEMO StartPark --- ");

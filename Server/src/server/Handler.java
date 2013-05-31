@@ -130,6 +130,14 @@ public class Handler {
 			}
 			break;
 
+			
+			
+		case "DemoPark":
+			
+			
+			
+			
+		break;
 		case "echo":
 			clientThread.sendMessage("echoACK");
 			break;

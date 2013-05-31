@@ -155,8 +155,8 @@ public class ParkingLots extends Database {
 		for (String s : resultList) {
 			
 			String[] stringArray = s.split(":");
-			parkinglong = stringArray[6];//TODO 5
-			parkinglat = stringArray[5];//TODO 6
+			parkinglong = stringArray[6];//TODO 5 switch when changing long & lat
+			parkinglat = stringArray[5];//TODO 6 switch when changing long & lat
 			System.out.println("fejl 3");
 			System.out.println("Long:" + parkinglong);
 			System.out.println("Lat:" + parkinglat);

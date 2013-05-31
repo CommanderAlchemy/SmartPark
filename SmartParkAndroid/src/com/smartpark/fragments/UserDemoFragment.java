@@ -45,7 +45,7 @@ public class UserDemoFragment extends Fragment {
 				switch (v.getId()) {
 				case R.id.btnTogglePark:
 					myVib.vibrate(50);
-					
+					Log.e(TAG, "-------------ERROR---------oncreate2-----");			
 					
 					break;
 				default:
@@ -72,7 +72,7 @@ public class UserDemoFragment extends Fragment {
 				Activity.VIBRATOR_SERVICE);
 		
 		mainPreference = getActivity().getSharedPreferences("MainPreference", Context.MODE_PRIVATE);
-		
+		Log.e(TAG, "-------------ERROR---------oncreate-----");
 		return rootView;
 	}
 	

@@ -233,7 +233,16 @@ public class UserHistoryFragment extends Fragment {
 					Toast.LENGTH_LONG).show();
 
 	}
+	
+	
+	
+	
+	
+	
 	public static void setHistory(String str){
+		String[] message = str.split(":");
+		
+		
 		list.add(str);
 		arrayAdapter.notifyDataSetChanged();
 	}
@@ -245,10 +254,14 @@ public class UserHistoryFragment extends Fragment {
 		arrayAdapter.notifyDataSetChanged();
 	}
 
+	public static void receptionBegon() {
+		((ProgressBar) viewReferences.get(R.id.progressBarHistory))
+		.setVisibility(View.VISIBLE);
+	}
+	
 	public static void receiveDone() {
 		((ProgressBar) viewReferences.get(R.id.progressBarHistory))
-				.setVisibility(View.GONE);
-		// TODO when is it supose to become visible
+				.setVisibility(View.INVISIBLE);
 	}
 
 	private void setItemInListView(String parking) {
@@ -273,7 +286,6 @@ public class UserHistoryFragment extends Fragment {
 	public void onDestroy() {
 		super.onDestroy();
 		Log.w(TAG, "++ onDestroy ++");
-		screenThread.stopThread();
 	}
 
 }

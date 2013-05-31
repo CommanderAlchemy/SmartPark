@@ -108,14 +108,13 @@ public class MainActivity extends FragmentActivity implements
 		// ==== USER LOGGED ON ===================================
 
 		setupPages();
-
+		
 		if (D)
 			Log.d(TAG, "--> loading from savedInstanceState");
 
-		// Restore additional variables and objects from last session
-		if (savedInstanceState != null) {
-		}
+		
 		startService(new Intent(getBaseContext(), BackOperationService.class));
+		
 	}
 
 	@Override
@@ -168,7 +167,6 @@ public class MainActivity extends FragmentActivity implements
 		Log.i(TAG, "++ onPause ++");
 
 		// We have to save everything in this method for later use
-
 	}
 
 	// ------------------------------------------------------------
@@ -182,7 +180,6 @@ public class MainActivity extends FragmentActivity implements
 	public void onSaveInstanceState(final Bundle outState) {
 		super.onSaveInstanceState(outState);
 		Log.i(TAG, "++ onSaveInstanceState ++");
-
 	}
 
 	// ------------------------------------------------------------

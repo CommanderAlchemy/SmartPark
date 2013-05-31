@@ -521,8 +521,9 @@ public class BackgroundOperationThread extends Thread {
 
 		// History;millis:millis
 		String query = "History;" + fromDate + ":" + toDate;
-		// TODO FIX millis:millis
-		//sendByBT(query);
+
+		//sendByTCP(query);
+		sendByTCP(query);
 	}
 
 

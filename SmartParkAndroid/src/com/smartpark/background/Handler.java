@@ -128,11 +128,12 @@ public class Handler {
 				
 			} else if (message[0].equals("HistoryACK")) { // TODO
 				Log.e(TAG, "HistoryACK: " + message[1]);
-
+				
+				// TODO add right param
+				UserHistoryFragment.setHistory(inData);
 				if (message[1].equals("endl")) {
 					UserHistoryFragment.receiveDone();
 				}
-				
 			}
 		} catch (Exception e) {
 			Log.w(TAG, "Someone send us crapdata --> error on string.split");

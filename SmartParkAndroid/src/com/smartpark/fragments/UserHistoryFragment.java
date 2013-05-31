@@ -53,7 +53,7 @@ public class UserHistoryFragment extends Fragment {
 	public static final int BUTTON_TO_DATE = 2;
 
 	// Initialize the array for listview
-	ArrayList<String> list = new ArrayList<String>();
+	static ArrayList<String> list = new ArrayList<String>();
 
 	// String[] monthsArray = { "JAN", "FEB", "MAR", "APR", "MAY", "JUNE",
 	// "JULY",
@@ -62,7 +62,7 @@ public class UserHistoryFragment extends Fragment {
 	// Declare the UI components
 	private ListView historyListView;
 
-	private ArrayAdapter<String> arrayAdapter;
+	private static ArrayAdapter<String> arrayAdapter;
 
 	private View.OnClickListener onClickListener = new View.OnClickListener() {
 		@Override
@@ -232,8 +232,8 @@ public class UserHistoryFragment extends Fragment {
 					Toast.LENGTH_LONG).show();
 
 	}
-	public void setHistory(ArrayList<String> list){
-		this.list = list;
+	public static void setHistory(String str){
+		list.add(str);
 		arrayAdapter.notifyDataSetChanged();
 	}
 

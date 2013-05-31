@@ -1,5 +1,6 @@
 package com.smartpark.background;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 
@@ -508,7 +509,10 @@ public class BackgroundOperationThread extends Thread {
 
 		// History;millis:millis
 		String query = "History;" + fromDate + ":" + toDate;
+		// TODO FIX millis:millis
+		//sendByBT(query);
 	}
+
 
 	private int getMin(double[] array) {
 		if (array.length > 0) {
@@ -559,7 +563,6 @@ public class BackgroundOperationThread extends Thread {
 		parkingLotdataReceived = false;
 		isParking = false;
 	}
-
 	
 
 	

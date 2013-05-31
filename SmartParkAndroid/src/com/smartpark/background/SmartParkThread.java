@@ -6,8 +6,6 @@ import java.util.HashMap;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.smartpark.activities.MainActivity;
 import com.smartpark.fragments.UserSmartParkFragment;
@@ -18,18 +16,6 @@ public class SmartParkThread extends Thread {
 	private static final String TAG = "SmartParkThread";
 
 	private boolean run = true;
-
-	private Button btnPark;
-	private TextView lblCurrentTime;
-	private TextView lblGPS;
-	private TextView lblBT;
-	private TextView lblParkedSinceShow;
-	private TextView lblDurationShow;
-	private TextView lblPriceNowShow;
-	private TextView lblFreeTimeShow;
-	private TextView lblHoursShow;
-	private TextView lblPriceShow;
-	private TextView lblTotalPriceShow;
 
 	private HashMap<String, View> viewReferences;
 	private UserSmartParkFragment userSmartParkFragment;
@@ -55,22 +41,23 @@ public class SmartParkThread extends Thread {
 		long duration;
 
 		while (run) {
-			// TODO set the clock here
 			
+
 			// TODO set the GPS and BT states here
+
+			//TODO set the GPS and BT states here
+	
+			
+
 
 			if (BackgroundOperationThread.isParkingLotdataReceived()) {
 				userSmartParkFragment.setbtnParkText("Stop parking...");
 			} else {
 				// Log.e(TAG, "not parking");
-
 				userSmartParkFragment.setbtnParkText("Park");
-
-				// ((TextView) viewReferences.get("lblTotalPriceShow"))
-				// .setText(mainPreference.getString(
-				// "MonthlyTotal", "0"));
 			}
-
+			
+			
 			if (BackgroundOperationThread.isParking()) {
 				Log.e(TAG, "parking");
 

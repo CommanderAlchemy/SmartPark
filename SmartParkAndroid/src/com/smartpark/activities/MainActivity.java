@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
@@ -68,7 +69,7 @@ public class MainActivity extends FragmentActivity implements
 	private boolean isLoggedOn = false;
 
 	private SharedPreferences mainPreference;
-	
+
 	// Persons social-security-number
 	private String ssNbr;
 
@@ -92,13 +93,12 @@ public class MainActivity extends FragmentActivity implements
 		myVib = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 		myVib.vibrate(50);
 
-		mainPreference = getSharedPreferences("MainPreference",
-				MODE_PRIVATE);
-		
+		mainPreference = getSharedPreferences("MainPreference", MODE_PRIVATE);
+
 		ssNbr = mainPreference.getString("ssNbr", "0000000000");
 		isController = mainPreference.getBoolean("controller", false);
 		isLoggedOn = mainPreference.getBoolean("loginState", false);
-		
+
 		if (!isLoggedOn) {
 			Intent i = new Intent(this, LoginActivity.class);
 			i.putExtra("CancelAllowed", false);
@@ -197,7 +197,8 @@ public class MainActivity extends FragmentActivity implements
 	public void onBackPressed() {
 		Log.e(TAG, "++ onBackPressed ++");
 		myVib.vibrate(20);
-//		stopService(new Intent(getBaseContext(), BackOperationService.class));
+		// stopService(new Intent(getBaseContext(),
+		// BackOperationService.class));
 		super.onBackPressed();
 		finish();
 	}
@@ -209,6 +210,8 @@ public class MainActivity extends FragmentActivity implements
 	public void onClickBtnParkRolf(View view) {
 		myVib.vibrate(20);
 		Toast.makeText(this, "Parked Rolf", Toast.LENGTH_SHORT).show();
+		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("sms:"
+				+ "0762361910")).putExtra("sms_body", "smartparkQuery"));
 	}
 
 	public void onClickBtnParkKristina(View view) {
@@ -443,11 +446,7 @@ public class MainActivity extends FragmentActivity implements
 
 		case 1:
 			Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show();
-			mainPreference.edit().putBoolean("loginState", false);
-			while(mainPreference.getBoolean("loginState", true)){ // TODO
-				mainPreference.edit().putBoolean("loginState", false);
-				Log.e(TAG, "error in writing to mainPref");
-			}
+			mainPreference.edit().putBoolean("loginState", false).apply();
 			Intent intent = new Intent(getBaseContext(),
 					BackOperationService.class);
 			intent.putExtra("Restart", true);

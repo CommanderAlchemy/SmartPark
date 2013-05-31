@@ -133,10 +133,16 @@ public class Handler {
 			
 			
 		case "DemoPark":
-			
-			
-			
-			
+			System.out.println(" --- DEMO StartPark --- ");
+			String[] param = inData[1].split(":");
+			String parkingLot = new ParkingLots().searchForParking(param[1], param[2]);
+			if (!parkingLot.equals("ParkingLotNotFound")) {
+				// TODO INSERT LAST PARAM!!!!
+				this.smartpark = new SmartPark(param[11]);
+				String parkID = this.smartpark.startParking(inData[1], parkingLot);
+				clientThread.sendMessage("StartParkACK;" + parkingLot
+						+ ":" + parkID);
+			}
 		break;
 		case "echo":
 			clientThread.sendMessage("echoACK");

@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
@@ -12,14 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.smartpark.CustomThread;
 import com.smartpark.R;
 import com.smartpark.activities.MainActivity;
 import com.smartpark.background.BackgroundOperationThread;
+import com.smartpark.background.HistoryThread;
 
 /**
  * GPSFragment, this holds the GPS side of the project and will show GPS
@@ -72,7 +72,8 @@ public class UserHistoryFragment extends Fragment {
 
 		}
 	};
-	private Thread screenThread;
+	private HistoryThread screenThread;
+	private SharedPreferences mainPreference;
 
 	// ----------------------------------------------------------------
 
@@ -89,9 +90,13 @@ public class UserHistoryFragment extends Fragment {
 
 		View rootView = inflater.inflate(R.layout.frag_history_view, container,
 				false);
+		
 		myVib = (Vibrator) getActivity().getSystemService(
 				Activity.VIBRATOR_SERVICE);
-
+		
+		mainPreference = getActivity().getSharedPreferences("MainPreference",
+				Activity.MODE_PRIVATE);
+		
 		if (viewReferences.size() == 0) {
 			// === CREATE REFERENCE FOR ALL VIEWS IN FRAGMENT ===========
 			//@formatter:off
@@ -137,32 +142,7 @@ public class UserHistoryFragment extends Fragment {
 		}
 		Log.e(TAG, "onCreateView ended");
 
-		screenThread = new Thread() {
-			private boolean run = true;
-			private boolean running = false;
-
-			@Override
-			public void run() {
-				running = true;
-				while (run) {
-					
-					
-					
-					
-					
-					
-					
-				}
-				running = false;
-			}
-			// =========================
-			public boolean isRunning() {
-				return running;
-			}
-			public void stopThread() {
-				run = false;
-			}
-		};
+		screenThread = new HistoryThread(viewReferences, this, mainPreference);
 		screenThread.start();
 
 		return rootView;
@@ -276,7 +256,7 @@ public class UserHistoryFragment extends Fragment {
 	public void onDestroy() {
 		super.onDestroy();
 		Log.w(TAG, "++ onDestroy ++");
-		((CustomThread) screenThread).stopThread();
+		screenThread.stopThread();
 	}
 
 }

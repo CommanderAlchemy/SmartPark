@@ -37,10 +37,19 @@ public class PositionEMA {
 	}
 
 	public void put(Location location) {
+		Log.e(TAG, "++ put ++");
+		System.out.println(location.getLatitude() + " " +location.getLongitude());
 		locationList.addLast(location);
 		if (locationList.size() > maxMeasurements) {
 			locationList.removeFirst();
 		}
+	}
+
+	/**
+	 * This method resets the
+	 */
+	public void clear() {
+		locationList.clear();
 	}
 
 	/**
@@ -98,35 +107,50 @@ public class PositionEMA {
 	 * 
 	 */
 	public Location getPosition() {
-		Location averageLocation, lastLocation, secondToLastLocation;
-
-		lastLocation = locationList.getLast();
-		secondToLastLocation = locationList.get(locationList.size() - 2);
-		// Slightly averaging speed and bearings
-		float lastSpeed = (lastLocation.getSpeed() + secondToLastLocation
-				.getSpeed()) / 2;
-		float bearing = (lastLocation.getBearing() + secondToLastLocation
-				.getBearing()) / 2;
-
-		if (lastSpeed == 0.0f) {
-			if (D)
-				Log.w(TAG, "Device does not support speed measurement");
-			return null;
-		} else {
-			/*
-			 * At 0 km/h the entire array is used to average the position, but
-			 * at speeds higher than 34,2 km/h, (9,5m/s * 3.6(s*km)/(h*m)), no
-			 * averaging is performed.
-			 */
-			int samples = Math.round(maxMeasurements - lastSpeed);
-			averageLocation = calculateAverage((samples < 1) ? 1 : samples);
-
-			// 90 degrees is East, 180 South, and 270 West and 0 in North
-			Math.cos(bearing); // work on this
-			Math.sin(bearing);
-
-			return averageLocation;
+//		Location averageLocation, lastLocation, secondToLastLocation;
+//		
+//		System.out.println(locationList.getLast().getLatitude());
+//		System.out.println(locationList.getLast().getLongitude());
+//		
+//		System.out.println(locationList.size());
+//		
+//		if (locationList.size() > 1) {
+//			lastLocation = locationList.getLast();
+//			secondToLastLocation = locationList.get(locationList.size() - 2);
+//			// Slightly averaging speed and bearings
+//			float lastSpeed = (lastLocation.getSpeed() + secondToLastLocation
+//					.getSpeed()) / 2;
+//			System.out.println(lastSpeed);
+//			// float bearing = (lastLocation.getBearing() + secondToLastLocation
+//			// .getBearing()) / 2;
+//
+////			if (lastSpeed == 0.0f) {
+////				if (D)
+////					Log.w(TAG, "Device does not support speed measurement");
+////				return null;
+////			} else {
+//				/*
+//				 * At 0 km/h the entire array is used to average the position,
+//				 * but at speeds higher than 34,2 km/h, (9,5m/s *
+//				 * 3.6(s*km)/(h*m)), no averaging is performed.
+//				 */
+//				int samples = (int) (maxMeasurements - lastSpeed);
+//				averageLocation = calculateAverage((samples < 1) ? 1 : samples);
+//				System.out.println("samples" + samples);
+//				System.out.println("lat " + averageLocation.getLatitude());
+//				// 90 degrees is East, 180 South, and 270 West and 0 in North
+//				// Math.cos(bearing); // work on this
+//				// Math.sin(bearing);
+//
+//				return averageLocation;
+////			}
+//		}
+		for(int i = 0 ; i < locationList.size() ; i++){
+			locationList.get(i).getLatitude();
 		}
+		
+		
+		return locationList.getLast();
 	}
 
 	/**
@@ -138,7 +162,7 @@ public class PositionEMA {
 	 * @param lon2
 	 * @return
 	 */
-	public double calculatedistance(Location locationT1, Location locationT2) {
+	public double calculateDistance(Location locationT1, Location locationT2) {
 		double latA = Math.toRadians(locationT1.getLatitude());
 		double lonA = Math.toRadians(locationT1.getLongitude());
 		double latB = Math.toRadians(locationT2.getLatitude());
@@ -150,64 +174,62 @@ public class PositionEMA {
 		return dist; // Distance in km
 	}
 
-	public float aha(Location user_location, double lat, double lng){
-		Location destination =new Location("gps");
+	public float aha(Location user_location, double lat, double lng) {
+		Location destination = new Location("gps");
 		destination.setLatitude(lat);
 		destination.setLongitude(lng);
-		float dist=user_location.distanceTo(destination);
+		float dist = user_location.distanceTo(destination);
 		return dist;
 	}
 
 	/**
-	 * This method resets the
-	 */
-	public void clear() {
-		locationList.clear();
-	}
-
-	/**
-	 * This script [in Javascript] calculates great-circle distances between the two points – that is, the shortest distance over the earth’s surface – using the ‘Haversine’ formula.
+	 * This script [in Javascript] calculates great-circle distances between the
+	 * two points – that is, the shortest distance over the earth’s surface –
+	 * using the ‘Haversine’ formula.
+	 * 
 	 * @return
 	 */
 
-//	public void getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
-//	  var R = 6371; // Radius of the earth in km
-//	  var dLat = deg2rad(lat2-lat1);  // deg2rad below
-//	  var dLon = deg2rad(lon2-lon1); 
-//	  var a = 
-//	    Math.sin(dLat/2) * Math.sin(dLat/2) +
-//	    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
-//	    Math.sin(dLon/2) * Math.sin(dLon/2)
-//	    ; 
-//	  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-//	  var d = R * c; // Distance in km
-//	  return d;
-//	}
-//
-//	function deg2rad(deg) {
-//	  return deg * (Math.PI/180)
-//	}
-//	
-//	 /// <summary>
-//    /// Calculate the distance between two places.
-//    /// </summary>
-//    /// <param name="lon1"></param>
-//    /// <param name="lat1"></param>
-//    /// <param name="lon2"></param>
-//    /// <param name="lat2"></param>
-//    /// <returns></returns>
-//    public static double DistanceBetweenPlaces(
-//        double lon1,
-//        double lat1,
-//        double lon2,
-//        double lat2)
-//    {
-//        double dlon = Radians(lon2 - lon1);
-//        double dlat = Radians(lat2 - lat1);
-//
-//        double a = (Math.Sin(dlat / 2) * Math.Sin(dlat / 2)) + Math.Cos(Radians(lat1)) * Math.Cos(Radians(lat2)) * (Math.Sin(dlon / 2) * Math.Sin(dlon / 2));
-//        double angle = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-//        return angle * RADIUS;
-//    }
-//    
+	// public void getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+	// var R = 6371; // Radius of the earth in km
+	// var dLat = deg2rad(lat2-lat1); // deg2rad below
+	// var dLon = deg2rad(lon2-lon1);
+	// var a =
+	// Math.sin(dLat/2) * Math.sin(dLat/2) +
+	// Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+	// Math.sin(dLon/2) * Math.sin(dLon/2)
+	// ;
+	// var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+	// var d = R * c; // Distance in km
+	// return d;
+	// }
+	//
+	// function deg2rad(deg) {
+	// return deg * (Math.PI/180)
+	// }
+	//
+	// /// <summary>
+	// /// Calculate the distance between two places.
+	// /// </summary>
+	// /// <param name="lon1"></param>
+	// /// <param name="lat1"></param>
+	// /// <param name="lon2"></param>
+	// /// <param name="lat2"></param>
+	// /// <returns></returns>
+	// public static double DistanceBetweenPlaces(
+	// double lon1,
+	// double lat1,
+	// double lon2,
+	// double lat2)
+	// {
+	// double dlon = Radians(lon2 - lon1);
+	// double dlat = Radians(lat2 - lat1);
+	//
+	// double a = (Math.Sin(dlat / 2) * Math.Sin(dlat / 2)) +
+	// Math.Cos(Radians(lat1)) * Math.Cos(Radians(lat2)) * (Math.Sin(dlon / 2) *
+	// Math.Sin(dlon / 2));
+	// double angle = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+	// return angle * RADIUS;
+	// }
+	//
 }

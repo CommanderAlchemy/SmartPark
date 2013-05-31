@@ -37,7 +37,7 @@ public class BackgroundOperationThread extends Thread {
 	// REFERENCES TO CONTROL-CLASSES
 	private BlueController btController;
 	private TCPController tcpController;
-	private Handler handler;
+	private static Handler handler;
 
 	// SharedPreferences for login settings
 	private static SharedPreferences mainPreference;
@@ -48,22 +48,22 @@ public class BackgroundOperationThread extends Thread {
 	private boolean amIRunning = false;
 	// Am I logged in
 	private boolean isLoggedIn;
-	
+
 	// Upon starting a new parking, did the server respond
 	private static boolean parkingLotdataReceived;
 	// Indicates whether or not we have an ongoing parking sequence
 	private static boolean parkingInitiated;
 	// Currently in parking
 	static boolean isParking = false;
-	
-	
-	
+
 	// =========== END OF CLASS VARIABLES ===============================
 
 	public BackgroundOperationThread(Context applicationContext,
 			BackOperationService backOperationService,
 			BlueController btController, TCPController tcpController,
 			Handler handler, SharedPreferences mainPreference) {
+
+		this.setPriority(MAX_PRIORITY);
 		if (D)
 			Log.e(TAG, "++ bgThread Constructor ++");
 
@@ -406,19 +406,27 @@ public class BackgroundOperationThread extends Thread {
 	}
 
 	public static boolean startPark(String licensePlate, String carModel) {
-		
+		Log.e(TAG, "++ startPark ++");
+
 		String startPark = "StartPark;";
-		String ssNbr = mainPreference.getString("ssNbr", "error") + ":";
-		if (!ssNbr.equals("error:")) {
+		String ssNbr = mainPreference.getString("ssNbr", "error");
+		if (!ssNbr.equals("error")) {
+			Location location = GPSReceiver.getLocation();
+			if (location == null) {
+				return false;
+			}
+			
+			Log.e(TAG, "location: " + location.getLatitude() + " " + location.getLongitude());
+			
+			
 			Calendar cal = Calendar.getInstance();
 			long startTimestamp = cal.getTimeInMillis();
-
-			Location location = GPSReceiver.getLocation();
-
-			// StartPark;ssNbr:55.3452324:26.3423423:2342133424:0:ADT-435:Renault:0
-			startPark += ssNbr + ":" + location.getLongitude() + ":"
-					+ location.getLatitude() + ":" + startTimestamp + ":0:"
-					+ licensePlate + ":" + carModel + ":0";
+			
+			// StartPark;ssNbr:55.3452324:26.3423423:2342133424:0:ADT-435:Renault:0:0
+			// param-size = 9
+			startPark += ssNbr + ":" + location.getLatitude() + ":"
+					+ location.getLongitude() + ":" + startTimestamp + ":0:"
+					+ licensePlate + ":" + carModel + ":0:0";
 
 			Log.e(TAG, "--> Send parking request:\n" + startPark);
 
@@ -434,7 +442,9 @@ public class BackgroundOperationThread extends Thread {
 	}
 
 	// =============================================================
-	public boolean stopPark(String licensePlate, String carModel) {
+	public static boolean stopPark(String licensePlate, String carModel) {
+		Log.e(TAG, "++ startPark ++");
+
 		String stopString = mainPreference.getString("StartPark", "no data");
 		if (stopString.equals("no data")) {
 			Log.e(TAG, "--> No parking to stop");
@@ -483,6 +493,7 @@ public class BackgroundOperationThread extends Thread {
 	}
 
 	public static void getHistory(long fromDate, long toDate) {
+		Log.e(TAG, "++ getHistory ++: " + fromDate + " " + toDate);
 		// History;startDate:stopDate
 		// HistoryACK;longitute:latitute:startStamp:stopStamp:price:parkID
 		// duration parkID position price
@@ -490,8 +501,6 @@ public class BackgroundOperationThread extends Thread {
 		// History;millis:millis
 		String query = "History;" + fromDate + ":" + toDate;
 	}
-
-	
 
 	private int getMin(double[] array) {
 		if (array.length > 0) {
@@ -505,39 +514,46 @@ public class BackgroundOperationThread extends Thread {
 		}
 		return -1;
 	}
+
 	
-	// Parking state controller booleans
+	// Parking state controller-booleans
+
 	
+	// the first to be used
+	public static void setParkingInitiated() {
+		parkingInitiated = true;
+	}
+	// the second to be used (if any)
 	public static void cancelParkingSequence() {
 		// TODO Auto-generated method stub
 		setParkingEnded();
 	}
-	
-	public void setParkingInitiated(){
-		parkingInitiated = true;
-	}
-	
+	// the third to be used
 	public static boolean isParkingLotdataReceived() {
 		return parkingLotdataReceived;
 	}
-	
-	public static void setParkingEnded(){
+	// the forth to be used
+	public static void setParkingLotdataReceived(){
+		parkingLotdataReceived = true;
+	}
+	// the fifth to be used
+	public void setParking() {
+		isParking = true;
+	}
+	// the sixth to be used
+	public static boolean isParking() {
+		return isParking;
+	}
+	// the last to be used
+	public static void setParkingEnded() {
 		parkingInitiated = false;
 		// TODO
 		parkingLotdataReceived = false;
 		isParking = false;
 	}
+
 	
-	public boolean isParking(){
-		return isParking;
-	}
-	
-	public void setParking(){
-		isParking = true;
-	}
-	
-	
-	
+
 	
 
 }

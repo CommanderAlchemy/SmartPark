@@ -203,13 +203,6 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	/*
-	 * Fragment SmartPark
-	 */
-	public void onClickBtnPark(View view) {
-		
-	}
-
-	/*
 	 * Fragment Demo
 	 */
 

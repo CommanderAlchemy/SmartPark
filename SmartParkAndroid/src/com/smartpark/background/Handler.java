@@ -40,7 +40,7 @@ public class Handler {
 				BackgroundOperationThread.setParkingInitiated();
 			}
 		} else if (inData.equals("engineOn")) {
-			bgThread.stopPark("ADT-435", "Renault");
+			BackgroundOperationThread.stopPark("ADT-435", "Renault");
 		}
 	}
 
@@ -104,22 +104,10 @@ public class Handler {
 					// TODO
 					BackgroundOperationThread.cancelParkingSequence();
 				} else {
-					bgThread.setParkingInitiated();
+					BackgroundOperationThread.setParkingInitiated();
 					// "price:QPark:smsQuery:9,18:18,9:55.242342:26.42345:parkID";
-					String[] startPark = message[1].split(":");
-
-					Editor edit = mainPreference.edit();
-					edit.putBoolean("isParking", true);
-					edit.putString("price", startPark[0]);
-					edit.putString("company", startPark[1]);
-					edit.putString("smsQuery", startPark[2]);
-					edit.putString("ticketHours", startPark[3]);
-					edit.putString("freeHours", startPark[4]);
-					edit.putString("longtitude", startPark[5]);
-					edit.putString("latitude", startPark[6]);
-					edit.putString("parkID", startPark[7]);
-					edit.commit();
-
+					BackgroundOperationThread.parkingLot = message[1].split(":");
+					
 					// TODO
 					
 					BackgroundOperationThread.setParkingLotdataReceived();

@@ -88,8 +88,8 @@ public class PositionEMA {
 			totalLongitude /= accuracySum;
 		}
 		Location newLocation = new Location("Average Provider");
-		newLocation.setLatitude(Math.round(totalLatitude));
-		newLocation.setLongitude(Math.round(totalLongitude));
+		newLocation.setLatitude(totalLatitude);
+		newLocation.setLongitude(totalLongitude);
 		return newLocation;
 	}
 
@@ -141,14 +141,20 @@ public class PositionEMA {
 //				// 90 degrees is East, 180 South, and 270 West and 0 in North
 //				// Math.cos(bearing); // work on this
 //				// Math.sin(bearing);
+//				
+//				Log.e(TAG, "fsf: " + averageLocation.getLatitude());
 //
 //				return averageLocation;
 ////			}
 //		}
-		for(int i = 0 ; i < locationList.size() ; i++){
-			locationList.get(i).getLatitude();
-		}
-		
+//		double latitute = 0, longitute = 0;
+//		for(int i = 0 ; i < locationList.size() ; i++){
+//			latitute += locationList.get(i).getLatitude();
+//			longitute += locationList.get(i).getLongitude();
+//		}
+//		Location location = null;
+//		location.setLatitude(latitute/locationList.size());
+//		location.setLatitude(longitute/locationList.size());
 		
 		return locationList.getLast();
 	}

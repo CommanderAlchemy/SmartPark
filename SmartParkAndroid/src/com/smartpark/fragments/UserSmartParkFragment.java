@@ -56,25 +56,7 @@ public class UserSmartParkFragment extends Fragment {
 								"Stopped parking...", Toast.LENGTH_SHORT)
 								.show();
 						boolean parking = BackgroundOperationThread.stopPark("ADT-435","Renault");
-						
-						
-//						
-//						
-//						double distance = Math
-//								.acos((Math.sin(inputlatitude) * Math.sin(
-//								Double.parseDouble(parkinglat)
-//								+ Math.cos(inputlatitude)
-//								* Math.cos(Double.parseDouble(parkinglat)
-//								* Math.cos(inputlongitude
-//								- Double.parseDouble(parkinglong)
-//								* radious)))));
-//
-//						
-//						
-						
-						
-						
-						
+									
 					}else{
 						Toast.makeText(Ref.activeActivity,
 								"Initiating Parking...", Toast.LENGTH_SHORT)
@@ -85,13 +67,6 @@ public class UserSmartParkFragment extends Fragment {
 									"Has no location!", Toast.LENGTH_SHORT)
 									.show();
 						}
-						
-
-						
-						// TODO
-
-						// Toast.makeText(Ref.activeActivity,
-						// "Stopped Parking...", Toast.LENGTH_SHORT).show();
 					}
 					break;
 				default:
@@ -110,6 +85,16 @@ public class UserSmartParkFragment extends Fragment {
 	protected boolean run = true;
 	private SmartParkThread screenThread;
 	private Button btnPark;
+	private TextView lblCurrentTime;
+	private TextView lblGPS;
+	private TextView lblBT;
+	private TextView lblParkedSinceShow;
+	private TextView lblDurationShow;
+	private TextView lblPriceNowShow;
+	private TextView lblFreeTimeShow;
+	private TextView lblHoursShow;
+	private TextView lblPriceShow;
+	private TextView lblTotalPriceShow;
 
 	// ==================================================
 	@Override
@@ -145,6 +130,17 @@ public class UserSmartParkFragment extends Fragment {
 		// === REFERENCES CREATED =======================================
 		
 		btnPark = (Button)viewReferences.get("btnTogglePark");
+		lblCurrentTime = (TextView) viewReferences.get("lblCurrentTime");
+		lblGPS = (TextView) viewReferences.get("lblGPS");
+		lblBT = (TextView) viewReferences.get("lblBT");
+		lblParkedSinceShow = (TextView) viewReferences
+				.get("lblParkedSinceShow");
+		lblDurationShow = (TextView) viewReferences.get("lblDurationShow");
+		lblPriceNowShow = (TextView) viewReferences.get("lblPriceNowShow");
+		lblFreeTimeShow = (TextView) viewReferences.get("lblFreeTimeShow");
+		lblHoursShow = (TextView) viewReferences.get("lblHoursShow");
+		lblPriceShow = (TextView) viewReferences.get("lblPriceShow");
+		lblTotalPriceShow = (TextView) viewReferences.get("lblTotalPriceShow");
 		
 		myVib = (Vibrator) getActivity().getSystemService(
 				Activity.VIBRATOR_SERVICE);
@@ -191,13 +187,58 @@ public class UserSmartParkFragment extends Fragment {
 		}
 		return time;
 	}
+	
 
-	public void setBtnParkTest(String string) {
+	public void setLblCurrentTimeText(String string) {
 		if (!btnPark.getText().equals(string)){
 			btnPark.setText(string);
 		}
 	}
-	
+	public void setLblGPSText(String string) {
+		if (!lblGPS.getText().equals(string)){
+			lblGPS.setText(string);
+		}
+	}
+	public void setLblBTText(String string) {
+		if (!lblBT.getText().equals(string)){
+			lblBT.setText(string);
+		}
+	}
+	public void setLblParkedSinceShowText(String string) {
+		if (!lblParkedSinceShow.getText().equals(string)){
+			lblParkedSinceShow.setText(string);
+		}
+	}
+	public void setLblDurationShowText(String string) {
+		if (!lblDurationShow.getText().equals(string)){
+			lblDurationShow.setText(string);
+		}
+	}
+	public void setlblPriceNowShowText(String string) {
+		if (!lblPriceNowShow.getText().equals(string)){
+			lblPriceNowShow.setText(string);
+		}
+	}
+	public void setlblFreeTimeShowText(String string) {
+		if (!btnPark.getText().equals(string)){
+			btnPark.setText(string);
+		}
+	}
+	public void setlblHoursShowText(String string) {
+		if (!btnPark.getText().equals(string)){
+			btnPark.setText(string);
+		}
+	}
+	public void setlblPriceShowText(String string) {
+		if (!btnPark.getText().equals(string)){
+			btnPark.setText(string);
+		}
+	}
+	public void setlblTotalPriceShowText(String string) {
+		if (!btnPark.getText().equals(string)){
+			btnPark.setText(string);
+		}
+	}
 	
 	
 }

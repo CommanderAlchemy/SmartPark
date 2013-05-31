@@ -55,6 +55,11 @@ public class BackgroundOperationThread extends Thread {
 	private static boolean parkingInitiated;
 	// Currently in parking
 	static boolean isParking = false;
+	
+	// == Datacenter section ========
+	// Info about the last parkingLot
+	public static String[] parkingLot;
+	// ==============================
 
 	// =========== END OF CLASS VARIABLES ===============================
 

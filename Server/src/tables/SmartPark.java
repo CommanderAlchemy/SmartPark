@@ -260,6 +260,7 @@ public class SmartPark extends Database {
 		columnData[6] = inputParam[6];
 		columnData[7] = inputParam[7];
 		String parkID = incrementParkID();
+
 		// ParkID
 		columnData[8] = parkID;
 
@@ -480,13 +481,18 @@ public class SmartPark extends Database {
 				+ "carModel:" 		+ this.carModel 		+ "; " 
 				+ "Price:"			+ this.price			+ "; "
 				+ "parkID:"			+ this.parkID			+ "; ";
-		/* @formatter:on */
+		
 	}
 
 	public String serialize(){
-		return this.
+		return this.longitude + ":" 
+				+ this.latitude + ":" 
+				+ this.startStamp + ":" 
+				+ this.stopStamp + ":" 
+				+ this.price + ":" 
+				+ this.parkID;
 	}
-
+	/* @formatter:on */
 	public static void main(String[] args) {
 		// SmartPark sp = new SmartPark("001First");
 		// sp.createSmartParkTable();

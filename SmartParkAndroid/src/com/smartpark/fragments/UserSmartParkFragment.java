@@ -1,6 +1,5 @@
 package com.smartpark.fragments;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -15,10 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.smartpark.R;
-import com.smartpark.ScreenThread;
 import com.smartpark.activities.MainActivity;
+import com.smartpark.background.BackgroundOperationThread;
+import com.smartpark.background.Ref;
+import com.smartpark.background.SmartParkThread;
 
 /**
  * SmartParkFragment, this holds the general page of our application
@@ -49,25 +51,67 @@ public class UserSmartParkFragment extends Fragment {
 				switch (v.getId()) {
 				case R.id.btnTogglePark:
 					myVib.vibrate(50);
+					if (BackgroundOperationThread.isParking()) {
+						Toast.makeText(Ref.activeActivity,
+								"Stopped parking...", Toast.LENGTH_SHORT)
+								.show();
+						boolean parking = BackgroundOperationThread.stopPark("ADT-435","Renault");
+						
+						
+//						
+//						
+//						double distance = Math
+//								.acos((Math.sin(inputlatitude) * Math.sin(
+//								Double.parseDouble(parkinglat)
+//								+ Math.cos(inputlatitude)
+//								* Math.cos(Double.parseDouble(parkinglat)
+//								* Math.cos(inputlongitude
+//								- Double.parseDouble(parkinglong)
+//								* radious)))));
+//
+//						
+//						
+						
+						
+						
+						
+					}else{
+						Toast.makeText(Ref.activeActivity,
+								"Initiating Parking...", Toast.LENGTH_SHORT)
+								.show();
+						boolean parking = BackgroundOperationThread.startPark("ADT-435","Renault");
+						if(!parking){
+							Toast.makeText(Ref.activeActivity,
+									"Has no location!", Toast.LENGTH_SHORT)
+									.show();
+						}
+						
 
+						
+						// TODO
+
+						// Toast.makeText(Ref.activeActivity,
+						// "Stopped Parking...", Toast.LENGTH_SHORT).show();
+					}
 					break;
 				default:
 					break;
 				}
 			}
-
 		}
 	};
 
 	private Vibrator myVib;
 	private HashMap<String, View> viewReferences = new HashMap<String, View>(20);
-	boolean isParking = false;
+
 	String[] screenStrings = new String[8];
 	String[] viewKeys;
 	SharedPreferences mainPreference;
 	protected boolean run = true;
-	private Thread screenThread;
+	private SmartParkThread screenThread;
+	private Button btnPark;
 
+	// ==================================================
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -81,11 +125,11 @@ public class UserSmartParkFragment extends Fragment {
 				int[] viewIds = new int[]
 						{R.id.lblCurrentTime,R.id.lblGPS,R.id.lblBT,R.id.lblParkedSinceShow,
 						R.id.lblDurationShow,R.id.lblPriceNowShow,R.id.lblFreeTimeShow,
-						R.id.lblHoursShow,R.id.lblPriceShow,R.id.lblTotalPriceShow};
+						R.id.lblHoursShow,R.id.lblPriceShow,R.id.lblTotalPriceShow,R.id.btnTogglePark};
 				String[] viewKeys = new String[]
 						{"lblCurrentTime","lblGPS","lblBT","lblParkedSinceShow","lblDurationShow",
 						"lblPriceNowShow","lblFreeTimeShow","lblHoursShow","lblPriceShow",
-						"lblTotalPriceShow"};
+						"lblTotalPriceShow","btnTogglePark"};
 				//@formatter:on
 		View view;
 		for (int i = 0; i < viewIds.length; i++) {
@@ -99,17 +143,19 @@ public class UserSmartParkFragment extends Fragment {
 			viewReferences.put(viewKeys[i], view);
 		}
 		// === REFERENCES CREATED =======================================
-
+		
+		btnPark = (Button)viewReferences.get("btnTogglePark");
+		
 		myVib = (Vibrator) getActivity().getSystemService(
 				Activity.VIBRATOR_SERVICE);
 
 		mainPreference = getActivity().getSharedPreferences("MainPreference",
 				Activity.MODE_PRIVATE);
 
-		isParking = mainPreference.getBoolean("isParking", false);
+		// isParking = mainPreference.getBoolean("isParking", false);
 		screenStrings[0] = mainPreference.getString("price", "---");
 		screenStrings[1] = mainPreference.getString("company", "---");
-		screenStrings[2] = mainPreference.getString("smsQuery", "");
+		screenStrings[2] = mainPreference.getString("smsQuery", "---");
 		screenStrings[3] = mainPreference.getString("ticketHours", "---");
 		screenStrings[4] = mainPreference.getString("freeHours", "---");
 		screenStrings[5] = mainPreference.getString("longtitude", "0");
@@ -123,59 +169,21 @@ public class UserSmartParkFragment extends Fragment {
 	public void onResume() {
 		super.onResume();
 
-		screenThread = new Thread() {
-			private boolean run = true;
-
-			@Override
-			public void run() {
-				while (run) {
-
-					if (isParking) {
-						
-						String parking = mainPreference.getString("StartPark", "0");
-						String[] current_parking = parking.split(";")[1].split(":");
-						// StartPark;xxxxxx:55.3452324:26.3423423:2342133424:0:ADT-435:Renault:0
-						
-						String parkedSince = convertMilisToTime(current_parking[3]);
-						String duration = "dfsfs";
-						String price = "dfsfs";
-						String ticketTime = "dfsfs";
-						String freeTime = "dfsfs";
-						String priceTillNow = "";
-						String totalThisMonth = mainPreference.getString("totalThisMonth", "0");
-						
-						
-						
-						((TextView) viewReferences.get()
-								.setText(screenStrings[i]);
-
-					} else {
-						((TextView) viewReferences.get("lblTotalPriceShow"))
-								.setText(mainPreference.getString(
-										"MonthlyTotal", "0"));
-					}
-
-				}
-			}
-
-			public void stopThread() {
-				run = false;
-			}
-		};
+		screenThread = new SmartParkThread(viewReferences, this, mainPreference);
 		screenThread.start();
 	}
 
 	public void onDestroy() {
 		super.onDestroy();
-		((ScreenThread) screenThread).stopThread();
+		screenThread.stopThread();
 	}
 
-	protected String convertMilisToTime(String millisString) {
+	public String convertMilisToTime(String millisString) {
 		String time = "00:00";
 		try {
 			long millis = Long.parseLong(millisString);
-			time = TimeUnit.MINUTES.toHours(TimeUnit.MINUTES.toMinutes(millis)) + ":" +
-					TimeUnit.MILLISECONDS.toMinutes(millis);
+			time = TimeUnit.MINUTES.toHours(TimeUnit.MINUTES.toMinutes(millis))
+					+ ":" + TimeUnit.MILLISECONDS.toMinutes(millis);
 			System.out.println(time);
 
 		} catch (Exception e) {
@@ -183,4 +191,13 @@ public class UserSmartParkFragment extends Fragment {
 		}
 		return time;
 	}
+
+	public void setBtnParkTest(String string) {
+		if (!btnPark.getText().equals(string)){
+			btnPark.setText(string);
+		}
+	}
+	
+	
+	
 }

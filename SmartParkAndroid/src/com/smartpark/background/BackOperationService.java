@@ -65,14 +65,15 @@ public class BackOperationService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate(); // Not needed
-		if(D)Log.e(TAG, "++ onCreate ++");
-		
+		if (D)
+			Log.e(TAG, "++ onCreate ++");
+
 		startService(new Intent(getBaseContext(), GPSService.class));
-		
+
 		mainPreference = getSharedPreferences("MainPreference", MODE_PRIVATE);
-		
+
 		applicationContext = getApplicationContext();
-		
+
 		// -----------
 		tcpController = new TCPController();
 		btController = new BlueController(applicationContext);
@@ -80,7 +81,7 @@ public class BackOperationService extends Service {
 		bgThread = new BackgroundOperationThread(applicationContext, this,
 				btController, tcpController, handler, mainPreference);
 		handler.setBackgroundThread(bgThread);
-		
+
 		btFoundDeviceReceiver = new BTFoundDeviceReceiver();
 		btAdapterStateReceiver = new BTAdapterStateReceiver(this);
 
@@ -90,8 +91,9 @@ public class BackOperationService extends Service {
 	@Override
 	public void onDestroy() {
 		super.onDestroy(); // this is not needed in service
-		if(D)Log.e(TAG, "++ onDestroy ++");
-		
+		if (D)
+			Log.e(TAG, "++ onDestroy ++");
+
 		// We first stop the thread
 		// We invoke all the cleanUp()-method of the different classes if they
 		// exist
@@ -117,7 +119,8 @@ public class BackOperationService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
-		if(D)Log.e(TAG, "++ onStartCommand ++");
+		if (D)
+			Log.e(TAG, "++ onStartCommand ++");
 
 		if (!btFindIntentIsRegistered) {
 			// These are all unregistered in onDestroy
@@ -137,8 +140,8 @@ public class BackOperationService extends Service {
 		}
 
 		if (bgThread == null) {
-			bgThread = new BackgroundOperationThread(applicationContext,
-					this, btController, tcpController, handler, mainPreference);
+			bgThread = new BackgroundOperationThread(applicationContext, this,
+					btController, tcpController, handler, mainPreference);
 
 			bgThread.start();
 		} else {
@@ -146,17 +149,21 @@ public class BackOperationService extends Service {
 				try {
 					Thread.currentThread();
 					Thread.sleep(1000);
-				} catch (InterruptedException e1) {}
-				if(!bgThread.isRunning()){
+				} catch (InterruptedException e1) {
+				}
+				if (!bgThread.isRunning()) {
 					bgThread.start();
 				}
 			}
 		}
 
-		if(D)Log.i(TAG, "--- Service action= " + intent.getAction());
-
-		boolean restart = intent.getBooleanExtra("Restart", false);
-
+		if (D)
+			Log.i(TAG, "--- Service action= " + intent.getAction());
+		
+		boolean restart = false;
+		if (intent != null) {
+			restart = intent.getBooleanExtra("Restart", false);
+		}
 		if (restart) {
 			Ref.activeActivity.finish();
 

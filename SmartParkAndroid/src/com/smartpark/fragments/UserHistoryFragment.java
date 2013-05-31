@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
@@ -12,10 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.smartpark.R;
 import com.smartpark.activities.MainActivity;
+import com.smartpark.background.BackgroundOperationThread;
+import com.smartpark.background.HistoryThread;
 
 /**
  * GPSFragment, this holds the GPS side of the project and will show GPS
@@ -33,12 +37,13 @@ public class UserHistoryFragment extends Fragment {
 	private static boolean D = MainActivity.D;
 	private static final String TAG = "HistoryFragment";
 
-	private HashMap<String, View> viewReferences = new HashMap<String, View>(20);
+	private static HashMap<String, View> viewReferences = new HashMap<String, View>(
+			20);
 
 	private Vibrator myVib;
 
-	private DatePickerFragment datePickerFromDate;
-	private DatePickerFragment datePickerToDate;
+	private static DatePickerFragment datePickerFromDate;
+	private static DatePickerFragment datePickerToDate;
 
 	// CODES
 	public static final int BUTTON_FROM_DATE = 1;
@@ -67,6 +72,8 @@ public class UserHistoryFragment extends Fragment {
 
 		}
 	};
+	private HistoryThread screenThread;
+	private SharedPreferences mainPreference;
 
 	// ----------------------------------------------------------------
 
@@ -83,52 +90,61 @@ public class UserHistoryFragment extends Fragment {
 
 		View rootView = inflater.inflate(R.layout.frag_history_view, container,
 				false);
+		
 		myVib = (Vibrator) getActivity().getSystemService(
 				Activity.VIBRATOR_SERVICE);
-
-		// === CREATE REFERENCE FOR ALL VIEWS IN FRAGMENT ===========
-		//@formatter:off
-		int[] viewIds = new int[]
-				{R.id.btnFromDate,R.id.btnToDate};
-		String[] viewKeys = new String[]
-				{"btnFromDate","btnToDate"};
-		//@formatter:on
-		View view;
-		for (int i = 0; i < viewIds.length; i++) {
-
-			view = rootView.findViewById(viewIds[i]);
-
-			if (view instanceof Button) {
-				view.setOnClickListener(onClickListener);
-			}
-			System.out.println();
-			viewReferences.put(viewKeys[i], view);
-		}
-		// === REFERENCES CREATED =======================================
 		
+		mainPreference = getActivity().getSharedPreferences("MainPreference",
+				Activity.MODE_PRIVATE);
+		
+		if (viewReferences.size() == 0) {
+			// === CREATE REFERENCE FOR ALL VIEWS IN FRAGMENT ===========
+			//@formatter:off
+			int[] viewIds = new int[]
+					{R.id.btnFromDate,R.id.btnToDate,R.id.progressBarHistory};
+			String[] viewKeys = new String[]
+					{"btnFromDate","btnToDate","progressBarHistory"};
+			//@formatter:on
+			View view;
+			for (int i = 0; i < viewIds.length; i++) {
+
+				view = rootView.findViewById(viewIds[i]);
+
+				if (view instanceof Button) {
+					view.setOnClickListener(onClickListener);
+				}
+				System.out.println();
+				viewReferences.put(viewKeys[i], view);
+			}
+			// === REFERENCES CREATED =======================================
+		}
+		if (datePickerFromDate == null) {
 			datePickerFromDate = new DatePickerFragment(this);
 			datePickerToDate = new DatePickerFragment(this);
-			
-			if (savedInstanceState != null) {
-				OnClickBtnDateEvent(savedInstanceState.getIntArray("FromDate"),
-						BUTTON_FROM_DATE);
-				OnClickBtnDateEvent(savedInstanceState.getIntArray("ToDate"),
-						BUTTON_TO_DATE);
-			} else {
-				Calendar cal = Calendar.getInstance();
-				cal.get(Calendar.YEAR);
-				cal.get(Calendar.MONTH);
-				cal.get(Calendar.DAY_OF_MONTH);
-				int[] date = { cal.get(Calendar.DAY_OF_MONTH),
-						cal.get(Calendar.MONTH), cal.get(Calendar.YEAR) };
-				datePickerFromDate.setDate(date);
-				datePickerToDate.setDate(date);
-				
-				OnClickBtnDateEvent(datePickerFromDate.getDate(),
-						BUTTON_FROM_DATE);
-				OnClickBtnDateEvent(datePickerToDate.getDate(), BUTTON_TO_DATE);
-			}
+		}
+		if (savedInstanceState != null) {
+			OnClickBtnDateEvent(savedInstanceState.getIntArray("FromDate"),
+					BUTTON_FROM_DATE);
+			OnClickBtnDateEvent(savedInstanceState.getIntArray("ToDate"),
+					BUTTON_TO_DATE);
+		} else {
+			Calendar cal = Calendar.getInstance();
+			cal.get(Calendar.YEAR);
+			cal.get(Calendar.MONTH);
+			cal.get(Calendar.DAY_OF_MONTH);
+			int[] date = { cal.get(Calendar.DAY_OF_MONTH),
+					cal.get(Calendar.MONTH), cal.get(Calendar.YEAR) };
+			datePickerFromDate.setDate(date);
+			datePickerToDate.setDate(date);
+
+			OnClickBtnDateEvent(datePickerFromDate.getDate(), BUTTON_FROM_DATE);
+			OnClickBtnDateEvent(datePickerToDate.getDate(), BUTTON_TO_DATE);
+		}
 		Log.e(TAG, "onCreateView ended");
+
+		screenThread = new HistoryThread(viewReferences, this, mainPreference);
+		screenThread.start();
+
 		return rootView;
 	}
 
@@ -207,22 +223,26 @@ public class UserHistoryFragment extends Fragment {
 
 	}
 
-	private void requestParkedCars() {
-		Log.e(TAG, "++ requestParkedCars ++");
-
-		/*
-		 * TODO implement Query method from the database. Parking Data!
-		 * 
-		 * Query;date:date
-		 */
+	public void getHistory() {
+		BackgroundOperationThread.getHistory(
+				datePickerFromDate.getDateInMillis(),
+				datePickerToDate.getDateInMillis());
 	}
 
+	public static void receiveDone() {
+		((ProgressBar)viewReferences.get(R.id.progressBarHistory)).setVisibility(View.GONE);
+		// TODO when is it supose to become visible
+	}
+
+	private void setItemInListView(String parking){
+//		((ListView)viewReferences.get(R.id.listViewHistory)).addI; TODO
+	}
+	
 	@Override
 	public void onStart() {
 		super.onStart();
 		Log.e(TAG, "++ onStart ++");
 		// Do not use this. This won't run on orientation change
-
 	}
 
 	@Override
@@ -232,9 +252,11 @@ public class UserHistoryFragment extends Fragment {
 
 	}
 
+	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		Log.w(TAG, "++ onDestroy ++");
+		screenThread.stopThread();
 	}
 
 }

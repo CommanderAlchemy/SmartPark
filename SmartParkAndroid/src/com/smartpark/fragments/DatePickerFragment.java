@@ -59,6 +59,9 @@ public class DatePickerFragment extends DialogFragment implements
 			this.fragment.OnClickBtnDateEvent(getDate(),
 					UserHistoryFragment.BUTTON_TO_DATE);
 		}
+		
+		this.fragment.getHistory();
+		
 	}
 	// ------------------------------------------------------
 	public int[] getDate() {
@@ -73,6 +76,15 @@ public class DatePickerFragment extends DialogFragment implements
 		this.day = date[0];
 		this.month = date[1];
 		this.year = date[2];
+	}
+	
+	public long getDateInMillis(){
+		Calendar cal = Calendar.getInstance();
+		cal.clear();
+		cal.set(this.year, this.month, this.day);
+		long time = cal.getTimeInMillis();
+		Log.e(TAG, "Time returned: " + time);
+		return cal.getTimeInMillis();
 	}
 
 }

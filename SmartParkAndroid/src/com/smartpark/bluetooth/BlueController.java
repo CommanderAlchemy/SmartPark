@@ -308,7 +308,7 @@ public class BlueController {
 				 * BroadcastReceiver for it and it's more reliable.
 				 */
 			} catch (Exception e) {
-				Log.w(TAG, "Socket connect Exception: ", e);
+				Log.v(TAG, "Socket connect Exception: ", e);
 				// Close the socket upon error
 				try {
 					if (D)
@@ -317,12 +317,12 @@ public class BlueController {
 					btSocket.close();
 				} catch (Exception e2) {
 					if (D)
-						if(D)Log.w(TAG, "Socket Close Exception: " + e2);
+						if(D)Log.v(TAG, "Socket Close Exception: " + e2);
 				}
 			}
 		} catch (Exception e) {
 			if (D)
-				if(D)Log.w(TAG, "Socket init Exception: " + e);
+				if(D)Log.v(TAG, "Socket init Exception: " + e);
 			setDisconnected();
 		}
 

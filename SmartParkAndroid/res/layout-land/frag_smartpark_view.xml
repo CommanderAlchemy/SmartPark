@@ -112,7 +112,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@id/lblParkedSince"
             android:layout_alignBottom="@id/lblParkedSince"
-            android:layout_alignRight="@id/progressBarLine"
+            android:layout_alignRight="@id/progressBarLine1"
             android:layout_toRightOf="@id/lblTotalPrice"
             android:text="17:00"
             android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -180,7 +180,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <ProgressBar
-            android:id="@+id/progressBarLine"
+            android:id="@+id/progressBarLine1"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -190,7 +190,7 @@
             android:progress="100" />
 
         <ProgressBar
-            android:id="@+id/ProgressBar01"
+            android:id="@+id/progressBarLine2"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

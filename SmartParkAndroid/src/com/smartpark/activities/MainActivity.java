@@ -203,21 +203,6 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	/*
-	 * Fragment SmartPark
-	 */
-	public void onClickBtnPark(View view) {
-		if (((Button) findViewById(R.id.btnTogglePark)).getText()
-				.equals("Park")) {
-			Toast.makeText(this, "Parking...", Toast.LENGTH_SHORT).show();
-			((Button) findViewById(R.id.btnTogglePark)).setText("Stop Parking");
-			return;
-		} else
-			((Button) findViewById(R.id.btnTogglePark)).setText("Park");
-
-		Toast.makeText(this, "Stopped Parking...", Toast.LENGTH_SHORT).show();
-	}
-
-	/*
 	 * Fragment Demo
 	 */
 
@@ -457,8 +442,12 @@ public class MainActivity extends FragmentActivity implements
 			return true;
 
 		case 1:
-			Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show();
 			mainPreference.edit().putBoolean("loginState", false);
+			while(mainPreference.getBoolean("loginState", true)){ // TODO
+				mainPreference.edit().putBoolean("loginState", false);
+				Log.e(TAG, "error in writing to mainPref");
+			}
 			Intent intent = new Intent(getBaseContext(),
 					BackOperationService.class);
 			intent.putExtra("Restart", true);

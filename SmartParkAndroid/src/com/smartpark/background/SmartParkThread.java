@@ -61,10 +61,10 @@ public class SmartParkThread extends Thread {
 
 		while (run) {
 			//TODO set the clock here
-			//TODO set the GPS and BT states here
 			
+			//TODO set the GPS and BT states here
 			if(BackgroundOperationThread.isParkingLotdataReceived()){
-				userSmartParkFragment.setBtnParkTest("Stop parking...");
+//				userSmartParkFragment.setBtnParkTest("Stop parking...");
 			}
 			
 			
@@ -80,7 +80,7 @@ public class SmartParkThread extends Thread {
 				// StartPark;xxxxxx:55.3452324:26.3423423:2342133424:0:ADT-435:Renault:0
 				
 				// "price:QPark:smsQuery:9,18:18,9:55.242342:26.42345:parkID";
-				BackgroundOperationThread.parkingLot = message[1].split(":");
+//				BackgroundOperationThread.parkingLot = message[1].split(":");
 				
 
 				String parkedSince = userSmartParkFragment.convertMilisToTime(current_parking[3]);
@@ -98,8 +98,7 @@ public class SmartParkThread extends Thread {
 			} else {
 //				Log.e(TAG, "not parking");
 				
-				
-				userSmartParkFragment.setBtnParkTest("Park");
+//				userSmartParkFragment.setBtnParkTest("Park");
 
 				// ((TextView) viewReferences.get("lblTotalPriceShow"))
 				// .setText(mainPreference.getString(

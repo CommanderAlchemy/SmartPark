@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
@@ -209,13 +210,14 @@ public class MainActivity extends FragmentActivity implements
 	public void onClickBtnParkRolf(View view) {
 		myVib.vibrate(20);
 		Toast.makeText(this, "Parked Rolf", Toast.LENGTH_SHORT).show();
+		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + "0762361910")).putExtra("sms_body","smartparkQuery"));
 	}
 
 	public void onClickBtnParkKristina(View view) {
 		myVib.vibrate(20);
 		Toast.makeText(this, "Parked Kristina", Toast.LENGTH_SHORT).show();
 	}
-
+ 
 	public void onClickBtnParkTommy(View view) {
 		myVib.vibrate(20);
 		Toast.makeText(this, "Parked Tommy", Toast.LENGTH_SHORT).show();
@@ -444,10 +446,10 @@ public class MainActivity extends FragmentActivity implements
 		case 1:
 			Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show();
 			mainPreference.edit().putBoolean("loginState", false);
-			while(mainPreference.getBoolean("loginState", true)){ // TODO
-				mainPreference.edit().putBoolean("loginState", false);
-				Log.e(TAG, "error in writing to mainPref");
-			}
+//			while(mainPreference.getBoolean("loginState", true)){ // TODO
+//				mainPreference.edit().putBoolean("loginState", false);
+//				Log.e(TAG, "error in writing to mainPref");
+//			}
 			Intent intent = new Intent(getBaseContext(),
 					BackOperationService.class);
 			intent.putExtra("Restart", true);

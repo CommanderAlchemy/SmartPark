@@ -110,7 +110,7 @@ public class Handler {
 					BackgroundOperationThread.cancelParkingSequence();
 					Toast.makeText(Ref.activeActivity, "Not on parkingplace",
 							Toast.LENGTH_SHORT).show();
-					BackgroundOperationThread.sendByBT("a");
+					
 				} else {
 					BackgroundOperationThread.setParkingInitiated();
 					// "price:QPark:smsQuery:9,18:18,9:55.242342:26.42345:parkID";
@@ -121,7 +121,7 @@ public class Handler {
 
 					BackgroundOperationThread.setParkingLotdataReceived();
 					BackgroundOperationThread.setParking();
-					BackgroundOperationThread.sendByBT("b");
+					
 				}
 				// ========================================
 

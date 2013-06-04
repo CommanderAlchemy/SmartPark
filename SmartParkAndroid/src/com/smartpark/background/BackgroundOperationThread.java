@@ -464,10 +464,10 @@ public class BackgroundOperationThread extends Thread {
 		Log.e(TAG, "++ stopPark ++");
 
 		String stopString = mainPreference.getString("StartPark", "no data");
-		if (stopString.equals("no data")) {
+		if (stopString.equals("no data") || !isParking) {
 			Log.e(TAG, "--> No parking to stop");
-			Toast.makeText(Ref.activeActivity, "No parking to stop",
-					Toast.LENGTH_LONG).show();
+//			Toast.makeText(Ref.activeActivity, "No parking to stop",
+//					Toast.LENGTH_LONG).show();
 			return false;
 		} else {
 
@@ -480,9 +480,9 @@ public class BackgroundOperationThread extends Thread {
 				String startPark = mainPreference.getString("StartPark", "0");
 
 				String startTimeStamp = startPark.split(";")[1].split(":")[3];
-
+				
 				String parkID = BackgroundOperationThread.parkingLot[7];
-
+				
 				// StopPark;ssNbr:55.3452324:26.3423423:2342133424:2342143424:ADT-435:Renault:price:parkID
 
 				String price = BackgroundOperationThread.parkingLot[0];

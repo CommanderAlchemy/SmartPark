@@ -83,12 +83,14 @@ public class SmartParkThread extends Thread {
 					public void run() {
 
 						userSmartParkFragment.setbtnParkText("Stop parking...");
+						BackgroundOperationThread.sendByBT("a");
 					}
 				});
 			} else {
 				Ref.activeActivity.runOnUiThread(new Runnable() {
 					public void run() {
 						userSmartParkFragment.setbtnParkText("Park");
+						BackgroundOperationThread.sendByBT("b");
 					}
 				});
 			}

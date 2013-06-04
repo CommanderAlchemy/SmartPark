@@ -6,8 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 
-import android.bluetooth.BluetoothAdapter;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.View;
@@ -45,7 +43,6 @@ public class SmartParkThread extends Thread {
 
 	@Override
 	public void run() {
-		long duration;
 		TCPController tcpController = BackgroundOperationThread
 				.getTCPReference();
 
@@ -78,8 +75,8 @@ public class SmartParkThread extends Thread {
 				});
 			}
 			
-			System.out.println(BackgroundOperationThread.isParkingLotdataReceived());
-			System.out.println(BackgroundOperationThread.isParking());
+//			System.out.println(BackgroundOperationThread.isParkingLotdataReceived());
+//			System.out.println(BackgroundOperationThread.isParking());
 			
 			if (BackgroundOperationThread.isParkingLotdataReceived()) {
 				Ref.activeActivity.runOnUiThread(new Runnable() {

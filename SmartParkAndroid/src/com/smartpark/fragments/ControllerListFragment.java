@@ -14,6 +14,7 @@ import android.widget.ListView;
 
 import com.smartpark.R;
 import com.smartpark.activities.MainActivity;
+import com.smartpark.background.BackgroundOperationThread;
 
 /**
  * DebugFragment, this will contain some debug information needed during this
@@ -38,6 +39,17 @@ public class ControllerListFragment extends Fragment {
 	private Button btnRefresh;
 	private static ArrayAdapter<String> arrayAdapter;
 
+	private View.OnClickListener onClickListener = new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			Log.e(TAG, "sdfsdf");
+			Log.e(TAG, "++ onClick ++");
+
+			BackgroundOperationThread.sendByTCP("CheckPark;0:0");
+
+		}
+	};
+
 	public ControllerListFragment() {
 		if (D)
 			Log.d(TAG, "Fragment: " + this.toString() + " Loaded");
@@ -49,7 +61,7 @@ public class ControllerListFragment extends Fragment {
 		Log.i(TAG, "++ onCreateView ++");
 		View rootView = inflater.inflate(R.layout.frag_cont_list_view,
 				container, false);
-		btnRefresh = (Button) rootView.findViewById(R.id.btnRefesh);
+		btnRefresh = (Button) rootView.findViewById(R.id.btnRefresh);
 		controllerList = (ListView) rootView.findViewById(R.id.controllerList);
 
 		arrayAdapter = new ArrayAdapter<String>(getActivity(),
@@ -58,6 +70,7 @@ public class ControllerListFragment extends Fragment {
 
 		list.add("Hello there controller");
 		arrayAdapter.notifyDataSetChanged();
+		btnRefresh.setOnClickListener(onClickListener);
 		return rootView;
 	}
 
@@ -66,14 +79,14 @@ public class ControllerListFragment extends Fragment {
 		super.onResume();
 		if (arrayAdapter == null) {
 
-			
 			arrayAdapter = new ArrayAdapter<String>(getActivity(),
 					android.R.layout.simple_list_item_1, list);
 			controllerList.setAdapter(arrayAdapter);
+			btnRefresh.setOnClickListener(onClickListener);
 		}
 	}
 
-	private static void setControllerList(String str) {
+	public static void setControllerList(String str) {
 		Log.e(TAG, "++ requestParkedCars ++");
 		// TODO remove old cars from list.
 		list.add(str);

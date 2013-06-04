@@ -1,6 +1,5 @@
 package com.smartpark.background;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 
@@ -56,16 +55,15 @@ public class BackgroundOperationThread extends Thread {
 	private static boolean parkingInitiated;
 	// Currently in parking
 	static boolean isParking = false;
-	
+
 	// == Datacenter section ========
 	// Info about the last parkingLot
 	public static String[] parkingLot;
 	public static String[] startParkString;
 	public static String[] stopParkString;
+
 	// ==============================
-	
-	
-	
+
 	// =========== END OF CLASS VARIABLES ===============================
 
 	public BackgroundOperationThread(Context applicationContext,
@@ -87,11 +85,11 @@ public class BackgroundOperationThread extends Thread {
 		this.btController = btController;
 
 		// TCP
-		this.tcpController = tcpController;
+		BackgroundOperationThread.tcpController = tcpController;
 
-		this.handler = handler;
+		BackgroundOperationThread.handler = handler;
 
-		this.mainPreference = mainPreference;
+		BackgroundOperationThread.mainPreference = mainPreference;
 
 		// Check to see if bluetooth is available
 		if (!BlueController.isBluetoothAdapterAvailable()) {
@@ -204,6 +202,7 @@ public class BackgroundOperationThread extends Thread {
 			// Used to check that the thread is running for sure
 			// All the other method are inaccurate.
 			amIRunning = true;
+
 			if (BlueController.isConnected()) {
 				// Code to process
 				try {
@@ -212,7 +211,8 @@ public class BackgroundOperationThread extends Thread {
 						if (D)
 							Log.d(TAG, "--> BT DATA read     " + inData);
 
-						this.handler.getMessageFromBT(inData);
+						BackgroundOperationThread.handler
+								.getMessageFromBT(inData);
 					}
 				} catch (NumberFormatException e) {
 					if (D)
@@ -246,7 +246,8 @@ public class BackgroundOperationThread extends Thread {
 						if (D)
 							Log.e(TAG, "-----  inData = " + inData);
 
-						this.handler.getMessageFromTCP(inData);
+						BackgroundOperationThread.handler
+								.getMessageFromTCP(inData);
 
 					}
 
@@ -402,12 +403,10 @@ public class BackgroundOperationThread extends Thread {
 		tcpTransmitBuffer.addLast(data);
 	}// ==================================================================
 
-	public static TCPController getTCPReference(){
+	public static TCPController getTCPReference() {
 		return tcpController;
 	}
-	
-	
-	
+
 	/**
 	 * Run this method twice to get the state of the loop. This is proven a
 	 * better check than the native once.
@@ -431,13 +430,14 @@ public class BackgroundOperationThread extends Thread {
 			if (location == null) {
 				return false;
 			}
-			
-			Log.e(TAG, "location: " + location.getLatitude() + " " + location.getLongitude());
-			
-			
+
+			Log.e(TAG,
+					"location: " + location.getLatitude() + " "
+							+ location.getLongitude());
+
 			Calendar cal = Calendar.getInstance();
 			long startTimestamp = cal.getTimeInMillis();
-			
+
 			// StartPark;ssNbr:55.3452324:26.3423423:2342133424:0:ADT-435:Renault:0:0
 			// param-size = 9
 			startPark += ssNbr + ":" + location.getLatitude() + ":"
@@ -445,7 +445,7 @@ public class BackgroundOperationThread extends Thread {
 					+ licensePlate + ":" + carModel + ":0:0";
 
 			Log.e(TAG, "--> Send parking request:\n" + startPark);
-			
+
 			startParkString = startPark.split(";")[1].split(":");
 
 			mainPreference.edit().putString("StartPark", startPark).apply();
@@ -461,7 +461,7 @@ public class BackgroundOperationThread extends Thread {
 
 	// =============================================================
 	public static boolean stopPark(String licensePlate, String carModel) {
-		Log.e(TAG, "++ startPark ++");
+		Log.e(TAG, "++ stopPark ++");
 
 		String stopString = mainPreference.getString("StartPark", "no data");
 		if (stopString.equals("no data")) {
@@ -469,47 +469,46 @@ public class BackgroundOperationThread extends Thread {
 			Toast.makeText(Ref.activeActivity, "No parking to stop",
 					Toast.LENGTH_LONG).show();
 			return false;
-		}
-
-		String stopPark = "StopPark;";
-		String ssNbr = mainPreference.getString("ssNbr", "error");
-		if (!ssNbr.equals("error")) {
-			Calendar cal = Calendar.getInstance();
-			long stopTimestamp = cal.getTimeInMillis();
-
-			String startPark = mainPreference.getString("StartPark", "0");
-
-			String startTimeStamp = startPark.split(";")[1].split(":")[3];
-
-			String parkID = BackgroundOperationThread.parkingLot[7];
-
-			// StopPark;ssNbr:55.3452324:26.3423423:2342133424:2342143424:ADT-435:Renault:price:parkID
-
-			String price = BackgroundOperationThread.parkingLot[0];
-			
-			Location location = GPSReceiver.getLocation();
-
-			stopPark += ssNbr + ":" + location.getLongitude() + ":"
-					+ location.getLatitude() + ":" 
-					+ startTimeStamp + ":"
-					+ stopTimestamp + ":" 
-					+ licensePlate + ":" 
-					+ carModel + ":"
-					+ price + ":"
-					+ parkID;
-			
-			stopParkString = stopPark.split(";")[1].split(":");
-
-			Log.e(TAG, "--> Send parking request: " + stopPark);
-			sendByTCP(stopPark);
-
-			mainPreference.edit().putString("LastParkingStop", stopPark).apply();
-
-			return true;
 		} else {
-			Toast.makeText(Ref.activeActivity, "Error,  please login again",
-					Toast.LENGTH_LONG).show();
-			return false;
+
+			String stopPark = "StopPark;";
+			String ssNbr = mainPreference.getString("ssNbr", "error");
+			if (!ssNbr.equals("error")) {
+				Calendar cal = Calendar.getInstance();
+				long stopTimestamp = cal.getTimeInMillis();
+
+				String startPark = mainPreference.getString("StartPark", "0");
+
+				String startTimeStamp = startPark.split(";")[1].split(":")[3];
+
+				String parkID = BackgroundOperationThread.parkingLot[7];
+
+				// StopPark;ssNbr:55.3452324:26.3423423:2342133424:2342143424:ADT-435:Renault:price:parkID
+
+				String price = BackgroundOperationThread.parkingLot[0];
+
+				Location location = GPSReceiver.getLocation();
+
+				stopPark += ssNbr + ":" + location.getLongitude() + ":"
+						+ location.getLatitude() + ":" + startTimeStamp + ":"
+						+ stopTimestamp + ":" + licensePlate + ":" + carModel
+						+ ":" + price + ":" + parkID;
+
+				stopParkString = stopPark.split(";")[1].split(":");
+
+				Log.e(TAG, "--> Send parking request: " + stopPark);
+				sendByTCP(stopPark);
+
+				mainPreference.edit().putString("LastParkingStop", stopPark)
+						.apply();
+
+				return true;
+
+			} else {
+				Toast.makeText(Ref.activeActivity,
+						"Error,  please login again", Toast.LENGTH_LONG).show();
+				return false;
+			}
 		}
 	}
 
@@ -522,10 +521,9 @@ public class BackgroundOperationThread extends Thread {
 		// History;millis:millis
 		String query = "History;" + fromDate + ":" + toDate;
 
-		//sendByTCP(query);
+		// sendByTCP(query);
 		sendByTCP(query);
 	}
-
 
 	private int getMin(double[] array) {
 		if (array.length > 0) {
@@ -540,43 +538,44 @@ public class BackgroundOperationThread extends Thread {
 		return -1;
 	}
 
-	
 	// Parking state controller-booleans
 
-	
 	// the first to be used
 	public static void setParkingInitiated() {
 		parkingInitiated = true;
 	}
+
 	// the second to be used (if any)
 	public static void cancelParkingSequence() {
 		// TODO Auto-generated method stub
 		setParkingEnded();
 	}
+
 	// the third to be used
 	public static boolean isParkingLotdataReceived() {
 		return parkingLotdataReceived;
 	}
+
 	// the forth to be used
-	public static void setParkingLotdataReceived(){
+	public static void setParkingLotdataReceived() {
 		parkingLotdataReceived = true;
 	}
+
 	// the fifth to be used
 	public static void setParking() {
 		isParking = true;
 	}
+
 	// the sixth to be used
 	public static boolean isParking() {
 		return isParking;
 	}
+
 	// the last to be used
 	public static void setParkingEnded() {
 		parkingInitiated = false;
 		parkingLotdataReceived = false;
 		isParking = false;
 	}
-	
-
-	
 
 }

@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.smartpark.activities.LoginActivity;
 import com.smartpark.activities.MainActivity;
 import com.smartpark.bluetooth.BlueController;
+import com.smartpark.fragments.ControllerListFragment;
 import com.smartpark.fragments.UserHistoryFragment;
 import com.smartpark.tcp.TCPController;
 
@@ -36,11 +37,14 @@ public class Handler {
 	public void getMessageFromBT(String inData) {
 		// String message[] = inData.split(";");
 		if (inData.equals("engineOff")) {
-			boolean parking = BackgroundOperationThread.startPark("ADT-435", "Renault");
-			if(parking){
+			Log.e(TAG, "------------------------ " + inData);
+			boolean parking = BackgroundOperationThread.startPark("ADT-435",
+					"Renault");
+			if (parking) {
 				BackgroundOperationThread.setParkingInitiated();
 			}
 		} else if (inData.equals("engineOn")) {
+			Log.e(TAG, "------------------------ " + inData);
 			BackgroundOperationThread.stopPark("ADT-435", "Renault");
 		}
 	}
@@ -104,38 +108,49 @@ public class Handler {
 				if (message[1].equals("ParkingLotNotFound")) {
 					// TODO
 					BackgroundOperationThread.cancelParkingSequence();
-					Toast.makeText(Ref.activeActivity, "Not on parkingplace", Toast.LENGTH_SHORT).show();
+					Toast.makeText(Ref.activeActivity, "Not on parkingplace",
+							Toast.LENGTH_SHORT).show();
+					BackgroundOperationThread.sendByBT("a");
 				} else {
 					BackgroundOperationThread.setParkingInitiated();
 					// "price:QPark:smsQuery:9,18:18,9:55.242342:26.42345:parkID";
-					BackgroundOperationThread.parkingLot = message[1].split(":");
-					
+					BackgroundOperationThread.parkingLot = message[1]
+							.split(":");
+
 					// TODO
-					
+
 					BackgroundOperationThread.setParkingLotdataReceived();
 					BackgroundOperationThread.setParking();
+					BackgroundOperationThread.sendByBT("b");
 				}
 				// ========================================
-				
+
 			} else if (message[0].equals("StopParkACK")) {
 				Log.e(TAG, "StopParkACK: " + message[1]);
 				if (message[1].equals("false")) { // false means no error
-//					String stopPark = mainPreference.getString(
-//							"LastParkingStop", "no data");
-//					if (!stopPark.equals("no data")) {
-//						BackgroundOperationThread.sendByTCP(stopPark);
-						BackgroundOperationThread.setParkingEnded();
-//					}
+				// String stopPark = mainPreference.getString(
+				// "LastParkingStop", "no data");
+				// if (!stopPark.equals("no data")) {
+				// BackgroundOperationThread.sendByTCP(stopPark);
+					BackgroundOperationThread.setParkingEnded();
+					// }
 				}
 				// ========================================
-				
+
 			} else if (message[0].equals("HistoryACK")) { // TODO
 				Log.e(TAG, "HistoryACK: " + message[1]);
-				
+
 				if (message[1].equals("endl")) {
 					UserHistoryFragment.receiveDone();
-				}else{
+				} else {
 					UserHistoryFragment.setHistory(message[1]);
+				}
+			} else if (message[0].equals("CheckParkACK")) { // TODO
+				Log.e(TAG, "CheckParkACK: " + message[1]);
+
+				if (message[1].equals("endl")) {
+				} else {
+					ControllerListFragment.setControllerList(message[1]);
 				}
 			}
 		} catch (Exception e) {

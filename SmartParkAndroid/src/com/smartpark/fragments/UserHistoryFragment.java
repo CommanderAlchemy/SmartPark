@@ -279,7 +279,6 @@ public class UserHistoryFragment extends Fragment {
 	public void onResume() {
 		super.onResume();
 		Log.e(TAG, "++ onResume ++");
-
 	}
 
 	@Override

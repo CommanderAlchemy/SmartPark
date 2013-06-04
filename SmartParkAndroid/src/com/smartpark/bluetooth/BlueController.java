@@ -20,6 +20,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.smartpark.activities.MainActivity;
+import com.smartpark.background.Ref;
 
 public class BlueController {
 	/*
@@ -255,9 +256,9 @@ public class BlueController {
 								if (btDevice != null) {
 									stopDiscovery();
 									if(D)Log.i(TAG, "Found SP-Device");
-									Toast.makeText(applicationContext,
-											"SmartPark-device found",
-											Toast.LENGTH_SHORT).show();
+//									Toast.makeText(Ref.activeActivity,
+//											"SmartPark-device found",
+//											Toast.LENGTH_SHORT).show();
 									break;
 								}
 							}
@@ -299,7 +300,9 @@ public class BlueController {
 				 * Always stop discovery before connect for good measure. (Tip
 				 * from google developer)
 				 */
-				stopDiscovery();
+				if(btAdapter.isDiscovering()){
+					stopDiscovery();
+				}
 				btSocket.connect();
 				isConnected = true;
 				setConnected();

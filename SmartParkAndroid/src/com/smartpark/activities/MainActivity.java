@@ -87,7 +87,7 @@ public class MainActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.e(TAG, "++ onCreate ++");
-
+		Ref.activeActivity = this;
 		setContentView(R.layout.activity_main);
 
 		myVib = (Vibrator) getSystemService(VIBRATOR_SERVICE);

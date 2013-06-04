@@ -185,10 +185,6 @@ public class UserSmartParkFragment extends Fragment {
 		String time = "";
 		try {
 			long millis = Long.parseLong(millisString);
-//			time = TimeUnit.MILLISECONDS.toHours(millis)
-//					+ ":" + TimeUnit.SECONDS.toHours(millis) 
-//					+ ":" + TimeUnit.MINUTES.toHours(millis);
-			
 			time = String.format("%02d:%02d:%02d", 
 					TimeUnit.MILLISECONDS.toHours(millis),
 					TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
@@ -205,10 +201,6 @@ public class UserSmartParkFragment extends Fragment {
 	public String convertMilisToTime(long millis) {
 		String time = "";
 		try {
-//			time = TimeUnit.MILLISECONDS.toHours(millis)
-//					+ ":" + TimeUnit.MILLISECONDS.toMinutes(millis) 
-//					+ ":" + TimeUnit.MILLISECONDS.toSeconds(millis);
-			
 			time = String.format("%02d:%02d:%02d", 
 					TimeUnit.MILLISECONDS.toHours(millis),
 					TimeUnit.MILLISECONDS.toMinutes(millis) -  
